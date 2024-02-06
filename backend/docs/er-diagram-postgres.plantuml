@@ -1,0 +1,186 @@
+@startuml test
+title ER-Diagram Flexus
+
+entity user_account {
+    id : number <<PK>>
+    --
+    level : number
+    username : text
+    name : text
+    profile_picture : text
+    password : bytea 
+    created_at : timestamp
+    bodyweight : number
+    gender : genders
+}
+
+entity friends {
+    id : number <<PK>>
+    --
+    user_account_requester_id : number <<FK>>
+    user_account_acceptor_id : number <<FK>>
+    is_accepted : boolean
+}
+
+entity user_list {
+    id : number <<PK>>
+    --
+    list_id : number <<FK>>
+    creator_id : number <<FK>>
+    member_id : number <<FK>>
+}
+
+
+entity user_settings {
+    id : number <<PK>>
+    --
+    user_account_id : number <<FK>>
+    fontsize : number
+    is_darkmode : boolean
+    language : language
+    is_unlisted : boolean
+    is_pull_from_everyone : boolean
+    pull_user_list : user_list
+    is_notify_everyone : boolean
+    notify_user_list : userlist
+}
+
+entity plan {
+    id : number <<PK>>
+    --
+    user_account_id : number <<FK>>
+    startdate : timestamp
+    part_count : number
+    name : text
+    is_weekly : boolean
+    is_monday_blocked : boolean
+    is_tuesday_blocked : boolean
+    is_wednesday_blocked : boolean
+    is_thursday_blocked : boolean
+    is_friday_blocked : boolean
+    is_saturday_blocked : boolean
+    is_sunday_blocked : boolean
+}
+
+entity split {
+    id : number <<PK>>
+    --
+    plan_id : number <<FK>>
+    name : text
+    order_in_plan : number
+}
+
+entity exercise {
+    id : number <<PK>>
+    --
+    creator_id : number <<FK>> nullable
+    type : exercise_type
+    name : text
+}
+
+entity set {
+    id : number <<PK>>
+    --
+    workout_id : number <<FK>>
+    exercise_id : number
+    order_number : number
+    measurement : text
+}
+
+entity workout {
+    id : number <<PK>>
+    --
+    user_account_id : number <<FK>>
+    plan_id : number <<FK>> nullable
+    split_id : number <<FK>> nullable
+    start_time : timestamp
+    end_time : timestamp
+    is_archived : boolean
+}
+
+entity gym {
+    id : number <<PK>>
+    --
+    name : text
+    location : point
+}
+
+entity report {
+    id : number <<PK>>
+    --
+    reporter_id : number <<FK>>
+    reported_id : number <<FK>>
+    is_offensive_profile_picture : boolean
+    is_offensive_name : boolean
+    is_offensive_username : boolean
+    is_other : boolean
+}
+
+entity user_account_gym {
+    id : number <<PK>>
+    --
+    user_account_id : number <<FK>>
+    gym_id : number <<FK>>
+}
+
+entity exercise_split {
+    id : number <<PK>>
+    --
+    exercise_id : number <<FK>>
+    split_id : number <<FK>>
+}
+
+entity best_lifts {
+    id : number <<PK>>
+    --
+    user_account_id : number <<FK>>
+    set_id : number <<FK>>
+    position : positions
+}
+
+enum exercise_type {
+    reps
+    duration
+}
+
+enum genders {
+    male
+    female
+    divers
+}
+
+enum language {
+    english
+    german
+}
+
+enum positions {
+    first
+    second
+    third
+}
+
+
+user_account ||--|| user_settings
+user_account ||--|| genders
+user_account ||--o{ user_account_gym
+user_account_gym }o--|| gym 
+user_account |o--o{ friends
+user_account ||--o{ user_list
+user_account ||--o{ workout 
+user_account ||--o{ report 
+user_account ||--o{ best_lifts
+user_settings ||--|| language
+best_lifts ||--|| set
+best_lifts ||--|| positions
+exercise ||--|| exercise_type
+user_account ||--o{ plan
+plan ||--|{ split
+split ||--|{ exercise_split
+exercise_split }o--|| exercise
+set }|--|| exercise
+workout }o--o| plan
+workout }o--o| split
+workout ||--|{ set
+
+@enduml
