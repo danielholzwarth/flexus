@@ -28,9 +28,10 @@ class FlexusButton extends StatelessWidget {
           Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
         }
       },
+      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.background)),
       child: Text(
         text,
-        style: TextStyle(color: AppColors.primary),
+        style: TextStyle(color: AppColors.font),
       ),
     );
   }
