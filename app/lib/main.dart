@@ -1,4 +1,4 @@
-import 'package:app/routes.dart';
+import 'package:app/pages/routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {

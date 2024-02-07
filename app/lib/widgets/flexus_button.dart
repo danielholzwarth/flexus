@@ -1,3 +1,4 @@
+import 'package:app/resources/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class FlexusButton extends StatelessWidget {
@@ -27,7 +28,10 @@ class FlexusButton extends StatelessWidget {
           Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
         }
       },
-      child: Text(text),
+      child: Text(
+        text,
+        style: TextStyle(color: AppColors.primary),
+      ),
     );
   }
 }
