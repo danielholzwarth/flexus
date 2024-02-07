@@ -34,7 +34,7 @@ class AppRoutes {
     switch (settings.name) {
       //LOGIN
       case '/':
-        return MaterialPageRoute(builder: (_) => const StartupPage());
+        return MaterialPageRoute(builder: (_) => const StartUpPage());
       case '/register_username':
         return MaterialPageRoute(builder: (_) => const RegisterUsernamePage());
       case '/register_password':

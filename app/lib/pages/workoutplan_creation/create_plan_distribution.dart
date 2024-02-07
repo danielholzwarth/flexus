@@ -19,7 +19,6 @@ class CreatePlanDistributionPage extends StatelessWidget {
             FlexusButton(
               text: "LOGIN",
               route: "/plan",
-              hasBack: false,
             ),
           ],
         ),

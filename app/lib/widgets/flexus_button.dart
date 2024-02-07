@@ -1,4 +1,5 @@
 import 'package:app/resources/app_colors.dart';
+import 'package:app/resources/user_settings.dart';
 import 'package:flutter/material.dart';
 
 class FlexusButton extends StatelessWidget {
@@ -6,32 +7,36 @@ class FlexusButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.route,
-    this.hasBack = true,
-    this.popLast = false,
+    this.backgroundColor,
+    this.fontColor,
   });
   final String text;
   final String route;
-  final bool hasBack;
-  final bool popLast;
+  final Color? backgroundColor;
+  final Color? fontColor;
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return ElevatedButton(
       onPressed: () {
-        if (hasBack) {
-          if (popLast) {
-            Navigator.popAndPushNamed(context, route);
-          } else {
-            Navigator.pushNamed(context, route);
-          }
-        } else {
-          Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
-        }
+        Navigator.pushNamed(context, route);
       },
-      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.background)),
-      child: Text(
-        text,
-        style: TextStyle(color: AppColors.font),
+      style:
+          ButtonStyle(backgroundColor: MaterialStateProperty.all(backgroundColor ?? AppColors.background), elevation: MaterialStateProperty.all(10)),
+      child: SizedBox(
+        width: screenWidth * 0.5,
+        height: screenHeight * 0.08,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: fontColor ?? AppColors.font,
+              fontSize: UserAppSettings.fontsize - 2,
+            ),
+          ),
+        ),
       ),
     );
   }

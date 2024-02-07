@@ -1,4 +1,6 @@
+import 'package:app/resources/app_colors.dart';
 import 'package:app/widgets/flexus_button.dart';
+import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:flutter/material.dart';
 
 class RegisterNamePage extends StatelessWidget {
@@ -6,22 +8,14 @@ class RegisterNamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register Name'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Column(
-          children: [
-            Text("hello"),
-            FlexusButton(
-              text: "CREATE ACCOUNT",
-              route: "/home",
-              hasBack: false,
-            ),
-          ],
-        ),
+    return FlexusGradientContainer(
+      topColor: AppColors.startUp,
+      bottomColor: AppColors.primary,
+      child: const Column(
+        children: [
+          SizedBox(height: 100),
+          FlexusButton(text: "asd", route: "/home"),
+        ],
       ),
     );
   }

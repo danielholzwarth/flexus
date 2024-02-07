@@ -5,6 +5,7 @@ class AppColors {
   static Color get primary => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0xFF0074B6);
   static Color get primaryV1 => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0x500074B6);
   static Color get primaryV2 => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0x300074B6);
+  static Color get startUp => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0xFF02B3EE);
   static Color get background => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0xFFFFFFFF);
   static Color get backgroundV2 => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0xFF0074B6);
   static Color get error => UserAppSettings.isDarkmode ? const Color(0xFF00FF00) : const Color(0xFFB02020);

@@ -18,7 +18,6 @@ class ShowQRPage extends StatelessWidget {
             FlexusButton(
               text: "Scan QR",
               route: "/scan_qr",
-              popLast: true,
             ),
           ],
         ),

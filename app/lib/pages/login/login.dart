@@ -18,7 +18,6 @@ class LoginPage extends StatelessWidget {
             FlexusButton(
               text: "LOGIN",
               route: "/home",
-              hasBack: false,
             ),
           ],
         ),
