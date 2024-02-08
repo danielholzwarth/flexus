@@ -25,21 +25,34 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
       child: Column(
         children: [
           SizedBox(height: screenHeight * 0.15),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Text(
-              "Please enter your username.",
-              style: TextStyle(
-                color: AppSettings.font,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeTitle,
+          Row(
+            children: [
+              SizedBox(
+                width: screenWidth * 0.15,
+                child: IconButton(
+                  onPressed: () => Navigator.popAndPushNamed(context, "/"),
+                  icon: Icon(Icons.adaptive.arrow_back),
+                  iconSize: AppSettings.fontsizeTitle,
+                  alignment: Alignment.center,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: Text(
+                  "Please enter your username.",
+                  style: TextStyle(
+                    color: AppSettings.font,
+                    decoration: TextDecoration.none,
+                    fontSize: AppSettings.fontsizeTitle,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: screenHeight * 0.02),
           SizedBox(
-            width: screenWidth * 0.8,
+            width: screenWidth * 0.7,
             child: Text(
               "The username is not the name displayed to your friends. Every username must only exist once. You can still change it later.",
               style: TextStyle(

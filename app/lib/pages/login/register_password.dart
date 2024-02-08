@@ -26,21 +26,34 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       child: Column(
         children: [
           SizedBox(height: screenHeight * 0.15),
-          SizedBox(
-            width: screenWidth * 0.8,
-            child: Text(
-              "Please enter your password.",
-              style: TextStyle(
-                color: AppSettings.font,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeTitle,
+          Row(
+            children: [
+              SizedBox(
+                width: screenWidth * 0.15,
+                child: IconButton(
+                  onPressed: () => Navigator.popAndPushNamed(context, "/register_username"),
+                  icon: Icon(Icons.adaptive.arrow_back),
+                  iconSize: AppSettings.fontsizeTitle,
+                  alignment: Alignment.center,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
+              SizedBox(
+                width: screenWidth * 0.7,
+                child: Text(
+                  "Please enter your password.",
+                  style: TextStyle(
+                    color: AppSettings.font,
+                    decoration: TextDecoration.none,
+                    fontSize: AppSettings.fontsizeTitle,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: screenHeight * 0.02),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: screenWidth * 0.7,
             child: Text(
               "The password must be at least 8 characters. We recommend a password with more than 16 characters, including special characters.",
               style: TextStyle(

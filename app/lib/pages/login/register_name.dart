@@ -25,21 +25,34 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
       child: Column(
         children: [
           SizedBox(height: screenHeight * 0.15),
-          SizedBox(
-            width: screenWidth * 0.8,
-            child: Text(
-              "Please enter your name.",
-              style: TextStyle(
-                color: AppSettings.font,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeTitle,
+          Row(
+            children: [
+              SizedBox(
+                width: screenWidth * 0.15,
+                child: IconButton(
+                  onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
+                  icon: Icon(Icons.adaptive.arrow_back),
+                  iconSize: AppSettings.fontsizeTitle,
+                  alignment: Alignment.center,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
+              SizedBox(
+                width: screenWidth * 0.7,
+                child: Text(
+                  "Please enter your name.",
+                  style: TextStyle(
+                    color: AppSettings.font,
+                    decoration: TextDecoration.none,
+                    fontSize: AppSettings.fontsizeTitle,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: screenHeight * 0.02),
           SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: screenWidth * 0.7,
             child: Text(
               "This name will be displayed to your friends. However, you can still change it later.",
               style: TextStyle(
@@ -57,7 +70,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ),
           const Spacer(flex: 1),
           FlexusButton(
-            text: "CREATE",
+            text: "CREATE ACCOUNT",
             route: "/home",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
