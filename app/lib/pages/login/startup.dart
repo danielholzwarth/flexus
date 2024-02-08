@@ -1,4 +1,4 @@
-import 'package:app/resources/app_colors.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:app/resources/user_settings.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
@@ -11,8 +11,8 @@ class StartUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlexusGradientContainer(
-      topColor: AppColors.startUp,
-      bottomColor: AppColors.primary,
+      topColor: AppSettings.startUp,
+      bottomColor: AppSettings.primary,
       child: isLoggedIn
           ? Column(
               children: [
@@ -20,15 +20,15 @@ class StartUpPage extends StatelessWidget {
                 Icon(
                   Icons.star,
                   size: 100,
-                  color: AppColors.background,
+                  color: AppSettings.background,
                 ),
                 const SizedBox(height: 20),
                 Text(
                   "FLEXUS",
                   style: TextStyle(
-                    color: AppColors.fontV1,
+                    color: AppSettings.fontV1,
                     decoration: TextDecoration.none,
-                    fontSize: UserAppSettings.fontsize + 20,
+                    fontSize: AppSettings.fontsizeMainTitle,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -38,9 +38,9 @@ class StartUpPage extends StatelessWidget {
                   child: Text(
                     "If you tap on 'Sign Up,' you agree to our Terms of Service.",
                     style: TextStyle(
-                      color: AppColors.fontV1,
+                      color: AppSettings.fontV1,
                       decoration: TextDecoration.none,
-                      fontSize: UserAppSettings.fontsize - 8,
+                      fontSize: AppSettings.fontsizeSubDescription,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -51,8 +51,8 @@ class StartUpPage extends StatelessWidget {
                 FlexusButton(
                   text: "LOGIN",
                   route: "/login",
-                  backgroundColor: AppColors.backgroundV2,
-                  fontColor: AppColors.fontV1,
+                  backgroundColor: AppSettings.backgroundV1,
+                  fontColor: AppSettings.fontV1,
                 ),
               ],
             )
@@ -60,7 +60,7 @@ class StartUpPage extends StatelessWidget {
               child: Icon(
                 Icons.star,
                 size: 200,
-                color: AppColors.background,
+                color: AppSettings.background,
               ),
             ),
     );
