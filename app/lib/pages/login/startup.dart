@@ -1,5 +1,4 @@
 import 'package:app/resources/app_settings.dart';
-import 'package:app/resources/user_settings.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:flutter/material.dart';

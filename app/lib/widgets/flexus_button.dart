@@ -1,5 +1,4 @@
 import 'package:app/resources/app_settings.dart';
-import 'package:app/resources/user_settings.dart';
 import 'package:flutter/material.dart';
 
 class FlexusButton extends StatelessWidget {

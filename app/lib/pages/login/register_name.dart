@@ -1,20 +1,68 @@
-import 'package:app/resources/app_colors.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
+import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
 
-class RegisterNamePage extends StatelessWidget {
+class RegisterNamePage extends StatefulWidget {
   const RegisterNamePage({super.key});
 
   @override
+  State<RegisterNamePage> createState() => _RegisterNamePageState();
+}
+
+class _RegisterNamePageState extends State<RegisterNamePage> {
+  final TextEditingController nameController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return FlexusGradientContainer(
-      topColor: AppColors.startUp,
-      bottomColor: AppColors.primary,
-      child: const Column(
+      topColor: AppSettings.background,
+      bottomColor: AppSettings.primary,
+      child: Column(
         children: [
-          SizedBox(height: 100),
-          FlexusButton(text: "asd", route: "/home"),
+          SizedBox(height: screenHeight * 0.15),
+          SizedBox(
+            width: screenWidth * 0.8,
+            child: Text(
+              "Please enter your name.",
+              style: TextStyle(
+                color: AppSettings.font,
+                decoration: TextDecoration.none,
+                fontSize: AppSettings.fontsizeTitle,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Text(
+              "This name will be displayed to your friends. However, you can still change it later.",
+              style: TextStyle(
+                color: AppSettings.font,
+                decoration: TextDecoration.none,
+                fontSize: AppSettings.fontsizeSubDescription,
+              ),
+              textAlign: TextAlign.left,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.07),
+          FlexusTextField(
+            hintText: "Name",
+            textController: nameController,
+          ),
+          const Spacer(flex: 1),
+          FlexusButton(
+            text: "CREATE",
+            route: "/home",
+            backgroundColor: AppSettings.backgroundV1,
+            fontColor: AppSettings.fontV1,
+          ),
+          SizedBox(height: screenHeight * 0.12),
         ],
       ),
     );
