@@ -71,7 +71,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           SizedBox(height: screenHeight * 0.25),
           const Spacer(flex: 1),
           FlexusButton(
-            text: "CONTINUE",
+            text: "CONTINUE (1/3)",
             route: "/register_password",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,

@@ -70,7 +70,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           FlexusTextField(hintText: "Confirm Password", textController: confirmPasswordController),
           const Spacer(flex: 1),
           FlexusButton(
-            text: "CONTINUE",
+            text: "CONTINUE (2/3)",
             route: "/register_name",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,

@@ -70,7 +70,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ),
           const Spacer(flex: 1),
           FlexusButton(
-            text: "CREATE ACCOUNT",
+            text: "CREATE ACCOUNT (3/3)",
             route: "/home",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,

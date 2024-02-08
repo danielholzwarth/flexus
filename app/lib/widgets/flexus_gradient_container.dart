@@ -16,8 +16,8 @@ class FlexusGradientContainer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.center,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.centerRight,
           colors: [topColor, bottomColor],
         ),
       ),

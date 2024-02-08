@@ -42,9 +42,7 @@ class FlexusTextField extends StatelessWidget {
             ),
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: TextStyle(
-                color: hintColor?.withOpacity(0.5) ?? AppSettings.font.withOpacity(0.5),
-              ),
+              hintStyle: TextStyle(color: hintColor?.withOpacity(0.5) ?? AppSettings.font.withOpacity(0.5)),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
             ),
