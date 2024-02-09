@@ -9,7 +9,7 @@ import (
 )
 
 type UserAccountStore interface {
-	CreateUserAccount(name string) (types.UserAccount, error)
+	CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error)
 }
 
 type service struct {
@@ -35,13 +35,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s service) createUserAccount() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		type CreateUserRequest struct {
-			Username string `json:"username"`
-			Password string `json:"password"`
-			Name     string `json:"name"`
-		}
-
-		var requestBody CreateUserRequest
+		var requestBody types.CreateUserRequest
 
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&requestBody); err != nil {
@@ -55,8 +49,23 @@ func (s service) createUserAccount() http.HandlerFunc {
 			return
 		}
 
-		if requestBody.Password == "" {
-			http.Error(w, "Password can not be empty", http.StatusBadRequest)
+		if requestBody.PublicKey == "" {
+			http.Error(w, "PublicKey can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		if requestBody.EncryptedPrivateKey == "" {
+			http.Error(w, "EncryptedPrivateKey can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		if requestBody.RandomSaltOne == "" {
+			http.Error(w, "RandomSaltOne can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		if requestBody.RandomSaltTwo == "" {
+			http.Error(w, "RandomSaltTwo can not be empty", http.StatusBadRequest)
 			return
 		}
 
@@ -65,7 +74,7 @@ func (s service) createUserAccount() http.HandlerFunc {
 			return
 		}
 
-		user, err := s.userAccountStore.CreateUserAccount(requestBody.Username)
+		user, err := s.userAccountStore.CreateUserAccount(requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
 			println(err.Error())

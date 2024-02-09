@@ -42,7 +42,16 @@ components:
         username:
           type: string
           example: Daniel123
-        password:
+        publicKey:
+          type: string
+          example: Daniel123
+        encryptedPrivateKey:
+          type: string
+          example: Daniel123        
+        randomSaltOne:
+          type: string
+          example: Daniel123        
+        randomSaltTwo:
           type: string
           example: Daniel123
         name:

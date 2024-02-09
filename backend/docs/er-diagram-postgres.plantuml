@@ -8,7 +8,10 @@ entity user_account {
     username : text
     name : text
     profile_picture : text
-    password : bytea 
+    publicKey : bytea
+    encryptedPrivateKey : bytea
+    randomSaltOne : bytea
+    randomSaltTwo : bytea
     created_at : timestamp
     bodyweight : number
     gender : genders
