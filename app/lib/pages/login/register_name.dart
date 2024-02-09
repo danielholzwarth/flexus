@@ -1,3 +1,4 @@
+import 'package:app/api/user_account_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
@@ -18,6 +19,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userAccountService = UserAccountService.create();
 
     return FlexusGradientContainer(
       topColor: AppSettings.background,
@@ -74,6 +76,10 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
             route: "/home",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
+            function: () async {
+              userAccountService.postUserAccount({"username": "Daniel123", "password": "password", "name": "Daniel"});
+              Navigator.pushNamed(context, "/login");
+            },
           ),
           SizedBox(height: screenHeight * 0.12),
         ],

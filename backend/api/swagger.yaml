@@ -1,0 +1,69 @@
+openapi: '3.0.2'
+info:
+  title: RFIDLobby
+  version: '1.0'
+servers:
+  - url: http://localhost:8080
+  - url: https://qr-lobby.haveachin.de
+
+
+# ENDPOINTS ####################################################################
+
+paths:
+  /useraccounts:
+    post:
+      tags:
+        - UserAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUserAccount"
+      responses:
+        201:
+          description: Created.
+        400:
+          description: Bad Request.
+        500:
+          description: Internal Server Error.
+
+
+# SCHEMAS ######################################################################
+
+components:
+  schemas:
+    ID:
+      type: integer
+      example: 1
+
+    PostUserAccount:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Daniel123
+        password:
+          type: string
+          example: Daniel123
+        name:
+          type: string
+          example: Daniel123
+
+    UserAccount:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Daniel123
+
+
+# PARAMETERS ###################################################################
+
+  parameters:
+    UserID:
+      name: userAccountID
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/ID"
+      

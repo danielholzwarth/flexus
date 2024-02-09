@@ -18,9 +18,9 @@ final class _$UserAccountService extends UserAccountService {
   final Type definitionType = UserAccountService;
 
   @override
-  Future<Response<dynamic>> postUserAccount(Map<String, dynamic> username) {
+  Future<Response<dynamic>> postUserAccount(Map<String, dynamic> userAccount) {
     final Uri $url = Uri.parse('/useraccounts');
-    final $body = username;
+    final $body = userAccount;
     final Request $request = Request(
       'POST',
       $url,

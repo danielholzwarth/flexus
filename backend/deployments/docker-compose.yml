@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  backend:
+    image: flexus-backend:${IMAGE_TAG}
+    container_name: flexus-backend
+    restart: always
+    networks:
+      - postgres
+    environment:
+      RFID_LOBBY_DATABASE_DSN: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/qrpostgres?sslmode=disable&connect_timeout=10
+
+networks:
+  postgres:
+    external: true

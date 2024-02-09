@@ -1,9 +1,8 @@
 BEGIN;
 
--- Drop all tables
-
 /*
-DROP TABLE IF EXISTS user_account, lobby, file, owner CASCADE;
+-- Drop all tables
+DROP TABLE IF EXISTS gender, exercise_type, language, position, user_account, user_list, report, gym, user_account_gym, friends, user_settings, plan, split, exercise, exercise_split, workout, set, best_lifts CASCADE;
 
 or
 
