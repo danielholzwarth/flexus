@@ -11,13 +11,13 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 	var userAccount types.UserAccount
 	userAccount.Username = createUserRequest.Username
 	userAccount.Name = createUserRequest.Name
+	userAccount.PublicKey = createUserRequest.PublicKey
 	userAccount.EncryptedPrivateKey = createUserRequest.EncryptedPrivateKey
-	userAccount.RandomSaltOne = createUserRequest.RandomSaltOne
 	userAccount.RandomSaltOne = createUserRequest.RandomSaltOne
 	userAccount.RandomSaltTwo = createUserRequest.RandomSaltTwo
 	userAccount.Level = 1
 
-	err := db.pool.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.EncryptedPrivateKey, createUserRequest.RandomSaltOne, createUserRequest.RandomSaltTwo, 1, 80).Scan(&userAccount.ID, &userAccount.CreatedAt)
+	err := db.pool.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.PublicKey, createUserRequest.EncryptedPrivateKey, createUserRequest.RandomSaltOne, createUserRequest.RandomSaltTwo, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
 	if err != nil {
 		return types.UserAccount{}, err
 	}

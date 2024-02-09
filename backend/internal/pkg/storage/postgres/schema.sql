@@ -49,13 +49,13 @@ CREATE TABLE user_account (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     name VARCHAR(20) NOT NULL,
-    publicKey bytea NOT NULL,
-    encryptedPrivateKey bytea NOT NULL,
-    randomSaltOne bytea NOT NULL,
-    randomSaltTwo bytea NOT NULL,
+    publicKey BYTEA NOT NULL,
+    encryptedPrivateKey BYTEA NOT NULL,
+    randomSaltOne BYTEA NOT NULL,
+    randomSaltTwo BYTEA NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     level INTEGER NOT NULL,
-    profile_picture bytea,
+    profile_picture BYTEA,
     bodyweight INTEGER,
     gender_id BIGINT REFERENCES gender(id)
 );
