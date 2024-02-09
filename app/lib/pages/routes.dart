@@ -31,16 +31,20 @@ import 'package:flutter/material.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
+
     switch (settings.name) {
       //LOGIN
       case '/':
         return MaterialPageRoute(builder: (_) => const StartUpPage());
       case '/register_username':
         return MaterialPageRoute(builder: (_) => const RegisterUsernamePage());
-      case '/register_password':
-        return MaterialPageRoute(builder: (_) => const RegisterPasswordPage());
       case '/register_name':
-        return MaterialPageRoute(builder: (_) => const RegisterNamePage());
+        String username = args as String;
+        return MaterialPageRoute(builder: (_) => RegisterNamePage(username: username));
+      case '/register_password':
+        List<dynamic> userInfo = args as List<dynamic>;
+        return MaterialPageRoute(builder: (_) => RegisterPasswordPage(username: userInfo[0], name: userInfo[1]));
       case '/login':
         return MaterialPageRoute(builder: (_) => const LoginPage());
       //HOME

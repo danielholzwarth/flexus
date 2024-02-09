@@ -1,17 +1,16 @@
-import 'dart:typed_data';
-
-import 'package:app/api/user_account_service.dart';
-import 'package:app/encryption/crypto_service.dart';
-import 'package:app/encryption/signup_result.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:app/widgets/flexus_textfield.dart';
-import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 
 class RegisterNamePage extends StatefulWidget {
-  const RegisterNamePage({super.key});
+  final String username;
+
+  const RegisterNamePage({
+    super.key,
+    required this.username,
+  });
 
   @override
   State<RegisterNamePage> createState() => _RegisterNamePageState();
@@ -24,7 +23,6 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final userAccountService = UserAccountService.create();
 
     return FlexusGradientContainer(
       topColor: AppSettings.background,
@@ -77,49 +75,20 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ),
           const Spacer(flex: 1),
           FlexusButton(
-            text: "CREATE ACCOUNT (3/3)",
-            route: "/home",
+            text: "CONTINUE (2/3)",
+            route: "/register_password",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
-            function: () async {
-              final signUpResult = signUp("testPassword");
-              userAccountService.postUserAccount({
-                "username": "Daniel123",
-                "publicKey": signUpResult.publicKey,
-                "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
-                "randomSaltOne": signUpResult.randomSaltOne,
-                "randomSaltTwo": signUpResult.randomSaltTwo,
-                "name": "Daniel",
-              });
-              Navigator.pushNamed(context, "/login");
+            function: () => {
+              Navigator.pushNamed(context, "/register_password", arguments: [
+                widget.username,
+                nameController.text,
+              ]),
             },
           ),
           SizedBox(height: screenHeight * 0.12),
         ],
       ),
-    );
-  }
-
-  SignUpResult signUp(String password) {
-    // Generate PBKDF key
-    final Uint8List randomSaltOne = CryptoService.generateRandomSalt();
-    final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(password, randomSaltOne.toString());
-
-    // Generate RSA Key Pair
-    final RSAKeypair keyPair = CryptoService.getKeyPair();
-
-    // Encrypt Private key
-    final Uint8List privateKeySalt = CryptoService.generateRandomSalt();
-    final encryptedPrivateKey = CryptoService.symetricEncrypt(
-      pbkdfKey,
-      Uint8List.fromList(privateKeySalt.toString().codeUnits),
-      Uint8List.fromList(keyPair.privateKey.toFormattedPEM().codeUnits),
-    );
-    return SignUpResult(
-      publicKey: keyPair.publicKey.toFormattedPEM(),
-      encryptedPrivateKey: String.fromCharCodes(encryptedPrivateKey),
-      randomSaltOne: randomSaltOne.toString(),
-      randomSaltTwo: privateKeySalt.toString(),
     );
   }
 }
