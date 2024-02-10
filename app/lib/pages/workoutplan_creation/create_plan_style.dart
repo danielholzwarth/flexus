@@ -15,7 +15,7 @@ class CreatePlanStylePage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "CONTINUE", route: "/create_plan_style"),
+            FlexusButton(text: "CONTINUE"),
           ],
         ),
       ),

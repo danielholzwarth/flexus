@@ -15,10 +15,7 @@ class LoginPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(
-              text: "LOGIN",
-              route: "/home",
-            ),
+            FlexusButton(text: "LOGIN"),
           ],
         ),
       ),

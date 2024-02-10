@@ -15,7 +15,7 @@ class AddFriendPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Scan QR", route: "/scan_qr"),
+            FlexusButton(text: "Scan QR"),
           ],
         ),
       ),

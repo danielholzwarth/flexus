@@ -15,9 +15,9 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Settings", route: "/settings"),
-            FlexusButton(text: "Leveling", route: "/leveling"),
-            FlexusButton(text: "Profile Picture", route: "/profile_picture"),
+            FlexusButton(text: "Settings"),
+            FlexusButton(text: "Leveling"),
+            FlexusButton(text: "Profile Picture"),
           ],
         ),
       ),

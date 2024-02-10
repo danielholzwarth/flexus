@@ -15,10 +15,7 @@ class ScanQRPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(
-              text: "Show QR",
-              route: "/show_qr",
-            ),
+            FlexusButton(text: "Show QR"),
           ],
         ),
       ),

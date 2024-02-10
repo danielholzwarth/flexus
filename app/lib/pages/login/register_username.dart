@@ -72,7 +72,6 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           const Spacer(flex: 1),
           FlexusButton(
             text: "CONTINUE (1/3)",
-            route: "/register_name",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
             function: () => {

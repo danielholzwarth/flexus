@@ -16,10 +16,7 @@ class CreatePlanDistributionPage extends StatelessWidget {
           children: [
             Text("hello"),
             //Pop Generation
-            FlexusButton(
-              text: "LOGIN",
-              route: "/plan",
-            ),
+            FlexusButton(text: "LOGIN"),
           ],
         ),
       ),

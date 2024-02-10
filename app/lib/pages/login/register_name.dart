@@ -76,7 +76,6 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           const Spacer(flex: 1),
           FlexusButton(
             text: "CONTINUE (2/3)",
-            route: "/register_password",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
             function: () => {

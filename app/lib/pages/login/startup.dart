@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class StartUpPage extends StatelessWidget {
   const StartUpPage({super.key});
+  //remove later
   final isLoggedIn = true;
 
   @override
@@ -45,11 +46,10 @@ class StartUpPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-                const FlexusButton(text: "SIGN UP", route: "/register_username"),
+                const FlexusButton(text: "SIGN UP"),
                 const SizedBox(height: 30),
                 FlexusButton(
                   text: "LOGIN",
-                  route: "/login",
                   backgroundColor: AppSettings.backgroundV1,
                   fontColor: AppSettings.fontV1,
                 ),

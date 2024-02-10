@@ -85,7 +85,6 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           const Spacer(flex: 1),
           FlexusButton(
             text: "CREATE ACCOUNT (3/3)",
-            route: "/login",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
             function: () async {

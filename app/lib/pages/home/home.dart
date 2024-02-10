@@ -15,8 +15,8 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Profile", route: "/profile"),
-            FlexusButton(text: "Locations", route: "/locations"),
+            FlexusButton(text: "Profile"),
+            FlexusButton(text: "Locations"),
           ],
         ),
       ),

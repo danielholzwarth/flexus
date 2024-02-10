@@ -15,7 +15,7 @@ class CreatePlanSplitsPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "CONTINUE", route: "/create_plan_exercises"),
+            FlexusButton(text: "CONTINUE"),
           ],
         ),
       ),

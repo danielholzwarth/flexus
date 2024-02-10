@@ -15,7 +15,7 @@ class TimerPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "CONTINUE", route: "/create_plan_splits"),
+            FlexusButton(text: "CONTINUE"),
           ],
         ),
       ),

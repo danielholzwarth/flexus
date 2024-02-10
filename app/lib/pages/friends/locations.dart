@@ -15,7 +15,7 @@ class LocationsPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Add Friend", route: "/add_friend"),
+            FlexusButton(text: "Add Friend"),
           ],
         ),
       ),

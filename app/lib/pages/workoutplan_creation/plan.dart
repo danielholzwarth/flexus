@@ -15,7 +15,7 @@ class PlanPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "CREATE PLAN", route: "/create_plan"),
+            FlexusButton(text: "CREATE PLAN",),
           ],
         ),
       ),

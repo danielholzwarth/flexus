@@ -15,7 +15,7 @@ class CreatePlanExercisesPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "LOGIN", route: "/create_plan_style"),
+            FlexusButton(text: "LOGIN"),
           ],
         ),
       ),

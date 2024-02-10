@@ -2,6 +2,14 @@ import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class FlexusTextField extends StatelessWidget {
+  final String hintText;
+  final TextEditingController textController;
+  final TextInputType textInputType;
+  final Color? backgroundColor;
+  final Color? fontColor;
+  final Color? hintColor;
+  final Color? borderColor;
+
   const FlexusTextField({
     super.key,
     required this.hintText,
@@ -12,14 +20,6 @@ class FlexusTextField extends StatelessWidget {
     this.hintColor,
     this.borderColor,
   });
-
-  final String hintText;
-  final TextEditingController textController;
-  final TextInputType textInputType;
-  final Color? backgroundColor;
-  final Color? fontColor;
-  final Color? hintColor;
-  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
