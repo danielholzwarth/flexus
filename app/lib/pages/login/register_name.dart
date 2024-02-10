@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:app/widgets/flexus_textfield.dart';
@@ -78,14 +79,34 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
             text: "CONTINUE (2/3)",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
-            function: () => {
-              Navigator.pushNamed(context, "/register_password", arguments: [
-                widget.username,
-                nameController.text,
-              ]),
+            function: () {
+              if (nameController.text.isEmpty) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Name must not be empty!'),
+                    ),
+                  ),
+                );
+              } else if (nameController.text.length > 20) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Name must not be longer than 20 characters!'),
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.pushNamed(context, "/register_password", arguments: [
+                  widget.username,
+                  nameController.text,
+                ]);
+              }
             },
           ),
-          SizedBox(height: screenHeight * 0.12),
+          FlexusBottomSizedBox(screenHeight: screenHeight)
         ],
       ),
     );

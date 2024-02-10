@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:flutter/material.dart';
@@ -10,19 +11,21 @@ class StartUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return FlexusGradientContainer(
       topColor: AppSettings.startUp,
       bottomColor: AppSettings.primary,
       child: isLoggedIn
           ? Column(
               children: [
-                const SizedBox(height: 110),
+                SizedBox(height: screenHeight * 0.15),
                 Icon(
                   Icons.star,
                   size: 100,
                   color: AppSettings.background,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.02),
                 Text(
                   "FLEXUS",
                   style: TextStyle(
@@ -32,11 +35,11 @@ class StartUpPage extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 250),
+                const Spacer(flex: 1),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: Text(
-                    "If you tap on 'Sign Up,' you agree to our Terms of Service.",
+                    "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
                     style: TextStyle(
                       color: AppSettings.fontV1,
                       decoration: TextDecoration.none,
@@ -45,14 +48,19 @@ class StartUpPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 40),
-                const FlexusButton(text: "SIGN UP"),
-                const SizedBox(height: 30),
+                SizedBox(height: screenHeight * 0.07),
+                FlexusButton(
+                  text: "SIGN UP",
+                  function: () => Navigator.pushNamed(context, "/register_username"),
+                ),
+                SizedBox(height: screenHeight * 0.03),
                 FlexusButton(
                   text: "LOGIN",
                   backgroundColor: AppSettings.backgroundV1,
                   fontColor: AppSettings.fontV1,
+                  function: () => Navigator.pushNamed(context, "/login"),
                 ),
+                FlexusBottomSizedBox(screenHeight: screenHeight)
               ],
             )
           : Center(

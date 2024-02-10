@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:app/widgets/flexus_textfield.dart';
@@ -54,7 +55,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           SizedBox(
             width: screenWidth * 0.7,
             child: Text(
-              "The username is not the name displayed to your friends. Every username must only exist once. You can still change it later.",
+              "The username must be at least 6 characters. Every username can only exist once. You can still change it later.",
               style: TextStyle(
                 color: AppSettings.font,
                 decoration: TextDecoration.none,
@@ -74,11 +75,42 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
             text: "CONTINUE (1/3)",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
-            function: () => {
-              Navigator.pushNamed(context, "/register_name", arguments: usernameController.text),
+            function: () {
+              if (usernameController.text.length < 6) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Username must be at least 6 characters long!'),
+                    ),
+                  ),
+                );
+              } else if (usernameController.text.length > 20) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Username must be shorter than 20 characters!'),
+                    ),
+                  ),
+                );
+              }
+              //Make check with db
+              else if (usernameController.text == "assigned") {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Username is already assigned!'),
+                    ),
+                  ),
+                );
+              } else {
+                Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
+              }
             },
           ),
-          SizedBox(height: screenHeight * 0.12),
+          FlexusBottomSizedBox(screenHeight: screenHeight)
         ],
       ),
     );

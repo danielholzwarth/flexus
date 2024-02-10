@@ -4,6 +4,7 @@ import 'package:app/api/user_account_service.dart';
 import 'package:app/encryption/crypto_service.dart';
 import 'package:app/encryption/signup_result.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_container.dart';
 import 'package:app/widgets/flexus_textfield.dart';
@@ -45,7 +46,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               SizedBox(
                 width: screenWidth * 0.15,
                 child: IconButton(
-                  onPressed: () => Navigator.popAndPushNamed(context, "/register_username"),
+                  onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
                   icon: Icon(Icons.adaptive.arrow_back),
                   iconSize: AppSettings.fontsizeTitle,
                   alignment: Alignment.center,
@@ -88,19 +89,48 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
             function: () async {
-              final signUpResult = signUp(passwordController.text);
-              userAccountService.postUserAccount({
-                "username": widget.username,
-                "publicKey": signUpResult.publicKey,
-                "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
-                "randomSaltOne": signUpResult.randomSaltOne,
-                "randomSaltTwo": signUpResult.randomSaltTwo,
-                "name": widget.name,
-              });
-              Navigator.pushNamed(context, "/login");
+              if (passwordController.text.length < 8) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Password must be longer than 8 characters!'),
+                    ),
+                  ),
+                );
+              } else if (passwordController.text.length > 128) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Passwords must be shorter or equal to 128 characters!'),
+                    ),
+                  ),
+                );
+              } else if (passwordController.text != confirmPasswordController.text) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text('Passwords are not equal!'),
+                    ),
+                  ),
+                );
+              } else {
+                final signUpResult = signUp(passwordController.text);
+                userAccountService.postUserAccount({
+                  "username": widget.username,
+                  "publicKey": signUpResult.publicKey,
+                  "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
+                  "randomSaltOne": signUpResult.randomSaltOne,
+                  "randomSaltTwo": signUpResult.randomSaltTwo,
+                  "name": widget.name,
+                });
+                Navigator.pushNamed(context, "/login");
+              }
             },
           ),
-          SizedBox(height: screenHeight * 0.12),
+          FlexusBottomSizedBox(screenHeight: screenHeight),
         ],
       ),
     );
