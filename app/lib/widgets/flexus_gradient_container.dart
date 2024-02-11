@@ -14,15 +14,20 @@ class FlexusGradientContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.centerRight,
-          colors: [topColor, bottomColor],
+    return Scaffold(
+      appBar: null,
+      bottomNavigationBar: null,
+      body: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.centerRight,
+            colors: [topColor, bottomColor],
+          ),
         ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:app/widgets/flexus_button.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -15,9 +14,6 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Settings"),
-            FlexusButton(text: "Leveling"),
-            FlexusButton(text: "Profile Picture"),
           ],
         ),
       ),

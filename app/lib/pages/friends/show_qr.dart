@@ -1,4 +1,3 @@
-import 'package:app/widgets/flexus_button.dart';
 import 'package:flutter/material.dart';
 
 class ShowQRPage extends StatelessWidget {
@@ -15,7 +14,6 @@ class ShowQRPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "Scan QR"),
           ],
         ),
       ),

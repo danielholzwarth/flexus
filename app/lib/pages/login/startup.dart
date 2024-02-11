@@ -12,6 +12,7 @@ class StartUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return FlexusGradientContainer(
       topColor: AppSettings.startUp,
@@ -37,7 +38,7 @@ class StartUpPage extends StatelessWidget {
                 ),
                 const Spacer(flex: 1),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.7,
+                  width: screenWidth * 0.7,
                   child: Text(
                     "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
                     style: TextStyle(
@@ -51,14 +52,18 @@ class StartUpPage extends StatelessWidget {
                 SizedBox(height: screenHeight * 0.07),
                 FlexusButton(
                   text: "SIGN UP",
-                  function: () => Navigator.pushNamed(context, "/register_username"),
+                  function: () {
+                    Navigator.pushNamed(context, "/register_username");
+                  },
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 FlexusButton(
                   text: "LOGIN",
                   backgroundColor: AppSettings.backgroundV1,
                   fontColor: AppSettings.fontV1,
-                  function: () => Navigator.pushNamed(context, "/login"),
+                  function: () {
+                    Navigator.pushNamed(context, "/login");
+                  },
                 ),
                 FlexusBottomSizedBox(screenHeight: screenHeight)
               ],

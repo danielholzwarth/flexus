@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 class FlexusButton extends StatelessWidget {
   final String text;
   //Make later not optional
-  final Function()? function;
+  final Function() function;
   final Color? backgroundColor;
   final Color? fontColor;
 
   const FlexusButton({
     super.key,
     required this.text,
-    this.function,
+    required this.function,
     this.backgroundColor,
     this.fontColor,
   });
@@ -25,7 +25,7 @@ class FlexusButton extends StatelessWidget {
       width: screenWidth * 0.7,
       height: screenHeight * 0.08,
       child: ElevatedButton(
-        onPressed: function,
+        onPressed: () => function(),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(backgroundColor ?? AppSettings.background),
           elevation: MaterialStateProperty.all(AppSettings.elevation),

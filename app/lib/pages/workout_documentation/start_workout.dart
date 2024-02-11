@@ -1,4 +1,3 @@
-import 'package:app/widgets/flexus_button.dart';
 import 'package:flutter/material.dart';
 
 class StartWorkoutPage extends StatelessWidget {
@@ -15,7 +14,6 @@ class StartWorkoutPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            FlexusButton(text: "CONTINUE"),
           ],
         ),
       ),

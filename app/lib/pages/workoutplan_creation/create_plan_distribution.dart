@@ -1,4 +1,3 @@
-import 'package:app/widgets/flexus_button.dart';
 import 'package:flutter/material.dart';
 
 class CreatePlanDistributionPage extends StatelessWidget {
@@ -15,8 +14,6 @@ class CreatePlanDistributionPage extends StatelessWidget {
         child: Column(
           children: [
             Text("hello"),
-            //Pop Generation
-            FlexusButton(text: "LOGIN"),
           ],
         ),
       ),
