@@ -55,7 +55,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           SizedBox(
             width: screenWidth * 0.7,
             child: Text(
-              "The username must be at least 6 characters. Every username can only exist once. You can still change it later.",
+              "The username must be at least 6 characters and maximum 20 long. Every username can only exist once. You can still change it later.",
               style: TextStyle(
                 color: AppSettings.font,
                 decoration: TextDecoration.none,

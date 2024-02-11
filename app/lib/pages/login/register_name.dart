@@ -60,7 +60,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           SizedBox(
             width: screenWidth * 0.7,
             child: Text(
-              "This name will be displayed to your friends. However, you can still change it later.",
+              "Your name . However, you can still change it later.",
               style: TextStyle(
                 color: AppSettings.font,
                 decoration: TextDecoration.none,
