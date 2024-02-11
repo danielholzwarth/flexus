@@ -9,6 +9,11 @@ abstract class UserAccountService extends ChopperService {
     @Body() Map<String, dynamic> userAccount,
   );
 
+  @Get()
+  Future<Response> getUsernameAvailability(
+    @Query('username') String username,
+  );
+
   static UserAccountService create() {
     final client = ChopperClient(
         baseUrl: Uri.parse('http://10.0.2.2:8080'),

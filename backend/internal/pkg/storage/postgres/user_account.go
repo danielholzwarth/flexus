@@ -1,6 +1,10 @@
 package postgres
 
-import "flexus/internal/types"
+import (
+	"database/sql"
+	"errors"
+	"flexus/internal/types"
+)
 
 func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error) {
 	query := `
@@ -23,4 +27,21 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 	}
 
 	return userAccount, err
+}
+
+func (db DB) GetUsernameAvailability(username string) (bool, error) {
+	var userCount int
+	query := `
+        SELECT COUNT(*) AS user_count
+        FROM user_account
+        WHERE username = $1;
+    `
+	err := db.pool.QueryRow(query, username).Scan(&userCount)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return true, nil
+		}
+		return false, err
+	}
+	return userCount == 0, nil
 }

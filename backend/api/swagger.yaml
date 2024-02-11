@@ -6,7 +6,6 @@ servers:
   - url: http://localhost:8080
   - url: https://qr-lobby.haveachin.de
 
-
 # ENDPOINTS ####################################################################
 
 paths:
@@ -15,18 +14,43 @@ paths:
       tags:
         - UserAccount
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/PostUserAccount"
       responses:
-        201:
+        '201':
           description: Created.
-        400:
+        '400':
           description: Bad Request.
-        500:
+        '500':
           description: Internal Server Error.
 
+  /useraccounts/{username}/availability:
+    get:
+      tags:
+        - UserAccount
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Username to check availability
+            example: JohnDoe
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        '400':
+          description: Bad Request.
+        '500':
+          description: Internal Server Error.
 
 # SCHEMAS ######################################################################
 
@@ -38,41 +62,39 @@ components:
 
     PostUserAccount:
       type: object
+      required:
+        - username
+        - publicKey
+        - encryptedPrivateKey
+        - randomSaltOne
+        - randomSaltTwo
+        - name
       properties:
         username:
           type: string
-          example: Daniel123
+          example: JohnDoe
         publicKey:
           type: string
-          example: Daniel123
+          example: publicKeyExample
         encryptedPrivateKey:
           type: string
-          example: Daniel123        
+          example: encryptedPrivateKeyExample
         randomSaltOne:
           type: string
-          example: Daniel123        
+          example: randomSaltOneExample
         randomSaltTwo:
           type: string
-          example: Daniel123
+          example: randomSaltTwoExample
         name:
           type: string
-          example: Daniel123
-
-    UserAccount:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Daniel123
-
+          example: John Doe
 
 # PARAMETERS ###################################################################
 
   parameters:
-    UserID:
+    UserAccountID:
       name: userAccountID
       in: path
       required: true
       schema:
         $ref: "#/components/schemas/ID"
-      

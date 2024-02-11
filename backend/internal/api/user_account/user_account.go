@@ -10,6 +10,7 @@ import (
 
 type UserAccountStore interface {
 	CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error)
+	GetUsernameAvailability(username string) (bool, error)
 }
 
 type service struct {
@@ -25,6 +26,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	}
 
 	r.Post("/", s.createUserAccount())
+	r.Get("/", s.getUsernameAvailability())
 
 	return s
 }
@@ -90,6 +92,36 @@ func (s service) createUserAccount() http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		w.Write(response)
+	}
+}
+
+func (s service) getUsernameAvailability() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := r.URL.Query().Get("username")
+
+		if username == "" {
+			http.Error(w, "Username can not be empty", http.StatusBadRequest)
+			println("as")
+			return
+		}
+
+		availability, err := s.userAccountStore.GetUsernameAvailability(username)
+		if err != nil {
+			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(availability)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	}
 }

@@ -1,3 +1,4 @@
+import 'package:app/api/user_account_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
@@ -19,6 +20,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userAccountService = UserAccountService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -75,7 +77,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
             text: "CONTINUE (1/3)",
             backgroundColor: AppSettings.backgroundV1,
             fontColor: AppSettings.fontV1,
-            function: () {
+            function: () async {
               if (usernameController.text.length < 6) {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -94,23 +96,27 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
                     ),
                   ),
                 );
-              }
-              //Make check with db
-              else if (usernameController.text == "assigned") {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Username is already assigned!'),
-                    ),
-                  ),
-                );
               } else {
-                Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
+                final response = await userAccountService.getUsernameAvailability(usernameController.text);
+                if (response.statusCode == 200) {
+                  final bool availability = response.body;
+                  if (!availability) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text('Username is already assigned!'),
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
+                  }
+                }
               }
             },
           ),
-          FlexusBottomSizedBox(screenHeight: screenHeight)
+          FlexusBottomSizedBox(screenHeight: screenHeight),
         ],
       ),
     );
