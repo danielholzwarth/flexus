@@ -51,6 +51,18 @@ func (s service) createUserAccount() http.HandlerFunc {
 			return
 		}
 
+		availability, err := s.userAccountStore.GetUsernameAvailability(requestBody.Username)
+		if err != nil {
+			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		if !availability {
+			http.Error(w, "Username is already assigned", http.StatusBadRequest)
+			return
+		}
+
 		if requestBody.PublicKey == "" {
 			http.Error(w, "PublicKey can not be empty", http.StatusBadRequest)
 			return
@@ -102,13 +114,17 @@ func (s service) getUsernameAvailability() http.HandlerFunc {
 
 		if username == "" {
 			http.Error(w, "Username can not be empty", http.StatusBadRequest)
-			println("as")
+			return
+		}
+
+		if len(username) > 20 {
+			http.Error(w, "Username can not be longer than 20 characters", http.StatusBadRequest)
 			return
 		}
 
 		availability, err := s.userAccountStore.GetUsernameAvailability(username)
 		if err != nil {
-			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
