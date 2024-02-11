@@ -1,7 +1,7 @@
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
-import 'package:app/widgets/flexus_gradient_container.dart';
+import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class StartUpPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class StartUpPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return FlexusGradientContainer(
+    return FlexusGradientScaffold(
       topColor: AppSettings.startUp,
       bottomColor: AppSettings.primary,
       child: isLoggedIn

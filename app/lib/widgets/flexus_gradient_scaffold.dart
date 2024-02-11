@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class FlexusGradientContainer extends StatelessWidget {
+class FlexusGradientScaffold extends StatelessWidget {
   final Widget child;
   final Color topColor;
   final Color bottomColor;
 
-  const FlexusGradientContainer({
+  const FlexusGradientScaffold({
     super.key,
     required this.child,
     required this.topColor,
