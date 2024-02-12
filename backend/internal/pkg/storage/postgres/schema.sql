@@ -15,34 +15,34 @@ CREATE TABLE gender (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
---Insert INTO "gender" ("id", "name") VALUES (1, 'male');
---Insert INTO "gender" ("id", "name") VALUES (2, 'female');
---Insert INTO "gender" ("id", "name") VALUES (3, 'diverse');
+Insert INTO "gender" ("id", "name") VALUES (1, 'male');
+Insert INTO "gender" ("id", "name") VALUES (2, 'female');
+Insert INTO "gender" ("id", "name") VALUES (3, 'diverse');
 
 
 CREATE TABLE exercise_type (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
---Insert INTO "exercise_type" ("id", "name") VALUES (1, 'reps');
---Insert INTO "exercise_type" ("id", "name") VALUES (2, 'duration');
+Insert INTO "exercise_type" ("id", "name") VALUES (1, 'reps');
+Insert INTO "exercise_type" ("id", "name") VALUES (2, 'duration');
 
 
 CREATE TABLE language (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
---Insert INTO "language" ("id", "name") VALUES (1, 'english');
---Insert INTO "language" ("id", "name") VALUES (2, 'german');
+Insert INTO "language" ("id", "name") VALUES (1, 'english');
+Insert INTO "language" ("id", "name") VALUES (2, 'german');
 
 
 CREATE TABLE position (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
---Insert INTO "position" ("id", "name") VALUES (1, 'first');
---Insert INTO "position" ("id", "name") VALUES (2, 'second');
---Insert INTO "position" ("id", "name") VALUES (3, 'third');
+Insert INTO "position" ("id", "name") VALUES (1, 'first');
+Insert INTO "position" ("id", "name") VALUES (2, 'second');
+Insert INTO "position" ("id", "name") VALUES (3, 'third');
 
 
 CREATE TABLE user_account (

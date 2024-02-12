@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class FlexusButton extends StatelessWidget {
   final String text;
-  //Make later not optional
   final Function() function;
   final Color? backgroundColor;
   final Color? fontColor;
