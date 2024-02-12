@@ -1,11 +1,8 @@
 package types
 
-type CreateUserRequest struct {
-	Username            string `json:"username"`
-	Name                string `json:"name"`
+type SignUpResult struct {
 	PublicKey           []byte `json:"publicKey"`
 	EncryptedPrivateKey []byte `json:"encryptedPrivateKey"`
 	RandomSaltOne       []byte `json:"randomSaltOne"`
 	RandomSaltTwo       []byte `json:"randomSaltTwo"`
-	//SignupResult
 }

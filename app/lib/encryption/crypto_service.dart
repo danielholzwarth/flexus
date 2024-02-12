@@ -53,16 +53,15 @@ class CryptoService {
   }
 
   // method to generate encryption key using user's password.
-  static Uint8List generatePBKDFKey(String password, String salt, {int iterations = 10000, int derivedKeyLength = 32}) {
+  static Uint8List generatePBKDFKey(String password, Uint8List salt, {int iterations = 10000, int derivedKeyLength = 32}) {
     final passwordBytes = utf8.encode(password);
-    final saltBytes = utf8.encode(salt);
 
-    final params = Pbkdf2Parameters(Uint8List.fromList(saltBytes), iterations, derivedKeyLength);
+    final params = Pbkdf2Parameters(salt, iterations, derivedKeyLength);
     final pbkdf2 = PBKDF2KeyDerivator(HMac(SHA256Digest(), 64));
 
     pbkdf2.init(params);
 
-    return pbkdf2.process(Uint8List.fromList(passwordBytes));
+    return pbkdf2.process(passwordBytes);
   }
 
   // Encrypt a piece of text using symmetric algorithm, returns CryptoResult

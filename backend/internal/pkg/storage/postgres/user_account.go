@@ -62,3 +62,18 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 	}
 	return userCount == 0, nil
 }
+
+func (db DB) GetSignUpResult(username string) (types.SignUpResult, error) {
+	query := `
+        SELECT u.public_key, u.encrypted_private_key, u.random_salt_one, u.random_salt_two
+        FROM user_account AS u
+        WHERE username = $1;
+    `
+
+	var signUpResult types.SignUpResult
+	err := db.pool.QueryRow(query, username).Scan(&signUpResult.PublicKey, &signUpResult.EncryptedPrivateKey, &signUpResult.RandomSaltOne, &signUpResult.RandomSaltTwo)
+	if err != nil {
+		return types.SignUpResult{}, err
+	}
+	return signUpResult, nil
+}

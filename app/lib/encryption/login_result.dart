@@ -1,9 +1,11 @@
 // login function will return a LoginResult
+import 'dart:typed_data';
+
 class LoginResult {
-  final String publicKey;
-  final String privateKey;
-  final String randomSaltOne;
-  final String randomSaltTwo;
+  final Uint8List publicKey;
+  final Uint8List privateKey;
+  final Uint8List randomSaltOne;
+  final Uint8List randomSaltTwo;
 
   LoginResult({
     required this.publicKey,

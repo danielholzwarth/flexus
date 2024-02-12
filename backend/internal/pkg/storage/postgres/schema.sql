@@ -49,18 +49,18 @@ CREATE TABLE user_account (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     name VARCHAR(20) NOT NULL,
-    publicKey BYTEA NOT NULL,
-    encryptedPrivateKey BYTEA NOT NULL,
-    randomSaltOne BYTEA NOT NULL,
-    randomSaltTwo BYTEA NOT NULL,
+    public_key BYTEA NOT NULL,
+    encrypted_private_key BYTEA NOT NULL,
+    random_salt_one BYTEA NOT NULL,
+    random_salt_two BYTEA NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     level INTEGER NOT NULL,
     profile_picture BYTEA,
     bodyweight INTEGER,
     gender_id BIGINT REFERENCES gender(id)
 );
---Insert INTO "user_account" ("id", "username", "name", "publicKey", "encryptedPrivateKey", "randomSaltOne", "randomSaltTwo", "level", "created_at", "profile_picture", "bodyweight", "gender_id") VALUES (1, 'dholzwarth', 'Daniel', 'publicKey', 'encryptedPrivateKey', 'randomSaltOne', 'randomSaltTwo', 1, now(), null, 110, 1);
---Insert INTO "user_account" ("id", "username", "name", "publicKey", "encryptedPrivateKey", "randomSaltOne", "randomSaltTwo", "level", "created_at", "profile_picture", "bodyweight", "gender_id") VALUES (2, 'mmustermann', 'Max', 'publicKey', 'encryptedPrivateKey', 'randomSaltOne', 'randomSaltTwo', 1, now(), null, 80, 1);
+--Insert INTO "user_account" ("id", "username", "name", "public_key", "encrypted_private_key", "random_salt_one", "random_salt_two", "level", "created_at", "profile_picture", "bodyweight", "gender_id") VALUES (1, 'dholzwarth', 'Daniel', 'publicKey', 'encryptedPrivateKey', 'randomSaltOne', 'randomSaltTwo', 1, now(), null, 110, 1);
+--Insert INTO "user_account" ("id", "username", "name", "public_key", "encrypted_private_key", "random_salt_one", "random_salt_two", "level", "created_at", "profile_picture", "bodyweight", "gender_id") VALUES (2, 'mmustermann', 'Max', 'publicKey', 'encryptedPrivateKey', 'randomSaltOne', 'randomSaltTwo', 1, now(), null, 80, 1);
 
 
 CREATE TABLE user_list (

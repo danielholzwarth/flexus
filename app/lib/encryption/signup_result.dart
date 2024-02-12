@@ -1,9 +1,11 @@
 // signup function will return a SignUpResult
+import 'dart:typed_data';
+
 class SignUpResult {
-  final String publicKey;
-  final String encryptedPrivateKey;
-  final String randomSaltOne;
-  final String randomSaltTwo;
+  final Uint8List publicKey;
+  final Uint8List encryptedPrivateKey;
+  final Uint8List randomSaltOne;
+  final Uint8List randomSaltTwo;
 
   SignUpResult({
     required this.publicKey,

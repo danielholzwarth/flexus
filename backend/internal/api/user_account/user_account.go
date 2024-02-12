@@ -11,6 +11,7 @@ import (
 type UserAccountStore interface {
 	CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error)
 	GetUsernameAvailability(username string) (bool, error)
+	GetSignUpResult(username string) (types.SignUpResult, error)
 }
 
 type service struct {
@@ -26,7 +27,8 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	}
 
 	r.Post("/", s.createUserAccount())
-	r.Get("/", s.getUsernameAvailability())
+	r.Get("/availability", s.getUsernameAvailability())
+	r.Get("/signUpResult", s.getSignUpResult())
 
 	return s
 }
@@ -63,22 +65,22 @@ func (s service) createUserAccount() http.HandlerFunc {
 			return
 		}
 
-		if requestBody.PublicKey == "" {
+		if len(requestBody.PublicKey) == 0 {
 			http.Error(w, "PublicKey can not be empty", http.StatusBadRequest)
 			return
 		}
 
-		if requestBody.EncryptedPrivateKey == "" {
+		if len(requestBody.EncryptedPrivateKey) == 0 {
 			http.Error(w, "EncryptedPrivateKey can not be empty", http.StatusBadRequest)
 			return
 		}
 
-		if requestBody.RandomSaltOne == "" {
+		if len(requestBody.RandomSaltOne) == 0 {
 			http.Error(w, "RandomSaltOne can not be empty", http.StatusBadRequest)
 			return
 		}
 
-		if requestBody.RandomSaltTwo == "" {
+		if len(requestBody.RandomSaltTwo) == 0 {
 			http.Error(w, "RandomSaltTwo can not be empty", http.StatusBadRequest)
 			return
 		}
@@ -123,6 +125,40 @@ func (s service) getUsernameAvailability() http.HandlerFunc {
 		}
 
 		availability, err := s.userAccountStore.GetUsernameAvailability(username)
+		if err != nil {
+			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(availability)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) getSignUpResult() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		username := r.URL.Query().Get("username")
+
+		if username == "" {
+			http.Error(w, "Username can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		if len(username) > 20 {
+			http.Error(w, "Username can not be longer than 20 characters", http.StatusBadRequest)
+			return
+		}
+
+		availability, err := s.userAccountStore.GetSignUpResult(username)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
 			println(err.Error())

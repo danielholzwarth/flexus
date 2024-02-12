@@ -9,8 +9,13 @@ abstract class UserAccountService extends ChopperService {
     @Body() Map<String, dynamic> userAccount,
   );
 
-  @Get()
+  @Get(path: '/availability')
   Future<Response> getUsernameAvailability(
+    @Query('username') String username,
+  );
+
+  @Get(path: '/signUpResult')
+  Future<Response> getSignUpResult(
     @Query('username') String username,
   );
 

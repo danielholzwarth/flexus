@@ -153,23 +153,23 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   SignUpResult signUp(String password) {
     // Generate PBKDF key
     final Uint8List randomSaltOne = CryptoService.generateRandomSalt();
-    final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(password, randomSaltOne.toString());
+    final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(password, randomSaltOne);
 
     // Generate RSA Key Pair
     final RSAKeypair keyPair = CryptoService.getKeyPair();
 
     // Encrypt Private key
-    final Uint8List privateKeySalt = CryptoService.generateRandomSalt();
+    final privateKeySalt = CryptoService.generateRandomSalt();
     final encryptedPrivateKey = CryptoService.symetricEncrypt(
       pbkdfKey,
-      Uint8List.fromList(privateKeySalt.toString().codeUnits),
+      privateKeySalt,
       Uint8List.fromList(keyPair.privateKey.toFormattedPEM().codeUnits),
     );
     return SignUpResult(
-      publicKey: keyPair.publicKey.toFormattedPEM(),
-      encryptedPrivateKey: String.fromCharCodes(encryptedPrivateKey),
-      randomSaltOne: randomSaltOne.toString(),
-      randomSaltTwo: privateKeySalt.toString(),
+      publicKey: Uint8List.fromList(keyPair.publicKey.toFormattedPEM().codeUnits),
+      encryptedPrivateKey: encryptedPrivateKey,
+      randomSaltOne: randomSaltOne,
+      randomSaltTwo: privateKeySalt,
     );
   }
 }

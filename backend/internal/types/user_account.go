@@ -8,10 +8,10 @@ type UserAccount struct {
 	ID                  UserAccountID `json:"id"`
 	Username            string        `json:"username"`
 	Name                string        `json:"name"`
-	PublicKey           string        `json:"publicKey"`
-	EncryptedPrivateKey string        `json:"encryptedPrivateKey"`
-	RandomSaltOne       string        `json:"randomSaltOne"`
-	RandomSaltTwo       string        `json:"randomSaltTwo"`
+	PublicKey           []byte        `json:"publicKey"`
+	EncryptedPrivateKey []byte        `json:"encryptedPrivateKey"`
+	RandomSaltOne       []byte        `json:"randomSaltOne"`
+	RandomSaltTwo       []byte        `json:"randomSaltTwo"`
 	CreatedAt           time.Time     `json:"createdAt"`
 	Level               int           `json:"level"`
 	ProfilePicture      string        `json:"profilePicture"`
