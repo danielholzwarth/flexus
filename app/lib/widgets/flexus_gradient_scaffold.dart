@@ -18,7 +18,7 @@ class FlexusGradientScaffold extends StatelessWidget {
       appBar: null,
       bottomNavigationBar: null,
       body: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,

@@ -25,99 +25,110 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
       bottomColor: AppSettings.primary,
-      child: Column(
-        children: [
-          SizedBox(height: screenHeight * 0.15),
-          Row(
-            children: [
-              SizedBox(
-                width: screenWidth * 0.15,
-                child: IconButton(
-                  onPressed: () => Navigator.popAndPushNamed(context, "/"),
-                  icon: Icon(Icons.adaptive.arrow_back),
-                  iconSize: AppSettings.fontsizeTitle,
-                  alignment: Alignment.center,
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: Text(
-                  "Please enter your username.",
-                  style: TextStyle(
-                    color: AppSettings.font,
-                    decoration: TextDecoration.none,
-                    fontSize: AppSettings.fontsizeTitle,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight * 0.15),
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.15,
+                  child: IconButton(
+                    onPressed: () => Navigator.popAndPushNamed(context, "/"),
+                    icon: Icon(Icons.adaptive.arrow_back),
+                    iconSize: AppSettings.fontsizeTitle,
+                    alignment: Alignment.center,
                   ),
-                  textAlign: TextAlign.left,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          SizedBox(
-            width: screenWidth * 0.7,
-            child: Text(
-              "The username must be at least 6 characters and maximum 20 long. Every username can only exist once. You can still change it later.",
-              style: TextStyle(
-                color: AppSettings.font,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeSubDescription,
-              ),
-              textAlign: TextAlign.left,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: Text(
+                    "Please enter your username.",
+                    style: TextStyle(
+                      color: AppSettings.font,
+                      decoration: TextDecoration.none,
+                      fontSize: AppSettings.fontsizeTitle,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: screenHeight * 0.07),
-          FlexusTextField(
-            hintText: "Username",
-            textController: usernameController,
-          ),
-          SizedBox(height: screenHeight * 0.25),
-          const Spacer(flex: 1),
-          FlexusButton(
-            text: "CONTINUE (1/3)",
-            backgroundColor: AppSettings.backgroundV1,
-            fontColor: AppSettings.fontV1,
-            function: () async {
-              if (usernameController.text.length < 6) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Username must be at least 6 characters long!'),
+            SizedBox(height: screenHeight * 0.02),
+            SizedBox(
+              width: screenWidth * 0.7,
+              child: Text(
+                "The username must be at least 6 and maximum 20 characters long. \nEvery username can only exist once. \nYou can still change it later.",
+                style: TextStyle(
+                  color: AppSettings.font,
+                  decoration: TextDecoration.none,
+                  fontSize: AppSettings.fontsizeSubDescription,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.07),
+            FlexusTextField(
+              hintText: "Username",
+              textController: usernameController,
+            ),
+            SizedBox(height: screenHeight * 0.275),
+            FlexusButton(
+              text: "CONTINUE (1/3)",
+              backgroundColor: AppSettings.backgroundV1,
+              fontColor: AppSettings.fontV1,
+              function: () async {
+                if (usernameController.text.length < 6) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Center(
+                        child: Text('Username must be at least 6 characters long!'),
+                      ),
                     ),
-                  ),
-                );
-              } else if (usernameController.text.length > 20) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Username must be shorter than 20 characters!'),
+                  );
+                } else if (usernameController.text.length > 20) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Center(
+                        child: Text('Username must be shorter than 20 characters!'),
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                final response = await userAccountService.getUsernameAvailability(usernameController.text);
-                if (response.statusCode == 200) {
-                  final bool availability = response.body;
-                  if (!availability) {
+                  );
+                } else {
+                  final response = await userAccountService.getUsernameAvailability(usernameController.text);
+                  if (response.statusCode == 200) {
+                    final bool availability = response.body;
+                    if (!availability) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text('Username is already assigned!'),
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
+                    }
+                  } else {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Center(
-                          child: Text('Username is already assigned!'),
+                          child: Text("Statuscode ${response.statusCode}\nError: ${response.error}"),
                         ),
                       ),
                     );
-                  } else {
-                    Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
                   }
                 }
-              }
-            },
-          ),
-          FlexusBottomSizedBox(screenHeight: screenHeight),
-        ],
+              },
+            ),
+            FlexusBottomSizedBox(screenHeight: screenHeight),
+          ],
+        ),
       ),
     );
   }

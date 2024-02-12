@@ -38,100 +38,114 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
       bottomColor: AppSettings.primary,
-      child: Column(
-        children: [
-          SizedBox(height: screenHeight * 0.15),
-          Row(
-            children: [
-              SizedBox(
-                width: screenWidth * 0.15,
-                child: IconButton(
-                  onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
-                  icon: Icon(Icons.adaptive.arrow_back),
-                  iconSize: AppSettings.fontsizeTitle,
-                  alignment: Alignment.center,
-                ),
-              ),
-              SizedBox(
-                width: screenWidth * 0.7,
-                child: Text(
-                  "Please enter your password.",
-                  style: TextStyle(
-                    color: AppSettings.font,
-                    decoration: TextDecoration.none,
-                    fontSize: AppSettings.fontsizeTitle,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight * 0.15),
+            Row(
+              children: [
+                SizedBox(
+                  width: screenWidth * 0.15,
+                  child: IconButton(
+                    onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
+                    icon: Icon(Icons.adaptive.arrow_back),
+                    iconSize: AppSettings.fontsizeTitle,
+                    alignment: Alignment.center,
                   ),
-                  textAlign: TextAlign.left,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: screenHeight * 0.02),
-          SizedBox(
-            width: screenWidth * 0.7,
-            child: Text(
-              "The password must be at least 8 characters. We recommend a password with more than 16 characters, including special characters.",
-              style: TextStyle(
-                color: AppSettings.font,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeSubDescription,
-              ),
-              textAlign: TextAlign.left,
+                SizedBox(
+                  width: screenWidth * 0.7,
+                  child: Text(
+                    "Please enter your password.",
+                    style: TextStyle(
+                      color: AppSettings.font,
+                      decoration: TextDecoration.none,
+                      fontSize: AppSettings.fontsizeTitle,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: screenHeight * 0.07),
-          FlexusTextField(hintText: "Password", textController: passwordController),
-          SizedBox(height: screenHeight * 0.03),
-          FlexusTextField(hintText: "Confirm Password", textController: confirmPasswordController),
-          const Spacer(flex: 1),
-          FlexusButton(
-            text: "CREATE ACCOUNT (3/3)",
-            backgroundColor: AppSettings.backgroundV1,
-            fontColor: AppSettings.fontV1,
-            function: () async {
-              if (passwordController.text.length < 8) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Password must be longer than 8 characters!'),
+            SizedBox(height: screenHeight * 0.02),
+            SizedBox(
+              width: screenWidth * 0.7,
+              child: Text(
+                "The password must be at least 8 characters. We recommend a password with more than 16 characters, including special characters.",
+                style: TextStyle(
+                  color: AppSettings.font,
+                  decoration: TextDecoration.none,
+                  fontSize: AppSettings.fontsizeSubDescription,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.07),
+            FlexusTextField(hintText: "Password", textController: passwordController),
+            SizedBox(height: screenHeight * 0.03),
+            FlexusTextField(hintText: "Confirm Password", textController: confirmPasswordController),
+            SizedBox(height: screenHeight * 0.14),
+            FlexusButton(
+              text: "CREATE ACCOUNT (3/3)",
+              backgroundColor: AppSettings.backgroundV1,
+              fontColor: AppSettings.fontV1,
+              function: () async {
+                if (passwordController.text.length < 8) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Center(
+                        child: Text('Password must be longer than 8 characters!'),
+                      ),
                     ),
-                  ),
-                );
-              } else if (passwordController.text.length > 128) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Passwords must be shorter or equal to 128 characters!'),
+                  );
+                } else if (passwordController.text.length > 128) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Center(
+                        child: Text('Passwords must be shorter or equal to 128 characters!'),
+                      ),
                     ),
-                  ),
-                );
-              } else if (passwordController.text != confirmPasswordController.text) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: Text('Passwords are not equal!'),
+                  );
+                } else if (passwordController.text != confirmPasswordController.text) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Center(
+                        child: Text('Passwords are not equal!'),
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                final signUpResult = signUp(passwordController.text);
-                userAccountService.postUserAccount({
-                  "username": widget.username,
-                  "publicKey": signUpResult.publicKey,
-                  "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
-                  "randomSaltOne": signUpResult.randomSaltOne,
-                  "randomSaltTwo": signUpResult.randomSaltTwo,
-                  "name": widget.name,
-                });
-                Navigator.pushNamed(context, "/login");
-              }
-            },
-          ),
-          FlexusBottomSizedBox(screenHeight: screenHeight),
-        ],
+                  );
+                } else {
+                  final signUpResult = signUp(passwordController.text);
+                  final response = await userAccountService.postUserAccount({
+                    "username": widget.username,
+                    "publicKey": signUpResult.publicKey,
+                    "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
+                    "randomSaltOne": signUpResult.randomSaltOne,
+                    "randomSaltTwo": signUpResult.randomSaltTwo,
+                    "name": widget.name,
+                  });
+                  if (response.statusCode == 201) {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    Navigator.pushNamed(context, "/login");
+                  } else {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Center(
+                          child: Text("Statuscode ${response.statusCode}\nError: ${response.error}"),
+                        ),
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+            FlexusBottomSizedBox(screenHeight: screenHeight),
+          ],
+        ),
       ),
     );
   }
