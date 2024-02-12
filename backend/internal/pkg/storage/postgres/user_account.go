@@ -7,11 +7,23 @@ import (
 )
 
 func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error) {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return types.UserAccount{}, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
 	query := `
-		INSERT INTO user_account (username, name, publicKey, encryptedPrivateKey, randomSaltOne, randomSaltTwo, level, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
-		RETURNING id, created_at;
-	`
+        INSERT INTO user_account (username, name, publicKey, encryptedPrivateKey, randomSaltOne, randomSaltTwo, level, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        RETURNING id, created_at;
+    `
 	var userAccount types.UserAccount
 	userAccount.Username = createUserRequest.Username
 	userAccount.Name = createUserRequest.Name
@@ -21,12 +33,17 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 	userAccount.RandomSaltTwo = createUserRequest.RandomSaltTwo
 	userAccount.Level = 1
 
-	err := db.pool.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.PublicKey, createUserRequest.EncryptedPrivateKey, createUserRequest.RandomSaltOne, createUserRequest.RandomSaltTwo, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
+	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.PublicKey, createUserRequest.EncryptedPrivateKey, createUserRequest.RandomSaltOne, createUserRequest.RandomSaltTwo, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
 	if err != nil {
 		return types.UserAccount{}, err
 	}
 
-	return userAccount, err
+	err = db.CreateUserSettings(tx, userAccount.ID)
+	if err != nil {
+		return types.UserAccount{}, err
+	}
+
+	return userAccount, nil
 }
 
 func (db DB) GetUsernameAvailability(username string) (bool, error) {
