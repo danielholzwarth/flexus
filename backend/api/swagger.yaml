@@ -64,27 +64,15 @@ components:
       type: object
       required:
         - username
-        - publicKey
-        - encryptedPrivateKey
-        - randomSaltOne
-        - randomSaltTwo
+        - password
         - name
       properties:
         username:
           type: string
           example: JohnDoe
-        publicKey:
+        password:
           type: string
-          example: publicKeyExample
-        encryptedPrivateKey:
-          type: string
-          example: encryptedPrivateKeyExample
-        randomSaltOne:
-          type: string
-          example: randomSaltOneExample
-        randomSaltTwo:
-          type: string
-          example: randomSaltTwoExample
+          example: passwordExample
         name:
           type: string
           example: John Doe

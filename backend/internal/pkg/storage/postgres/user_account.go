@@ -1,13 +1,12 @@
 package postgres
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
 	"database/sql"
-	"encoding/pem"
 	"errors"
 	"flexus/internal/types"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error) {
@@ -24,20 +23,17 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 	}()
 
 	query := `
-        INSERT INTO user_account (username, name, public_key, encrypted_private_key, random_salt_one, random_salt_two, level, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        INSERT INTO user_account (username, name, password, level, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
         RETURNING id, created_at;
     `
 	var userAccount types.UserAccount
 	userAccount.Username = createUserRequest.Username
 	userAccount.Name = createUserRequest.Name
-	userAccount.PublicKey = createUserRequest.PublicKey
-	userAccount.EncryptedPrivateKey = createUserRequest.EncryptedPrivateKey
-	userAccount.RandomSaltOne = createUserRequest.RandomSaltOne
-	userAccount.RandomSaltTwo = createUserRequest.RandomSaltTwo
+	userAccount.Password = createUserRequest.Password
 	userAccount.Level = 1
 
-	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.PublicKey, createUserRequest.EncryptedPrivateKey, createUserRequest.RandomSaltOne, createUserRequest.RandomSaltTwo, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
+	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.Password, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
 	if err != nil {
 		return types.UserAccount{}, err
 	}
@@ -67,77 +63,49 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 	return userCount == 0, nil
 }
 
-func (db DB) GetSignUpResult(username string) (types.SignUpResult, error) {
+func (db DB) GetLoginUser(username string, password string) (string, error) {
+	var storedPassword string
 	query := `
-        SELECT u.public_key, u.encrypted_private_key, u.random_salt_one, u.random_salt_two
-        FROM user_account AS u
+        SELECT password
+        FROM user_account
         WHERE username = $1;
     `
-
-	var signUpResult types.SignUpResult
-	err := db.pool.QueryRow(query, username).Scan(&signUpResult.PublicKey, &signUpResult.EncryptedPrivateKey, &signUpResult.RandomSaltOne, &signUpResult.RandomSaltTwo)
+	err := db.pool.QueryRow(query, username).Scan(&storedPassword)
 	if err != nil {
-		return types.SignUpResult{}, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", errors.New("user not found")
+		}
+		return "", err
 	}
 
-	return signUpResult, nil
+	if password != storedPassword {
+		return "", errors.New("incorrect password")
+	}
+
+	token, err := CreateJWT(username)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
 
-func (db DB) GetVerificationCode(publicKey []byte) ([]byte, error) {
-	encryptedVerificationCode, err := GenerateVerificationCode(publicKey, db)
+var (
+	jwtKey = []byte("your_secret_key") // Change this to your own secret key
+)
+
+func CreateJWT(username string) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+
+	claims["authorized"] = true
+	claims["user_id"] = "user123"
+	claims["exp"] = time.Now().AddDate(1, 0, 0).Unix()
+
+	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
-		return []byte{}, err
+		return "", err
 	}
 
-	return encryptedVerificationCode, nil
-}
-
-func GenerateVerificationCode(publicKey []byte, db DB) ([]byte, error) {
-	salt := make([]byte, 16)
-	_, err := rand.Read(salt)
-	if err != nil {
-		return nil, err
-	}
-
-	query := `
-        UPDATE user_account
-        SET verification_code = $1
-        WHERE id = 1;
-    `
-
-	_, err = db.pool.Exec(query, publicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	encryptedSalt, err := EncryptSalt(salt, publicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	return encryptedSalt, nil
-}
-
-func EncryptSalt(salt []byte, pubKey []byte) ([]byte, error) {
-	block, _ := pem.Decode(pubKey)
-	if block == nil {
-		return nil, errors.New("failed to parse PEM block containing the public key")
-	}
-
-	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, err
-	}
-
-	rsaPubKey, ok := pub.(*rsa.PublicKey)
-	if !ok {
-		return nil, errors.New("provided key is not an RSA public key")
-	}
-
-	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPubKey, salt)
-	if err != nil {
-		return nil, err
-	}
-
-	return encrypted, nil
+	return tokenString, nil
 }

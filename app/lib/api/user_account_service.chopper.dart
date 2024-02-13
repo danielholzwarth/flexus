@@ -46,24 +46,9 @@ final class _$UserAccountService extends UserAccountService {
   }
 
   @override
-  Future<Response<dynamic>> getSignUpResult(String username) {
-    final Uri $url = Uri.parse('/useraccounts/signUpResult');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'username': username
-    };
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> getVerificationCode(Uint8List publicKey) {
-    final Uri $url = Uri.parse('/useraccounts/verificationCode');
-    final $body = publicKey;
+  Future<Response<dynamic>> getLogin(Map<String, dynamic> loginData) {
+    final Uri $url = Uri.parse('/useraccounts/login');
+    final $body = loginData;
     final Request $request = Request(
       'GET',
       $url,

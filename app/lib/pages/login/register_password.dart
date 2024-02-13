@@ -1,16 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:typed_data';
-
 import 'package:app/api/user_account_service.dart';
-import 'package:app/encryption/crypto_service.dart';
-import 'package:app/encryption/signup_result.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
-import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPasswordPage extends StatefulWidget {
@@ -120,17 +115,13 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                     ),
                   );
                 } else {
-                  final signUpResult = signUp(passwordController.text);
-                  //Get JWT within the response
                   final response = await userAccountService.postUserAccount({
                     "username": widget.username,
-                    "publicKey": signUpResult.publicKey,
-                    "encryptedPrivateKey": signUpResult.encryptedPrivateKey,
-                    "randomSaltOne": signUpResult.randomSaltOne,
-                    "randomSaltTwo": signUpResult.randomSaltTwo,
+                    "password": passwordController.text,
                     "name": widget.name,
                   });
-                  if (response.statusCode == 201) {
+                  if (response.isSuccessful) {
+                    //SAVE JWT from post response
                     ScaffoldMessenger.of(context).clearSnackBars();
                     Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                   } else {
@@ -150,29 +141,6 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ],
         ),
       ),
-    );
-  }
-
-  SignUpResult signUp(String password) {
-    // Generate PBKDF key
-    final Uint8List randomSaltOne = CryptoService.generateRandomSalt();
-    final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(password, randomSaltOne);
-
-    // Generate RSA Key Pair
-    final RSAKeypair keyPair = CryptoService.getKeyPair();
-
-    // Encrypt Private key
-    final privateKeySalt = CryptoService.generateRandomSalt();
-    final encryptedPrivateKey = CryptoService.symetricEncrypt(
-      pbkdfKey,
-      privateKeySalt,
-      Uint8List.fromList(keyPair.privateKey.toFormattedPEM().codeUnits),
-    );
-    return SignUpResult(
-      publicKey: Uint8List.fromList(keyPair.publicKey.toFormattedPEM().codeUnits),
-      encryptedPrivateKey: encryptedPrivateKey,
-      randomSaltOne: randomSaltOne,
-      randomSaltTwo: privateKeySalt,
     );
   }
 }

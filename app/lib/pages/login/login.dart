@@ -1,12 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:app/api/user_account_service.dart';
-import 'package:app/encryption/crypto_service.dart';
-import 'package:app/encryption/login_result.dart';
-import 'package:app/encryption/signup_result.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
@@ -58,23 +52,16 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: AppSettings.backgroundV1,
       fontColor: AppSettings.fontV1,
       function: () async {
-        final signUpResult = await getSignupResult(userAccountService);
-        if (signUpResult != null) {
-          final loginResult = login(signUpResult, passwordController.text);
+        final response = await userAccountService.getLogin({
+          "username": usernameController.text,
+          "password": passwordController.text,
+        });
+        if (response.isSuccessful) {
+          //final jwt = jsonDecode(response.bodyString);
+          //SAVE JWT from login response
 
-          if (loginResult != null) {
-            //Get JWT and save it locally
-            Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-          } else {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Center(
-                  child: Text('Wrong username or password.'),
-                ),
-              ),
-            );
-          }
+          ScaffoldMessenger.of(context).clearSnackBars();
+          Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
         } else {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
@@ -87,22 +74,6 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
     );
-  }
-
-  Future<SignUpResult?> getSignupResult(UserAccountService userAccountService) async {
-    final signUpResponse = await userAccountService.getSignUpResult(usernameController.text);
-    if (signUpResponse.isSuccessful) {
-      final Map<String, dynamic> jsonMap = jsonDecode(signUpResponse.bodyString);
-
-      return SignUpResult(
-        publicKey: base64Decode(jsonMap['publicKey']),
-        encryptedPrivateKey: base64Decode(jsonMap['encryptedPrivateKey']),
-        randomSaltOne: base64Decode(jsonMap['randomSaltOne']),
-        randomSaltTwo: base64Decode(jsonMap['randomSaltTwo']),
-      );
-    } else {
-      return null;
-    }
   }
 
   Row _buildTitleRow(double screenWidth, BuildContext context) {
@@ -131,32 +102,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ],
     );
-  }
-}
-
-LoginResult? login(SignUpResult signUpResult, String password) {
-  // Generate pbkdfKey using the random salt stored in DB and user's password
-  final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(
-    password,
-    signUpResult.randomSaltOne,
-  );
-
-  // decrypt private key using the pbkdfKey generated above
-  // and the second random salt stored in DB
-  Uint8List? decryptedPrivateKey = CryptoService.symetricDecrypt(
-    pbkdfKey,
-    signUpResult.randomSaltTwo,
-    signUpResult.encryptedPrivateKey,
-  );
-
-  if (decryptedPrivateKey != null) {
-    return LoginResult(
-      publicKey: signUpResult.publicKey,
-      privateKey: decryptedPrivateKey,
-      randomSaltOne: signUpResult.randomSaltOne,
-      randomSaltTwo: signUpResult.randomSaltTwo,
-    );
-  } else {
-    return null;
   }
 }
