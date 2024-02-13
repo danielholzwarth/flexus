@@ -5,5 +5,4 @@ type SignUpResult struct {
 	EncryptedPrivateKey []byte `json:"encryptedPrivateKey"`
 	RandomSaltOne       []byte `json:"randomSaltOne"`
 	RandomSaltTwo       []byte `json:"randomSaltTwo"`
-	VerificationCode    []byte `json:"verificationCode"`
 }

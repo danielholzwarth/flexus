@@ -75,14 +75,20 @@ class CryptoService {
     return cipher.process(plaintext);
   }
 
-  // Decrypt a piece of text using symmetric algorithm, returns CryptoResult
-  static Uint8List symetricDecrypt(Uint8List key, Uint8List iv, Uint8List ciphertext) {
-    final cipher = PaddedBlockCipherImpl(PKCS7Padding(), AESEngine());
-    final params = PaddedBlockCipherParameters(
-      KeyParameter(key),
-      ParametersWithIV<KeyParameter>(KeyParameter(key), iv),
-    );
-    cipher.init(false, params);
-    return cipher.process(ciphertext);
+// Decrypt a piece of text using symmetric algorithm, returns CryptoResult
+  static Uint8List? symetricDecrypt(Uint8List key, Uint8List iv, Uint8List ciphertext) {
+    try {
+      final cipher = PaddedBlockCipherImpl(PKCS7Padding(), AESEngine());
+      final params = PaddedBlockCipherParameters(
+        KeyParameter(key),
+        ParametersWithIV<KeyParameter>(KeyParameter(key), iv),
+      );
+      cipher.init(false, params);
+      return cipher.process(ciphertext);
+    } catch (e) {
+      // Handle decryption errors, such as invalid padding
+      print('Decryption error: $e');
+      return null; // Return null or another specific value to indicate decryption failure
+    }
   }
 }

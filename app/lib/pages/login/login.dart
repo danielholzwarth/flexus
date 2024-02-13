@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -10,6 +12,7 @@ import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -36,78 +39,103 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             SizedBox(height: screenHeight * 0.15),
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidth * 0.15,
-                  child: IconButton(
-                    onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
-                    icon: Icon(Icons.adaptive.arrow_back),
-                    iconSize: AppSettings.fontsizeTitle,
-                    alignment: Alignment.center,
-                  ),
-                ),
-                SizedBox(
-                  width: screenWidth * 0.7,
-                  child: Text(
-                    "Login with username and password",
-                    style: TextStyle(
-                      color: AppSettings.font,
-                      decoration: TextDecoration.none,
-                      fontSize: AppSettings.fontsizeTitle,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ],
-            ),
+            _buildTitleRow(screenWidth, context),
             SizedBox(height: screenHeight * 0.08),
             FlexusTextField(hintText: "Username", textController: usernameController),
             SizedBox(height: screenHeight * 0.03),
             FlexusTextField(hintText: "Password", textController: passwordController),
             SizedBox(height: screenHeight * 0.28),
-            FlexusButton(
-              text: "LOGIN",
-              backgroundColor: AppSettings.backgroundV1,
-              fontColor: AppSettings.fontV1,
-              function: () async {
-                final response = await userAccountService.getSignUpResult(usernameController.text);
-                if (response.isSuccessful) {
-                  //Bad performance
-                  //Decode encrypted bytes from server and send back for JWT
-
-                  final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
-
-                  SignUpResult signUpResult = SignUpResult(
-                    publicKey: base64Decode(jsonMap['publicKey']),
-                    encryptedPrivateKey: base64Decode(jsonMap['encryptedPrivateKey']),
-                    randomSaltOne: base64Decode(jsonMap['randomSaltOne']),
-                    randomSaltTwo: base64Decode(jsonMap['randomSaltTwo']),
-                  );
-                  //final loginResult = login(signUpResult, passwordController.text);
-
-                  Navigator.pushNamed(context, "/home");
-                } else {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Center(
-                        child: Text('Username or password incorrect!'),
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
+            _buildLoginButton(userAccountService, context),
             FlexusBottomSizedBox(screenHeight: screenHeight),
           ],
         ),
       ),
     );
   }
+
+  FlexusButton _buildLoginButton(UserAccountService userAccountService, BuildContext context) {
+    return FlexusButton(
+      text: "LOGIN",
+      backgroundColor: AppSettings.backgroundV1,
+      fontColor: AppSettings.fontV1,
+      function: () async {
+        final signUpResult = await getSignupResult(userAccountService);
+        if (signUpResult != null) {
+          final loginResult = login(signUpResult, passwordController.text);
+
+          if (loginResult != null) {
+            //Get JWT
+            Navigator.pushNamed(context, "/home");
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Center(
+                  child: Text('Wrong username or password.'),
+                ),
+              ),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(
+                child: Text('Wrong username or password.'),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future<SignUpResult?> getSignupResult(UserAccountService userAccountService) async {
+    final signUpResponse = await userAccountService.getSignUpResult(usernameController.text);
+    if (signUpResponse.isSuccessful) {
+      final Map<String, dynamic> jsonMap = jsonDecode(signUpResponse.bodyString);
+
+      return SignUpResult(
+        publicKey: base64Decode(jsonMap['publicKey']),
+        encryptedPrivateKey: base64Decode(jsonMap['encryptedPrivateKey']),
+        randomSaltOne: base64Decode(jsonMap['randomSaltOne']),
+        randomSaltTwo: base64Decode(jsonMap['randomSaltTwo']),
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Row _buildTitleRow(double screenWidth, BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: screenWidth * 0.15,
+          child: IconButton(
+            onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
+            icon: Icon(Icons.adaptive.arrow_back),
+            iconSize: AppSettings.fontsizeTitle,
+            alignment: Alignment.center,
+          ),
+        ),
+        SizedBox(
+          width: screenWidth * 0.7,
+          child: Text(
+            "Login with username and password",
+            style: TextStyle(
+              color: AppSettings.font,
+              decoration: TextDecoration.none,
+              fontSize: AppSettings.fontsizeTitle,
+            ),
+            textAlign: TextAlign.left,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-LoginResult login(SignUpResult signUpResult, String password) {
+LoginResult? login(SignUpResult signUpResult, String password) {
   // Generate pbkdfKey using the random salt stored in DB and user's password
   final Uint8List pbkdfKey = CryptoService.generatePBKDFKey(
     password,
@@ -116,16 +144,20 @@ LoginResult login(SignUpResult signUpResult, String password) {
 
   // decrypt private key using the pbkdfKey generated above
   // and the second random salt stored in DB
-  Uint8List decryptedPrivateKey = CryptoService.symetricDecrypt(
+  Uint8List? decryptedPrivateKey = CryptoService.symetricDecrypt(
     pbkdfKey,
     signUpResult.randomSaltTwo,
     signUpResult.encryptedPrivateKey,
   );
 
-  return LoginResult(
-    publicKey: signUpResult.publicKey,
-    privateKey: decryptedPrivateKey,
-    randomSaltOne: signUpResult.randomSaltOne,
-    randomSaltTwo: signUpResult.randomSaltTwo,
-  );
+  if (decryptedPrivateKey != null) {
+    return LoginResult(
+      publicKey: signUpResult.publicKey,
+      privateKey: decryptedPrivateKey,
+      randomSaltOne: signUpResult.randomSaltOne,
+      randomSaltTwo: signUpResult.randomSaltTwo,
+    );
+  } else {
+    return null;
+  }
 }

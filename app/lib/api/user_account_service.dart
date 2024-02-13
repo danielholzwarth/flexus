@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:chopper/chopper.dart';
 
 part 'user_account_service.chopper.dart';
@@ -17,6 +19,11 @@ abstract class UserAccountService extends ChopperService {
   @Get(path: '/signUpResult')
   Future<Response> getSignUpResult(
     @Query('username') String username,
+  );
+
+  @Get(path: '/verificationCode')
+  Future<Response> getVerificationCode(
+    @Body() Uint8List publicKey,
   );
 
   static UserAccountService create() {

@@ -12,6 +12,7 @@ type UserAccountStore interface {
 	CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error)
 	GetUsernameAvailability(username string) (bool, error)
 	GetSignUpResult(username string) (types.SignUpResult, error)
+	GetVerificationCode(publicKey []byte) ([]byte, error)
 }
 
 type service struct {
@@ -29,6 +30,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	r.Post("/", s.createUserAccount())
 	r.Get("/availability", s.getUsernameAvailability())
 	r.Get("/signUpResult", s.getSignUpResult())
+	r.Get("/verificationCode", s.getVerificationCode())
 
 	return s
 }
@@ -158,9 +160,45 @@ func (s service) getSignUpResult() http.HandlerFunc {
 			return
 		}
 
-		availability, err := s.userAccountStore.GetSignUpResult(username)
+		signUpResult, err := s.userAccountStore.GetSignUpResult(username)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(signUpResult)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) getVerificationCode() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var publicKey []byte
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&publicKey); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if len(publicKey) == 0 {
+			http.Error(w, "Publickey can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		availability, err := s.userAccountStore.GetVerificationCode(publicKey)
+		if err != nil {
+			http.Error(w, "Failed to get verification code", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}

@@ -5,7 +5,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"database/sql"
-	"encoding/base64"
 	"encoding/pem"
 	"errors"
 	"flexus/internal/types"
@@ -81,22 +80,37 @@ func (db DB) GetSignUpResult(username string) (types.SignUpResult, error) {
 		return types.SignUpResult{}, err
 	}
 
-	signUpResult.VerificationCode, err = GenerateVerificationCode(signUpResult.PublicKey)
-	if err != nil {
-		return types.SignUpResult{}, err
-	}
-
 	return signUpResult, nil
 }
 
-func GenerateVerificationCode(publicKey []byte) ([]byte, error) {
+func (db DB) GetVerificationCode(publicKey []byte) ([]byte, error) {
+	encryptedVerificationCode, err := GenerateVerificationCode(publicKey, db)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return encryptedVerificationCode, nil
+}
+
+func GenerateVerificationCode(publicKey []byte, db DB) ([]byte, error) {
 	salt := make([]byte, 16)
 	_, err := rand.Read(salt)
 	if err != nil {
 		return nil, err
 	}
 
-	encryptedSalt, err := EncryptVerificationCode(salt, publicKey)
+	query := `
+        UPDATE user_account
+        SET verification_code = $1
+        WHERE id = 1;
+    `
+
+	_, err = db.pool.Exec(query, publicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	encryptedSalt, err := EncryptSalt(salt, publicKey)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +118,7 @@ func GenerateVerificationCode(publicKey []byte) ([]byte, error) {
 	return encryptedSalt, nil
 }
 
-func EncryptVerificationCode(plainText []byte, pubKey []byte) ([]byte, error) {
+func EncryptSalt(salt []byte, pubKey []byte) ([]byte, error) {
 	block, _ := pem.Decode(pubKey)
 	if block == nil {
 		return nil, errors.New("failed to parse PEM block containing the public key")
@@ -120,13 +134,10 @@ func EncryptVerificationCode(plainText []byte, pubKey []byte) ([]byte, error) {
 		return nil, errors.New("provided key is not an RSA public key")
 	}
 
-	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPubKey, plainText)
+	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPubKey, salt)
 	if err != nil {
 		return nil, err
 	}
 
-	// Base64 encode the encrypted data
-	encodedEncrypted := base64.StdEncoding.EncodeToString(encrypted)
-
-	return []byte(encodedEncrypted), nil
+	return encrypted, nil
 }

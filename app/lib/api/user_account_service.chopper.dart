@@ -59,4 +59,17 @@ final class _$UserAccountService extends UserAccountService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getVerificationCode(Uint8List publicKey) {
+    final Uri $url = Uri.parse('/useraccounts/verificationCode');
+    final $body = publicKey;
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }
