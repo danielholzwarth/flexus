@@ -1,7 +1,12 @@
 package postgres
 
 import (
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
 	"database/sql"
+	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"flexus/internal/types"
 )
@@ -20,7 +25,7 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 	}()
 
 	query := `
-        INSERT INTO user_account (username, name, publicKey, encryptedPrivateKey, randomSaltOne, randomSaltTwo, level, created_at)
+        INSERT INTO user_account (username, name, public_key, encrypted_private_key, random_salt_one, random_salt_two, level, created_at)
         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
         RETURNING id, created_at;
     `
@@ -75,5 +80,53 @@ func (db DB) GetSignUpResult(username string) (types.SignUpResult, error) {
 	if err != nil {
 		return types.SignUpResult{}, err
 	}
+
+	signUpResult.VerificationCode, err = GenerateVerificationCode(signUpResult.PublicKey)
+	if err != nil {
+		return types.SignUpResult{}, err
+	}
+
 	return signUpResult, nil
+}
+
+func GenerateVerificationCode(publicKey []byte) ([]byte, error) {
+	salt := make([]byte, 16)
+	_, err := rand.Read(salt)
+	if err != nil {
+		return nil, err
+	}
+
+	encryptedSalt, err := EncryptVerificationCode(salt, publicKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return encryptedSalt, nil
+}
+
+func EncryptVerificationCode(plainText []byte, pubKey []byte) ([]byte, error) {
+	block, _ := pem.Decode(pubKey)
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the public key")
+	}
+
+	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	rsaPubKey, ok := pub.(*rsa.PublicKey)
+	if !ok {
+		return nil, errors.New("provided key is not an RSA public key")
+	}
+
+	encrypted, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPubKey, plainText)
+	if err != nil {
+		return nil, err
+	}
+
+	// Base64 encode the encrypted data
+	encodedEncrypted := base64.StdEncoding.EncodeToString(encrypted)
+
+	return []byte(encodedEncrypted), nil
 }

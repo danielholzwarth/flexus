@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                 if (response.isSuccessful) {
                   //Bad performance
                   //Decode encrypted bytes from server and send back for JWT
-                  /*
+
                   final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
 
                   SignUpResult signUpResult = SignUpResult(
@@ -84,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
                     randomSaltOne: base64Decode(jsonMap['randomSaltOne']),
                     randomSaltTwo: base64Decode(jsonMap['randomSaltTwo']),
                   );
-                  final loginResult = login(signUpResult, passwordController.text);
-                  */
+                  //final loginResult = login(signUpResult, passwordController.text);
+
                   Navigator.pushNamed(context, "/home");
                 } else {
                   ScaffoldMessenger.of(context).clearSnackBars();
