@@ -86,9 +86,7 @@ class CryptoService {
       cipher.init(false, params);
       return cipher.process(ciphertext);
     } catch (e) {
-      // Handle decryption errors, such as invalid padding
-      print('Decryption error: $e');
-      return null; // Return null or another specific value to indicate decryption failure
+      return null;
     }
   }
 }

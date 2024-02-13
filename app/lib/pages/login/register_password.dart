@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:typed_data';
 
 import 'package:app/api/user_account_service.dart';
@@ -119,6 +121,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                   );
                 } else {
                   final signUpResult = signUp(passwordController.text);
+                  //Get JWT within the response
                   final response = await userAccountService.postUserAccount({
                     "username": widget.username,
                     "publicKey": signUpResult.publicKey,
@@ -129,7 +132,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
                   });
                   if (response.statusCode == 201) {
                     ScaffoldMessenger.of(context).clearSnackBars();
-                    Navigator.pushNamed(context, "/login");
+                    Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                   } else {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(

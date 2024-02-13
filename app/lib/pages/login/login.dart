@@ -12,7 +12,6 @@ import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
-import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -64,8 +63,8 @@ class _LoginPageState extends State<LoginPage> {
           final loginResult = login(signUpResult, passwordController.text);
 
           if (loginResult != null) {
-            //Get JWT
-            Navigator.pushNamed(context, "/home");
+            //Get JWT and save it locally
+            Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
           } else {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
