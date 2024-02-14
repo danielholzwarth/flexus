@@ -44,7 +44,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.275),
+            SizedBox(height: screenHeight * 0.3),
             _buildContinueButton(context, userAccountService),
           ],
         ),
@@ -112,7 +112,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     return SizedBox(
       width: screenWidth * 0.7,
       child: Text(
-        "A username can only exist once. It is used to identify you. You always can change it later!",
+        "A username can only exist once. It is used to identify you.",
         style: TextStyle(
           color: AppSettings.font,
           decoration: TextDecoration.none,
