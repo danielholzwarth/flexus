@@ -5,6 +5,7 @@ class FlexusTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController textController;
   final TextInputType textInputType;
+  final Function(String) onChanged;
   final Color? backgroundColor;
   final Color? fontColor;
   final Color? hintColor;
@@ -15,6 +16,7 @@ class FlexusTextField extends StatelessWidget {
     required this.hintText,
     required this.textController,
     this.textInputType = TextInputType.text,
+    required this.onChanged,
     this.backgroundColor,
     this.fontColor,
     this.hintColor,
@@ -33,6 +35,7 @@ class FlexusTextField extends StatelessWidget {
         height: screenHeight * 0.08,
         child: Center(
           child: TextField(
+            onChanged: onChanged,
             textAlign: TextAlign.center,
             controller: textController,
             cursorColor: fontColor ?? AppSettings.font,

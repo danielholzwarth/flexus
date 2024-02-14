@@ -34,9 +34,21 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: screenHeight * 0.15),
             _buildTitleRow(screenWidth, context),
             SizedBox(height: screenHeight * 0.08),
-            FlexusTextField(hintText: "Username", textController: usernameController),
+            FlexusTextField(
+              hintText: "Username",
+              textController: usernameController,
+              onChanged: (String newValue) {
+                setState(() {});
+              },
+            ),
             SizedBox(height: screenHeight * 0.03),
-            FlexusTextField(hintText: "Password", textController: passwordController),
+            FlexusTextField(
+              hintText: "Password",
+              textController: passwordController,
+              onChanged: (String newValue) {
+                setState(() {});
+              },
+            ),
             SizedBox(height: screenHeight * 0.28),
             _buildLoginButton(userAccountService, context),
             FlexusBottomSizedBox(screenHeight: screenHeight),

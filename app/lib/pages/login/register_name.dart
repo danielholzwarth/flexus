@@ -1,5 +1,6 @@
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
+import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
@@ -32,86 +33,120 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
         child: Column(
           children: [
             SizedBox(height: screenHeight * 0.15),
-            Row(
-              children: [
-                SizedBox(
-                  width: screenWidth * 0.15,
-                  child: IconButton(
-                    onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
-                    icon: Icon(Icons.adaptive.arrow_back),
-                    iconSize: AppSettings.fontsizeTitle,
-                    alignment: Alignment.center,
-                  ),
-                ),
-                SizedBox(
-                  width: screenWidth * 0.7,
-                  child: Text(
-                    "Please enter your name.",
-                    style: TextStyle(
-                      color: AppSettings.font,
-                      decoration: TextDecoration.none,
-                      fontSize: AppSettings.fontsizeTitle,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ],
-            ),
+            _buildTitleRow(screenWidth, context),
             SizedBox(height: screenHeight * 0.02),
-            SizedBox(
-              width: screenWidth * 0.7,
-              child: Text(
-                "The name must be at least 1 and maximum 20 characters long. \nYou can still change it later.",
-                style: TextStyle(
-                  color: AppSettings.font,
-                  decoration: TextDecoration.none,
-                  fontSize: AppSettings.fontsizeSubDescription,
-                ),
-                textAlign: TextAlign.left,
-              ),
-            ),
+            _buildDescription(screenWidth),
+            SizedBox(height: screenHeight * 0.02),
+            _buildBulletPoints(screenWidth),
             SizedBox(height: screenHeight * 0.07),
             FlexusTextField(
               hintText: "Name",
               textController: nameController,
-            ),
-            SizedBox(height: screenHeight * 0.3),
-            FlexusButton(
-              text: "CONTINUE (2/3)",
-              backgroundColor: AppSettings.backgroundV1,
-              fontColor: AppSettings.fontV1,
-              function: () {
-                if (nameController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Center(
-                        child: Text('Name must not be empty!'),
-                      ),
-                    ),
-                  );
-                } else if (nameController.text.length > 20) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Center(
-                        child: Text('Name must not be longer than 20 characters!'),
-                      ),
-                    ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  Navigator.pushNamed(context, "/register_password", arguments: [
-                    widget.username,
-                    nameController.text,
-                  ]);
-                }
+              onChanged: (String newValue) {
+                setState(() {});
               },
             ),
+            SizedBox(height: screenHeight * 0.3),
+            _buildContinueButton(context),
             FlexusBottomSizedBox(screenHeight: screenHeight)
           ],
         ),
       ),
+    );
+  }
+
+  FlexusButton _buildContinueButton(BuildContext context) {
+    return FlexusButton(
+      text: "CONTINUE (2/3)",
+      backgroundColor: AppSettings.backgroundV1,
+      fontColor: AppSettings.fontV1,
+      function: () {
+        if (nameController.text.isEmpty) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(
+                child: Text('Name must not be empty!'),
+              ),
+            ),
+          );
+        } else if (nameController.text.length > 20) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(
+                child: Text('Name must not be longer than 20 characters!'),
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          Navigator.pushNamed(context, "/register_password", arguments: [
+            widget.username,
+            nameController.text,
+          ]);
+        }
+      },
+    );
+  }
+
+  SizedBox _buildDescription(double screenWidth) {
+    return SizedBox(
+      width: screenWidth * 0.7,
+      child: Text(
+        "The name will be shown to your friends. You can always change it later!",
+        style: TextStyle(
+          color: AppSettings.font,
+          decoration: TextDecoration.none,
+          fontSize: AppSettings.fontsizeSubDescription,
+        ),
+        textAlign: TextAlign.left,
+      ),
+    );
+  }
+
+  Row _buildTitleRow(double screenWidth, BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: screenWidth * 0.15,
+          child: IconButton(
+            onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
+            icon: Icon(Icons.adaptive.arrow_back),
+            iconSize: AppSettings.fontsizeTitle,
+            alignment: Alignment.center,
+          ),
+        ),
+        SizedBox(
+          width: screenWidth * 0.7,
+          child: Text(
+            "Please enter your name.",
+            style: TextStyle(
+              color: AppSettings.font,
+              decoration: TextDecoration.none,
+              fontSize: AppSettings.fontsizeTitle,
+            ),
+            textAlign: TextAlign.left,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildBulletPoints(double screenWidth) {
+    return Column(
+      children: [
+        FlexusBulletPoint(
+          text: "At least 1 characters",
+          screenWidth: screenWidth,
+          condition: nameController.text.isNotEmpty,
+        ),
+        FlexusBulletPoint(
+          text: "Maximum 20 characters",
+          screenWidth: screenWidth,
+          condition: nameController.text.length <= 20,
+        ),
+      ],
     );
   }
 }
