@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error) {
@@ -27,13 +28,19 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
         VALUES ($1, $2, $3, $4, NOW())
         RETURNING id, created_at;
     `
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(createUserRequest.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return types.UserAccount{}, err
+	}
+
 	var userAccount types.UserAccount
 	userAccount.Username = createUserRequest.Username
 	userAccount.Name = createUserRequest.Name
-	userAccount.Password = createUserRequest.Password
+	userAccount.Password = hashedPassword
 	userAccount.Level = 1
 
-	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, createUserRequest.Password, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
+	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, hashedPassword, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
 	if err != nil {
 		return types.UserAccount{}, err
 	}
@@ -64,7 +71,7 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 }
 
 func (db DB) GetLoginUser(username string, password string) (string, error) {
-	var storedPassword string
+	var storedPassword []byte
 	query := `
         SELECT password
         FROM user_account
@@ -78,7 +85,8 @@ func (db DB) GetLoginUser(username string, password string) (string, error) {
 		return "", err
 	}
 
-	if password != storedPassword {
+	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+	if err != nil {
 		return "", errors.New("incorrect password")
 	}
 

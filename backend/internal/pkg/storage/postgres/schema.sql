@@ -49,7 +49,7 @@ CREATE TABLE user_account (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     name VARCHAR(20) NOT NULL,
-    password VARCHAR(20) NOT NULL,
+    password BYTEA NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     level INTEGER NOT NULL,
     profile_picture BYTEA,
