@@ -2,7 +2,7 @@ import 'package:chopper/chopper.dart';
 
 part 'user_account_service.chopper.dart';
 
-@ChopperApi(baseUrl: '/useraccounts')
+@ChopperApi(baseUrl: '/user_accounts')
 abstract class UserAccountService extends ChopperService {
   @Post()
   Future<Response> postUserAccount(

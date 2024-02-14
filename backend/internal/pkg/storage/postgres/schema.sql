@@ -110,8 +110,8 @@ CREATE TABLE friends (
 CREATE TABLE user_settings (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT REFERENCES user_account(id) NOT NULL,
-    fontsize INTEGER NOT NULL,
-    is_darkmode BOOLEAN NOT NULL,
+    font_size INTEGER NOT NULL,
+    is_dark_mode BOOLEAN NOT NULL,
     language_id BIGINT REFERENCES language(id) NOT NULL,
     is_unlisted BOOLEAN NOT NULL,
     is_pull_from_everyone BOOLEAN NOT NULL,
@@ -119,9 +119,9 @@ CREATE TABLE user_settings (
     is_notify_everyone BOOLEAN NOT NULL,
     notify_user_list_id BIGINT REFERENCES user_list(id)
 );
---Insert INTO "user_settings" ("id", "user_id", "fontsize", "is_darkmode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") 
+--Insert INTO "user_settings" ("id", "user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") 
 VALUES (1, 1, 16, 'false', 1, 'false', 'true', null, 'true', null);
---Insert INTO "user_settings" ("id", "user_id", "fontsize", "is_darkmode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") 
+--Insert INTO "user_settings" ("id", "user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") 
 VALUES (2, 2, 22, 'false', 2, 'true', 'false', 1, 'true', null);
 
 

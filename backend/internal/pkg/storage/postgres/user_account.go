@@ -3,10 +3,9 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"flexus/internal/api/middleware"
 	"flexus/internal/types"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -72,12 +71,13 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 
 func (db DB) GetLoginUser(username string, password string) (string, error) {
 	var storedPassword []byte
+	var userID types.UserAccountID
 	query := `
-        SELECT password
+        SELECT id, password
         FROM user_account
         WHERE username = $1;
     `
-	err := db.pool.QueryRow(query, username).Scan(&storedPassword)
+	err := db.pool.QueryRow(query, username).Scan(&userID, &storedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", errors.New("user not found")
@@ -90,30 +90,10 @@ func (db DB) GetLoginUser(username string, password string) (string, error) {
 		return "", errors.New("incorrect password")
 	}
 
-	token, err := CreateJWT(username)
+	token, err := middleware.CreateJWT(userID, username)
 	if err != nil {
 		return "", err
 	}
 
 	return token, nil
-}
-
-var (
-	jwtKey = []byte("your_secret_key") // Change this to your own secret key
-)
-
-func CreateJWT(username string) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-
-	claims["authorized"] = true
-	claims["user_id"] = "user123"
-	claims["exp"] = time.Now().AddDate(1, 0, 0).Unix()
-
-	tokenString, err := token.SignedString(jwtKey)
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
 }

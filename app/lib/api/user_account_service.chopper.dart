@@ -19,7 +19,7 @@ final class _$UserAccountService extends UserAccountService {
 
   @override
   Future<Response<dynamic>> postUserAccount(Map<String, dynamic> userAccount) {
-    final Uri $url = Uri.parse('/useraccounts');
+    final Uri $url = Uri.parse('/user_accounts');
     final $body = userAccount;
     final Request $request = Request(
       'POST',
@@ -32,7 +32,7 @@ final class _$UserAccountService extends UserAccountService {
 
   @override
   Future<Response<dynamic>> getUsernameAvailability(String username) {
-    final Uri $url = Uri.parse('/useraccounts/availability');
+    final Uri $url = Uri.parse('/user_accounts/availability');
     final Map<String, dynamic> $params = <String, dynamic>{
       'username': username
     };
@@ -47,7 +47,7 @@ final class _$UserAccountService extends UserAccountService {
 
   @override
   Future<Response<dynamic>> getLogin(Map<String, dynamic> loginData) {
-    final Uri $url = Uri.parse('/useraccounts/login');
+    final Uri $url = Uri.parse('/user_accounts/login');
     final $body = loginData;
     final Request $request = Request(
       'GET',

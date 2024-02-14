@@ -12,6 +12,7 @@ import (
 
 	"flexus/api"
 	"flexus/internal/api/user_account"
+	"flexus/internal/api/user_settings.go"
 	"flexus/internal/pkg/storage/postgres"
 
 	"github.com/go-chi/chi/v5"
@@ -69,7 +70,8 @@ func run() error {
 		return fmt.Errorf("connecting to postgres: %w", err)
 	}
 
-	r.Mount("/useraccounts", user_account.NewService(db))
+	r.Mount("/user_accounts", user_account.NewService(db))
+	r.Mount("/user_settings", user_settings.NewService(db))
 
 	srv := &http.Server{
 		Addr:    ":8080",

@@ -1,11 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:app/api/user_account_service.dart';
+import 'package:app/api/user_settings_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final userAccountService = UserAccountService.create();
+    final userSettingsService = UserSettingsService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -49,6 +54,29 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
+            FlexusButton(
+              text: "asd",
+              function: () async {
+                final response = await userSettingsService.getUserSettings(
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFhYWFhYSIsImV4cCI6MTcxMDQ1MTE3NX0.RfHp32ANwk-ULeJfY1plhvgv1nBzyQpWkuTo7RTDpvw");
+                if (response.isSuccessful) {
+                  //final jwt = jsonDecode(response.bodyString);
+                  //SAVE JWT from login response
+
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+                } else {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Center(
+                        child: Text('Error: ${response.error}'),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
             SizedBox(height: screenHeight * 0.28),
             _buildLoginButton(userAccountService, context),
             FlexusBottomSizedBox(screenHeight: screenHeight),
@@ -69,7 +97,9 @@ class _LoginPageState extends State<LoginPage> {
           "password": passwordController.text,
         });
         if (response.isSuccessful) {
-          //final jwt = jsonDecode(response.bodyString);
+          final jwt = jsonDecode(response.bodyString);
+          print(jwt);
+          //Above is jwt!!!
           //SAVE JWT from login response
 
           ScaffoldMessenger.of(context).clearSnackBars();

@@ -5,8 +5,8 @@ type UserSettingsID uint
 type UserSettings struct {
 	ID                 UserSettingsID `json:"id"`
 	UserID             *UserAccountID `json:"userAccountID"`
-	Fontsize           int            `json:"fontsize"`
-	IsDarkmode         bool           `json:"isDarkmode"`
+	FontSize           int            `json:"fontsize"`
+	IsDarkMode         bool           `json:"isDarkmode"`
 	LanguageID         *LanguageID    `json:"languageID"`
 	IsUnlisted         bool           `json:"isUnlisted"`
 	IsPullFromEveryone bool           `json:"isPullFromEveryone"`
