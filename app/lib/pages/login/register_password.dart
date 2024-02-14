@@ -50,6 +50,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               onChanged: (String newValue) {
                 setState(() {});
               },
+              isObscure: true,
             ),
             SizedBox(height: screenHeight * 0.03),
             FlexusTextField(
@@ -58,6 +59,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               onChanged: (String newValue) {
                 setState(() {});
               },
+              isObscure: true,
             ),
             SizedBox(height: screenHeight * 0.235),
             _buildCreateAccountButton(context, userAccountService),
