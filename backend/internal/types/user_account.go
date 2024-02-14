@@ -15,3 +15,14 @@ type UserAccount struct {
 	Bodyweight     int           `json:"bodyweight"`
 	GenderID       int           `json:"genderID"`
 }
+
+type CreateUserRequest struct {
+	Username string `json:"username"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type LoginUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
