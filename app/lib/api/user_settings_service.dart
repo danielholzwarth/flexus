@@ -6,7 +6,7 @@ part 'user_settings_service.chopper.dart';
 abstract class UserSettingsService extends ChopperService {
   @Get(path: '/')
   Future<Response> getUserSettings(
-    @Header('token') String tokenString,
+    @Header('flexusjwt') String flexusJWTString,
   );
 
   static UserSettingsService create() {

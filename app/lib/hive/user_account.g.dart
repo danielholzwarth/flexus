@@ -18,13 +18,13 @@ class UserAccountAdapter extends TypeAdapter<UserAccount> {
     };
     return UserAccount(
       id: fields[0] as int,
-      username: fields[1] as int,
-      name: fields[2] as int,
-      createdAt: fields[3] as int,
-      level: fields[4] as bool,
-      profilePicture: fields[5] as bool,
-      bodyweight: fields[6] as int,
-      genderID: fields[7] as bool,
+      username: fields[1] as String,
+      name: fields[2] as String,
+      createdAt: fields[3] as DateTime,
+      level: fields[4] as int,
+      profilePicture: fields[5] as String?,
+      bodyweight: fields[6] as int?,
+      genderID: fields[7] as int?,
     );
   }
 

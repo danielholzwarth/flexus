@@ -4,6 +4,7 @@ import 'package:app/pages/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 Future<void> main() async {
   await initializeHive();
@@ -17,11 +18,19 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userBox = Hive.box('userBox');
-    if (userBox.get("jwtToken") != null) {
-      return const MaterialApp(
-        initialRoute: '/home',
-        onGenerateRoute: AppRoutes.generateRoute,
-      );
+    final flexusjwt = userBox.get("flexusjwt");
+    if (flexusjwt != null) {
+      if (!JwtDecoder.isExpired(flexusjwt)) {
+        return const MaterialApp(
+          initialRoute: '/home',
+          onGenerateRoute: AppRoutes.generateRoute,
+        );
+      } else {
+        return const MaterialApp(
+          initialRoute: '/login',
+          onGenerateRoute: AppRoutes.generateRoute,
+        );
+      }
     } else {
       return const MaterialApp(
         initialRoute: '/',

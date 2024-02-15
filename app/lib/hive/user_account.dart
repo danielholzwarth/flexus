@@ -8,25 +8,25 @@ class UserAccount extends HiveObject {
   int id;
 
   @HiveField(1)
-  int username;
+  String username;
 
   @HiveField(2)
-  int name;
+  String name;
 
   @HiveField(3)
-  int createdAt;
+  DateTime createdAt;
 
   @HiveField(4)
-  bool level;
+  int level;
 
   @HiveField(5)
-  bool profilePicture;
+  String? profilePicture;
 
   @HiveField(6)
-  int bodyweight;
+  int? bodyweight;
 
   @HiveField(7)
-  bool genderID;
+  int? genderID;
 
   UserAccount({
     required this.id,
@@ -34,8 +34,8 @@ class UserAccount extends HiveObject {
     required this.name,
     required this.createdAt,
     required this.level,
-    required this.profilePicture,
-    required this.bodyweight,
-    required this.genderID,
+    this.profilePicture,
+    this.bodyweight,
+    this.genderID,
   });
 }

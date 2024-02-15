@@ -37,31 +37,30 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s service) getUserSettings() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		token := r.Header.Get("token")
+		//Check and Refresh Token if necessary
+		token := r.Header.Get("flexusjwt")
 
 		if token == "" {
 			http.Error(w, "Token cannot be empty", http.StatusBadRequest)
-			println(1)
 			return
 		}
 
 		claims, err := middleware.ValdiateToken(token)
 		if err != nil {
 			http.Error(w, "Resolving token failed", http.StatusBadRequest)
-			println(2)
 			return
 		}
 
-		//Refresh Token if necessary
 		if time.Until(time.Unix(claims.ExpiresAt, 0)) < 7*24*time.Hour {
 			newToken, err := middleware.RefreshJWT(claims)
 			if err != nil {
 				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
 				return
 			}
-			w.Header().Add("newToken", newToken)
+			w.Header().Add("flexusjwt", newToken)
 		}
 
+		//Get UserSettings of TokenOwner
 		settings, err := s.userSettingsStore.GetUserSettings(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)

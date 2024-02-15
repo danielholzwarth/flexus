@@ -2,6 +2,7 @@ package user_account
 
 import (
 	"encoding/json"
+	"flexus/internal/api/middleware"
 	"flexus/internal/types"
 	"net/http"
 
@@ -11,7 +12,7 @@ import (
 type UserAccountStore interface {
 	CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error)
 	GetUsernameAvailability(username string) (bool, error)
-	GetLoginUser(username string, password string) (string, error)
+	GetLoginUser(username string, password string) (types.UserAccount, error)
 }
 
 type service struct {
@@ -44,7 +45,6 @@ func (s service) createUserAccount() http.HandlerFunc {
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&requestBody); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
-			println(err.Error())
 			return
 		}
 
@@ -66,7 +66,6 @@ func (s service) createUserAccount() http.HandlerFunc {
 		availability, err := s.userAccountStore.GetUsernameAvailability(requestBody.Username)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
-			println(err.Error())
 			return
 		}
 
@@ -78,14 +77,19 @@ func (s service) createUserAccount() http.HandlerFunc {
 		user, err := s.userAccountStore.CreateUserAccount(requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
-			println(err.Error())
 			return
 		}
+
+		jwt, err := middleware.CreateJWT(user.ID, user.Username)
+		if err != nil {
+			http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Add("flexusjwt", jwt)
 
 		response, err := json.Marshal(user)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
 			return
 		}
 
@@ -98,16 +102,6 @@ func (s service) createUserAccount() http.HandlerFunc {
 func (s service) getUsernameAvailability() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		username := r.URL.Query().Get("username")
-
-		if username == "" {
-			http.Error(w, "Username can not be empty", http.StatusBadRequest)
-			return
-		}
-
-		if len(username) > 20 {
-			http.Error(w, "Username can not be longer than 20 characters", http.StatusBadRequest)
-			return
-		}
 
 		availability, err := s.userAccountStore.GetUsernameAvailability(username)
 		if err != nil {
@@ -140,34 +134,22 @@ func (s service) getLoginUser() http.HandlerFunc {
 			return
 		}
 
-		if requestBody.Username == "" {
-			http.Error(w, "Username can not be empty", http.StatusBadRequest)
-			return
-		}
-
-		if len(requestBody.Username) > 20 {
-			http.Error(w, "Username can not be longer than 20 characters", http.StatusBadRequest)
-			return
-		}
-
-		if len(requestBody.Password) < 8 {
-			http.Error(w, "Password must be at least 8 characters long", http.StatusBadRequest)
-			return
-		}
-
-		if len(requestBody.Password) > 128 {
-			http.Error(w, "Password can not be longer than 128 characters", http.StatusBadRequest)
-			return
-		}
-
-		jwt, err := s.userAccountStore.GetLoginUser(requestBody.Username, requestBody.Password)
+		user, err := s.userAccountStore.GetLoginUser(requestBody.Username, requestBody.Password)
 		if err != nil {
 			http.Error(w, "Failed to login user", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(jwt)
+		jwt, err := middleware.CreateJWT(user.ID, user.Username)
+		if err != nil {
+			http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+		w.Header().Add("flexusjwt", jwt)
+
+		response, err := json.Marshal(user)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())

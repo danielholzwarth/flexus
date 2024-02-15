@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-
 import 'package:app/api/user_account_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
@@ -73,8 +71,8 @@ class _LoginPageState extends State<LoginPage> {
           "password": passwordController.text,
         });
         if (response.isSuccessful) {
-          final jwt = jsonDecode(response.bodyString);
-          userBox.put("jwtToken", jwt);
+          final jwt = response.headers["flexusjwt"];
+          userBox.put("flexusjwt", jwt);
 
           ScaffoldMessenger.of(context).clearSnackBars();
           Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);

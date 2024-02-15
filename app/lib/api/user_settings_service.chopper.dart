@@ -18,10 +18,10 @@ final class _$UserSettingsService extends UserSettingsService {
   final Type definitionType = UserSettingsService;
 
   @override
-  Future<Response<dynamic>> getUserSettings(String tokenString) {
+  Future<Response<dynamic>> getUserSettings(String flexusJWTString) {
     final Uri $url = Uri.parse('/user_settings/');
     final Map<String, String> $headers = {
-      'token': tokenString,
+      'flexusjwt': flexusJWTString,
     };
     final Request $request = Request(
       'GET',

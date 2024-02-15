@@ -11,6 +11,7 @@ var jwtKey = []byte("secret_key")
 
 func CreateJWT(userAccountID types.UserAccountID, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
+	//expirationTime := time.Now().Add(time.Minute)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
@@ -32,6 +33,7 @@ func CreateJWT(userAccountID types.UserAccountID, username string) (string, erro
 
 func RefreshJWT(claims types.Claims) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
+	//expirationTime := time.Now().Add(time.Minute)
 
 	claims.ExpiresAt = expirationTime.Unix()
 

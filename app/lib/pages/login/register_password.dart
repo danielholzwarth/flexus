@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:app/api/user_account_service.dart';
+import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
@@ -8,6 +11,7 @@ import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class RegisterPasswordPage extends StatefulWidget {
   final String username;
@@ -26,6 +30,7 @@ class RegisterPasswordPage extends StatefulWidget {
 class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+  final userBox = Hive.box('userBox');
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +143,21 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             "name": widget.name,
           });
           if (response.isSuccessful) {
-            //SAVE JWT from post response
+            final jwt = response.headers["flexusjwt"];
+            if (jwt != null) {
+              userBox.put("flexusjwt", jwt);
+            }
+
+            final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+            final userAccount = UserAccount(
+              id: jsonMap['id'],
+              username: jsonMap['username'],
+              name: jsonMap['name'],
+              createdAt: DateTime.parse(jsonMap['createdAt']),
+              level: jsonMap['level'],
+            );
+            userBox.put("userAccount", userAccount);
+
             ScaffoldMessenger.of(context).clearSnackBars();
             Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
           } else {

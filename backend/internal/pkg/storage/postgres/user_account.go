@@ -3,7 +3,6 @@ package postgres
 import (
 	"database/sql"
 	"errors"
-	"flexus/internal/api/middleware"
 	"flexus/internal/types"
 
 	"golang.org/x/crypto/bcrypt"
@@ -69,31 +68,37 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 	return userCount == 0, nil
 }
 
-func (db DB) GetLoginUser(username string, password string) (string, error) {
-	var storedPassword []byte
-	var userAccountID types.UserAccountID
+func (db DB) GetLoginUser(username string, password string) (types.UserAccount, error) {
+	var userAccount types.UserAccount
 	query := `
-        SELECT id, password
+        SELECT *
         FROM user_account
         WHERE username = $1;
     `
-	err := db.pool.QueryRow(query, username).Scan(&userAccountID, &storedPassword)
+	err := db.pool.QueryRow(query, username).Scan(&userAccount.ID, &userAccount.Username, &userAccount.Name, &userAccount.Password, &userAccount.CreatedAt, &userAccount.Level, &userAccount.ProfilePicture, &userAccount.Bodyweight, &userAccount.GenderID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", errors.New("user not found")
+			return types.UserAccount{}, errors.New("user not found")
 		}
-		return "", err
+		return types.UserAccount{}, err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+	if userAccount.ProfilePicture == nil {
+		userAccount.ProfilePicture = new(string)
+	}
+
+	if userAccount.Bodyweight == nil {
+		userAccount.Bodyweight = new(int)
+	}
+
+	if userAccount.GenderID == nil {
+		userAccount.GenderID = new(int)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userAccount.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("incorrect password")
+		return types.UserAccount{}, errors.New("incorrect password")
 	}
 
-	token, err := middleware.CreateJWT(userAccountID, username)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return userAccount, nil
 }
