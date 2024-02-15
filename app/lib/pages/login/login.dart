@@ -10,6 +10,7 @@ import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final userBox = Hive.box('userBox');
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             FlexusButton(
-              text: "asd",
+              text: "get User Settings & Refresh token test",
               function: () async {
                 final response = await userSettingsService.getUserSettings(
                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFhYWFhYSIsImV4cCI6MTcwNzk1NDg4OX0.5YdYeIlWiaxK-3H6b21y1irlDvFRFf8oqb-3clixxJc");
@@ -98,9 +100,7 @@ class _LoginPageState extends State<LoginPage> {
         });
         if (response.isSuccessful) {
           final jwt = jsonDecode(response.bodyString);
-          print(jwt);
-          //Above is jwt!!!
-          //SAVE JWT from login response
+          userBox.put("jwtToken", jwt);
 
           ScaffoldMessenger.of(context).clearSnackBars();
           Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);

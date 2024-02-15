@@ -13,12 +13,19 @@ dependencies:
   crypton: ^2.2.1
   pointycastle: ^3.7.4
 
+  #Local Storage
+  hive: 
+  hive_flutter:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
   build_runner:
   chopper_generator:
+
+  #Local Storage
+  hive_generator:
 
 flutter:
   uses-material-design: true
