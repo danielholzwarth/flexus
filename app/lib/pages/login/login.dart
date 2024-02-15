@@ -9,7 +9,6 @@ import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
-import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -58,8 +57,9 @@ class _LoginPageState extends State<LoginPage> {
               text: "asd",
               function: () async {
                 final response = await userSettingsService.getUserSettings(
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFhYWFhYSIsImV4cCI6MTcxMDQ1MTE3NX0.RfHp32ANwk-ULeJfY1plhvgv1nBzyQpWkuTo7RTDpvw");
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFhYWFhYSIsImV4cCI6MTcwNzk1NDg4OX0.5YdYeIlWiaxK-3H6b21y1irlDvFRFf8oqb-3clixxJc");
                 if (response.isSuccessful) {
+                  //final newToken = response.headers["newToken"];
                   //final jwt = jsonDecode(response.bodyString);
                   //SAVE JWT from login response
 
@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(
           width: screenWidth * 0.15,
           child: IconButton(
-            onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
+            onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
             iconSize: AppSettings.fontsizeTitle,
             alignment: Alignment.center,

@@ -9,16 +9,10 @@ import (
 
 var jwtKey = []byte("secret_key")
 
-type Claims struct {
-	UserID   types.UserAccountID `json:"user_id"`
-	Username string              `json:"username"`
-	jwt.StandardClaims
-}
-
 func CreateJWT(userID types.UserAccountID, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
 
-	claims := &Claims{
+	claims := &types.Claims{
 		UserID:   userID,
 		Username: username,
 		StandardClaims: jwt.StandardClaims{
@@ -27,8 +21,8 @@ func CreateJWT(userID types.UserAccountID, username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
 
+	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		return "", err
 	}
@@ -36,12 +30,22 @@ func CreateJWT(userID types.UserAccountID, username string) (string, error) {
 	return tokenString, nil
 }
 
-func RefreshJWT() {
+func RefreshJWT(claims types.Claims) (string, error) {
+	expirationTime := time.Now().AddDate(0, 1, 0)
 
+	claims.ExpiresAt = expirationTime.Unix()
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
 
-func GetUserID(tokenString string) (types.UserAccountID, error) {
-	claims := &Claims{}
+func ValdiateToken(tokenString string) (types.Claims, error) {
+	claims := &types.Claims{}
 
 	tkn, err := jwt.ParseWithClaims(tokenString, claims,
 		func(t *jwt.Token) (interface{}, error) {
@@ -50,14 +54,14 @@ func GetUserID(tokenString string) (types.UserAccountID, error) {
 
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			return types.UserAccountID(0), err
+			return types.Claims{}, err
 		}
-		return types.UserAccountID(0), err
+		return types.Claims{}, err
 	}
 
 	if !tkn.Valid {
-		return types.UserAccountID(0), err
+		return types.Claims{}, err
 	}
 
-	return claims.UserID, nil
+	return *claims, nil
 }

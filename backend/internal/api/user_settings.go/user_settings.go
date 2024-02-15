@@ -5,6 +5,7 @@ import (
 	"flexus/internal/api/middleware"
 	"flexus/internal/types"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -40,17 +41,28 @@ func (s service) getUserSettings() http.HandlerFunc {
 
 		if token == "" {
 			http.Error(w, "Token cannot be empty", http.StatusBadRequest)
+			println(1)
 			return
 		}
 
-		//Change to types.UserAccountID?
-		userID, err := middleware.GetUserID(token)
+		claims, err := middleware.ValdiateToken(token)
 		if err != nil {
 			http.Error(w, "Resolving token failed", http.StatusBadRequest)
+			println(2)
 			return
 		}
 
-		settings, err := s.userSettingsStore.GetUserSettings(userID)
+		//Refresh Token if necessary
+		if time.Until(time.Unix(claims.ExpiresAt, 0)) < 7*24*time.Hour {
+			newToken, err := middleware.RefreshJWT(claims)
+			if err != nil {
+				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
+				return
+			}
+			w.Header().Add("newToken", newToken)
+		}
+
+		settings, err := s.userSettingsStore.GetUserSettings(claims.UserID)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
 			println(err.Error())
