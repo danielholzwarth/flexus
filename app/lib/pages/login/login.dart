@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:app/api/user_account_service.dart';
-import 'package:app/api/user_settings_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
@@ -29,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     final userAccountService = UserAccountService.create();
-    final userSettingsService = UserSettingsService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -53,47 +51,6 @@ class _LoginPageState extends State<LoginPage> {
               textController: passwordController,
               onChanged: (String newValue) {
                 setState(() {});
-              },
-            ),
-            FlexusButton(
-              text: "get User Settings & Refresh token test",
-              function: () async {
-                final response = await userSettingsService.getUserSettings(userBox.get("jwtToken"));
-                if (response.isSuccessful) {
-                  //Refresh Token in Hive
-                  final newToken = response.headers["newToken"];
-                  if (newToken != null) {
-                    userBox.put("jwtToken", newToken);
-                  }
-
-                  //final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
-
-/*
-                  final userSettings = UserSettings(
-                    id: jsonMap['id'],
-                    userAccountID: jsonMap['userAccountID'],
-                    fontSize: double.parse(jsonMap['fontSize'].toString()),
-                    isDarkMode: jsonMap['isDarkMode'],
-                    languageID: jsonMap['languageID'],
-                    isUnlisted: jsonMap['isUnlisted'],
-                    isPullFromEveryone: jsonMap['isPullFromEveryone'],
-                    pullUserListID: jsonMap['pullUserListID'],
-                    isNotifyEveryone: jsonMap['isNotifyEveryone'],
-                    notifyUserListID: jsonMap['notifyUserListID'],
-                  );
-*/
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                } else {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Center(
-                        child: Text('Error: ${response.error}'),
-                      ),
-                    ),
-                  );
-                }
               },
             ),
             SizedBox(height: screenHeight * 0.28),

@@ -91,7 +91,7 @@ class _StartUpPageState extends State<StartUpPage> {
           Icon(
             Icons.language,
             size: AppSettings.fontSizeDescription,
-            color: AppSettings.font,
+            color: AppSettings.fontV1,
           ),
           SizedBox(
             width: screenWidth * 0.02,
@@ -100,7 +100,7 @@ class _StartUpPageState extends State<StartUpPage> {
             UserSettings.language,
             style: TextStyle(
               fontSize: AppSettings.fontSizeDescription,
-              color: AppSettings.font,
+              color: AppSettings.fontV1,
             ),
           ),
           SizedBox(
