@@ -8,10 +8,10 @@ class UserSettings extends HiveObject {
   int id;
 
   @HiveField(1)
-  int userID;
+  int userAccountID;
 
   @HiveField(2)
-  int fontSize;
+  double fontSize;
 
   @HiveField(3)
   bool isDarkMode;
@@ -26,24 +26,24 @@ class UserSettings extends HiveObject {
   bool isPullFromEveryone;
 
   @HiveField(7)
-  int pullUserListID;
+  int? pullUserListID;
 
   @HiveField(8)
   bool isNotifyEveryone;
 
   @HiveField(9)
-  int notifyUserListID;
+  int? notifyUserListID;
 
   UserSettings({
     required this.id,
-    required this.userID,
+    required this.userAccountID,
     required this.fontSize,
     required this.isDarkMode,
     required this.languageID,
     required this.isUnlisted,
     required this.isPullFromEveryone,
-    required this.pullUserListID,
+    this.pullUserListID,
     required this.isNotifyEveryone,
-    required this.notifyUserListID,
+    this.notifyUserListID,
   });
 }

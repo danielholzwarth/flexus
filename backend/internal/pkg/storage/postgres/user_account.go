@@ -71,13 +71,13 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 
 func (db DB) GetLoginUser(username string, password string) (string, error) {
 	var storedPassword []byte
-	var userID types.UserAccountID
+	var userAccountID types.UserAccountID
 	query := `
         SELECT id, password
         FROM user_account
         WHERE username = $1;
     `
-	err := db.pool.QueryRow(query, username).Scan(&userID, &storedPassword)
+	err := db.pool.QueryRow(query, username).Scan(&userAccountID, &storedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return "", errors.New("user not found")
@@ -90,7 +90,7 @@ func (db DB) GetLoginUser(username string, password string) (string, error) {
 		return "", errors.New("incorrect password")
 	}
 
-	token, err := middleware.CreateJWT(userID, username)
+	token, err := middleware.CreateJWT(userAccountID, username)
 	if err != nil {
 		return "", err
 	}

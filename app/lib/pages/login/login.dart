@@ -58,13 +58,30 @@ class _LoginPageState extends State<LoginPage> {
             FlexusButton(
               text: "get User Settings & Refresh token test",
               function: () async {
-                final response = await userSettingsService.getUserSettings(
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImFhYWFhYSIsImV4cCI6MTcwNzk1NDg4OX0.5YdYeIlWiaxK-3H6b21y1irlDvFRFf8oqb-3clixxJc");
+                final response = await userSettingsService.getUserSettings(userBox.get("jwtToken"));
                 if (response.isSuccessful) {
-                  //final newToken = response.headers["newToken"];
-                  //final jwt = jsonDecode(response.bodyString);
-                  //SAVE JWT from login response
+                  //Refresh Token in Hive
+                  final newToken = response.headers["newToken"];
+                  if (newToken != null) {
+                    userBox.put("jwtToken", newToken);
+                  }
 
+                  //final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+
+/*
+                  final userSettings = UserSettings(
+                    id: jsonMap['id'],
+                    userAccountID: jsonMap['userAccountID'],
+                    fontSize: double.parse(jsonMap['fontSize'].toString()),
+                    isDarkMode: jsonMap['isDarkMode'],
+                    languageID: jsonMap['languageID'],
+                    isUnlisted: jsonMap['isUnlisted'],
+                    isPullFromEveryone: jsonMap['isPullFromEveryone'],
+                    pullUserListID: jsonMap['pullUserListID'],
+                    isNotifyEveryone: jsonMap['isNotifyEveryone'],
+                    notifyUserListID: jsonMap['notifyUserListID'],
+                  );
+*/
                   ScaffoldMessenger.of(context).clearSnackBars();
                   Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                 } else {
@@ -126,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
-            iconSize: AppSettings.fontsizeTitle,
+            iconSize: AppSettings.fontSizeTitle,
             alignment: Alignment.center,
           ),
         ),
@@ -137,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(
               color: AppSettings.font,
               decoration: TextDecoration.none,
-              fontSize: AppSettings.fontsizeTitle,
+              fontSize: AppSettings.fontSizeTitle,
             ),
             textAlign: TextAlign.left,
           ),

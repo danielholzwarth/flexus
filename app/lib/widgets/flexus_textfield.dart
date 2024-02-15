@@ -44,7 +44,7 @@ class FlexusTextField extends StatelessWidget {
             cursorColor: fontColor ?? AppSettings.font,
             style: TextStyle(
               color: fontColor ?? AppSettings.font,
-              fontSize: AppSettings.fontsizeDescription,
+              fontSize: AppSettings.fontSizeDescription,
             ),
             decoration: InputDecoration(
               hintText: hintText,

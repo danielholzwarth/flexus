@@ -11,7 +11,7 @@ import (
 )
 
 type UserSettingsStore interface {
-	GetUserSettings(userID types.UserAccountID) (types.UserSettings, error)
+	GetUserSettings(userAccountID types.UserAccountID) (types.UserSettings, error)
 }
 
 type service struct {
@@ -62,7 +62,7 @@ func (s service) getUserSettings() http.HandlerFunc {
 			w.Header().Add("newToken", newToken)
 		}
 
-		settings, err := s.userSettingsStore.GetUserSettings(claims.UserID)
+		settings, err := s.userSettingsStore.GetUserSettings(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
 			println(err.Error())

@@ -9,12 +9,12 @@ import (
 
 var jwtKey = []byte("secret_key")
 
-func CreateJWT(userID types.UserAccountID, username string) (string, error) {
+func CreateJWT(userAccountID types.UserAccountID, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
 
 	claims := &types.Claims{
-		UserID:   userID,
-		Username: username,
+		UserAccountID: userAccountID,
+		Username:      username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

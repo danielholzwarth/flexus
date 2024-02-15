@@ -3,7 +3,7 @@ package types
 type UserAccountGymID uint
 
 type UserAccountGym struct {
-	ID     UserAccountGymID `json:"id"`
-	UserID *UserAccountID   `json:"userID"`
-	GymID  *GymID           `json:"gymID"`
+	ID            UserAccountGymID `json:"id"`
+	UserAccountID *UserAccountID   `json:"userAccountID"`
+	GymID         *GymID           `json:"gymID"`
 }

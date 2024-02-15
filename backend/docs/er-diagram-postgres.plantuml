@@ -35,7 +35,7 @@ entity user_settings {
     id : number <<PK>>
     --
     user_account_id : number <<FK>>
-    fontsize : number
+    fontSize : number
     is_darkmode : boolean
     language : language
     is_unlisted : boolean

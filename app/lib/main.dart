@@ -16,7 +16,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //Check if user has an jwt or not --> logged in
     final userBox = Hive.box('userBox');
     if (userBox.get("jwtToken") != null) {
       return const MaterialApp(

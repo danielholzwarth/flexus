@@ -5,23 +5,23 @@ import (
 	"flexus/internal/types"
 )
 
-func (db DB) CreateUserSettings(tx *sql.Tx, userID types.UserAccountID) error {
+func (db DB) CreateUserSettings(tx *sql.Tx, userAccountID types.UserAccountID) error {
 	query := `
         INSERT INTO user_settings (user_id, font_size, is_dark_mode, language_id, is_unlisted, is_pull_from_everyone, is_notify_everyone)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
     `
-	_, err := tx.Exec(query, userID, 22, false, 1, false, true, true)
+	_, err := tx.Exec(query, userAccountID, 22.0, false, 1, false, true, true)
 	return err
 }
 
-func (db DB) GetUserSettings(userID types.UserAccountID) (types.UserSettings, error) {
+func (db DB) GetUserSettings(userAccountID types.UserAccountID) (types.UserSettings, error) {
 	query := `
         SELECT *
         FROM user_settings
         WHERE user_id = $1;
     `
 
-	rows, err := db.pool.Query(query, userID)
+	rows, err := db.pool.Query(query, userAccountID)
 	if err != nil {
 		return types.UserSettings{}, err
 	}
@@ -32,7 +32,7 @@ func (db DB) GetUserSettings(userID types.UserAccountID) (types.UserSettings, er
 	for rows.Next() {
 		err := rows.Scan(
 			&settings.ID,
-			&settings.UserID,
+			&settings.UserAccountID,
 			&settings.FontSize,
 			&settings.IsDarkMode,
 			&settings.LanguageID,

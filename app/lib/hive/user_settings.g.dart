@@ -18,15 +18,15 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
     };
     return UserSettings(
       id: fields[0] as int,
-      userID: fields[1] as int,
-      fontSize: fields[2] as int,
+      userAccountID: fields[1] as int,
+      fontSize: fields[2] as double,
       isDarkMode: fields[3] as bool,
       languageID: fields[4] as int,
       isUnlisted: fields[5] as bool,
       isPullFromEveryone: fields[6] as bool,
-      pullUserListID: fields[7] as int,
+      pullUserListID: fields[7] as int?,
       isNotifyEveryone: fields[8] as bool,
-      notifyUserListID: fields[9] as int,
+      notifyUserListID: fields[9] as int?,
     );
   }
 
@@ -37,7 +37,7 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.userID)
+      ..write(obj.userAccountID)
       ..writeByte(2)
       ..write(obj.fontSize)
       ..writeByte(3)
@@ -61,8 +61,5 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UserSettingsAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is UserSettingsAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

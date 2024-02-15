@@ -78,7 +78,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
             icon: Icon(Icons.adaptive.arrow_back),
-            iconSize: AppSettings.fontsizeTitle,
+            iconSize: AppSettings.fontSizeTitle,
             alignment: Alignment.center,
           ),
         ),
@@ -89,7 +89,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             style: TextStyle(
               color: AppSettings.font,
               decoration: TextDecoration.none,
-              fontSize: AppSettings.fontsizeTitle,
+              fontSize: AppSettings.fontSizeTitle,
             ),
             textAlign: TextAlign.left,
           ),

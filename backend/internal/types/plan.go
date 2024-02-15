@@ -6,7 +6,7 @@ type PlanID uint
 
 type Plan struct {
 	ID                 PlanID         `json:"id"`
-	UserID             *UserAccountID `json:"userID"`
+	UserAccountID      *UserAccountID `json:"userAccountID"`
 	PartCount          int            `json:"partCount"`
 	Name               string         `json:"name"`
 	Startdate          time.Time      `json:"startdate"`

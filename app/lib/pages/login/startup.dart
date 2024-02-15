@@ -38,7 +38,7 @@ class _StartUpPageState extends State<StartUpPage> {
               style: TextStyle(
                 color: AppSettings.fontV1,
                 decoration: TextDecoration.none,
-                fontSize: AppSettings.fontsizeMainTitle,
+                fontSize: AppSettings.fontSizeMainTitle,
               ),
               textAlign: TextAlign.center,
             ),
@@ -50,7 +50,7 @@ class _StartUpPageState extends State<StartUpPage> {
                 style: TextStyle(
                   color: AppSettings.fontV1,
                   decoration: TextDecoration.none,
-                  fontSize: AppSettings.fontsizeSubDescription,
+                  fontSize: AppSettings.fontSizeSubDescription,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -90,7 +90,7 @@ class _StartUpPageState extends State<StartUpPage> {
         children: [
           Icon(
             Icons.language,
-            size: AppSettings.fontsizeDescription,
+            size: AppSettings.fontSizeDescription,
             color: AppSettings.font,
           ),
           SizedBox(
@@ -99,7 +99,7 @@ class _StartUpPageState extends State<StartUpPage> {
           Text(
             UserSettings.language,
             style: TextStyle(
-              fontSize: AppSettings.fontsizeDescription,
+              fontSize: AppSettings.fontSizeDescription,
               color: AppSettings.font,
             ),
           ),
