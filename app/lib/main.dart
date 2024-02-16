@@ -1,5 +1,8 @@
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
+import 'package:app/pages/home/home.dart';
+import 'package:app/pages/login/login.dart';
+import 'package:app/pages/login/startup.dart';
 import 'package:app/pages/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,21 +23,12 @@ class MainApp extends StatelessWidget {
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
-      if (!JwtDecoder.isExpired(flexusjwt)) {
-        return const MaterialApp(
-          initialRoute: '/home',
-          onGenerateRoute: AppRoutes.generateRoute,
-        );
-      } else {
-        return const MaterialApp(
-          initialRoute: '/login',
-          onGenerateRoute: AppRoutes.generateRoute,
-        );
-      }
+      return const MaterialApp(
+        home: HomePage(),
+      );
     } else {
       return const MaterialApp(
-        initialRoute: '/',
-        onGenerateRoute: AppRoutes.generateRoute,
+        home: StartUpPage(),
       );
     }
   }
