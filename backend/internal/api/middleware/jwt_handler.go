@@ -1,13 +1,50 @@
 package middleware
 
 import (
+	"context"
 	"flexus/internal/types"
+	"log"
+	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 var jwtKey = []byte("secret_key")
+
+func ValidateJWT(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("validating jwt on %s", r.URL.Path)
+
+		token := r.Header.Get("flexusjwt")
+
+		if token == "" {
+			http.Error(w, "Token is empty", http.StatusBadRequest)
+			return
+		}
+
+		claims, err := ValdiateToken(token)
+		if err != nil {
+			http.Error(w, "Resolving token failed", http.StatusBadRequest)
+			return
+		}
+
+		if time.Until(time.Unix(claims.ExpiresAt, 0)) < 7*24*time.Hour {
+			newToken, err := RefreshJWT(claims)
+			if err != nil {
+				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
+				return
+			}
+			w.Header().Add("flexusjwt", newToken)
+		}
+
+		ctx := context.WithValue(r.Context(), types.RequesterContextKey, claims)
+		println("useraccountID:", claims.UserAccountID)
+		println("username:", claims.Username)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
 
 func CreateJWT(userAccountID types.UserAccountID, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)

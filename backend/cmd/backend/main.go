@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"flexus/api"
+	flexusMiddleware "flexus/internal/api/middleware"
 	"flexus/internal/api/user_account"
 	"flexus/internal/api/user_settings.go"
 	"flexus/internal/pkg/storage/postgres"
@@ -71,7 +72,7 @@ func run() error {
 	}
 
 	r.Mount("/user_accounts", user_account.NewService(db))
-	r.Mount("/user_settings", user_settings.NewService(db))
+	r.Mount("/user_settings", flexusMiddleware.ValidateJWT(user_settings.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

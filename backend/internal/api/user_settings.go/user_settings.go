@@ -2,10 +2,8 @@ package user_settings
 
 import (
 	"encoding/json"
-	"flexus/internal/api/middleware"
 	"flexus/internal/types"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -37,30 +35,12 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s service) getUserSettings() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//Check and Refresh Token if necessary
-		token := r.Header.Get("flexusjwt")
-
-		if token == "" {
-			http.Error(w, "Token cannot be empty", http.StatusBadRequest)
+		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
 			return
 		}
 
-		claims, err := middleware.ValdiateToken(token)
-		if err != nil {
-			http.Error(w, "Resolving token failed", http.StatusBadRequest)
-			return
-		}
-
-		if time.Until(time.Unix(claims.ExpiresAt, 0)) < 7*24*time.Hour {
-			newToken, err := middleware.RefreshJWT(claims)
-			if err != nil {
-				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
-				return
-			}
-			w.Header().Add("flexusjwt", newToken)
-		}
-
-		//Get UserSettings of TokenOwner
 		settings, err := s.userSettingsStore.GetUserSettings(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
