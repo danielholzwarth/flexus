@@ -1,9 +1,12 @@
+import 'package:app/pages/login/login.dart';
+import 'package:app/pages/login/register_username.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/resources/user_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class StartUpPage extends StatefulWidget {
   const StartUpPage({super.key});
@@ -56,25 +59,45 @@ class _StartUpPageState extends State<StartUpPage> {
               ),
             ),
             SizedBox(height: screenHeight * 0.07),
-            FlexusButton(
-              text: "SIGN UP",
-              function: () {
-                Navigator.pushNamed(context, "/register_username");
-              },
-            ),
+            _buildSignUpButton(context),
             SizedBox(height: screenHeight * 0.03),
-            FlexusButton(
-              text: "LOGIN",
-              backgroundColor: AppSettings.backgroundV1,
-              fontColor: AppSettings.fontV1,
-              function: () {
-                Navigator.pushNamed(context, "/login");
-              },
-            ),
+            _buildLoginButton(context),
             FlexusBottomSizedBox(screenHeight: screenHeight)
           ],
         ),
       ),
+    );
+  }
+
+  FlexusButton _buildLoginButton(BuildContext context) {
+    return FlexusButton(
+      text: "LOGIN",
+      backgroundColor: AppSettings.backgroundV1,
+      fontColor: AppSettings.fontV1,
+      function: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const LoginPage(),
+          ),
+        );
+      },
+    );
+  }
+
+  FlexusButton _buildSignUpButton(BuildContext context) {
+    return FlexusButton(
+      text: "SIGN UP",
+      function: () {
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.rightToLeft,
+            child: const RegisterUsernamePage(),
+          ),
+        );
+      },
     );
   }
 

@@ -18,6 +18,10 @@ dependencies:
   hive_flutter:
   jwt_decoder: ^2.0.1
 
+  #Page Transitions
+  page_transition: ^2.1.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

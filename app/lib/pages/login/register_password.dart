@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:app/api/user_account_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/home/home.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
@@ -12,6 +13,7 @@ import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegisterPasswordPage extends StatefulWidget {
   final String username;
@@ -159,7 +161,14 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             userBox.put("userAccount", userAccount);
 
             ScaffoldMessenger.of(context).clearSnackBars();
-            Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+            Navigator.pushAndRemoveUntil(
+              context,
+              PageTransition(
+                type: PageTransitionType.rightToLeft,
+                child: const HomePage(),
+              ),
+              (route) => false,
+            );
           } else {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(

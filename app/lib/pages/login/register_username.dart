@@ -1,12 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:app/api/user_account_service.dart';
+import 'package:app/pages/login/register_name.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegisterUsernamePage extends StatefulWidget {
   const RegisterUsernamePage({super.key});
@@ -91,7 +93,13 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
               );
             } else {
               ScaffoldMessenger.of(context).clearSnackBars();
-              Navigator.pushNamed(context, "/register_name", arguments: usernameController.text);
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: RegisterNamePage(username: usernameController.text),
+                ),
+              );
             }
           } else {
             ScaffoldMessenger.of(context).clearSnackBars();

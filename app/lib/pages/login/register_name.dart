@@ -1,3 +1,4 @@
+import 'package:app/pages/login/register_password.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
@@ -5,6 +6,7 @@ import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegisterNamePage extends StatefulWidget {
   final String username;
@@ -81,10 +83,16 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           );
         } else {
           ScaffoldMessenger.of(context).clearSnackBars();
-          Navigator.pushNamed(context, "/register_password", arguments: [
-            widget.username,
-            nameController.text,
-          ]);
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child: RegisterPasswordPage(
+                username: widget.username,
+                name: nameController.text,
+              ),
+            ),
+          );
         }
       },
     );
