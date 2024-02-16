@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ViewWorkoutPage extends StatelessWidget {
-  final workoutID;
-
-  const ViewWorkoutPage({
-    super.key,
-    this.workoutID,
-  });
+class ArchivePage extends StatelessWidget {
+  const ArchivePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ViewWorkoutPage $workoutID'),
+        title: const Text('ArchivePage'),
         centerTitle: true,
       ),
       body: const Center(

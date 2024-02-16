@@ -1,13 +1,10 @@
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/home/home.dart';
-import 'package:app/pages/login/login.dart';
 import 'package:app/pages/login/startup.dart';
-import 'package:app/pages/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 Future<void> main() async {
   await initializeHive();
