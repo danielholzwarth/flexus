@@ -1,11 +1,13 @@
 import 'package:app/hive/workout.dart';
 import 'package:app/pages/friends/locations.dart';
-import 'package:app/pages/home/archive.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/pages/statistics/statistics.dart';
-import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_archive_sliver_appbar.dart';
+import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
+import 'package:app/widgets/flexus_floating_action_button.dart';
+import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -30,7 +32,7 @@ class _HomePageState extends State<HomePage> {
         body: CustomScrollView(
           controller: scrollController,
           slivers: <Widget>[
-            const FlexusSliverAppBar(),
+            _buildFlexusSliverAppBar(context),
             const FlexusArchiveSliverAppBar(),
             SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -55,51 +57,9 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-class FlexusArchiveSliverAppBar extends StatelessWidget {
-  const FlexusArchiveSliverAppBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      toolbarHeight: 30,
-      backgroundColor: AppSettings.background,
-      surfaceTintColor: AppSettings.background,
-      foregroundColor: AppSettings.font,
-      expandedHeight: 30,
-      centerTitle: true,
-      title: TextButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: const ArchivePage(),
-            ),
-          );
-        },
-        child: const Text("Archive"),
-      ),
-    );
-  }
-}
-
-class FlexusSliverAppBar extends StatelessWidget {
-  const FlexusSliverAppBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: AppSettings.background,
-      surfaceTintColor: AppSettings.background,
-      foregroundColor: AppSettings.font,
-      expandedHeight: 50,
-      floating: true,
+  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
+    return FlexusSliverAppBar(
       leading: IconButton(
         icon: Icon(
           Icons.person,
@@ -163,102 +123,6 @@ void _implementSwiping(DragEndDetails details, BuildContext context) {
         child: const LocationsPage(),
       ),
       (route) => false,
-    );
-  }
-}
-
-class FlexusBottomNavigationBar extends StatelessWidget {
-  final ScrollController scrollController;
-  const FlexusBottomNavigationBar({
-    super.key,
-    required this.scrollController,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
-      child: BottomAppBar(
-        color: AppSettings.primaryShade80,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.show_chart,
-                color: AppSettings.font,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.leftToRight,
-                    child: const StatisticsPage(),
-                  ),
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.fitness_center,
-                color: AppSettings.font,
-                size: AppSettings.fontSizeTitle,
-              ),
-              onPressed: () {
-                //Update list if internet connection
-                scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.linear,
-                );
-              },
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.people,
-                color: AppSettings.font,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: const LocationsPage(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class FlexusFloatingActionButton extends StatelessWidget {
-  const FlexusFloatingActionButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      foregroundColor: AppSettings.fontV1,
-      backgroundColor: AppSettings.primary,
-      onPressed: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: const StartWorkoutPage(),
-          ),
-        );
-      },
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.add,
-        size: AppSettings.fontSizeTitle,
-      ),
     );
   }
 }
