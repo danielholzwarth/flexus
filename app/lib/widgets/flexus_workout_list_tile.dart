@@ -34,11 +34,21 @@ class FlexusWorkoutListTile extends StatelessWidget {
         backgroundColor: AppSettings.primaryShade48,
         child: Text(_getWeekdayAbbreviation(workout.starttime.weekday)),
       ),
-      title: userBox.get("plans") != null
-          ? Text("${userBox.get("plans")[workout.planID]} - ${DateFormat('dd.MM.yyyy').format(workout.starttime)}")
-          : Text("Workoutplanname   ${DateFormat('dd.MM.yyyy').format(workout.starttime)}"),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          userBox.get("plans") != null ? Text(userBox.get("plans")[workout.planID]) : const Text("Custom Workoutplan"),
+          userBox.get("plans") != null
+              ? Text(DateFormat('dd.MM.yyyy').format(workout.starttime))
+              : Text(DateFormat('dd.MM.yyyy').format(workout.starttime)),
+        ],
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.more_vert),
+        onPressed: () => print("archive item and refresh on same position"),
+      ),
       subtitle: Row(
-        children: <Widget>[
+        children: [
           Text("${DateFormat('hh:mm').format(workout.starttime)} - "),
           workout.endtime != null ? Text("${DateFormat('hh:mm').format(workout.endtime!)} ") : const Text(" still ongoing ..."),
           workout.endtime != null ? Text("(${workout.endtime!.difference(workout.starttime).inMinutes} min)") : const SizedBox(),
@@ -49,6 +59,6 @@ class FlexusWorkoutListTile extends StatelessWidget {
 }
 
 String _getWeekdayAbbreviation(int index) {
-  final weekdays = ['MO', 'DI', 'MI', 'DO', 'FR', 'SA', 'SO'];
+  final weekdays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   return weekdays[index % 7];
 }
