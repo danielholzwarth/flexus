@@ -1,29 +1,22 @@
+import 'package:app/hive/workout.dart';
 import 'package:app/pages/workout_documentation/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class FlexusWorkoutListTile extends StatelessWidget {
-  final String title;
-  final String weekday;
-  final DateTime date;
-  final int exerciseCount;
-  final int setCount;
-  final int durationInMin;
+  final Workout workout;
 
   const FlexusWorkoutListTile({
     super.key,
-    required this.title,
-    required this.weekday,
-    required this.date,
-    required this.exerciseCount,
-    required this.setCount,
-    required this.durationInMin,
+    required this.workout,
   });
 
   @override
   Widget build(BuildContext context) {
+    final userBox = Hive.box('userBox');
     return ListTile(
       onTap: () {
         Navigator.push(
@@ -36,15 +29,18 @@ class FlexusWorkoutListTile extends StatelessWidget {
           ),
         );
       },
-      leading: const CircleAvatar(
-        child: Text("MO"),
+      leading: CircleAvatar(
+        backgroundColor: AppSettings.primaryShade48,
+        child: Text(_getWeekdayAbbreviation(workout.starttime.weekday)),
       ),
-      title: Text("$title - ${DateFormat('dd.MM.yyyy').format(date)}"),
-      subtitle: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      title: userBox.get("plans") != null
+          ? Text("${userBox.get("plans")[workout.planID]} - ${DateFormat('dd.MM.yyyy').format(workout.starttime)}")
+          : Text("Workoutplanname   ${DateFormat('dd.MM.yyyy').format(workout.starttime)}"),
+      subtitle: Row(
         children: <Widget>[
-          Text('Datum: "12.01.12"'),
-          Text('Dauer: 120 min'),
+          Text("${DateFormat('hh:mm').format(workout.starttime)} - "),
+          workout.endtime != null ? Text("${DateFormat('hh:mm').format(workout.endtime!)} ") : const Text(" still ongoing ..."),
+          workout.endtime != null ? Text("(${workout.endtime!.difference(workout.starttime).inMinutes} min)") : const SizedBox(),
         ],
       ),
       trailing: PopupMenuButton<String>(
@@ -62,4 +58,9 @@ class FlexusWorkoutListTile extends StatelessWidget {
       ),
     );
   }
+}
+
+String _getWeekdayAbbreviation(int index) {
+  final weekdays = ['MO', 'DI', 'MI', 'DO', 'FR', 'SA', 'SO'];
+  return weekdays[index % 7];
 }
