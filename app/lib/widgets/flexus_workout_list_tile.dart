@@ -18,6 +18,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final userBox = Hive.box('userBox');
     return ListTile(
+      tileColor: AppSettings.background,
       onTap: () {
         Navigator.push(
           context,
@@ -42,19 +43,6 @@ class FlexusWorkoutListTile extends StatelessWidget {
           workout.endtime != null ? Text("${DateFormat('hh:mm').format(workout.endtime!)} ") : const Text(" still ongoing ..."),
           workout.endtime != null ? Text("(${workout.endtime!.difference(workout.starttime).inMinutes} min)") : const SizedBox(),
         ],
-      ),
-      trailing: PopupMenuButton<String>(
-        itemBuilder: (BuildContext context) {
-          return {'Archive'}.map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
-        },
-        onSelected: (String choice) {
-          print('Selected: $choice');
-        },
       ),
     );
   }
