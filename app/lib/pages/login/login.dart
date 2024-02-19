@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.28),
+            SizedBox(height: screenHeight * 0.32),
             _buildLoginButton(userAccountService, context),
             FlexusBottomSizedBox(screenHeight: screenHeight),
           ],

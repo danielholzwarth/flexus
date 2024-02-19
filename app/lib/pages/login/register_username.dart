@@ -124,7 +124,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
         style: TextStyle(
           color: AppSettings.font,
           decoration: TextDecoration.none,
-          fontSize: AppSettings.fontSizeSubDescription,
+          fontSize: AppSettings.fontSize,
         ),
         textAlign: TextAlign.left,
       ),

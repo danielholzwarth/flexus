@@ -22,8 +22,9 @@ class FlexusBottomNavigationBar extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(
-                Icons.show_chart,
+                Icons.bar_chart_rounded,
                 color: AppSettings.font,
+                size: AppSettings.fontSizeTitle,
               ),
               onPressed: () {
                 Navigator.push(
@@ -39,7 +40,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               icon: Icon(
                 Icons.fitness_center,
                 color: AppSettings.font,
-                size: AppSettings.fontSizeTitle,
+                size: AppSettings.fontSizeMainTitle,
               ),
               onPressed: () {
                 //Update list if internet connection
@@ -54,6 +55,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               icon: Icon(
                 Icons.people,
                 color: AppSettings.font,
+                size: AppSettings.fontSizeTitle,
               ),
               onPressed: () {
                 Navigator.push(

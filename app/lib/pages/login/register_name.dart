@@ -48,7 +48,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.3),
+            SizedBox(height: screenHeight * 0.345),
             _buildContinueButton(context),
             FlexusBottomSizedBox(screenHeight: screenHeight)
           ],
@@ -106,7 +106,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
         style: TextStyle(
           color: AppSettings.font,
           decoration: TextDecoration.none,
-          fontSize: AppSettings.fontSizeSubDescription,
+          fontSize: AppSettings.fontSize,
         ),
         textAlign: TextAlign.left,
       ),

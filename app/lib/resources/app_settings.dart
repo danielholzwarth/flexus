@@ -20,8 +20,9 @@ class AppSettings {
 
   //Fontsize
   static double fontSize = UserSettings.fontSize;
+  static double fontSizeTitleSmall = UserSettings.fontSize + 4;
   static double fontSizeTitle = UserSettings.fontSize + 8;
-  static double fontSizeMainTitle = UserSettings.fontSize + 20;
+  static double fontSizeMainTitle = UserSettings.fontSize + 24;
   static double fontSizeDescription = UserSettings.fontSize - 3;
   static double fontSizeSubDescription = UserSettings.fontSize - 6;
 }

@@ -20,20 +20,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ScrollController scrollController = ScrollController();
+  final ScrollController scrollController = ScrollController(initialScrollOffset: 50);
+  bool isArchiveVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListener);
+  }
+
+  void scrollListener() {
+    if (scrollController.offset == 0) {
+      setState(() {
+        isArchiveVisible = true;
+      });
+    } else {
+      setState(() {
+        isArchiveVisible = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) {
-        _implementSwiping(details, context);
+      onPanUpdate: (DragUpdateDetails details) {
+        implementDraging(details, context);
       },
       child: Scaffold(
         body: CustomScrollView(
           controller: scrollController,
           slivers: <Widget>[
             _buildFlexusSliverAppBar(context),
-            const FlexusArchiveSliverAppBar(),
+            SliverVisibility(
+              sliver: const FlexusArchiveSliverAppBar(),
+              visible: isArchiveVisible,
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
@@ -63,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       leading: IconButton(
         icon: Icon(
           Icons.person,
-          size: AppSettings.fontSize,
+          size: AppSettings.fontSizeTitle,
         ),
         onPressed: () {
           Navigator.push(
@@ -79,7 +101,7 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           icon: Icon(
             Icons.menu_book,
-            size: AppSettings.fontSize,
+            size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
             Navigator.push(
@@ -94,10 +116,10 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           icon: Icon(
             Icons.search,
-            size: AppSettings.fontSize,
+            size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            print('Lupe wurde geklickt');
+            print('Lupe was clicked');
           },
         ),
       ],
@@ -105,24 +127,22 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void _implementSwiping(DragEndDetails details, BuildContext context) {
-  if (details.primaryVelocity! > 0) {
-    Navigator.pushAndRemoveUntil(
+void implementDraging(DragUpdateDetails details, BuildContext context) {
+  if (details.delta.dx > 0.5) {
+    Navigator.pushReplacement(
       context,
       PageTransition(
         type: PageTransitionType.leftToRight,
         child: const StatisticsPage(),
       ),
-      (route) => false,
     );
   } else {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushReplacement(
       context,
       PageTransition(
         type: PageTransitionType.rightToLeft,
         child: const LocationsPage(),
       ),
-      (route) => false,
     );
   }
 }

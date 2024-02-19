@@ -29,7 +29,7 @@ class FlexusBulletPoint extends StatelessWidget {
             text,
             style: TextStyle(
               color: condition ? AppSettings.confirm : AppSettings.error,
-              fontSize: AppSettings.fontSizeSubDescription,
+              fontSize: AppSettings.fontSize,
             ),
           )
         ],

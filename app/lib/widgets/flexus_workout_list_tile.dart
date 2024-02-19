@@ -18,6 +18,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final userBox = Hive.box('userBox');
     return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
       onTap: () {
         Navigator.push(
@@ -31,27 +32,102 @@ class FlexusWorkoutListTile extends StatelessWidget {
         );
       },
       leading: CircleAvatar(
+        radius: AppSettings.fontSizeTitle,
         backgroundColor: AppSettings.primaryShade48,
-        child: Text(_getWeekdayAbbreviation(workout.starttime.weekday)),
+        child: Text(
+          _getWeekdayAbbreviation(workout.starttime.weekday),
+          style: TextStyle(
+            fontSize: AppSettings.fontSizeTitleSmall,
+            color: AppSettings.font,
+          ),
+        ),
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          userBox.get("plans") != null ? Text(userBox.get("plans")[workout.planID]) : const Text("Custom Workoutplan"),
           userBox.get("plans") != null
-              ? Text(DateFormat('dd.MM.yyyy').format(workout.starttime))
-              : Text(DateFormat('dd.MM.yyyy').format(workout.starttime)),
+              ? Text(
+                  userBox.get("plans")[workout.planID],
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSize,
+                    color: AppSettings.font,
+                  ),
+                )
+              : Text(
+                  "Custom Workoutplan",
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSize,
+                    color: AppSettings.font,
+                  ),
+                ),
+          userBox.get("plans") != null
+              ? Text(
+                  DateFormat('dd.MM.yyyy').format(workout.starttime),
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSize,
+                    color: AppSettings.font,
+                  ),
+                )
+              : Text(
+                  DateFormat('dd.MM.yyyy').format(workout.starttime),
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSize,
+                    color: AppSettings.font,
+                  ),
+                ),
         ],
       ),
-      trailing: IconButton(
-        icon: const Icon(Icons.more_vert),
-        onPressed: () => print("archive item and refresh on same position"),
+      trailing: PopupMenuButton<String>(
+        icon: Icon(
+          Icons.more_vert,
+          color: AppSettings.font,
+          size: AppSettings.fontSizeTitle,
+        ),
+        itemBuilder: (BuildContext context) {
+          return {'Archive', 'Option 2'}.map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Text(choice),
+            );
+          }).toList();
+        },
+        onSelected: (String choice) {
+          print('Selected: $choice');
+        },
       ),
       subtitle: Row(
         children: [
-          Text("${DateFormat('hh:mm').format(workout.starttime)} - "),
-          workout.endtime != null ? Text("${DateFormat('hh:mm').format(workout.endtime!)} ") : const Text(" still ongoing ..."),
-          workout.endtime != null ? Text("(${workout.endtime!.difference(workout.starttime).inMinutes} min)") : const SizedBox(),
+          Text(
+            "${DateFormat('hh:mm').format(workout.starttime)} - ",
+            style: TextStyle(
+              fontSize: AppSettings.fontSizeDescription,
+              color: AppSettings.font,
+            ),
+          ),
+          workout.endtime != null
+              ? Text(
+                  "${DateFormat('hh:mm').format(workout.endtime!)} ",
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSizeDescription,
+                    color: AppSettings.font,
+                  ),
+                )
+              : Text(
+                  " still ongoing ...",
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSizeDescription,
+                    color: AppSettings.font,
+                  ),
+                ),
+          workout.endtime != null
+              ? Text(
+                  "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
+                  style: TextStyle(
+                    fontSize: AppSettings.fontSizeDescription,
+                    color: AppSettings.font,
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
     );

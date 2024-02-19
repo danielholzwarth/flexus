@@ -11,11 +11,10 @@ class FlexusArchiveSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      toolbarHeight: 30,
       backgroundColor: AppSettings.background,
       surfaceTintColor: AppSettings.background,
       foregroundColor: AppSettings.font,
-      expandedHeight: 30,
+      toolbarHeight: 30,
       centerTitle: true,
       title: TextButton(
         onPressed: () {
@@ -27,7 +26,10 @@ class FlexusArchiveSliverAppBar extends StatelessWidget {
             ),
           );
         },
-        child: const Text("Archive"),
+        child: Text(
+          "Archive",
+          style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
+        ),
       ),
     );
   }
