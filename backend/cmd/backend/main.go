@@ -14,6 +14,7 @@ import (
 	flexusMiddleware "flexus/internal/api/middleware"
 	"flexus/internal/api/user_account"
 	"flexus/internal/api/user_settings.go"
+	"flexus/internal/api/workout"
 	"flexus/internal/pkg/storage/postgres"
 
 	"github.com/go-chi/chi/v5"
@@ -73,6 +74,7 @@ func run() error {
 
 	r.Mount("/user_accounts", user_account.NewService(db))
 	r.Mount("/user_settings", flexusMiddleware.ValidateJWT(user_settings.NewService(db)))
+	r.Mount("/workouts", flexusMiddleware.ValidateJWT(workout.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

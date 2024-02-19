@@ -1,7 +1,9 @@
+import 'package:app/api/workout_service.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/pages/friends/locations.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/pages/statistics/statistics.dart';
+import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_archive_sliver_appbar.dart';
@@ -11,6 +13,7 @@ import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -77,7 +80,17 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        floatingActionButton: const FlexusFloatingActionButton(),
+        floatingActionButton: FlexusFloatingActionButton(
+          onPressed: () async {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: const StartWorkoutPage(),
+              ),
+            );
+          },
+        ),
         bottomNavigationBar: FlexusBottomNavigationBar(scrollController: scrollController),
       ),
     );

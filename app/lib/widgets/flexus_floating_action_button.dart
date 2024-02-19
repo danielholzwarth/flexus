@@ -1,11 +1,12 @@
-import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class FlexusFloatingActionButton extends StatelessWidget {
+  final Function() onPressed;
+
   const FlexusFloatingActionButton({
     super.key,
+    required this.onPressed,
   });
 
   @override
@@ -13,15 +14,7 @@ class FlexusFloatingActionButton extends StatelessWidget {
     return FloatingActionButton(
       foregroundColor: AppSettings.fontV1,
       backgroundColor: AppSettings.primary,
-      onPressed: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: const StartWorkoutPage(),
-          ),
-        );
-      },
+      onPressed: onPressed,
       shape: const CircleBorder(),
       child: Icon(
         Icons.add,
