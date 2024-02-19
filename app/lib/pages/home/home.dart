@@ -21,7 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ScrollController scrollController = ScrollController(initialScrollOffset: 50);
+  final ScrollController scrollController = ScrollController();
   bool isArchiveVisible = false;
   bool isSearch = false;
   final TextEditingController searchController = TextEditingController();
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanUpdate: (DragUpdateDetails details) {
-        implementDraging(details, context);
+        implementHorizontalDraging(details, context);
       },
       child: Scaffold(
         body: CustomScrollView(
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void implementDraging(DragUpdateDetails details, BuildContext context) {
+void implementHorizontalDraging(DragUpdateDetails details, BuildContext context) {
   if (details.delta.dx > 0.5) {
     Navigator.pushReplacement(
       context,

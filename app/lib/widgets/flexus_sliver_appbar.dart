@@ -19,8 +19,6 @@ class FlexusSliverAppBar extends StatelessWidget {
       backgroundColor: AppSettings.background,
       surfaceTintColor: AppSettings.background,
       foregroundColor: AppSettings.font,
-      toolbarHeight: 50,
-      expandedHeight: 50,
       floating: true,
       leading: leading,
       title: title,
