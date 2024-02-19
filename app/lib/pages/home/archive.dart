@@ -27,7 +27,7 @@ class ArchivePage extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     Icons.search,
-                    size: AppSettings.fontSize,
+                    size: AppSettings.fontSizeTitle,
                   ),
                   onPressed: () {
                     print('Lupe wurde geklickt');
@@ -44,7 +44,7 @@ class ArchivePage extends StatelessWidget {
                       userAccountID: index,
                       starttime: DateTime.now().subtract(Duration(days: index)).add(Duration(minutes: index * 13)),
                       endtime: DateTime.now().subtract(Duration(days: index)).add(Duration(minutes: 150 + index * 7)),
-                      isArchived: false,
+                      isArchived: true,
                     ),
                   );
                 },

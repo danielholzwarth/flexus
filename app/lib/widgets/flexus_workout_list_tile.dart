@@ -84,12 +84,19 @@ class FlexusWorkoutListTile extends StatelessWidget {
           size: AppSettings.fontSizeTitle,
         ),
         itemBuilder: (BuildContext context) {
-          return {'Archive', 'Option 2'}.map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
+          return workout.isArchived
+              ? {'Unarchive', 'Delete'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList()
+              : {'Archive', 'Share', 'Delete'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
         },
         onSelected: (String choice) {
           print('Selected: $choice');

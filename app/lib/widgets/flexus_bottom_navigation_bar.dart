@@ -27,7 +27,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                 size: AppSettings.fontSizeTitle,
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   PageTransition(
                     type: PageTransitionType.leftToRight,
@@ -58,7 +58,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                 size: AppSettings.fontSizeTitle,
               ),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
