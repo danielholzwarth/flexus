@@ -7,6 +7,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_archive_sliver_appbar.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/flexus_floating_action_button.dart';
+import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController scrollController = ScrollController(initialScrollOffset: 50);
   bool isArchiveVisible = false;
+  bool isSearch = false;
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -81,6 +84,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
+    return isSearch ? buildSearchBar(context) : buildAppBar(context);
+  }
+
+  FlexusSliverAppBar buildSearchBar(BuildContext context) {
+    return FlexusSliverAppBar(
+      title: FlexusSearchTextField(
+        hintText: "Search...",
+        onChanged: (String newValue) {
+          //SEARCH DB
+        },
+        textController: searchController,
+        suffixOnPressed: () {
+          setState(() {
+            searchController.text = "";
+            isSearch = false;
+          });
+        },
+      ),
+    );
+  }
+
+  FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
       leading: IconButton(
         icon: Icon(
@@ -119,7 +144,9 @@ class _HomePageState extends State<HomePage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            print('Lupe was clicked');
+            setState(() {
+              isSearch = true;
+            });
           },
         ),
       ],
