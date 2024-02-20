@@ -5,23 +5,23 @@ part 'workout_service.chopper.dart';
 @ChopperApi(baseUrl: '/workouts')
 abstract class WorkoutService extends ChopperService {
   @Get(path: '/')
-  Future<Response> getWorkouts(
+  Future<Response> getWorkoutOverviews(
     @Header('flexusjwt') String flexusJWTString,
   );
 
   @Get(path: '/search')
-  Future<Response> getSearchedWorkouts(
+  Future<Response> getSearchedWorkoutOverviews(
     @Header('flexusjwt') String flexusJWTString,
     @Query('keyword') String keyWord,
   );
 
   @Get(path: '/archive')
-  Future<Response> getArchivedWorkouts(
+  Future<Response> getArchivedWorkoutOverviews(
     @Header('flexusjwt') String flexusJWTString,
   );
 
   @Get(path: '/archive/search')
-  Future<Response> getSearchedArchivedWorkouts(
+  Future<Response> getSearchedArchivedWorkoutOverviews(
     @Header('flexusjwt') String flexusJWTString,
     @Query('keyword') String keyWord,
   );

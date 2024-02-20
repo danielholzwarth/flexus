@@ -1,4 +1,4 @@
-import 'package:app/hive/workout.dart';
+import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/workout_documentation/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +7,18 @@ import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class FlexusWorkoutListTile extends StatelessWidget {
-  final Workout workout;
+  final WorkoutOverview workoutOverview;
 
   const FlexusWorkoutListTile({
     super.key,
-    required this.workout,
+    required this.workoutOverview,
   });
 
   @override
   Widget build(BuildContext context) {
     final userBox = Hive.box('userBox');
+    final workout = workoutOverview.workout;
+
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
@@ -45,16 +47,16 @@ class FlexusWorkoutListTile extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          userBox.get("splits") != null
+          workoutOverview.splitName != null
               ? Text(
-                  userBox.get("splits")[workout.splitID],
+                  workoutOverview.splitName!,
                   style: TextStyle(
                     fontSize: AppSettings.fontSize,
                     color: AppSettings.font,
                   ),
                 )
               : Text(
-                  "Custom Split",
+                  "Custom Workout",
                   style: TextStyle(
                     fontSize: AppSettings.fontSize,
                     color: AppSettings.font,

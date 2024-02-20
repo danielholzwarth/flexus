@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/api/workout_service.dart';
 import 'package:app/hive/workout.dart';
+import 'package:app/hive/workout_overview.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -22,36 +23,40 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    //await Future.delayed(const Duration(seconds: 3));
 
     Response<dynamic> response;
     if (event.isSearch && event.isArchive) {
-      response = await _workoutService.getSearchedArchivedWorkouts(userBox.get("flexusjwt"), event.keyWord);
+      response = await _workoutService.getSearchedArchivedWorkoutOverviews(userBox.get("flexusjwt"), event.keyWord);
     } else if (event.isArchive) {
-      response = await _workoutService.getArchivedWorkouts(userBox.get("flexusjwt"));
+      response = await _workoutService.getArchivedWorkoutOverviews(userBox.get("flexusjwt"));
     } else if (event.isSearch) {
-      response = await _workoutService.getSearchedWorkouts(userBox.get("flexusjwt"), event.keyWord);
+      response = await _workoutService.getSearchedWorkoutOverviews(userBox.get("flexusjwt"), event.keyWord);
     } else {
-      response = await _workoutService.getWorkouts(userBox.get("flexusjwt"));
+      response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
     }
 
     if (response.isSuccessful) {
       if (response.bodyString != "null") {
         final List<dynamic> jsonList = jsonDecode(response.bodyString);
-        final List<Workout> workouts = jsonList.map((json) {
-          return Workout(
-            id: json['id'],
-            userAccountID: json['userAccountID'],
-            splitID: json['splitID'],
-            starttime: DateTime.parse(json['starttime']),
-            endtime: json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
-            isArchived: json['isArchived'],
+        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
+          return WorkoutOverview(
+            workout: Workout(
+              id: json['workout']['id'],
+              userAccountID: json['workout']['userAccountID'],
+              splitID: json['workout']['splitID'],
+              starttime: DateTime.parse(json['workout']['starttime']),
+              endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
+              isArchived: json['workout']['isArchived'],
+            ),
+            planName: json['planName'],
+            splitName: json['splitName'],
           );
         }).toList();
 
-        emit(WorkoutLoaded(workouts: workouts));
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
       } else {
-        emit(WorkoutLoaded(workouts: List.empty()));
+        emit(WorkoutLoaded(workoutOverviews: List.empty()));
       }
     } else {
       emit(WorkoutError());

@@ -1,5 +1,7 @@
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
+import 'package:app/hive/workout.dart';
+import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/login/startup.dart';
 import 'package:flutter/foundation.dart';
@@ -37,6 +39,8 @@ Future<void> initializeHive() async {
   try {
     Hive.registerAdapter(UserSettingsAdapter());
     Hive.registerAdapter(UserAccountAdapter());
+    Hive.registerAdapter(WorkoutAdapter());
+    Hive.registerAdapter(WorkoutOverviewAdapter());
 
     var userBox = await Hive.openBox('userBox');
   } catch (e) {

@@ -4,177 +4,212 @@ import (
 	"flexus/internal/types"
 )
 
-func (db DB) GetWorkouts(userAccountID types.UserAccountID) ([]types.Workout, error) {
+func (db DB) GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error) {
 	query := `
-        SELECT *
-        FROM workout
-        WHERE user_id = $1 AND is_archived = false
-		ORDER BY starttime DESC;
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = false
+		ORDER BY w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
 	if err != nil {
-		return []types.Workout{}, err
+		return []types.WorkoutOverview{}, err
 	}
 
-	var workouts []types.Workout
+	var workoutOverviews []types.WorkoutOverview
 
 	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
 		var workout types.Workout
-		var planID *types.PlanID
 		var splitID *types.SplitID
 
 		err := rows.Scan(
 			&workout.ID,
 			&workout.UserAccountID,
-			&planID,
 			&splitID,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
 		)
 		if err != nil {
 			return nil, err
 		}
-
-		if planID == nil {
-			planID = new(types.PlanID)
-		}
-		workout.PlanID = planID
 
 		if splitID == nil {
 			splitID = new(types.SplitID)
 		}
 		workout.SplitID = splitID
+		workoutOverview.Workout = workout
 
-		workouts = append(workouts, workout)
+		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return workouts, nil
+	return workoutOverviews, nil
 }
 
-func (db DB) GetSearchedWorkouts(userAccountID types.UserAccountID, keyword string) ([]types.Workout, error) {
+func (db DB) GetSearchedWorkoutOverviews(userAccountID types.UserAccountID, keyword string) ([]types.WorkoutOverview, error) {
 	query := `
-        SELECT w.*
-        FROM workout w
-        JOIN plan p ON w.plan_id = p.id
-        WHERE w.user_id = $1 AND w.is_archived = false AND p.name LIKE '%' || $2 || '%'
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = false
+		AND (LOWER(p.name) LIKE '%' || LOWER($2) || '%' OR LOWER(s.name) LIKE '%' || LOWER($2) || '%')
 		ORDER BY w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID, keyword)
 	if err != nil {
-		return nil, err
+		return []types.WorkoutOverview{}, err
 	}
-	defer rows.Close()
 
-	var workouts []types.Workout
+	var workoutOverviews []types.WorkoutOverview
 
 	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
 		var workout types.Workout
+		var splitID *types.SplitID
+
 		err := rows.Scan(
 			&workout.ID,
 			&workout.UserAccountID,
-			&workout.PlanID,
-			&workout.SplitID,
+			&splitID,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
 		)
 		if err != nil {
 			return nil, err
 		}
-		workouts = append(workouts, workout)
+
+		if splitID == nil {
+			splitID = new(types.SplitID)
+		}
+		workout.SplitID = splitID
+		workoutOverview.Workout = workout
+
+		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return workouts, nil
+	return workoutOverviews, nil
 }
 
-func (db DB) GetArchivedWorkouts(userAccountID types.UserAccountID) ([]types.Workout, error) {
+func (db DB) GetArchivedWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error) {
 	query := `
-        SELECT *
-        FROM workout
-        WHERE user_id = $1 AND is_archived = true
-		ORDER BY starttime DESC;
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = true
+		ORDER BY w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
 	if err != nil {
-		return nil, err
+		return []types.WorkoutOverview{}, err
 	}
-	defer rows.Close()
 
-	var workouts []types.Workout
+	var workoutOverviews []types.WorkoutOverview
 
 	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
 		var workout types.Workout
+		var splitID *types.SplitID
+
 		err := rows.Scan(
 			&workout.ID,
 			&workout.UserAccountID,
-			&workout.PlanID,
-			&workout.SplitID,
+			&splitID,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
 		)
 		if err != nil {
 			return nil, err
 		}
-		workouts = append(workouts, workout)
+
+		if splitID == nil {
+			splitID = new(types.SplitID)
+		}
+		workout.SplitID = splitID
+		workoutOverview.Workout = workout
+
+		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return workouts, nil
+	return workoutOverviews, nil
 }
 
-func (db DB) GetSearchedArchivedWorkouts(userAccountID types.UserAccountID, keyword string) ([]types.Workout, error) {
+func (db DB) GetSearchedArchivedWorkoutOverviews(userAccountID types.UserAccountID, keyword string) ([]types.WorkoutOverview, error) {
 	query := `
-        SELECT w.*
-        FROM workout w
-        JOIN plan p ON w.plan_id = p.id
-        WHERE w.user_id = $1 AND w.is_archived = true AND p.name LIKE '%' || $2 || '%'
-		ORDER BY starttime DESC;
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = true
+		AND (LOWER(p.name) LIKE '%' || LOWER($2) || '%' OR LOWER(s.name) LIKE '%' || LOWER($2) || '%')
+		ORDER BY w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID, keyword)
 	if err != nil {
-		return nil, err
+		return []types.WorkoutOverview{}, err
 	}
-	defer rows.Close()
 
-	var workouts []types.Workout
+	var workoutOverviews []types.WorkoutOverview
 
 	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
 		var workout types.Workout
+		var splitID *types.SplitID
+
 		err := rows.Scan(
 			&workout.ID,
 			&workout.UserAccountID,
-			&workout.PlanID,
-			&workout.SplitID,
+			&splitID,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
 		)
 		if err != nil {
 			return nil, err
 		}
-		workouts = append(workouts, workout)
+
+		if splitID == nil {
+			splitID = new(types.SplitID)
+		}
+		workout.SplitID = splitID
+		workoutOverview.Workout = workout
+
+		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return workouts, nil
+	return workoutOverviews, nil
 }

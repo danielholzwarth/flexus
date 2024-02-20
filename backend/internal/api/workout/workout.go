@@ -9,10 +9,10 @@ import (
 )
 
 type WorkoutStore interface {
-	GetWorkouts(userAccountID types.UserAccountID) ([]types.Workout, error)
-	GetSearchedWorkouts(userAccountID types.UserAccountID, keyWord string) ([]types.Workout, error)
-	GetArchivedWorkouts(userAccountID types.UserAccountID) ([]types.Workout, error)
-	GetSearchedArchivedWorkouts(userAccountID types.UserAccountID, keyWord string) ([]types.Workout, error)
+	GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
+	GetSearchedWorkoutOverviews(userAccountID types.UserAccountID, keyWord string) ([]types.WorkoutOverview, error)
+	GetArchivedWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
+	GetSearchedArchivedWorkoutOverviews(userAccountID types.UserAccountID, keyWord string) ([]types.WorkoutOverview, error)
 }
 
 type service struct {
@@ -27,10 +27,10 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 		workoutStore: workoutStore,
 	}
 
-	r.Get("/", s.getWorkouts())
-	r.Get("/search", s.getSearchedWorkouts())
-	r.Get("/archive", s.getArchivedWorkouts())
-	r.Get("/archive/search", s.getSearchedArchivedWorkouts())
+	r.Get("/", s.getWorkoutOverviews())
+	r.Get("/search", s.getSearchedWorkoutOverviews())
+	r.Get("/archive", s.getArchivedWorkoutOverviews())
+	r.Get("/archive/search", s.getSearchedArchivedWorkoutOverviews())
 
 	return s
 }
@@ -39,7 +39,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) getWorkouts() http.HandlerFunc {
+func (s service) getWorkoutOverviews() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -47,14 +47,14 @@ func (s service) getWorkouts() http.HandlerFunc {
 			return
 		}
 
-		workouts, err := s.workoutStore.GetWorkouts(claims.UserAccountID)
+		workoutOverviews, err := s.workoutStore.GetWorkoutOverviews(claims.UserAccountID)
 		if err != nil {
-			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
+			http.Error(w, "Failed to get WorkoutOverview", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workouts)
+		response, err := json.Marshal(workoutOverviews)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -67,7 +67,7 @@ func (s service) getWorkouts() http.HandlerFunc {
 	}
 }
 
-func (s service) getSearchedWorkouts() http.HandlerFunc {
+func (s service) getSearchedWorkoutOverviews() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -77,14 +77,14 @@ func (s service) getSearchedWorkouts() http.HandlerFunc {
 
 		keyWord := r.URL.Query().Get("keyword")
 
-		workouts, err := s.workoutStore.GetSearchedWorkouts(claims.UserAccountID, keyWord)
+		workoutOverviews, err := s.workoutStore.GetSearchedWorkoutOverviews(claims.UserAccountID, keyWord)
 		if err != nil {
 			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workouts)
+		response, err := json.Marshal(workoutOverviews)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -97,7 +97,7 @@ func (s service) getSearchedWorkouts() http.HandlerFunc {
 	}
 }
 
-func (s service) getArchivedWorkouts() http.HandlerFunc {
+func (s service) getArchivedWorkoutOverviews() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -105,14 +105,14 @@ func (s service) getArchivedWorkouts() http.HandlerFunc {
 			return
 		}
 
-		workouts, err := s.workoutStore.GetArchivedWorkouts(claims.UserAccountID)
+		workoutOverviews, err := s.workoutStore.GetArchivedWorkoutOverviews(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workouts)
+		response, err := json.Marshal(workoutOverviews)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -125,7 +125,7 @@ func (s service) getArchivedWorkouts() http.HandlerFunc {
 	}
 }
 
-func (s service) getSearchedArchivedWorkouts() http.HandlerFunc {
+func (s service) getSearchedArchivedWorkoutOverviews() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -135,14 +135,14 @@ func (s service) getSearchedArchivedWorkouts() http.HandlerFunc {
 
 		keyWord := r.URL.Query().Get("keyword")
 
-		workouts, err := s.workoutStore.GetSearchedArchivedWorkouts(claims.UserAccountID, keyWord)
+		workoutOverviews, err := s.workoutStore.GetSearchedArchivedWorkoutOverviews(claims.UserAccountID, keyWord)
 		if err != nil {
 			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workouts)
+		response, err := json.Marshal(workoutOverviews)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())

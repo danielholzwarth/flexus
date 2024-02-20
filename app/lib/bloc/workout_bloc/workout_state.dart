@@ -8,10 +8,10 @@ class WorkoutInitial extends WorkoutState {}
 class WorkoutLoading extends WorkoutState {}
 
 class WorkoutLoaded extends WorkoutState {
-  final List<Workout> workouts;
+  final List<WorkoutOverview> workoutOverviews;
 
   WorkoutLoaded({
-    required this.workouts,
+    required this.workoutOverviews,
   });
 }
 

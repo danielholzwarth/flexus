@@ -1,5 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
+import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
@@ -63,21 +64,25 @@ class _ArchivePageState extends State<ArchivePage> {
                   ),
                 );
               } else if (state is WorkoutLoaded) {
-                if (state.workouts.isNotEmpty) {
+                if (state.workoutOverviews.isNotEmpty) {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return FlexusWorkoutListTile(
-                          workout: Workout(
-                            id: state.workouts[index].id,
-                            userAccountID: state.workouts[index].userAccountID,
-                            starttime: state.workouts[index].starttime,
-                            endtime: state.workouts[index].endtime,
-                            isArchived: false,
+                          workoutOverview: WorkoutOverview(
+                            workout: Workout(
+                              id: state.workoutOverviews[index].workout.id,
+                              userAccountID: state.workoutOverviews[index].workout.userAccountID,
+                              starttime: state.workoutOverviews[index].workout.starttime,
+                              endtime: state.workoutOverviews[index].workout.endtime,
+                              isArchived: true,
+                            ),
+                            planName: state.workoutOverviews[index].planName,
+                            splitName: state.workoutOverviews[index].splitName,
                           ),
                         );
                       },
-                      childCount: state.workouts.length,
+                      childCount: state.workoutOverviews.length,
                     ),
                   );
                 } else {

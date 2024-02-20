@@ -18,7 +18,7 @@ final class _$WorkoutService extends WorkoutService {
   final Type definitionType = WorkoutService;
 
   @override
-  Future<Response<dynamic>> getWorkouts(String flexusJWTString) {
+  Future<Response<dynamic>> getWorkoutOverviews(String flexusJWTString) {
     final Uri $url = Uri.parse('/workouts/');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
@@ -33,7 +33,7 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
-  Future<Response<dynamic>> getSearchedWorkouts(
+  Future<Response<dynamic>> getSearchedWorkoutOverviews(
     String flexusJWTString,
     String keyWord,
   ) {
@@ -53,7 +53,8 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
-  Future<Response<dynamic>> getArchivedWorkouts(String flexusJWTString) {
+  Future<Response<dynamic>> getArchivedWorkoutOverviews(
+      String flexusJWTString) {
     final Uri $url = Uri.parse('/workouts/archive');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
@@ -68,7 +69,7 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
-  Future<Response<dynamic>> getSearchedArchivedWorkouts(
+  Future<Response<dynamic>> getSearchedArchivedWorkoutOverviews(
     String flexusJWTString,
     String keyWord,
   ) {
