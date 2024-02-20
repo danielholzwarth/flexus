@@ -178,6 +178,16 @@ CREATE TABLE workout (
     endtime TIMESTAMP,
     is_archived BOOLEAN NOT NULL
 );
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-11 12:00:00', '2024-01-11 12:45:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-13 09:30:00', '2024-01-13 10:30:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-01-15 07:00:00', '2024-01-15 07:30:00', 'true');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-17 18:00:00', '2024-01-17 19:00:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-21 08:30:00', '2024-01-21 09:45:00', 'false');
+INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-01-22 17:45:00', '2024-01-22 18:45:00', 'true');
 INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-23 08:15:00', '2024-01-23 09:10:00', 'false');
 INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-25 07:45:00', '2024-01-25 08:43:00', 'true');
 INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-28 18:00:00', '2024-01-28 18:31:00', 'true');

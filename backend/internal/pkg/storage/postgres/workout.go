@@ -8,7 +8,8 @@ func (db DB) GetWorkouts(userAccountID types.UserAccountID) ([]types.Workout, er
 	query := `
         SELECT *
         FROM workout
-        WHERE user_id = $1 AND is_archived = false;
+        WHERE user_id = $1 AND is_archived = false
+		ORDER BY starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
@@ -61,7 +62,8 @@ func (db DB) GetSearchedWorkouts(userAccountID types.UserAccountID, keyword stri
         SELECT w.*
         FROM workout w
         JOIN plan p ON w.plan_id = p.id
-        WHERE w.user_id = $1 AND w.is_archived = false AND p.name LIKE '%' || $2 || '%';
+        WHERE w.user_id = $1 AND w.is_archived = false AND p.name LIKE '%' || $2 || '%'
+		ORDER BY w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID, keyword)
@@ -100,7 +102,8 @@ func (db DB) GetArchivedWorkouts(userAccountID types.UserAccountID) ([]types.Wor
 	query := `
         SELECT *
         FROM workout
-        WHERE user_id = $1 AND is_archived = true;
+        WHERE user_id = $1 AND is_archived = true
+		ORDER BY starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
@@ -140,7 +143,8 @@ func (db DB) GetSearchedArchivedWorkouts(userAccountID types.UserAccountID, keyw
         SELECT w.*
         FROM workout w
         JOIN plan p ON w.plan_id = p.id
-        WHERE w.user_id = $1 AND w.is_archived = true AND p.name LIKE '%' || $2 || '%';
+        WHERE w.user_id = $1 AND w.is_archived = true AND p.name LIKE '%' || $2 || '%'
+		ORDER BY starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID, keyword)

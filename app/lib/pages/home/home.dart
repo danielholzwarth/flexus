@@ -201,6 +201,7 @@ class _HomePageState extends State<HomePage> {
           ),
           onPressed: () {
             setState(() {
+              isArchiveVisible = false;
               isSearch = true;
               workoutBloc.add(LoadWorkout(isSearch: true));
             });

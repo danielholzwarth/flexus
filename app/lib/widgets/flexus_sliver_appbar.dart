@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class FlexusSliverAppBar extends StatelessWidget {
   final Widget? leading;
+  final bool hasLeading;
   final Widget? title;
   final List<Widget>? actions;
 
@@ -11,6 +12,7 @@ class FlexusSliverAppBar extends StatelessWidget {
     this.leading,
     this.title,
     this.actions,
+    this.hasLeading = true,
   });
 
   @override
@@ -21,6 +23,7 @@ class FlexusSliverAppBar extends StatelessWidget {
       foregroundColor: AppSettings.font,
       floating: true,
       leading: leading,
+      automaticallyImplyLeading: hasLeading,
       title: title,
       centerTitle: title != null ? true : false,
       actions: actions,

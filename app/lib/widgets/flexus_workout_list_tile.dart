@@ -25,8 +25,8 @@ class FlexusWorkoutListTile extends StatelessWidget {
           context,
           PageTransition(
             type: PageTransitionType.rightToLeft,
-            child: const ViewWorkoutPage(
-              workoutID: 1,
+            child: ViewWorkoutPage(
+              workoutID: workout.id,
             ),
           ),
         );
@@ -54,7 +54,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
                   ),
                 )
               : Text(
-                  "Custom Workoutplan",
+                  "Custom Workout",
                   style: TextStyle(
                     fontSize: AppSettings.fontSize,
                     color: AppSettings.font,
