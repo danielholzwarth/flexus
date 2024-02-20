@@ -19,31 +19,28 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
     return Workout(
       id: fields[0] as int,
       userAccountID: fields[1] as int,
-      planID: fields[2] as int?,
-      splitID: fields[3] as int?,
-      starttime: fields[4] as DateTime,
-      endtime: fields[5] as DateTime?,
-      isArchived: fields[6] as bool,
+      splitID: fields[2] as int?,
+      starttime: fields[3] as DateTime,
+      endtime: fields[4] as DateTime?,
+      isArchived: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Workout obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.userAccountID)
       ..writeByte(2)
-      ..write(obj.planID)
-      ..writeByte(3)
       ..write(obj.splitID)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.starttime)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.endtime)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.isArchived);
   }
 

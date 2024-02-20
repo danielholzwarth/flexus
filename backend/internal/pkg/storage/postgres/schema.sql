@@ -87,7 +87,9 @@ CREATE TABLE gym (
     name VARCHAR(50) NOT NULL,
     location POINT NOT NULL
 );
---Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
+Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
+Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));
+Insert INTO "gym" ("name", "location") VALUES ('Another Gym', POINT(43.7128, -71.0060));
 
 
 CREATE TABLE user_account_gym (
@@ -95,8 +97,8 @@ CREATE TABLE user_account_gym (
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     gym_id BIGINT NOT NULL REFERENCES gym(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
---Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
---Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (2, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);
 
 
 CREATE TABLE friends (
@@ -149,7 +151,13 @@ CREATE TABLE split (
     name VARCHAR(20) NOT NULL,
     order_in_plan INTEGER NOT NULL
 );
---Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'legs', 1);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Push', 1);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Pull', 2);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Legs', 3);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Brust Bizeps Bauch', 1);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Beine Po', 2);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Schulter Nacken', 3);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Rücken Trizeps Bauch', 4);
 
 
 CREATE TABLE exercise (
@@ -172,36 +180,35 @@ CREATE TABLE exercise_split (
 CREATE TABLE workout (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    plan_id BIGINT REFERENCES plan(id) ON DELETE SET NULL ON UPDATE CASCADE,
     split_id BIGINT REFERENCES split(id) ON DELETE SET NULL ON UPDATE CASCADE,
     starttime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     endtime TIMESTAMP,
     is_archived BOOLEAN NOT NULL
 );
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-11 12:00:00', '2024-01-11 12:45:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-13 09:30:00', '2024-01-13 10:30:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-01-15 07:00:00', '2024-01-15 07:30:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-17 18:00:00', '2024-01-17 19:00:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-21 08:30:00', '2024-01-21 09:45:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-01-22 17:45:00', '2024-01-22 18:45:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-23 08:15:00', '2024-01-23 09:10:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-25 07:45:00', '2024-01-25 08:43:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-28 18:00:00', '2024-01-28 18:31:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-01-30 09:00:00', '2024-01-30 10:19:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-02-01 07:30:00', '2024-02-01 08:28:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-02-03 08:00:00', '2024-02-03 08:58:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-02-05 18:30:00', '2024-02-05 19:03:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-02-07 10:30:00', '2024-02-07 11:42:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-02-09 08:15:00', '2024-02-09 09:10:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-02-10 07:45:00', '2024-02-10 08:43:00', 'true');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-02-13 08:00:00', '2024-02-13 08:58:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, null, '2024-02-14 07:30:00', '2024-02-14 08:34:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
-INSERT INTO "workout" ("user_id", "plan_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, '2024-01-11 12:00:00', '2024-01-11 12:45:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, '2024-01-13 09:30:00', '2024-01-13 10:30:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, '2024-01-15 07:00:00', '2024-01-15 07:30:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-01-17 18:00:00', '2024-01-17 19:00:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-01-21 08:30:00', '2024-01-21 09:45:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-01-22 17:45:00', '2024-01-22 18:45:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-01-23 08:15:00', '2024-01-23 09:10:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-01-25 07:45:00', '2024-01-25 08:43:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-01-28 18:00:00', '2024-01-28 18:31:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-01-30 09:00:00', '2024-01-30 10:19:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-02-01 07:30:00', '2024-02-01 08:28:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-02-03 08:00:00', '2024-02-03 08:58:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-02-05 18:30:00', '2024-02-05 19:03:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-02-07 10:30:00', '2024-02-07 11:42:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-02-09 08:15:00', '2024-02-09 09:10:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-02-10 07:45:00', '2024-02-10 08:43:00', 'true');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-02-13 08:00:00', '2024-02-13 08:58:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-02-14 07:30:00', '2024-02-14 08:34:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
+INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, now(), null, 'false');
 
 
 CREATE TABLE set (

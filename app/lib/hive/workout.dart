@@ -11,24 +11,20 @@ class Workout extends HiveObject {
   int userAccountID;
 
   @HiveField(2)
-  int? planID;
-
-  @HiveField(3)
   int? splitID;
 
-  @HiveField(4)
+  @HiveField(3)
   DateTime starttime;
 
-  @HiveField(5)
+  @HiveField(4)
   DateTime? endtime;
 
-  @HiveField(6)
+  @HiveField(5)
   bool isArchived;
 
   Workout({
     required this.id,
     required this.userAccountID,
-    this.planID,
     this.splitID,
     required this.starttime,
     this.endtime,

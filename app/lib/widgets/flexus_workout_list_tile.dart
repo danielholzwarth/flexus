@@ -45,22 +45,22 @@ class FlexusWorkoutListTile extends StatelessWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          userBox.get("plans") != null
+          userBox.get("splits") != null
               ? Text(
-                  userBox.get("plans")[workout.planID],
+                  userBox.get("splits")[workout.splitID],
                   style: TextStyle(
                     fontSize: AppSettings.fontSize,
                     color: AppSettings.font,
                   ),
                 )
               : Text(
-                  "Custom Workout",
+                  "Custom Split",
                   style: TextStyle(
                     fontSize: AppSettings.fontSize,
                     color: AppSettings.font,
                   ),
                 ),
-          userBox.get("plans") != null
+          userBox.get("splits") != null
               ? Text(
                   DateFormat('dd.MM.yyyy').format(workout.starttime),
                   style: TextStyle(
@@ -91,7 +91,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
                     child: Text(choice),
                   );
                 }).toList()
-              : {'Archive', 'Share', 'Delete'}.map((String choice) {
+              : {'Archive', 'Delete'}.map((String choice) {
                   return PopupMenuItem<String>(
                     value: choice,
                     child: Text(choice),
