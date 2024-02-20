@@ -1,7 +1,6 @@
+import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
-import 'package:app/pages/friends/locations.dart';
 import 'package:app/pages/home/profile.dart';
-import 'package:app/pages/statistics/statistics.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
@@ -12,6 +11,7 @@ import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,11 +26,13 @@ class _HomePageState extends State<HomePage> {
   bool isArchiveVisible = false;
   bool isSearch = false;
   final TextEditingController searchController = TextEditingController();
+  final WorkoutBloc workoutBloc = WorkoutBloc();
 
   @override
   void initState() {
     super.initState();
     scrollController.addListener(scrollListener);
+    workoutBloc.add(LoadWorkout());
   }
 
   void scrollListener() {
@@ -47,50 +49,92 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (DragUpdateDetails details) {
-        implementHorizontalDraging(details, context);
-      },
-      child: Scaffold(
-        body: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            _buildFlexusSliverAppBar(context),
-            SliverVisibility(
-              sliver: const FlexusArchiveSliverAppBar(),
-              visible: isArchiveVisible,
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return FlexusWorkoutListTile(
-                    workout: Workout(
-                      id: index,
-                      userAccountID: index,
-                      starttime: DateTime.now().subtract(Duration(days: index)).add(Duration(minutes: index * 13)),
-                      endtime: DateTime.now().subtract(Duration(days: index)).add(Duration(minutes: 150 + index * 7)),
-                      isArchived: false,
+    return Scaffold(
+      body: CustomScrollView(
+        controller: scrollController,
+        slivers: <Widget>[
+          _buildFlexusSliverAppBar(context),
+          SliverVisibility(
+            sliver: const FlexusArchiveSliverAppBar(),
+            visible: isArchiveVisible,
+          ),
+          BlocConsumer(
+              bloc: workoutBloc,
+              listener: (context, state) {
+                if (state is WorkoutLoaded) {}
+              },
+              builder: (context, state) {
+                if (state is WorkoutLoading) {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'Loading',
+                        style: TextStyle(fontSize: AppSettings.fontSize),
+                      ),
                     ),
                   );
-                },
-                childCount: 50,
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: FlexusFloatingActionButton(
-          onPressed: () async {
-            Navigator.push(
-              context,
-              PageTransition(
-                type: PageTransitionType.fade,
-                child: const StartWorkoutPage(),
-              ),
-            );
-          },
-        ),
-        bottomNavigationBar: FlexusBottomNavigationBar(scrollController: scrollController),
+                } else if (state is WorkoutLoaded) {
+                  if (state.workouts.isNotEmpty) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return FlexusWorkoutListTile(
+                            workout: Workout(
+                              id: state.workouts[index].id,
+                              userAccountID: state.workouts[index].userAccountID,
+                              starttime: state.workouts[index].starttime,
+                              endtime: state.workouts[index].endtime,
+                              isArchived: false,
+                            ),
+                          );
+                        },
+                        childCount: state.workouts.length,
+                      ),
+                    );
+                  } else {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          'No workouts found',
+                          style: TextStyle(fontSize: AppSettings.fontSize),
+                        ),
+                      ),
+                    );
+                  }
+                } else if (state is WorkoutError) {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'Error loading workouts',
+                        style: TextStyle(fontSize: AppSettings.fontSize),
+                      ),
+                    ),
+                  );
+                } else {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'Error XYZ',
+                        style: TextStyle(fontSize: AppSettings.fontSize),
+                      ),
+                    ),
+                  );
+                }
+              }),
+        ],
       ),
+      floatingActionButton: FlexusFloatingActionButton(
+        onPressed: () async {
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: const StartWorkoutPage(),
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: FlexusBottomNavigationBar(scrollController: scrollController),
     );
   }
 
@@ -103,13 +147,14 @@ class _HomePageState extends State<HomePage> {
       title: FlexusSearchTextField(
         hintText: "Search...",
         onChanged: (String newValue) {
-          //SEARCH DB
+          workoutBloc.add(LoadWorkout(isSearch: true, keyWord: searchController.text));
         },
         textController: searchController,
         suffixOnPressed: () {
           setState(() {
             searchController.text = "";
             isSearch = false;
+            workoutBloc.add(LoadWorkout());
           });
         },
       ),
@@ -157,30 +202,11 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             setState(() {
               isSearch = true;
+              workoutBloc.add(LoadWorkout(isSearch: true));
             });
           },
         ),
       ],
-    );
-  }
-}
-
-void implementHorizontalDraging(DragUpdateDetails details, BuildContext context) {
-  if (details.delta.dx > 0.5) {
-    Navigator.pushReplacement(
-      context,
-      PageTransition(
-        type: PageTransitionType.leftToRight,
-        child: const StatisticsPage(),
-      ),
-    );
-  } else {
-    Navigator.pushReplacement(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: const LocationsPage(),
-      ),
     );
   }
 }

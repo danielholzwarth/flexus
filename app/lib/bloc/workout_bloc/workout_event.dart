@@ -4,11 +4,15 @@ part of 'workout_bloc.dart';
 abstract class WorkoutEvent {}
 
 class LoadWorkout extends WorkoutEvent {
-  final int userId;
-  final bool fromCache;
+  final bool isArchive;
+  final bool isFromCache;
+  final bool isSearch;
+  final String keyWord;
 
   LoadWorkout({
-    this.userId = 0,
-    this.fromCache = true,
+    this.isArchive = false,
+    this.isFromCache = false,
+    this.isSearch = false,
+    this.keyWord = "",
   });
 }

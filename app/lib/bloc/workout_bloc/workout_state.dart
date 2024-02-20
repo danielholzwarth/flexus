@@ -9,11 +9,9 @@ class WorkoutLoading extends WorkoutState {}
 
 class WorkoutLoaded extends WorkoutState {
   final List<Workout> workouts;
-  final bool isOffline;
 
   WorkoutLoaded({
     required this.workouts,
-    required this.isOffline,
   });
 }
 
