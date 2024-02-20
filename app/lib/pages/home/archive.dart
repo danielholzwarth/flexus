@@ -1,7 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_archive_sliver_appbar.dart';
 import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
@@ -17,10 +16,10 @@ class ArchivePage extends StatefulWidget {
 
 class _ArchivePageState extends State<ArchivePage> {
   final ScrollController scrollController = ScrollController();
-  bool isArchiveVisible = false;
-  bool isSearch = false;
   final TextEditingController searchController = TextEditingController();
   final WorkoutBloc workoutBloc = WorkoutBloc();
+  bool isArchiveVisible = false;
+  bool isSearch = false;
 
   @override
   void initState() {
@@ -118,24 +117,7 @@ class _ArchivePageState extends State<ArchivePage> {
   }
 
   Widget _buildFlexusSliverAppBar(BuildContext context) {
-    return isSearch
-        ? buildSearchBar(context)
-        : FlexusArchiveSliverAppBar(
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  size: AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  setState(() {
-                    isSearch = true;
-                    workoutBloc.add(LoadWorkout(isSearch: true));
-                  });
-                },
-              ),
-            ],
-          );
+    return isSearch ? buildSearchBar(context) : buildAppBar(context);
   }
 
   FlexusSliverAppBar buildSearchBar(BuildContext context) {
@@ -159,6 +141,29 @@ class _ArchivePageState extends State<ArchivePage> {
           });
         },
       ),
+    );
+  }
+
+  FlexusSliverAppBar buildAppBar(BuildContext context) {
+    return FlexusSliverAppBar(
+      title: Text(
+        "Archive",
+        style: TextStyle(fontSize: AppSettings.fontSizeTitle, color: AppSettings.font),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.search,
+            size: AppSettings.fontSizeTitle,
+          ),
+          onPressed: () {
+            setState(() {
+              isSearch = true;
+              workoutBloc.add(LoadWorkout(isSearch: true));
+            });
+          },
+        ),
+      ],
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/pages/home/profile.dart';
+import 'package:app/pages/login/login.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
@@ -12,6 +13,8 @@ import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,6 +30,8 @@ class _HomePageState extends State<HomePage> {
   bool isSearch = false;
   final TextEditingController searchController = TextEditingController();
   final WorkoutBloc workoutBloc = WorkoutBloc();
+  final userBox = Hive.box('userBox');
+  bool isTokenExpired = false;
 
   @override
   void initState() {
@@ -49,6 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
     return Scaffold(
       body: CustomScrollView(
         controller: scrollController,
@@ -179,6 +185,24 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       actions: [
+        Visibility(
+          visible: isTokenExpired,
+          child: IconButton(
+            icon: Icon(
+              Icons.sync,
+              size: AppSettings.fontSizeTitle,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: const LoginPage(),
+                ),
+              );
+            },
+          ),
+        ),
         IconButton(
           icon: Icon(
             Icons.menu_book,
