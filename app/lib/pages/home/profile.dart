@@ -88,15 +88,16 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           Positioned(
-              left: screenWidth * 0.28,
-              top: screenWidth * 0.5,
-              child: Text(
-                "13",
-                style: TextStyle(
-                  color: AppSettings.primary,
-                  fontSize: AppSettings.fontSizeTitle,
-                ),
-              )),
+            left: screenWidth * 0.28,
+            top: screenWidth * 0.5,
+            child: Text(
+              "13",
+              style: TextStyle(
+                color: AppSettings.primary,
+                fontSize: AppSettings.fontSizeTitle,
+              ),
+            ),
+          ),
         ],
       ),
     );
