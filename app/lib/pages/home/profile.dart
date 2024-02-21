@@ -1,12 +1,16 @@
+import 'dart:convert';
+
+import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
 import 'package:app/pages/home/settings.dart';
 import 'package:app/pages/workout_documentation/exercises.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   final bool isOwnProfile;
   final int userID;
   const ProfilePage({
@@ -16,9 +20,16 @@ class ProfilePage extends StatelessWidget {
   });
 
   @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    final userBox = Hive.box('userBox');
+    final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
       backgroundColor: AppSettings.background,
@@ -26,7 +37,7 @@ class ProfilePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            buildPictures(screenWidth, context),
+            buildPictures(screenWidth, context, userAccount),
             buildNames(),
             const Spacer(),
             buildBestLifts(screenHeight, screenWidth),
@@ -58,7 +69,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  SizedBox buildPictures(double screenWidth, BuildContext context) {
+  SizedBox buildPictures(double screenWidth, BuildContext context, UserAccount userAccount) {
     return SizedBox(
       width: screenWidth * 0.8,
       height: screenWidth * 0.8,
@@ -81,16 +92,21 @@ class ProfilePage extends StatelessWidget {
                   PageTransition(
                     type: PageTransitionType.fade,
                     child: ProfilePicturePage(
-                      isOwnProfile: this.isOwnProfile,
+                      isOwnProfile: widget.isOwnProfile,
                     ),
                   ),
-                ),
-                child: CircleAvatar(
-                  radius: screenWidth * 0.15,
-                  backgroundImage: const NetworkImage(
-                    'https://www.anthropics.com/portraitpro/img/page-images/homepage/v22/what-can-it-do-2A.jpg',
-                  ),
-                ),
+                ).then((value) => setState(() {})),
+                child: userAccount.profilePicture != null
+                    ? CircleAvatar(
+                        radius: screenWidth * 0.15,
+                        backgroundImage: MemoryImage(
+                          base64.decode(userAccount.profilePicture!),
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: screenWidth * 0.15,
+                        backgroundColor: Colors.transparent,
+                      ),
               ),
             ),
           ),
@@ -135,7 +151,7 @@ class ProfilePage extends StatelessWidget {
             size: AppSettings.fontSizeTitle,
           ),
           itemBuilder: (BuildContext context) {
-            return isOwnProfile
+            return widget.isOwnProfile
                 ? {'Settings', 'Leveling', 'Change best lifts'}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,

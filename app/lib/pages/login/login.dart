@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:app/api/user_account_service.dart';
+import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
@@ -75,6 +78,16 @@ class _LoginPageState extends State<LoginPage> {
         if (response.isSuccessful) {
           final jwt = response.headers["flexusjwt"];
           userBox.put("flexusjwt", jwt);
+
+          final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+          final userAccount = UserAccount(
+            id: jsonMap['id'],
+            username: jsonMap['username'],
+            name: jsonMap['name'],
+            createdAt: DateTime.parse(jsonMap['createdAt']),
+            level: jsonMap['level'],
+          );
+          userBox.put("userAccount", userAccount);
 
           ScaffoldMessenger.of(context).clearSnackBars();
           Navigator.pushAndRemoveUntil(
