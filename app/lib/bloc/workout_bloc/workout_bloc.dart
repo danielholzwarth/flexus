@@ -17,13 +17,15 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
   WorkoutBloc() : super(WorkoutInitial()) {
     on<LoadWorkout>(_onLoadWorkout);
+    on<ChangeArchiveWorkout>(_onChangeArchiveWorkout);
+    on<DeleteWorkout>(_onDeleteWorkout);
   }
 
   void _onLoadWorkout(LoadWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     if (event.isSearch && event.isArchive) {
@@ -35,6 +37,80 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     } else {
       response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
     }
+
+    if (response.isSuccessful) {
+      if (response.bodyString != "null") {
+        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
+          return WorkoutOverview(
+            workout: Workout(
+              id: json['workout']['id'],
+              userAccountID: json['workout']['userAccountID'],
+              splitID: json['workout']['splitID'],
+              starttime: DateTime.parse(json['workout']['starttime']),
+              endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
+              isArchived: json['workout']['isArchived'],
+            ),
+            planName: json['planName'],
+            splitName: json['splitName'],
+          );
+        }).toList();
+
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+      } else {
+        emit(WorkoutLoaded(workoutOverviews: List.empty()));
+      }
+    } else {
+      emit(WorkoutError());
+    }
+  }
+
+  void _onChangeArchiveWorkout(ChangeArchiveWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutLoading());
+
+    //simulate backend request delay
+    //await Future.delayed(const Duration(seconds: 3));
+
+    Response<dynamic> response;
+    response = await _workoutService.putWorkoutArchiveStatus(userBox.get("flexusjwt"), event.workoutID);
+
+    if (response.isSuccessful) {
+      if (response.bodyString != "null") {
+        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
+          return WorkoutOverview(
+            workout: Workout(
+              id: json['workout']['id'],
+              userAccountID: json['workout']['userAccountID'],
+              splitID: json['workout']['splitID'],
+              starttime: DateTime.parse(json['workout']['starttime']),
+              endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
+              isArchived: json['workout']['isArchived'],
+            ),
+            planName: json['planName'],
+            splitName: json['splitName'],
+          );
+        }).toList();
+
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+      } else {
+        emit(WorkoutLoaded(workoutOverviews: List.empty()));
+      }
+    } else {
+      emit(WorkoutError());
+    }
+  }
+
+  void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutLoading());
+
+    print("object");
+
+    //simulate backend request delay
+    //await Future.delayed(const Duration(seconds: 3));
+
+    Response<dynamic> response;
+    response = await _workoutService.putWorkoutArchiveStatus(userBox.get("flexusjwt"), event.workoutID);
 
     if (response.isSuccessful) {
       if (response.bodyString != "null") {

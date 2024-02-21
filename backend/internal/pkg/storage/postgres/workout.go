@@ -213,3 +213,125 @@ func (db DB) GetSearchedArchivedWorkoutOverviews(userAccountID types.UserAccount
 
 	return workoutOverviews, nil
 }
+
+func (db DB) PutWorkoutArchiveStatus(userAccountID types.UserAccountID, workoutID types.WorkoutID) ([]types.WorkoutOverview, error) {
+	var currentStatus bool
+	err := db.pool.QueryRow("SELECT is_archived FROM workout WHERE id = $1", workoutID).Scan(&currentStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	newStatus := !currentStatus
+
+	_, err = db.pool.Exec("UPDATE workout SET is_archived = $1 WHERE id = $2", newStatus, workoutID)
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = false
+		ORDER BY w.starttime DESC;
+    `
+
+	rows, err := db.pool.Query(query, userAccountID)
+	if err != nil {
+		return []types.WorkoutOverview{}, err
+	}
+
+	var workoutOverviews []types.WorkoutOverview
+
+	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
+		var workout types.Workout
+		var splitID *types.SplitID
+
+		err := rows.Scan(
+			&workout.ID,
+			&workout.UserAccountID,
+			&splitID,
+			&workout.Starttime,
+			&workout.Endtime,
+			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if splitID == nil {
+			splitID = new(types.SplitID)
+		}
+		workout.SplitID = splitID
+		workoutOverview.Workout = workout
+
+		workoutOverviews = append(workoutOverviews, workoutOverview)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return workoutOverviews, nil
+}
+
+func (db DB) DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) ([]types.WorkoutOverview, error) {
+	_, err := db.pool.Exec("DELETE FROM workout WHERE id = $1", workoutID)
+	if err != nil {
+		return nil, err
+	}
+
+	query := `
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		FROM workout w
+		LEFT JOIN split s ON w.split_id = s.id
+		LEFT JOIN plan p ON s.plan_id = p.id
+		WHERE w.user_id = $1 AND w.is_archived = false
+		ORDER BY w.starttime DESC;
+    `
+
+	rows, err := db.pool.Query(query, userAccountID)
+	if err != nil {
+		return []types.WorkoutOverview{}, err
+	}
+
+	var workoutOverviews []types.WorkoutOverview
+
+	for rows.Next() {
+		var workoutOverview types.WorkoutOverview
+		var workout types.Workout
+		var splitID *types.SplitID
+
+		err := rows.Scan(
+			&workout.ID,
+			&workout.UserAccountID,
+			&splitID,
+			&workout.Starttime,
+			&workout.Endtime,
+			&workout.IsArchived,
+			&workoutOverview.PlanName,
+			&workoutOverview.SplitName,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if splitID == nil {
+			splitID = new(types.SplitID)
+		}
+		workout.SplitID = splitID
+		workoutOverview.Workout = workout
+
+		workoutOverviews = append(workoutOverviews, workoutOverview)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return workoutOverviews, nil
+}

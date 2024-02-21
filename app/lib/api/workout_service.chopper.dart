@@ -89,6 +89,42 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
+  Future<Response<dynamic>> putWorkoutArchiveStatus(
+    String flexusJWTString,
+    int workoutID,
+  ) {
+    final Uri $url = Uri.parse('/workouts/${workoutID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> deleteWorkout(
+    String flexusJWTString,
+    int workoutID,
+  ) {
+    final Uri $url = Uri.parse('/workouts/${workoutID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> getWorkoutDetails(
     String flexusJWTString,
     int workoutID,

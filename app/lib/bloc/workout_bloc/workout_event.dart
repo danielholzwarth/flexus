@@ -16,3 +16,19 @@ class LoadWorkout extends WorkoutEvent {
     this.keyWord = "",
   });
 }
+
+class ChangeArchiveWorkout extends WorkoutEvent {
+  final int workoutID;
+
+  ChangeArchiveWorkout({
+    required this.workoutID,
+  });
+}
+
+class DeleteWorkout extends WorkoutEvent {
+  final int workoutID;
+
+  DeleteWorkout({
+    required this.workoutID,
+  });
+}

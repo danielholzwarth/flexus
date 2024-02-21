@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
                               planName: state.workoutOverviews[index].planName,
                               splitName: state.workoutOverviews[index].splitName,
                             ),
+                            workoutBloc: workoutBloc,
                           );
                         },
                         childCount: state.workoutOverviews.length,

@@ -80,6 +80,7 @@ class _ArchivePageState extends State<ArchivePage> {
                             planName: state.workoutOverviews[index].planName,
                             splitName: state.workoutOverviews[index].splitName,
                           ),
+                          workoutBloc: workoutBloc,
                         );
                       },
                       childCount: state.workoutOverviews.length,
