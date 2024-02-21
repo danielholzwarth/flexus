@@ -6,7 +6,6 @@ import 'package:app/pages/login/login.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_archive_sliver_appbar.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_search_textfield.dart';
@@ -37,20 +36,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    scrollController.addListener(scrollListener);
     workoutBloc.add(LoadWorkout());
-  }
-
-  void scrollListener() {
-    if (scrollController.offset == 0) {
-      setState(() {
-        isArchiveVisible = true;
-      });
-    } else {
-      setState(() {
-        isArchiveVisible = false;
-      });
-    }
   }
 
   @override
@@ -61,10 +47,6 @@ class _HomePageState extends State<HomePage> {
         controller: scrollController,
         slivers: <Widget>[
           _buildFlexusSliverAppBar(context),
-          SliverVisibility(
-            sliver: const FlexusArchiveSliverAppBar(),
-            visible: isArchiveVisible,
-          ),
           BlocConsumer(
               bloc: workoutBloc,
               listener: (context, state) {
@@ -208,6 +190,21 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.archive,
+            size: AppSettings.fontSizeTitle,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: const PlanPage(),
+              ),
+            );
+          },
         ),
         IconButton(
           icon: Icon(
