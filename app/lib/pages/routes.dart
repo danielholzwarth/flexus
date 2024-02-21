@@ -51,7 +51,8 @@ class AppRoutes {
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomePage());
       case '/profile':
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
+        List<dynamic> userInfo = args as List<dynamic>;
+        return MaterialPageRoute(builder: (_) => ProfilePage(isOwnProfile: userInfo[0], userID: userInfo[1]));
       case '/profile_picture':
         return MaterialPageRoute(builder: (_) => const ProfilePicturePage());
       case '/leveling':

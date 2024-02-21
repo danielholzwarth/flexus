@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
             context,
             PageTransition(
               type: PageTransitionType.leftToRight,
-              child: const ProfilePage(),
+              child: const ProfilePage(isOwnProfile: true, userID: 1),
             ),
           );
         },
