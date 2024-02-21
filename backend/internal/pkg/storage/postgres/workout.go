@@ -233,11 +233,11 @@ func (db DB) PutWorkoutArchiveStatus(userAccountID types.UserAccountID, workoutI
 		FROM workout w
 		LEFT JOIN split s ON w.split_id = s.id
 		LEFT JOIN plan p ON s.plan_id = p.id
-		WHERE w.user_id = $1 AND w.is_archived = false
+		WHERE w.user_id = $1 AND w.is_archived = $2
 		ORDER BY w.starttime DESC;
     `
 
-	rows, err := db.pool.Query(query, userAccountID)
+	rows, err := db.pool.Query(query, userAccountID, currentStatus)
 	if err != nil {
 		return []types.WorkoutOverview{}, err
 	}

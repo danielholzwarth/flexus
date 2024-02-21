@@ -1,6 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
+import 'package:app/pages/home/archive.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/pages/login/login.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
@@ -201,9 +202,9 @@ class _HomePageState extends State<HomePage> {
               context,
               PageTransition(
                 type: PageTransitionType.fade,
-                child: const PlanPage(),
+                child: const ArchivePage(),
               ),
-            );
+            ).then((value) => workoutBloc.add(LoadWorkout()));
           },
         ),
         IconButton(
