@@ -9,6 +9,7 @@ class LevelingPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: AppSettings.background,
       appBar: AppBar(
         title: const Text('Leveling'),
         centerTitle: true,

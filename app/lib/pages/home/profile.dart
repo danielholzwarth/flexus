@@ -73,17 +73,24 @@ class ProfilePage extends StatelessWidget {
           Positioned(
             left: screenWidth * 0.25,
             top: screenWidth * 0.12,
-            child: GestureDetector(
-              onTap: () => Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.leftToRight,
-                  child: const ProfilePicturePage(),
+            child: Hero(
+              tag: "profile_picture",
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: ProfilePicturePage(
+                      isOwnProfile: this.isOwnProfile,
+                    ),
+                  ),
                 ),
-              ),
-              child: CircleAvatar(
-                radius: screenWidth * 0.15,
-                backgroundImage: const NetworkImage('https://www.anthropics.com/portraitpro/img/page-images/homepage/v22/what-can-it-do-2A.jpg'),
+                child: CircleAvatar(
+                  radius: screenWidth * 0.15,
+                  backgroundImage: const NetworkImage(
+                    'https://www.anthropics.com/portraitpro/img/page-images/homepage/v22/what-can-it-do-2A.jpg',
+                  ),
+                ),
               ),
             ),
           ),

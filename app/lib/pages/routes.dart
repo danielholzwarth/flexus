@@ -54,7 +54,8 @@ class AppRoutes {
         List<dynamic> userInfo = args as List<dynamic>;
         return MaterialPageRoute(builder: (_) => ProfilePage(isOwnProfile: userInfo[0], userID: userInfo[1]));
       case '/profile_picture':
-        return MaterialPageRoute(builder: (_) => const ProfilePicturePage());
+        bool isOwnProfile = args as bool;
+        return MaterialPageRoute(builder: (_) => ProfilePicturePage(isOwnProfile: isOwnProfile));
       case '/leveling':
         return MaterialPageRoute(builder: (_) => const LevelingPage());
       case '/settings':
