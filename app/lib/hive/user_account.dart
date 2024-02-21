@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:hive/hive.dart';
 
 part 'user_account.g.dart';
@@ -20,7 +22,7 @@ class UserAccount extends HiveObject {
   int level;
 
   @HiveField(5)
-  String? profilePicture;
+  Uint8List? profilePicture;
 
   @HiveField(6)
   int? bodyweight;

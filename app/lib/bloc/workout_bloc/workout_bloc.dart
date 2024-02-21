@@ -104,8 +104,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutLoading());
 
-    print("object");
-
     //simulate backend request delay
     //await Future.delayed(const Duration(seconds: 3));
 

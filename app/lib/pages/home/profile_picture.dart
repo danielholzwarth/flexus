@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
@@ -74,7 +75,6 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                   case "Choose new picture":
                     //Upload to Backend
                     getImage();
-                    setState(() {});
                     break;
 
                   case "Delete picture":
@@ -101,7 +101,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
           child: Hero(
             tag: 'profile_picture',
             child: userAccount.profilePicture != null
-                ? Image.memory(base64.decode(userAccount.profilePicture!))
+                ? Image.memory(userAccount.profilePicture!)
                 : Icon(
                     Icons.hide_image_outlined,
                     size: screenWidth * 0.7,
@@ -121,12 +121,13 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         });
 
         List<int> imageBytes = await pickedFile.readAsBytes();
-        String base64Image = base64Encode(imageBytes);
+        Uint8List uint8List = Uint8List.fromList(imageBytes);
 
         UserAccount userAccount = userBox.get("userAccount");
-        userAccount.profilePicture = base64Image;
+        userAccount.profilePicture = uint8List;
 
         userBox.put("userAccount", userAccount);
+        setState(() {});
       }
     } catch (e) {
       print("Error picking image from gallery: $e");

@@ -11,9 +11,9 @@ type UserAccount struct {
 	Password       []byte        `json:"password"`
 	CreatedAt      time.Time     `json:"createdAt"`
 	Level          int           `json:"level"`
-	ProfilePicture *string        `json:"profilePicture"`
-	Bodyweight     *int           `json:"bodyweight"`
-	GenderID       *int           `json:"genderID"`
+	ProfilePicture *[]byte       `json:"profilePicture"`
+	Bodyweight     *int          `json:"bodyweight"`
+	GenderID       *int          `json:"genderID"`
 }
 
 type CreateUserRequest struct {

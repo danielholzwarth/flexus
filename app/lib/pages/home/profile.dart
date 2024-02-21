@@ -99,9 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: userAccount.profilePicture != null
                     ? CircleAvatar(
                         radius: screenWidth * 0.15,
-                        backgroundImage: MemoryImage(
-                          base64.decode(userAccount.profilePicture!),
-                        ),
+                        backgroundImage: MemoryImage(userAccount.profilePicture!),
                       )
                     : CircleAvatar(
                         radius: screenWidth * 0.15,

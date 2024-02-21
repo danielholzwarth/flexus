@@ -84,7 +84,7 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
 	}
 
 	if userAccount.ProfilePicture == nil {
-		userAccount.ProfilePicture = new(string)
+		userAccount.ProfilePicture = new([]byte)
 	}
 
 	if userAccount.Bodyweight == nil {

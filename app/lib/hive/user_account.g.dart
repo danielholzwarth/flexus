@@ -22,7 +22,7 @@ class UserAccountAdapter extends TypeAdapter<UserAccount> {
       name: fields[2] as String,
       createdAt: fields[3] as DateTime,
       level: fields[4] as int,
-      profilePicture: fields[5] as String?,
+      profilePicture: fields[5] as Uint8List?,
       bodyweight: fields[6] as int?,
       genderID: fields[7] as int?,
     );
