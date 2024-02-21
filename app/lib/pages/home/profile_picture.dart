@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:app/hive/user_account.dart';
@@ -72,11 +71,12 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
               onSelected: (String choice) {
                 switch (choice) {
                   case "Take new picture":
+                    takeImage();
+                    break;
                   case "Choose new picture":
                     //Upload to Backend
-                    getImage();
+                    getImageFromGallery();
                     break;
-
                   case "Delete picture":
                     //Upload to Backend
                     UserAccount userAccount = userBox.get("userAccount");
@@ -84,7 +84,6 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                     userBox.put("userAccount", userAccount);
                     setState(() {});
                     break;
-
                   default:
                     print("not implemented yet");
                 }
@@ -112,7 +111,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
     );
   }
 
-  Future<void> getImage() async {
+  Future<void> getImageFromGallery() async {
     try {
       final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
@@ -131,6 +130,24 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
       }
     } catch (e) {
       print("Error picking image from gallery: $e");
+    }
+  }
+
+  Future<void> takeImage() async {
+    try {
+      final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+      if (pickedFile != null) {
+        List<int> imageBytes = await pickedFile.readAsBytes();
+        Uint8List uint8List = Uint8List.fromList(imageBytes);
+
+        UserAccount userAccount = userBox.get("userAccount");
+        userAccount.profilePicture = uint8List;
+
+        userBox.put("userAccount", userAccount);
+        setState(() {});
+      }
+    } catch (e) {
+      print("Error taking image: $e");
     }
   }
 }
