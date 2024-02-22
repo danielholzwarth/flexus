@@ -4,19 +4,10 @@ part 'user_account_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/user_accounts')
 abstract class UserAccountService extends ChopperService {
-  @Post()
-  Future<Response> postUserAccount(
-    @Body() Map<String, dynamic> userAccount,
-  );
-
-  @Get(path: '/availability')
-  Future<Response> getUsernameAvailability(
-    @Query('username') String username,
-  );
-
-  @Get(path: '/login')
-  Future<Response> getLogin(
-    @Body() Map<String, dynamic> loginData,
+  @Get(path: '/{userAccountID}/overview')
+  Future<Response> getUserAccountOverview(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('userAccountID') int userAccountID,
   );
 
   static UserAccountService create() {

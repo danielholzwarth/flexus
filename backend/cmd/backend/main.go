@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"flexus/api"
+	"flexus/internal/api/login_user_account"
 	flexusMiddleware "flexus/internal/api/middleware"
 	"flexus/internal/api/user_account"
 	"flexus/internal/api/user_settings.go"
@@ -71,10 +72,11 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("connecting to postgres: %w", err)
 	}
-
-	r.Mount("/user_accounts", user_account.NewService(db))
+	//Changed to login
+	r.Mount("/login_user_accounts", login_user_account.NewService(db))
 	r.Mount("/user_settings", flexusMiddleware.ValidateJWT(user_settings.NewService(db)))
 	r.Mount("/workouts", flexusMiddleware.ValidateJWT(workout.NewService(db)))
+	r.Mount("/user_accounts", flexusMiddleware.ValidateJWT(user_account.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

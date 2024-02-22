@@ -166,7 +166,10 @@ CREATE TABLE exercise (
     name VARCHAR(50) NOT NULL,
     type_id BIGINT NOT NULL REFERENCES exercise_type(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
---Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (1, 'benchpress', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpress', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
 
 
 CREATE TABLE exercise_split (
@@ -216,9 +219,14 @@ CREATE TABLE set (
     workout_id BIGINT NOT NULL REFERENCES workout(id) ON DELETE CASCADE ON UPDATE CASCADE,
     exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
     order_number INTEGER NOT NULL,
-    measurement VARCHAR(50) NOT NULL
+    repetitions INTEGER,
+    weight DECIMAL,
+    duration DECIMAL
 );
---Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (1, 1, 1, '8x120');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (1, 1, 1, 3, 215.5, null);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (4, 2, 1, null, null, 203.3);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 3, 1, 8, 125, null);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 2, 2, null, null, 192.8);
 
 
 CREATE TABLE best_lifts (
@@ -227,6 +235,8 @@ CREATE TABLE best_lifts (
     set_id BIGINT NOT NULL REFERENCES set(id) ON DELETE CASCADE ON UPDATE CASCADE,
     position_id BIGINT NOT NULL REFERENCES position(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
---Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
+Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
+Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 2, 2);
+Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 3, 3);
 
 COMMIT;

@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:app/api/user_account_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
@@ -24,11 +23,18 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final userAccountService = UserAccountService.create();
+  final userBox = Hive.box('userBox');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final userBox = Hive.box('userBox');
     final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
@@ -40,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
             buildPictures(screenWidth, context, userAccount),
             buildNames(),
             const Spacer(),
-            buildBestLifts(screenHeight, screenWidth),
+            buildBestLift(screenHeight, screenWidth),
             SizedBox(height: screenHeight * 0.2)
           ],
         ),
@@ -124,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row buildBestLifts(double screenHeight, double screenWidth) {
+  Row buildBestLift(double screenHeight, double screenWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -163,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   }).toList();
           },
-          onSelected: (String choice) {
+          onSelected: (String choice) async {
             switch (choice) {
               case "Settings":
                 Navigator.push(
@@ -184,6 +190,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 break;
               case "Change best lifts":
+                final response = await userAccountService.getUserAccountOverview(userBox.get("flexusjwt"), 1);
+                print(response.bodyString);
+
                 Navigator.push(
                   context,
                   PageTransition(

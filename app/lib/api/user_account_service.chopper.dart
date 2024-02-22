@@ -18,42 +18,19 @@ final class _$UserAccountService extends UserAccountService {
   final Type definitionType = UserAccountService;
 
   @override
-  Future<Response<dynamic>> postUserAccount(Map<String, dynamic> userAccount) {
-    final Uri $url = Uri.parse('/user_accounts');
-    final $body = userAccount;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> getUsernameAvailability(String username) {
-    final Uri $url = Uri.parse('/user_accounts/availability');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'username': username
+  Future<Response<dynamic>> getUserAccountOverview(
+    String flexusJWTString,
+    int userAccountID,
+  ) {
+    final Uri $url = Uri.parse('/user_accounts/${userAccountID}/overview');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
     };
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> getLogin(Map<String, dynamic> loginData) {
-    final Uri $url = Uri.parse('/user_accounts/login');
-    final $body = loginData;
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      body: $body,
+      headers: $headers,
     );
     return client.send<dynamic, dynamic>($request);
   }

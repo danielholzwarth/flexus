@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:app/api/user_account_service.dart';
+import 'package:app/api/login_user_account_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/resources/app_settings.dart';
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final userAccountService = UserAccountService.create();
+    final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             SizedBox(height: screenHeight * 0.32),
-            _buildLoginButton(userAccountService, context),
+            _buildLoginButton(loginUserAccountService, context),
             FlexusBottomSizedBox(screenHeight: screenHeight),
           ],
         ),
@@ -65,13 +65,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  FlexusButton _buildLoginButton(UserAccountService userAccountService, BuildContext context) {
+  FlexusButton _buildLoginButton(LoginUserAccountService loginUserAccountService, BuildContext context) {
     return FlexusButton(
       text: "LOGIN",
       backgroundColor: AppSettings.backgroundV1,
       fontColor: AppSettings.fontV1,
       function: () async {
-        final response = await userAccountService.getLogin({
+        final response = await loginUserAccountService.getLogin({
           "username": usernameController.text,
           "password": passwordController.text,
         });

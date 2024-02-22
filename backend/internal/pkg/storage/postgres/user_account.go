@@ -4,101 +4,66 @@ import (
 	"database/sql"
 	"errors"
 	"flexus/internal/types"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
-func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types.UserAccount, error) {
-	tx, err := db.pool.Begin()
-	if err != nil {
-		return types.UserAccount{}, err
-	}
-	defer func() {
-		if err != nil {
-			tx.Rollback()
-			return
-		}
-		err = tx.Commit()
-	}()
+func (db *DB) GetUserAccountOverview(userAccountID types.UserAccountID) (types.UserAccountOverview, error) {
+	var userAccountOverview types.UserAccountOverview
 
 	query := `
-        INSERT INTO user_account (username, name, password, level, created_at)
-        VALUES ($1, $2, $3, $4, NOW())
-        RETURNING id, created_at;
-    `
+		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture, ua.bodyweight, g.name
+		FROM user_account ua
+		LEFT JOIN gender g ON ua.gender_id = g.id
+		WHERE ua.id = $1;
+	`
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(createUserRequest.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return types.UserAccount{}, err
-	}
+	var userAccountInformation types.UserAccountInformation
 
-	var userAccount types.UserAccount
-	userAccount.Username = createUserRequest.Username
-	userAccount.Name = createUserRequest.Name
-	userAccount.Password = hashedPassword
-	userAccount.Level = 1
-
-	err = tx.QueryRow(query, createUserRequest.Username, createUserRequest.Name, hashedPassword, 1).Scan(&userAccount.ID, &userAccount.CreatedAt)
-	if err != nil {
-		return types.UserAccount{}, err
-	}
-
-	err = db.CreateUserSettings(tx, userAccount.ID)
-	if err != nil {
-		return types.UserAccount{}, err
-	}
-
-	return userAccount, nil
-}
-
-func (db DB) GetUsernameAvailability(username string) (bool, error) {
-	var userCount int
-	query := `
-        SELECT COUNT(*) AS user_count
-        FROM user_account
-        WHERE username = $1;
-    `
-	err := db.pool.QueryRow(query, username).Scan(&userCount)
+	err := db.pool.QueryRow(query, userAccountID).Scan(
+		&userAccountInformation.UserAccountID,
+		&userAccountInformation.Username,
+		&userAccountInformation.Name,
+		&userAccountInformation.CreatedAt,
+		&userAccountInformation.Level,
+		&userAccountInformation.ProfilePicture,
+		&userAccountInformation.Bodyweight,
+		&userAccountInformation.Gender)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return true, nil
+			return types.UserAccountOverview{}, errors.New("user not found")
 		}
-		return false, err
+		return types.UserAccountOverview{}, err
 	}
-	return userCount == 0, nil
-}
 
-func (db DB) GetLoginUser(username string, password string) (types.UserAccount, error) {
-	var userAccount types.UserAccount
-	query := `
-        SELECT *
-        FROM user_account
-        WHERE username = $1;
-    `
-	err := db.pool.QueryRow(query, username).Scan(&userAccount.ID, &userAccount.Username, &userAccount.Name, &userAccount.Password, &userAccount.CreatedAt, &userAccount.Level, &userAccount.ProfilePicture, &userAccount.Bodyweight, &userAccount.GenderID)
+	var bestLiftOverview []types.BestLiftOverview
+	query = `
+        SELECT e.name AS "exerciseName", s.repetitions, s.weight, s.duration
+        FROM best_lifts bl
+        JOIN set s ON bl.set_id = s.id
+        JOIN exercise e ON s.exercise_id= e.id
+		WHERE bl.user_id = $1
+		ORDER BY bl.position_id
+		LIMIT 3;
+	`
+
+	rows, err := db.pool.Query(query, userAccountID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return types.UserAccount{}, errors.New("user not found")
+		return types.UserAccountOverview{}, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var bestLift types.BestLiftOverview
+		if err := rows.Scan(&bestLift.ExerciseName, &bestLift.Repetitions, &bestLift.Weight, &bestLift.Duration); err != nil {
+			return types.UserAccountOverview{}, err
 		}
-		return types.UserAccount{}, err
+		bestLiftOverview = append(bestLiftOverview, bestLift)
+	}
+	if err := rows.Err(); err != nil {
+		return types.UserAccountOverview{}, err
 	}
 
-	if userAccount.ProfilePicture == nil {
-		userAccount.ProfilePicture = new([]byte)
-	}
+	userAccountOverview.UserAccountInformation = userAccountInformation
+	userAccountOverview.BestLiftOverview = bestLiftOverview
 
-	if userAccount.Bodyweight == nil {
-		userAccount.Bodyweight = new(int)
-	}
-
-	if userAccount.GenderID == nil {
-		userAccount.GenderID = new(int)
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(userAccount.Password), []byte(password))
-	if err != nil {
-		return types.UserAccount{}, errors.New("incorrect password")
-	}
-
-	return userAccount, nil
+	return userAccountOverview, nil
 }

@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/user_account_service.dart';
+import 'package:app/api/login_user_account_service.dart';
 import 'package:app/pages/login/register_name.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
@@ -24,7 +24,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final userAccountService = UserAccountService.create();
+    final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -47,14 +47,14 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
               },
             ),
             SizedBox(height: screenHeight * 0.3),
-            _buildContinueButton(context, userAccountService),
+            _buildContinueButton(context, loginUserAccountService),
           ],
         ),
       ),
     );
   }
 
-  FlexusButton _buildContinueButton(BuildContext context, UserAccountService userAccountService) {
+  FlexusButton _buildContinueButton(BuildContext context, LoginUserAccountService loginUserAccountService) {
     return FlexusButton(
       text: "CONTINUE (1/3)",
       backgroundColor: AppSettings.backgroundV1,
@@ -79,7 +79,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
             ),
           );
         } else {
-          final response = await userAccountService.getUsernameAvailability(usernameController.text);
+          final response = await loginUserAccountService.getUsernameAvailability(usernameController.text);
           if (response.statusCode == 200) {
             final bool availability = response.body;
             if (!availability) {

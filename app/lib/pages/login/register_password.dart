@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:app/api/user_account_service.dart';
+import 'package:app/api/login_user_account_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/resources/app_settings.dart';
@@ -38,7 +38,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final userAccountService = UserAccountService.create();
+    final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
@@ -69,7 +69,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               isObscure: true,
             ),
             SizedBox(height: screenHeight * 0.235),
-            _buildCreateAccountButton(context, userAccountService),
+            _buildCreateAccountButton(context, loginUserAccountService),
             FlexusBottomSizedBox(screenHeight: screenHeight),
           ],
         ),
@@ -105,7 +105,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
     );
   }
 
-  FlexusButton _buildCreateAccountButton(BuildContext context, UserAccountService userAccountService) {
+  FlexusButton _buildCreateAccountButton(BuildContext context, LoginUserAccountService loginUserAccountService) {
     return FlexusButton(
       text: "CREATE ACCOUNT (3/3)",
       backgroundColor: AppSettings.backgroundV1,
@@ -139,7 +139,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             ),
           );
         } else {
-          final response = await userAccountService.postUserAccount({
+          final response = await loginUserAccountService.postUserAccount({
             "username": widget.username,
             "password": passwordController.text,
             "name": widget.name,
