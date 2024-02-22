@@ -26,7 +26,7 @@ func (db *DB) GetUserAccountOverview(userAccountID types.UserAccountID) (types.U
 		&userAccountInformation.Level,
 		&userAccountInformation.ProfilePicture,
 		&userAccountInformation.Bodyweight,
-		&userAccountInformation.Gender)
+		&userAccountOverview.Gender)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return types.UserAccountOverview{}, errors.New("user not found")

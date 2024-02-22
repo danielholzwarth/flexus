@@ -35,10 +35,10 @@ type UserAccountInformation struct {
 	Level          int           `json:"level"`
 	ProfilePicture *[]byte       `json:"profilePicture"`
 	Bodyweight     *int          `json:"bodyweight"`
-	Gender         *string       `json:"gender"`
 }
 
 type UserAccountOverview struct {
 	UserAccountInformation UserAccountInformation `json:"userAccountInformation"`
-	BestLiftOverview      []BestLiftOverview     `json:"bestLiftOverview"`
+	Gender                 *string                `json:"gender"`
+	BestLiftOverview []BestLiftOverview `json:"bestLiftOverview"`
 }

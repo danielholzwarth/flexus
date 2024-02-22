@@ -10,10 +10,14 @@ class UserAccountOverview extends HiveObject {
   UserAccount userAccount;
 
   @HiveField(1)
-  List<BestLiftOverview> bestLiftOverview;
+  String? gender;
+
+  @HiveField(1)
+  List<BestLiftOverview>? bestLiftOverview;
 
   UserAccountOverview({
     required this.userAccount,
-    required this.bestLiftOverview,
+    this.gender,
+    this.bestLiftOverview,
   });
 }

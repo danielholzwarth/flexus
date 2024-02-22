@@ -37,19 +37,17 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
         final userAccountOverview = UserAccountOverview(
           userAccount: UserAccount(
-              id: jsonMap['userAccount']['id'],
-              username: jsonMap['userAccount']['username'],
-              name: jsonMap['userAccount']['name'],
-              createdAt: jsonMap['userAccount']['createdAt'],
-              level: jsonMap['userAccount']['level']),
+            id: jsonMap['userAccountInformation']['userAccountID'],
+            username: jsonMap['userAccountInformation']['username'],
+            name: jsonMap['userAccountInformation']['name'],
+            createdAt: jsonMap['userAccountInformation']['createdAt'],
+            level: jsonMap['userAccountInformation']['level'],
+            profilePicture: jsonMap['userAccountInformation']['profilePicture'],
+            bodyweight: jsonMap['userAccountInformation']['bodyweight'],
+          ),
+          gender: jsonMap['userAccountInformation']['gender'],
           bestLiftOverview: List.generate(jsonMap['bestLift'].length, (index) {
             return BestLiftOverview(
-              bestLift: BestLift(
-                id: jsonMap['bestLift'][index]['id'],
-                userID: jsonMap['bestLift'][index]['userID'],
-                setID: jsonMap['bestLift'][index]['setID'],
-                positionID: jsonMap['bestLift'][index]['positionID'],
-              ),
               exerciseName: jsonMap['exerciseName'],
               repetitions: jsonMap['repetitions'],
               weight: jsonMap['weight'],

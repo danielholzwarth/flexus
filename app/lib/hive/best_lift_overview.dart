@@ -6,22 +6,18 @@ part 'best_lift_overview.g.dart';
 @HiveType(typeId: 6)
 class BestLiftOverview extends HiveObject {
   @HiveField(0)
-  BestLift bestLift;
-
-  @HiveField(1)
   String exerciseName;
 
-  @HiveField(2)
+  @HiveField(1)
   int? repetitions;
 
-  @HiveField(3)
+  @HiveField(2)
   double? weight;
 
-  @HiveField(4)
+  @HiveField(3)
   double? duration;
 
   BestLiftOverview({
-    required this.bestLift,
     required this.exerciseName,
     this.repetitions,
     this.weight,
