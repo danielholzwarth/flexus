@@ -1,5 +1,6 @@
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
+import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
@@ -63,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   buildNames(),
                   Text(state.userAccountOverview.gender ?? "No gender"),
                   const Spacer(),
-                  buildBestLift(screenHeight, screenWidth),
+                  buildBestLift(screenHeight, screenWidth, state),
                   SizedBox(height: screenHeight * 0.2)
                 ],
               );
@@ -160,16 +161,41 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row buildBestLift(double screenHeight, double screenWidth) {
+  Row buildBestLift(double screenHeight, double screenWidth, UserAccountLoaded state) {
+    int bestLiftCount = 0;
+    if (state.userAccountOverview.bestLiftOverview != null) {
+      bestLiftCount = state.userAccountOverview.bestLiftOverview!.length;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildPedestal("1 x 120kg", "Deadlift", screenHeight * 0.08, screenWidth),
-        _buildPedestal("1 x 100kg", "Benchpress", screenHeight * 0.1, screenWidth),
-        _buildPedestal("1 x 150kg", "Squat", screenHeight * 0.06, screenWidth),
+        _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![1]) : "",
+            bestLiftCount >= 2 ? state.userAccountOverview.bestLiftOverview![1].exerciseName : "Press to add", screenHeight * 0.08, screenWidth),
+        _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![0]) : "",
+            bestLiftCount >= 1 ? state.userAccountOverview.bestLiftOverview![0].exerciseName : "Press to add", screenHeight * 0.1, screenWidth),
+        _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![2]) : "",
+            bestLiftCount >= 3 ? state.userAccountOverview.bestLiftOverview![2].exerciseName : "Press to add", screenHeight * 0.06, screenWidth),
       ],
     );
+  }
+
+  String getCorrectPedestralText(BestLiftOverview bestLiftOverview) {
+    if (bestLiftOverview.duration != null) {
+      return "${bestLiftOverview.duration}s";
+    }
+
+    String text = "";
+    if (bestLiftOverview.repetitions != null) {
+      text = text + bestLiftOverview.repetitions.toString();
+    }
+
+    if (bestLiftOverview.weight != null) {
+      text = "$text x ${bestLiftOverview.weight}kg";
+    }
+
+    return text;
   }
 
   AppBar buildAppBar(BuildContext context) {
