@@ -40,5 +40,5 @@ type UserAccountInformation struct {
 type UserAccountOverview struct {
 	UserAccountInformation UserAccountInformation `json:"userAccountInformation"`
 	Gender                 *string                `json:"gender"`
-	BestLiftOverview []BestLiftOverview `json:"bestLiftOverview"`
+	BestLiftOverview       []BestLiftOverview     `json:"bestLiftOverview"`
 }

@@ -56,6 +56,7 @@ func (db *DB) GetUserAccountOverview(userAccountID types.UserAccountID) (types.U
 		if err := rows.Scan(&bestLift.ExerciseName, &bestLift.Repetitions, &bestLift.Weight, &bestLift.Duration); err != nil {
 			return types.UserAccountOverview{}, err
 		}
+
 		bestLiftOverview = append(bestLiftOverview, bestLift)
 	}
 	if err := rows.Err(); err != nil {

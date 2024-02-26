@@ -17,27 +17,24 @@ class BestLiftOverviewAdapter extends TypeAdapter<BestLiftOverview> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return BestLiftOverview(
-      bestLift: fields[0] as BestLift,
-      exerciseName: fields[1] as String,
-      repetitions: fields[2] as int?,
-      weight: fields[3] as double?,
-      duration: fields[4] as double?,
+      exerciseName: fields[0] as String,
+      repetitions: fields[1] as int?,
+      weight: fields[2] as double?,
+      duration: fields[3] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BestLiftOverview obj) {
     writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.bestLift)
-      ..writeByte(1)
-      ..write(obj.exerciseName)
-      ..writeByte(2)
-      ..write(obj.repetitions)
-      ..writeByte(3)
-      ..write(obj.weight)
       ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.exerciseName)
+      ..writeByte(1)
+      ..write(obj.repetitions)
+      ..writeByte(2)
+      ..write(obj.weight)
+      ..writeByte(3)
       ..write(obj.duration);
   }
 
@@ -46,8 +43,5 @@ class BestLiftOverviewAdapter extends TypeAdapter<BestLiftOverview> {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BestLiftOverviewAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      identical(this, other) || other is BestLiftOverviewAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

@@ -18,17 +18,20 @@ class UserAccountOverviewAdapter extends TypeAdapter<UserAccountOverview> {
     };
     return UserAccountOverview(
       userAccount: fields[0] as UserAccount,
-      bestLiftOverview: (fields[1] as List).cast<BestLiftOverview>(),
+      gender: fields[1] as String?,
+      bestLiftOverview: (fields[2] as List?)?.cast<BestLiftOverview>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, UserAccountOverview obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.userAccount)
       ..writeByte(1)
+      ..write(obj.gender)
+      ..writeByte(2)
       ..write(obj.bestLiftOverview);
   }
 

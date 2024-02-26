@@ -1,4 +1,5 @@
 import 'package:app/api/user_account_service.dart';
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
@@ -6,6 +7,7 @@ import 'package:app/pages/home/settings.dart';
 import 'package:app/pages/workout_documentation/exercises.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -25,10 +27,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final userAccountService = UserAccountService.create();
   final userBox = Hive.box('userBox');
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
   void initState() {
     super.initState();
+    userAccountBloc.add(LoadUserAccount(userAccountID: 1));
   }
 
   @override
@@ -41,14 +45,40 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: AppSettings.background,
       appBar: buildAppBar(context),
       body: Center(
-        child: Column(
-          children: [
-            buildPictures(screenWidth, context, userAccount),
-            buildNames(),
-            const Spacer(),
-            buildBestLift(screenHeight, screenWidth),
-            SizedBox(height: screenHeight * 0.2)
-          ],
+        child: BlocConsumer(
+          bloc: userAccountBloc,
+          listener: (context, state) {
+            if (state is UserAccountLoaded) {}
+          },
+          builder: (context, state) {
+            if (state is UserAccountLoading) {
+              return Text(
+                'Loading',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              );
+            } else if (state is UserAccountLoaded) {
+              return Column(
+                children: [
+                  buildPictures(screenWidth, context, userAccount),
+                  buildNames(),
+                  Text(state.userAccountOverview.gender ?? "No gender"),
+                  const Spacer(),
+                  buildBestLift(screenHeight, screenWidth),
+                  SizedBox(height: screenHeight * 0.2)
+                ],
+              );
+            } else if (state is UserAccountError) {
+              return Text(
+                'Error loading workouts',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              );
+            } else {
+              return Text(
+                'Error XYZ',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              );
+            }
+          },
         ),
       ),
     );
@@ -145,8 +175,6 @@ class _ProfilePageState extends State<ProfilePage> {
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: AppSettings.background,
-      title: const Text('Profile'),
-      centerTitle: true,
       actions: [
         PopupMenuButton<String>(
           icon: Icon(

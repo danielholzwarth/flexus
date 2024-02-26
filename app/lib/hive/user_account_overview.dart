@@ -12,7 +12,7 @@ class UserAccountOverview extends HiveObject {
   @HiveField(1)
   String? gender;
 
-  @HiveField(1)
+  @HiveField(2)
   List<BestLiftOverview>? bestLiftOverview;
 
   UserAccountOverview({

@@ -1,4 +1,3 @@
-import 'package:app/hive/best_lift.dart';
 import 'package:hive/hive.dart';
 
 part 'best_lift_overview.g.dart';
