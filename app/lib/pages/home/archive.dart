@@ -50,9 +50,7 @@ class _ArchivePageState extends State<ArchivePage> {
           _buildFlexusSliverAppBar(context),
           BlocConsumer(
             bloc: workoutBloc,
-            listener: (context, state) {
-              if (state is WorkoutLoaded) {}
-            },
+            listener: (context, state) {},
             builder: (context, state) {
               if (state is WorkoutLoading) {
                 return SliverFillRemaining(

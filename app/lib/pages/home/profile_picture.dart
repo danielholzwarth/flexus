@@ -92,9 +92,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
       ),
       body: BlocConsumer(
         bloc: userAccountBloc,
-        listener: (context, state) {
-          if (state is UserAccountUpdating) {}
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           if (state is UserAccountUpdating) {
             return Center(child: const Text("loading"));

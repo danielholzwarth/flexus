@@ -50,9 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Center(
         child: BlocConsumer(
           bloc: bestLiftsBloc,
-          listener: (context, state) {
-            if (state is BestLiftsLoaded) {}
-          },
+          listener: (context, state) {},
           builder: (context, state) {
             if (state is BestLiftsLoading) {
               return Text(

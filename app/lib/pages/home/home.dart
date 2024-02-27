@@ -65,9 +65,7 @@ class _HomePageState extends State<HomePage> {
   BlocConsumer<WorkoutBloc, Object?> buildWorkouts() {
     return BlocConsumer(
       bloc: workoutBloc,
-      listener: (context, state) {
-        if (state is WorkoutLoaded) {}
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         if (state is WorkoutLoading) {
           return SliverFillRemaining(
@@ -176,9 +174,7 @@ class _HomePageState extends State<HomePage> {
       leading: SizedBox(
         child: BlocConsumer(
             bloc: userAccountBloc,
-            listener: (context, state) {
-              if (state is UserAccountLoaded) {}
-            },
+            listener: (context, state) {},
             builder: (context, state) {
               final UserAccount userAccount = userBox.get("userAccount");
               if (state is UserAccountLoading) {

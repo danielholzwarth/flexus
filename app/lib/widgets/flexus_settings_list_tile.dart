@@ -10,6 +10,7 @@ class FlexusSettingsListTile extends StatelessWidget {
   final bool isText;
   final bool isObscure;
   final Function()? onPressed;
+  final Function(bool)? onChanged;
 
   const FlexusSettingsListTile({
     super.key,
@@ -20,6 +21,7 @@ class FlexusSettingsListTile extends StatelessWidget {
     this.isText = false,
     this.isObscure = false,
     this.onPressed,
+    this.onChanged,
   });
 
   @override
@@ -39,10 +41,23 @@ class FlexusSettingsListTile extends StatelessWidget {
   Widget buildTrailing() {
     if (isBool) {
       return Switch(
-        value: false,
+        value: value,
         onChanged: (bool value) {
           print(value);
         },
+        activeColor: AppSettings.primary,
+        activeTrackColor: AppSettings.primaryShade48,
+        inactiveThumbColor: AppSettings.primary,
+        inactiveTrackColor: AppSettings.primaryShade48,
+        trackOutlineColor: MaterialStateProperty.resolveWith(
+          (final Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return null;
+            }
+
+            return AppSettings.primaryShade48;
+          },
+        ),
       );
     }
 
