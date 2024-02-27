@@ -63,8 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
               return Column(
                 children: [
                   buildPictures(screenWidth, context, userAccount),
-                  buildNames(),
-                  Text("Joined: ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
+                  SizedBox(height: screenHeight * 0.02),
+                  buildNames(userAccount),
+                  Text("Since ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
                   const Spacer(),
                   buildBestLift(screenHeight, screenWidth, state),
                   SizedBox(height: screenHeight * 0.2)
@@ -87,18 +88,18 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Column buildNames() {
+  Column buildNames(UserAccount userAccount) {
     return Column(
       children: [
         Text(
-          "Daniel",
+          userAccount.name,
           style: TextStyle(
             color: AppSettings.font,
             fontSize: AppSettings.fontSizeTitle,
           ),
         ),
         Text(
-          "@dholzwarth",
+          "@${userAccount.username}",
           style: TextStyle(
             color: AppSettings.font,
             fontSize: AppSettings.fontSize,
@@ -151,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
             left: screenWidth * 0.28,
             top: screenWidth * 0.5,
             child: Text(
-              "13",
+              userAccount.level.toString(),
               style: TextStyle(
                 color: AppSettings.primary,
                 fontSize: AppSettings.fontSizeTitle,
@@ -212,13 +213,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           itemBuilder: (BuildContext context) {
             return widget.isOwnProfile
-                ? {'Settings', 'Leveling', 'Change best lifts'}.map((String choice) {
+                ? {'Settings', 'Leveling'}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
                     );
                   }).toList()
-                : {'Settings', 'Leveling', 'Change best lifts'}.map((String choice) {
+                : {'Add Friend', 'Report'}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
@@ -277,15 +278,26 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         Container(
-          width: screenwidth / 4,
+          width: screenwidth / 3.5,
           height: height,
           color: AppSettings.primaryShade80,
           child: Center(
-            child: Text(
-              topText,
-              style: TextStyle(
-                color: AppSettings.font,
-                fontSize: AppSettings.fontSize,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const ExercisesPage(),
+                  ),
+                );
+              },
+              child: Text(
+                topText,
+                style: TextStyle(
+                  color: AppSettings.font,
+                  fontSize: AppSettings.fontSize,
+                ),
               ),
             ),
           ),

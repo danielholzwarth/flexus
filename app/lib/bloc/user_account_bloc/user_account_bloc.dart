@@ -41,6 +41,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
         );
 
+        userBox.put("userAccount", userAccount);
+
         emit(UserAccountLoaded(userAccount: userAccount));
       } else {
         emit(UserAccountError());
