@@ -8,10 +8,10 @@ class UserAccountInitial extends UserAccountState {}
 class UserAccountLoading extends UserAccountState {}
 
 class UserAccountLoaded extends UserAccountState {
-  final UserAccountOverview userAccountOverview;
+  final UserAccount userAccount;
 
   UserAccountLoaded({
-    required this.userAccountOverview,
+    required this.userAccount,
   });
 }
 

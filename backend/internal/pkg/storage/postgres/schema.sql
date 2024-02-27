@@ -2,7 +2,7 @@ BEGIN;
 
 /*
 -- Drop all tables
-DROP TABLE IF EXISTS gender, exercise_type, language, position, user_account, user_list, report, gym, user_account_gym, friends, user_settings, plan, split, exercise, exercise_split, workout, set, best_lifts CASCADE;
+DROP TABLE IF EXISTS exercise_type, language, position, user_account, user_list, report, gym, user_account_gym, friends, user_settings, plan, split, exercise, exercise_split, workout, set, best_lifts CASCADE;
 
 or
 
@@ -10,15 +10,6 @@ DROP SCHEMA IF EXISTS public CASCADE;
 */
 
 CREATE SCHEMA IF NOT EXISTS public;
-
-CREATE TABLE gender (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-Insert INTO "gender" ("name") VALUES ('male');
-Insert INTO "gender" ("name") VALUES ('female');
-Insert INTO "gender" ("name") VALUES ('diverse');
-
 
 CREATE TABLE exercise_type (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -53,12 +44,11 @@ CREATE TABLE user_account (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     level INTEGER NOT NULL,
     profile_picture BYTEA,
-    bodyweight INTEGER,
-    gender_id BIGINT REFERENCES gender(id) ON DELETE SET NULL ON UPDATE CASCADE
+    bodyweight INTEGER
 );
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight", "gender_id") 
-VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null, null, null);
---Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight", "gender_id") VALUES ('mmustermann', 'Max', 'password', now(), 1, null, 80, 1);
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight") 
+VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null, null);
+--Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight") VALUES ('mmustermann', 'Max', 'password', now(), 1, null, 80);
 
 
 CREATE TABLE user_list (

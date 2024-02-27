@@ -27,9 +27,6 @@ class UserAccount extends HiveObject {
   @HiveField(6)
   int? bodyweight;
 
-  @HiveField(7)
-  int? genderID;
-
   UserAccount({
     required this.id,
     required this.username,
@@ -38,6 +35,5 @@ class UserAccount extends HiveObject {
     required this.level,
     this.profilePicture,
     this.bodyweight,
-    this.genderID,
   });
 }

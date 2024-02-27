@@ -24,14 +24,13 @@ class UserAccountAdapter extends TypeAdapter<UserAccount> {
       level: fields[4] as int,
       profilePicture: fields[5] as Uint8List?,
       bodyweight: fields[6] as int?,
-      genderID: fields[7] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserAccount obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -45,9 +44,7 @@ class UserAccountAdapter extends TypeAdapter<UserAccount> {
       ..writeByte(5)
       ..write(obj.profilePicture)
       ..writeByte(6)
-      ..write(obj.bodyweight)
-      ..writeByte(7)
-      ..write(obj.genderID);
+      ..write(obj.bodyweight);
   }
 
   @override

@@ -1,23 +1,23 @@
 import 'package:chopper/chopper.dart';
 
-part 'user_account_service.chopper.dart';
+part 'best_lifts_service.chopper.dart';
 
-@ChopperApi(baseUrl: '/user_accounts')
-abstract class UserAccountService extends ChopperService {
+@ChopperApi(baseUrl: '/best_lifts')
+abstract class BestLiftsService extends ChopperService {
   @Get(path: '/{userAccountID}')
-  Future<Response> getUserAccount(
+  Future<Response> getBestLifts(
     @Header('flexusjwt') String flexusJWTString,
     @Path('userAccountID') int userAccountID,
   );
 
-  static UserAccountService create() {
+  static BestLiftsService create() {
     final client = ChopperClient(
         baseUrl: Uri.parse('http://10.0.2.2:8080'),
         //baseUrl: Uri.parse('http://localhost:8080'),
         services: [
-          _$UserAccountService(),
+          _$BestLiftsService(),
         ],
         converter: const JsonConverter());
-    return _$UserAccountService(client);
+    return _$BestLiftsService(client);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
@@ -31,6 +32,8 @@ class _HomePageState extends State<HomePage> {
   bool isSearch = false;
   final TextEditingController searchController = TextEditingController();
   final WorkoutBloc workoutBloc = WorkoutBloc();
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
+
   final userBox = Hive.box('userBox');
   bool isTokenExpired = false;
 
@@ -38,16 +41,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     workoutBloc.add(LoadWorkout());
+    userAccountBloc.add(LoadUserAccount(userAccountID: 1));
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
     isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
     return Scaffold(
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
-          _buildFlexusSliverAppBar(context),
+          _buildFlexusSliverAppBar(context, screenWidth),
           BlocConsumer(
               bloc: workoutBloc,
               listener: (context, state) {
@@ -133,8 +138,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
-    return isSearch ? buildSearchBar(context) : buildAppBar(context);
+  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context, double screenWidth) {
+    return isSearch ? buildSearchBar(context) : buildAppBar(context, userAccountBloc, screenWidth);
   }
 
   FlexusSliverAppBar buildSearchBar(BuildContext context) {
@@ -156,23 +161,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  FlexusSliverAppBar buildAppBar(BuildContext context) {
+  FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc, double screenWidth) {
     return FlexusSliverAppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.person,
-          size: AppSettings.fontSizeTitle,
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.leftToRight,
-              child: const ProfilePage(isOwnProfile: true, userID: 1),
-            ),
-          );
-        },
-      ),
+      leading: BlocConsumer(
+          bloc: userAccountBloc,
+          listener: (context, state) {
+            if (state is UserAccountLoaded) {}
+          },
+          builder: (context, state) {
+            if (state is UserAccountLoading) {
+              return const Text("loading");
+            } else if (state is UserAccountLoaded) {
+              if (state.userAccount.profilePicture != null) {
+                return CircleAvatar(
+                  radius: screenWidth * 0.3,
+                  backgroundImage: MemoryImage(state.userAccount.profilePicture!),
+                );
+              } else {
+                return IconButton(
+                  icon: Icon(
+                    Icons.person,
+                    size: AppSettings.fontSizeTitle,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.leftToRight,
+                        child: const ProfilePage(isOwnProfile: true, userID: 1),
+                      ),
+                    );
+                  },
+                );
+              }
+            } else {
+              return IconButton(
+                icon: Icon(
+                  Icons.person,
+                  size: AppSettings.fontSizeTitle,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRight,
+                      child: const ProfilePage(isOwnProfile: true, userID: 1),
+                    ),
+                  );
+                },
+              );
+            }
+          }),
       actions: [
         Visibility(
           visible: isTokenExpired,

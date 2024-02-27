@@ -11,7 +11,6 @@ entity user_account {
     password : text
     created_at : timestamp
     bodyweight : number
-    gender : genders
 }
 
 entity friends {
@@ -143,11 +142,6 @@ enum exercise_type {
     duration
 }
 
-enum genders {
-    male
-    female
-    divers
-}
 
 enum language {
     english
@@ -162,7 +156,6 @@ enum positions {
 
 
 user_account ||--|| user_settings
-user_account ||--|| genders
 user_account ||--o{ user_account_gym
 user_account_gym }o--|| gym 
 user_account |o--o{ friends

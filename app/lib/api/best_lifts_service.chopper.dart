@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_account_service.dart';
+part of 'best_lifts_service.dart';
 
 // **************************************************************************
 // ChopperGenerator
@@ -8,21 +8,21 @@ part of 'user_account_service.dart';
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-final class _$UserAccountService extends UserAccountService {
-  _$UserAccountService([ChopperClient? client]) {
+final class _$BestLiftsService extends BestLiftsService {
+  _$BestLiftsService([ChopperClient? client]) {
     if (client == null) return;
     this.client = client;
   }
 
   @override
-  final Type definitionType = UserAccountService;
+  final Type definitionType = BestLiftsService;
 
   @override
-  Future<Response<dynamic>> getUserAccount(
+  Future<Response<dynamic>> getBestLifts(
     String flexusJWTString,
     int userAccountID,
   ) {
-    final Uri $url = Uri.parse('/user_accounts/${userAccountID}');
+    final Uri $url = Uri.parse('/best_lifts/${userAccountID}');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };

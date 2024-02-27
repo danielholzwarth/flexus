@@ -1,4 +1,5 @@
 import 'package:app/api/user_account_service.dart';
+import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
@@ -28,12 +29,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final userAccountService = UserAccountService.create();
   final userBox = Hive.box('userBox');
-  final UserAccountBloc userAccountBloc = UserAccountBloc();
+  final BestLiftsBloc bestLiftsBloc = BestLiftsBloc();
 
   @override
   void initState() {
     super.initState();
-    userAccountBloc.add(LoadUserAccount(userAccountID: 1));
+    bestLiftsBloc.add(LoadBestLifts(userAccountID: 1));
   }
 
   @override
@@ -47,22 +48,22 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: buildAppBar(context),
       body: Center(
         child: BlocConsumer(
-          bloc: userAccountBloc,
+          bloc: bestLiftsBloc,
           listener: (context, state) {
-            if (state is UserAccountLoaded) {}
+            if (state is BestLiftsLoaded) {}
           },
           builder: (context, state) {
-            if (state is UserAccountLoading) {
+            if (state is BestLiftsLoading) {
               return Text(
                 'Loading',
                 style: TextStyle(fontSize: AppSettings.fontSize),
               );
-            } else if (state is UserAccountLoaded) {
+            } else if (state is BestLiftsLoaded) {
               return Column(
                 children: [
                   buildPictures(screenWidth, context, userAccount),
                   buildNames(),
-                  Text(state.userAccountOverview.gender ?? "No gender"),
+                  Text("Joined: ${userAccount.createdAt}"),
                   const Spacer(),
                   buildBestLift(screenHeight, screenWidth, state),
                   SizedBox(height: screenHeight * 0.2)
@@ -161,22 +162,22 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row buildBestLift(double screenHeight, double screenWidth, UserAccountLoaded state) {
+  Row buildBestLift(double screenHeight, double screenWidth, BestLiftsLoaded state) {
     int bestLiftCount = 0;
-    if (state.userAccountOverview.bestLiftOverview != null) {
-      bestLiftCount = state.userAccountOverview.bestLiftOverview!.length;
-    }
+    bestLiftCount = state.bestLiftOverview.length;
+
+    //Position mitgeben --> immer fixiert
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![1]) : "",
-            bestLiftCount >= 2 ? state.userAccountOverview.bestLiftOverview![1].exerciseName : "Press to add", screenHeight * 0.08, screenWidth),
-        _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![0]) : "",
-            bestLiftCount >= 1 ? state.userAccountOverview.bestLiftOverview![0].exerciseName : "Press to add", screenHeight * 0.1, screenWidth),
-        _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(state.userAccountOverview.bestLiftOverview![2]) : "",
-            bestLiftCount >= 3 ? state.userAccountOverview.bestLiftOverview![2].exerciseName : "Press to add", screenHeight * 0.06, screenWidth),
+        _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(state.bestLiftOverview[1]) : "",
+            bestLiftCount >= 2 ? state.bestLiftOverview[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
+        _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(state.bestLiftOverview[0]) : "",
+            bestLiftCount >= 1 ? state.bestLiftOverview[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
+        _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(state.bestLiftOverview[2]) : "",
+            bestLiftCount >= 3 ? state.bestLiftOverview[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
       ],
     );
   }
@@ -244,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 break;
               case "Change best lifts":
-                final response = await userAccountService.getUserAccountOverview(userBox.get("flexusjwt"), 1);
+                final response = await userAccountService.getUserAccount(userBox.get("flexusjwt"), 1);
                 print(response.bodyString);
 
                 Navigator.push(

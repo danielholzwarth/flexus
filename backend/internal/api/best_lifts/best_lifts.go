@@ -1,4 +1,4 @@
-package user_account
+package best_lifts
 
 import (
 	"encoding/json"
@@ -9,23 +9,23 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type UserAccountStore interface {
-	GetUserAccount(userAccountID types.UserAccountID) (types.UserAccount, error)
+type BestLiftsStore interface {
+	GetBestLifts(userAccountID types.UserAccountID) ([]types.BestLiftOverview, error)
 }
 
 type service struct {
-	handler          http.Handler
-	userAccountStore UserAccountStore
+	handler        http.Handler
+	bestLiftsStore BestLiftsStore
 }
 
-func NewService(userAccountStore UserAccountStore) http.Handler {
+func NewService(bestLiftsStore BestLiftsStore) http.Handler {
 	r := chi.NewRouter()
 	s := service{
-		handler:          r,
-		userAccountStore: userAccountStore,
+		handler:        r,
+		bestLiftsStore: bestLiftsStore,
 	}
 
-	r.Get("/{userAccountID}", s.getUserAccount())
+	r.Get("/{userAccountID}", s.getBestLifts())
 
 	return s
 }
@@ -34,7 +34,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) getUserAccount() http.HandlerFunc {
+func (s service) getBestLifts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -51,14 +51,14 @@ func (s service) getUserAccount() http.HandlerFunc {
 		}
 		userAccountID := types.UserAccountID(userAccountIDInt)
 
-		userAccountOverview, err := s.userAccountStore.GetUserAccount(userAccountID)
+		bestLiftsOverview, err := s.bestLiftsStore.GetBestLifts(userAccountID)
 		if err != nil {
-			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
+			http.Error(w, "Failed to get bestLiftsOverview", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(userAccountOverview)
+		response, err := json.Marshal(bestLiftsOverview)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())

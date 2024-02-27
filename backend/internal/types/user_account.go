@@ -13,7 +13,6 @@ type UserAccount struct {
 	Level          int           `json:"level"`
 	ProfilePicture *[]byte       `json:"profilePicture"`
 	Bodyweight     *int          `json:"bodyweight"`
-	GenderID       *int          `json:"genderID"`
 }
 
 type CreateUserRequest struct {
@@ -35,10 +34,4 @@ type UserAccountInformation struct {
 	Level          int           `json:"level"`
 	ProfilePicture *[]byte       `json:"profilePicture"`
 	Bodyweight     *int          `json:"bodyweight"`
-}
-
-type UserAccountOverview struct {
-	UserAccountInformation UserAccountInformation `json:"userAccountInformation"`
-	Gender                 *string                `json:"gender"`
-	BestLiftOverview       []BestLiftOverview     `json:"bestLiftOverview"`
 }
