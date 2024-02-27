@@ -1,3 +1,5 @@
+import 'package:app/hive/best_lift.dart';
+import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/hive/workout.dart';
@@ -41,6 +43,8 @@ Future<void> initializeHive() async {
     Hive.registerAdapter(UserAccountAdapter());
     Hive.registerAdapter(WorkoutAdapter());
     Hive.registerAdapter(WorkoutOverviewAdapter());
+    Hive.registerAdapter(BestLiftAdapter());
+    Hive.registerAdapter(BestLiftOverviewAdapter());
 
     var userBox = await Hive.openBox('userBox');
   } catch (e) {

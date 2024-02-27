@@ -64,73 +64,74 @@ class _HomePageState extends State<HomePage> {
 
   BlocConsumer<WorkoutBloc, Object?> buildWorkouts() {
     return BlocConsumer(
-        bloc: workoutBloc,
-        listener: (context, state) {
-          if (state is WorkoutLoaded) {}
-        },
-        builder: (context, state) {
-          if (state is WorkoutLoading) {
-            return SliverFillRemaining(
-              child: Center(
-                child: Text(
-                  'Loading',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
-                ),
+      bloc: workoutBloc,
+      listener: (context, state) {
+        if (state is WorkoutLoaded) {}
+      },
+      builder: (context, state) {
+        if (state is WorkoutLoading) {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'Loading',
+                style: TextStyle(fontSize: AppSettings.fontSize),
               ),
-            );
-          } else if (state is WorkoutLoaded) {
-            if (state.workoutOverviews.isNotEmpty) {
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return FlexusWorkoutListTile(
-                      workoutOverview: WorkoutOverview(
-                        workout: Workout(
-                          id: state.workoutOverviews[index].workout.id,
-                          userAccountID: state.workoutOverviews[index].workout.userAccountID,
-                          starttime: state.workoutOverviews[index].workout.starttime,
-                          endtime: state.workoutOverviews[index].workout.endtime,
-                          isArchived: false,
-                        ),
-                        planName: state.workoutOverviews[index].planName,
-                        splitName: state.workoutOverviews[index].splitName,
+            ),
+          );
+        } else if (state is WorkoutLoaded) {
+          if (state.workoutOverviews.isNotEmpty) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return FlexusWorkoutListTile(
+                    workoutOverview: WorkoutOverview(
+                      workout: Workout(
+                        id: state.workoutOverviews[index].workout.id,
+                        userAccountID: state.workoutOverviews[index].workout.userAccountID,
+                        starttime: state.workoutOverviews[index].workout.starttime,
+                        endtime: state.workoutOverviews[index].workout.endtime,
+                        isArchived: false,
                       ),
-                      workoutBloc: workoutBloc,
-                    );
-                  },
-                  childCount: state.workoutOverviews.length,
-                ),
-              );
-            } else {
-              return SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'No workouts found',
-                    style: TextStyle(fontSize: AppSettings.fontSize),
-                  ),
-                ),
-              );
-            }
-          } else if (state is WorkoutError) {
-            return SliverFillRemaining(
-              child: Center(
-                child: Text(
-                  'Error loading workouts',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
-                ),
+                      planName: state.workoutOverviews[index].planName,
+                      splitName: state.workoutOverviews[index].splitName,
+                    ),
+                    workoutBloc: workoutBloc,
+                  );
+                },
+                childCount: state.workoutOverviews.length,
               ),
             );
           } else {
             return SliverFillRemaining(
               child: Center(
                 child: Text(
-                  'Error XYZ',
+                  'No workouts found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
             );
           }
-        });
+        } else if (state is WorkoutError) {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'Error loading workouts',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'Error XYZ',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {

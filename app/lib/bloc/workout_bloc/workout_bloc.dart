@@ -25,7 +25,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     if (event.isSearch && event.isArchive) {
@@ -69,7 +69,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     Response<dynamic> response;
     response = await _workoutService.putWorkoutArchiveStatus(userBox.get("flexusjwt"), event.workoutID);
@@ -105,7 +105,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     Response<dynamic> response;
     response = await _workoutService.putWorkoutArchiveStatus(userBox.get("flexusjwt"), event.workoutID);

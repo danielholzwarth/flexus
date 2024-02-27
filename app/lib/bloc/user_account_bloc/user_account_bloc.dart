@@ -23,7 +23,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountLoading());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
@@ -56,7 +56,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountUpdating());
 
     //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _userAccountService.putUserAccount(userBox.get("flexusjwt"), {
