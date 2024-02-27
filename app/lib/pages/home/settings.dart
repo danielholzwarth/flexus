@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
         listener: (context, state) {},
         builder: (context, state) {
           if (state is SettingsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           } else if (state is SettingsLoaded) {
             final UserAccount userAccount = userBox.get("userAccount");
             return CustomScrollView(

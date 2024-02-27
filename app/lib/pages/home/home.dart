@@ -68,14 +68,7 @@ class _HomePageState extends State<HomePage> {
       listener: (context, state) {},
       builder: (context, state) {
         if (state is WorkoutLoading) {
-          return SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'Loading',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
+          return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         } else if (state is WorkoutLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
             return SliverList(
@@ -178,7 +171,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context, state) {
               final UserAccount userAccount = userBox.get("userAccount");
               if (state is UserAccountLoading) {
-                return const Text("loading");
+                return Center(child: CircularProgressIndicator(color: AppSettings.primary));
               } else if (state is UserAccountLoaded) {
                 if (state.userAccount.profilePicture != null) {
                   return Padding(

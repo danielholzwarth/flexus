@@ -95,7 +95,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         listener: (context, state) {},
         builder: (context, state) {
           if (state is UserAccountUpdating) {
-            return Center(child: const Text("loading"));
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           } else {
             return GestureDetector(
               onTap: () {

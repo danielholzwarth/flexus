@@ -44,6 +44,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           notifyUserListID: jsonMap['notifyUserListID'],
         );
 
+        userBox.put("userSettings", userSettings);
+
         emit(SettingsLoaded(userSettings: userSettings));
       } else {
         emit(SettingsError());

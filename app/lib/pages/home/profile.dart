@@ -53,10 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
           listener: (context, state) {},
           builder: (context, state) {
             if (state is BestLiftsLoading) {
-              return Text(
-                'Loading',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              );
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             } else if (state is BestLiftsLoaded) {
               return Column(
                 children: [

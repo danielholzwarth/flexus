@@ -42,9 +42,7 @@ class FlexusSettingsListTile extends StatelessWidget {
     if (isBool) {
       return Switch(
         value: value,
-        onChanged: (bool value) {
-          print(value);
-        },
+        onChanged: onChanged,
         activeColor: AppSettings.primary,
         activeTrackColor: AppSettings.primaryShade48,
         inactiveThumbColor: AppSettings.primary,
