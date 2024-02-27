@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
