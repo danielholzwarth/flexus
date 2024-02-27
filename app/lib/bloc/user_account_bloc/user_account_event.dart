@@ -11,10 +11,10 @@ class LoadUserAccount extends UserAccountEvent {
   });
 }
 
-class ChangeUserAccount extends UserAccountEvent {
+class PutUserAccount extends UserAccountEvent {
   final UserAccount userAccount;
 
-  ChangeUserAccount({
+  PutUserAccount({
     required this.userAccount,
   });
 }

@@ -16,16 +16,13 @@ class UserAccount extends HiveObject {
   String name;
 
   @HiveField(3)
-  DateTime createdAt;
+  DateTime? createdAt;
 
   @HiveField(4)
   int level;
 
   @HiveField(5)
   Uint8List? profilePicture;
-
-  @HiveField(6)
-  int? bodyweight;
 
   UserAccount({
     required this.id,
@@ -34,6 +31,5 @@ class UserAccount extends HiveObject {
     required this.createdAt,
     required this.level,
     this.profilePicture,
-    this.bodyweight,
   });
 }

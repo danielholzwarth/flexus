@@ -6,29 +6,52 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetUserAccount(userAccountID types.UserAccountID) (types.UserAccount, error) {
-	var userAccount types.UserAccount
+func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (types.UserAccountInformation, error) {
+	var userAccount types.UserAccountInformation
 
 	query := `
-		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture, ua.bodyweight
+		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
 		FROM user_account ua
 		WHERE ua.id = $1;
 	`
 
 	err := db.pool.QueryRow(query, userAccountID).Scan(
-		&userAccount.ID,
+		&userAccount.UserAccountID,
 		&userAccount.Username,
 		&userAccount.Name,
 		&userAccount.CreatedAt,
 		&userAccount.Level,
-		&userAccount.ProfilePicture,
-		&userAccount.Bodyweight)
+		&userAccount.ProfilePicture)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return types.UserAccount{}, errors.New("user not found")
+			return types.UserAccountInformation{}, errors.New("user not found")
 		}
-		return types.UserAccount{}, err
+		return types.UserAccountInformation{}, err
 	}
 
 	return userAccount, nil
+}
+
+func (db *DB) PutUserAccount(userAccountInformation types.UserAccountInformation) error {
+	updateQuery := `
+		UPDATE user_account
+		SET username = $1, name = $2, level = $3, profile_picture = $4
+		WHERE id = $5;
+	`
+
+	_, err := db.pool.Exec(updateQuery,
+		userAccountInformation.Username,
+		userAccountInformation.Name,
+		userAccountInformation.Level,
+		userAccountInformation.ProfilePicture,
+		userAccountInformation.UserAccountID,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	return nil
 }

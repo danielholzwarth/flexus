@@ -10,6 +10,12 @@ abstract class UserAccountService extends ChopperService {
     @Path('userAccountID') int userAccountID,
   );
 
+  @Put(path: '/')
+  Future<Response> putUserAccount(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static UserAccountService create() {
     final client = ChopperClient(
         baseUrl: Uri.parse('http://10.0.2.2:8080'),

@@ -1,5 +1,6 @@
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
+import 'package:app/hive/user_account.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/home/archive.dart';
@@ -163,20 +164,55 @@ class _HomePageState extends State<HomePage> {
 
   FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc, double screenWidth) {
     return FlexusSliverAppBar(
-      leading: BlocConsumer(
-          bloc: userAccountBloc,
-          listener: (context, state) {
-            if (state is UserAccountLoaded) {}
-          },
-          builder: (context, state) {
-            if (state is UserAccountLoading) {
-              return const Text("loading");
-            } else if (state is UserAccountLoaded) {
-              if (state.userAccount.profilePicture != null) {
-                return CircleAvatar(
-                  radius: screenWidth * 0.3,
-                  backgroundImage: MemoryImage(state.userAccount.profilePicture!),
-                );
+      leading: SizedBox(
+        child: BlocConsumer(
+            bloc: userAccountBloc,
+            listener: (context, state) {
+              if (state is UserAccountLoaded) {}
+            },
+            builder: (context, state) {
+              if (state is UserAccountLoading) {
+                return const Text("loading");
+              } else if (state is UserAccountLoaded) {
+                if (state.userAccount.profilePicture != null) {
+                  UserAccount userAccount = userBox.get("userAccount");
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.leftToRight,
+                            child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                          ),
+                        ).then((value) {
+                          userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
+                        });
+                      },
+                      child: CircleAvatar(
+                        radius: AppSettings.fontSize,
+                        backgroundImage: MemoryImage(state.userAccount.profilePicture!),
+                      ),
+                    ),
+                  );
+                } else {
+                  return IconButton(
+                    icon: Icon(
+                      Icons.person,
+                      size: AppSettings.fontSizeTitle,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.leftToRight,
+                          child: const ProfilePage(isOwnProfile: true, userID: 1),
+                        ),
+                      );
+                    },
+                  );
+                }
               } else {
                 return IconButton(
                   icon: Icon(
@@ -194,24 +230,8 @@ class _HomePageState extends State<HomePage> {
                   },
                 );
               }
-            } else {
-              return IconButton(
-                icon: Icon(
-                  Icons.person,
-                  size: AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.leftToRight,
-                      child: const ProfilePage(isOwnProfile: true, userID: 1),
-                    ),
-                  );
-                },
-              );
-            }
-          }),
+            }),
+      ),
       actions: [
         Visibility(
           visible: isTokenExpired,

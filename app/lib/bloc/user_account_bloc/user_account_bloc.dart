@@ -16,15 +16,14 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
   UserAccountBloc() : super(UserAccountInitial()) {
     on<LoadUserAccount>(_onLoadUserAccount);
-
-    //on<ChangeUserAccount>(_onChangeUserAccount);
+    on<PutUserAccount>(_onPutUserAccount);
   }
 
   void _onLoadUserAccount(LoadUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    //await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
@@ -34,19 +33,41 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
 
         final userAccount = UserAccount(
-          id: jsonMap['id'],
+          id: jsonMap['userAccountID'],
           username: jsonMap['username'],
           name: jsonMap['name'],
           createdAt: DateTime.parse(jsonMap['createdAt']),
           level: jsonMap['level'],
-          profilePicture: jsonMap['profilePicture'],
-          bodyweight: jsonMap['bodyweight'],
+          profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
         );
 
         emit(UserAccountLoaded(userAccount: userAccount));
       } else {
         emit(UserAccountError());
       }
+    } else {
+      emit(UserAccountError());
+    }
+  }
+
+  void _onPutUserAccount(PutUserAccount event, Emitter<UserAccountState> emit) async {
+    emit(UserAccountUpdating());
+
+    //simulate backend request delay
+    //await Future.delayed(const Duration(seconds: 1));
+
+    Response<dynamic> response;
+    response = await _userAccountService.putUserAccount(userBox.get("flexusjwt"), {
+      "userAccountID": event.userAccount.id,
+      "username": event.userAccount.username,
+      "name": event.userAccount.name,
+      "level": event.userAccount.level,
+      "profilePicture": event.userAccount.profilePicture,
+    });
+
+    if (response.isSuccessful) {
+      userBox.put("userAccount", event.userAccount);
+      emit(UserAccountUpdated());
     } else {
       emit(UserAccountError());
     }

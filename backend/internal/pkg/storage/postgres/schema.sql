@@ -43,12 +43,11 @@ CREATE TABLE user_account (
     password VARCHAR NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     level INTEGER NOT NULL,
-    profile_picture BYTEA,
-    bodyweight INTEGER
+    profile_picture BYTEA
 );
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight") 
-VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null, null);
---Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture", "bodyweight") VALUES ('mmustermann', 'Max', 'password', now(), 1, null, 80);
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
+VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
+--Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('mmustermann', 'Max', 'password', now(), 1, null);
 
 
 CREATE TABLE user_list (

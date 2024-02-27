@@ -12,7 +12,6 @@ type UserAccount struct {
 	CreatedAt      time.Time     `json:"createdAt"`
 	Level          int           `json:"level"`
 	ProfilePicture *[]byte       `json:"profilePicture"`
-	Bodyweight     *int          `json:"bodyweight"`
 }
 
 type CreateUserRequest struct {
@@ -33,5 +32,4 @@ type UserAccountInformation struct {
 	CreatedAt      time.Time     `json:"createdAt"`
 	Level          int           `json:"level"`
 	ProfilePicture *[]byte       `json:"profilePicture"`
-	Bodyweight     *int          `json:"bodyweight"`
 }

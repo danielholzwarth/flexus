@@ -11,6 +11,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   buildPictures(screenWidth, context, userAccount),
                   buildNames(),
-                  Text("Joined: ${userAccount.createdAt}"),
+                  Text("Joined: ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
                   const Spacer(),
                   buildBestLift(screenHeight, screenWidth, state),
                   SizedBox(height: screenHeight * 0.2)
@@ -230,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                   context,
                   PageTransition(
-                    type: PageTransitionType.leftToRight,
+                    type: PageTransitionType.rightToLeft,
                     child: const SettingsPage(),
                   ),
                 );
@@ -239,7 +240,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                   context,
                   PageTransition(
-                    type: PageTransitionType.leftToRight,
+                    type: PageTransitionType.rightToLeft,
                     child: const LevelingPage(),
                   ),
                 );
@@ -251,7 +252,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.push(
                   context,
                   PageTransition(
-                    type: PageTransitionType.leftToRight,
+                    type: PageTransitionType.rightToLeft,
                     child: const ExercisesPage(),
                   ),
                 );

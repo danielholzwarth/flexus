@@ -75,7 +75,7 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
         FROM user_account
         WHERE username = $1;
     `
-	err := db.pool.QueryRow(query, username).Scan(&userAccount.ID, &userAccount.Username, &userAccount.Name, &userAccount.Password, &userAccount.CreatedAt, &userAccount.Level, &userAccount.ProfilePicture, &userAccount.Bodyweight)
+	err := db.pool.QueryRow(query, username).Scan(&userAccount.ID, &userAccount.Username, &userAccount.Name, &userAccount.Password, &userAccount.CreatedAt, &userAccount.Level, &userAccount.ProfilePicture)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return types.UserAccount{}, errors.New("user not found")
@@ -85,10 +85,6 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
 
 	if userAccount.ProfilePicture == nil {
 		userAccount.ProfilePicture = new([]byte)
-	}
-
-	if userAccount.Bodyweight == nil {
-		userAccount.Bodyweight = new(int)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(userAccount.Password), []byte(password))

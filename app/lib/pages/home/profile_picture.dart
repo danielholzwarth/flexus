@@ -1,8 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:app/api/user_account_service.dart';
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -22,6 +25,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
   final userBox = Hive.box('userBox');
   final ImagePicker imagePicker = ImagePicker();
   XFile? imageFile;
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -74,15 +78,10 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                     takeImage();
                     break;
                   case "Choose new picture":
-                    //Upload to Backend
                     getImageFromGallery();
                     break;
                   case "Delete picture":
-                    //Upload to Backend
-                    UserAccount userAccount = userBox.get("userAccount");
-                    userAccount.profilePicture = null;
-                    userBox.put("userAccount", userAccount);
-                    setState(() {});
+                    deleteImage();
                     break;
                   default:
                     print("not implemented yet");
@@ -92,21 +91,33 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
           ),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
+      body: BlocConsumer(
+        bloc: userAccountBloc,
+        listener: (context, state) {
+          if (state is UserAccountUpdating) {}
         },
-        child: Center(
-          child: Hero(
-            tag: 'profile_picture',
-            child: userAccount.profilePicture != null
-                ? Image.memory(userAccount.profilePicture!)
-                : Icon(
-                    Icons.hide_image_outlined,
-                    size: screenWidth * 0.7,
-                  ),
-          ),
-        ),
+        builder: (context, state) {
+          if (state is UserAccountUpdating) {
+            return Center(child: const Text("loading"));
+          } else {
+            return GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Center(
+                child: Hero(
+                  tag: 'profile_picture',
+                  child: userAccount.profilePicture != null
+                      ? Image.memory(userAccount.profilePicture!)
+                      : Icon(
+                          Icons.hide_image_outlined,
+                          size: screenWidth * 0.7,
+                        ),
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -125,12 +136,18 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         UserAccount userAccount = userBox.get("userAccount");
         userAccount.profilePicture = uint8List;
 
-        userBox.put("userAccount", userAccount);
-        setState(() {});
+        userAccountBloc.add(PutUserAccount(userAccount: userAccount));
       }
     } catch (e) {
       print("Error picking image from gallery: $e");
     }
+  }
+
+  void deleteImage() {
+    UserAccount userAccount = userBox.get("userAccount");
+    userAccount.profilePicture = null;
+
+    userAccountBloc.add(PutUserAccount(userAccount: userAccount));
   }
 
   Future<void> takeImage() async {
@@ -143,8 +160,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         UserAccount userAccount = userBox.get("userAccount");
         userAccount.profilePicture = uint8List;
 
-        userBox.put("userAccount", userAccount);
-        setState(() {});
+        userAccountBloc.add(PutUserAccount(userAccount: userAccount));
       }
     } catch (e) {
       print("Error taking image: $e");

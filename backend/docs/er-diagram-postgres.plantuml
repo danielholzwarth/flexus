@@ -10,7 +10,6 @@ entity user_account {
     profile_picture : text
     password : text
     created_at : timestamp
-    bodyweight : number
 }
 
 entity friends {

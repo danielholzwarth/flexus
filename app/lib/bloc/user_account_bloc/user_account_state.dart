@@ -15,4 +15,8 @@ class UserAccountLoaded extends UserAccountState {
   });
 }
 
+class UserAccountUpdating extends UserAccountState {}
+
+class UserAccountUpdated extends UserAccountState {}
+
 class UserAccountError extends UserAccountState {}
