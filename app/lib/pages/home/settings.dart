@@ -27,7 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: AppSettings.background,
       body: BlocConsumer(
         bloc: settingsBloc,
         listener: (context, state) {},
@@ -45,21 +47,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildSection("My Account"),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Name",
+                    title: "Name",
+                    subtitle: "This is the name mostly shown to your friends.",
                     value: userAccount.name,
                     isText: true,
                   ),
                 ),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Username",
+                    title: "Username",
+                    subtitle: "The username must be unique.",
                     value: userAccount.username,
                     isText: true,
                   ),
                 ),
                 const SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Password",
+                    title: "Password",
                     value: "password",
                     isObscure: true,
                   ),
@@ -67,22 +71,23 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildSection("Appearance"),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Fontsize",
+                    title: "Fontsize",
                     value: state.userSettings.fontSize,
                     isText: true,
                   ),
                 ),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Dark Mode",
+                    title: "Dark Mode",
                     value: state.userSettings.isDarkMode,
                     isBool: true,
                   ),
                 ),
-                _buildSection("Privacy"),
+                _buildSection("Status"),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Pull From Everyone",
+                    title: "Pull From Everyone",
+                    subtitle: "Who do you want to be notified by about the status?",
                     value: state.userSettings.isPullFromEveryone,
                     isBool: true,
                   ),
@@ -91,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Visibility(
                     visible: !state.userSettings.isPullFromEveryone,
                     child: const FlexusSettingsListTile(
-                      label: "Pull User List",
+                      title: "Pull User List",
                       value: "not implemented yet",
                       isText: true,
                     ),
@@ -99,21 +104,77 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
-                    label: "Notify Everyone",
+                    title: "Notify Everyone",
+                    subtitle: "Who do you want to notify about your status?",
                     value: state.userSettings.isNotifyEveryone,
                     isBool: true,
                   ),
                 ),
-                SliverToBoxAdapter(
+                const SliverToBoxAdapter(
                   child: Visibility(
-                    visible: !state.userSettings.isNotifyEveryone,
-                    child: const FlexusSettingsListTile(
-                      label: "Notify User List",
+                    visible: true,
+                    child: FlexusSettingsListTile(
+                      title: "Notify User List",
                       value: "not implemented yet",
                       isText: true,
                     ),
                   ),
                 ),
+                _buildSection("Data Storage"),
+                const SliverToBoxAdapter(
+                  child: FlexusSettingsListTile(
+                    title: "Save all data on Server",
+                    subtitle: "Should we store all your data on the server so you have a backup?",
+                    value: true,
+                    isBool: true,
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: Visibility(
+                    visible: true,
+                    child: FlexusSettingsListTile(
+                      title: "Store only necessary data",
+                      subtitle: "For some features to work (friends) we need to save some data on the server.",
+                      value: false,
+                      isBool: true,
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: TextButton(
+                      //Alle lokalen Daten löschen aber auf dem Server behalten
+                      child: Text(
+                        "Log out",
+                        style: TextStyle(
+                          fontSize: AppSettings.fontSize,
+                          color: AppSettings.error,
+                        ),
+                      ),
+                      onPressed: () => null,
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Center(
+                    child: TextButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppSettings.background)),
+                      //Alle Daten löschen. Sowohl auf dem Server als auch lokal
+                      child: Text(
+                        "Delete Account",
+                        style: TextStyle(
+                          fontSize: AppSettings.fontSize,
+                          color: AppSettings.error,
+                        ),
+                      ),
+                      onPressed: () => null,
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                    child: SizedBox(
+                  height: screenHeight * 0.3,
+                )),
               ],
             );
           } else {
@@ -135,8 +196,10 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       pinned: true,
       automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
+      backgroundColor: AppSettings.background,
       elevation: 0,
+      foregroundColor: AppSettings.font,
+      surfaceTintColor: AppSettings.background,
     );
   }
 }

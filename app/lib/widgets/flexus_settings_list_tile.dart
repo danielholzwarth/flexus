@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 
 class FlexusSettingsListTile extends StatelessWidget {
   final dynamic value;
-  final String label;
+  final String title;
+  final String subtitle;
   final bool isBool;
   final bool isDate;
   final bool isText;
@@ -15,7 +16,8 @@ class FlexusSettingsListTile extends StatelessWidget {
   const FlexusSettingsListTile({
     super.key,
     required this.value,
-    required this.label,
+    required this.title,
+    this.subtitle = "",
     this.isBool = false,
     this.isDate = false,
     this.isText = false,
@@ -30,10 +32,16 @@ class FlexusSettingsListTile extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       onTap: onPressed,
       tileColor: AppSettings.background,
-      leading: Text(
-        label,
+      title: Text(
+        title,
         style: TextStyle(fontSize: AppSettings.fontSize),
       ),
+      subtitle: subtitle != ""
+          ? Text(subtitle,
+              style: TextStyle(
+                fontSize: AppSettings.fontSizeDescription,
+              ))
+          : null,
       trailing: buildTrailing(),
     );
   }
@@ -42,9 +50,9 @@ class FlexusSettingsListTile extends StatelessWidget {
     if (isBool) {
       return Switch(
         value: value,
-        onChanged: onChanged,
+        onChanged: (value) => null,
         activeColor: AppSettings.primary,
-        activeTrackColor: AppSettings.primaryShade48,
+        activeTrackColor: AppSettings.primaryShade80,
         inactiveThumbColor: AppSettings.primary,
         inactiveTrackColor: AppSettings.primaryShade48,
         trackOutlineColor: MaterialStateProperty.resolveWith(
