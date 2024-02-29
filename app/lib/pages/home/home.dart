@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = MediaQuery.sizeOf(context).width;
     isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
     return Scaffold(
+      backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage> {
       bloc: workoutBloc,
       builder: (context, state) {
         if (state is WorkoutLoading) {
-          return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
+          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         } else if (state is WorkoutLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
             return SliverList(

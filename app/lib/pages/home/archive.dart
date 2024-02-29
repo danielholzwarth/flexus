@@ -52,7 +52,7 @@ class _ArchivePageState extends State<ArchivePage> {
             bloc: workoutBloc,
             builder: (context, state) {
               if (state is WorkoutLoading) {
-                return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+                return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
               } else if (state is WorkoutLoaded) {
                 if (state.workoutOverviews.isNotEmpty) {
                   return SliverList(

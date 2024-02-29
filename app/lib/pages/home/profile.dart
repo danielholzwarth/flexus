@@ -250,18 +250,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
                 break;
-              case "Change best lifts":
-                final response = await userAccountService.getUserAccount(userBox.get("flexusjwt"), 1);
-                print(response.bodyString);
-
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: const ExercisesPage(),
-                  ),
-                );
-                break;
               default:
                 print("not implemented yet");
             }
