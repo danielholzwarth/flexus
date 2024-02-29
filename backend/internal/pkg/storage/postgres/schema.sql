@@ -15,26 +15,16 @@ CREATE TABLE exercise_type (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-Insert INTO "exercise_type" ("name") VALUES ('reps');
-Insert INTO "exercise_type" ("name") VALUES ('duration');
-
 
 CREATE TABLE language (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-Insert INTO "language" ("name") VALUES ('english');
-Insert INTO "language" ("name") VALUES ('german');
-
 
 CREATE TABLE position (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-Insert INTO "position" ("name") VALUES ('first');
-Insert INTO "position" ("name") VALUES ('second');
-Insert INTO "position" ("name") VALUES ('third');
-
 
 CREATE TABLE user_account (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -45,10 +35,6 @@ CREATE TABLE user_account (
     level INTEGER NOT NULL,
     profile_picture BYTEA
 );
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
-VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
---Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('mmustermann', 'Max', 'password', now(), 1, null);
-
 
 CREATE TABLE user_list (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -56,8 +42,6 @@ CREATE TABLE user_list (
     creator_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     member_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
---Insert INTO "user_list" ("list_id", "creator_id", "member_id") VALUES (1, 1, 2);
-
 
 CREATE TABLE report (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -68,27 +52,18 @@ CREATE TABLE report (
     is_offensive_username BOOLEAN,
     is_other BOOLEAN   
 );
---Insert INTO "report" ("reporter_id", "reported_id", "is_offensive_profile_picture", "is_offensive_name", "is_offensive_username", "is_other") VALUES (1, 2, 'false', 'true', 'false', 'false');
-
 
 CREATE TABLE gym (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     location POINT NOT NULL
 );
-Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
-Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));
-Insert INTO "gym" ("name", "location") VALUES ('Another Gym', POINT(43.7128, -71.0060));
-
 
 CREATE TABLE user_account_gym (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     gym_id BIGINT NOT NULL REFERENCES gym(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
-Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);
-
 
 CREATE TABLE friends (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -96,8 +71,6 @@ CREATE TABLE friends (
     requested_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     is_accepted BOOLEAN NOT NULL
 );
---Insert INTO "friends" ("requester_id", "requested_id", "is_accepted")VALUES (1, 2, 'false');
-
 
 CREATE TABLE user_settings (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -111,9 +84,6 @@ CREATE TABLE user_settings (
     is_notify_everyone BOOLEAN NOT NULL,
     notify_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
-Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null);
---Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (2, 22, 'false', 2, 'true', 'false', 1, 'true', null);
-
 
 CREATE TABLE plan (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -130,9 +100,6 @@ CREATE TABLE plan (
     is_saturday_blocked BOOLEAN NOT NULL,
     is_sunday_blocked BOOLEAN NOT NULL
 );
-Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
-Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
-
 
 CREATE TABLE split (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -140,14 +107,6 @@ CREATE TABLE split (
     name VARCHAR(20) NOT NULL,
     order_in_plan INTEGER NOT NULL
 );
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Push', 1);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Pull', 2);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Legs', 3);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Brust Bizeps Bauch', 1);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Beine Po', 2);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Schulter Nacken', 3);
-Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Rücken Trizeps Bauch', 4);
-
 
 CREATE TABLE exercise (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -155,19 +114,12 @@ CREATE TABLE exercise (
     name VARCHAR(50) NOT NULL,
     type_id BIGINT NOT NULL REFERENCES exercise_type(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpress', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
-
 
 CREATE TABLE exercise_split (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     split_id BIGINT NOT NULL REFERENCES split(id) ON DELETE CASCADE ON UPDATE CASCADE,
     exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
---Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 1);
-
 
 CREATE TABLE workout (
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -177,6 +129,63 @@ CREATE TABLE workout (
     endtime TIMESTAMP,
     is_archived BOOLEAN NOT NULL
 );
+
+CREATE TABLE set (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    workout_id BIGINT NOT NULL REFERENCES workout(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    order_number INTEGER NOT NULL,
+    repetitions INTEGER,
+    weight DECIMAL,
+    duration DECIMAL
+);
+
+CREATE TABLE best_lifts (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    set_id BIGINT NOT NULL REFERENCES set(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    position_id BIGINT NOT NULL REFERENCES position(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+--INSERTS
+Insert INTO "exercise_type" ("name") VALUES ('reps');
+Insert INTO "exercise_type" ("name") VALUES ('duration');
+
+Insert INTO "language" ("name") VALUES ('english');
+Insert INTO "language" ("name") VALUES ('german');
+
+Insert INTO "position" ("name") VALUES ('first');
+Insert INTO "position" ("name") VALUES ('second');
+Insert INTO "position" ("name") VALUES ('third');
+
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
+VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
+
+Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
+Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));
+Insert INTO "gym" ("name", "location") VALUES ('Another Gym', POINT(43.7128, -71.0060));
+
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null);
+
+Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
+Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
+
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Push', 1);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Pull', 2);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Legs', 3);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Brust Bizeps Bauch', 1);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Beine Po', 2);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Schulter Nacken', 3);
+Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Rücken Trizeps Bauch', 4);
+
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpress', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 2);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
+
 INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
 INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
 INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
@@ -202,30 +211,14 @@ INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archiv
 INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
 INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, now(), null, 'false');
 
-
-CREATE TABLE set (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    workout_id BIGINT NOT NULL REFERENCES workout(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    order_number INTEGER NOT NULL,
-    repetitions INTEGER,
-    weight DECIMAL,
-    duration DECIMAL
-);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (1, 1, 1, 3, 215.5, null);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (4, 2, 1, null, null, 203.3);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 3, 1, 8, 125.5, null);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 2, 2, null, null, 192.8);
 
-
-CREATE TABLE best_lifts (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    set_id BIGINT NOT NULL REFERENCES set(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    position_id BIGINT NOT NULL REFERENCES position(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 2, 2);
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 3, 3);
+
 
 COMMIT;
