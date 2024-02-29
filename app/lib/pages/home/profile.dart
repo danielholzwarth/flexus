@@ -48,9 +48,8 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: AppSettings.background,
       appBar: buildAppBar(context),
       body: Center(
-        child: BlocConsumer(
+        child: BlocBuilder(
           bloc: bestLiftsBloc,
-          listener: (context, state) {},
           builder: (context, state) {
             if (state is BestLiftsLoading) {
               return Center(child: CircularProgressIndicator(color: AppSettings.primary));

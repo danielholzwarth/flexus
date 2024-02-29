@@ -48,9 +48,8 @@ class _ArchivePageState extends State<ArchivePage> {
         controller: scrollController,
         slivers: <Widget>[
           _buildFlexusSliverAppBar(context),
-          BlocConsumer(
+          BlocBuilder(
             bloc: workoutBloc,
-            listener: (context, state) {},
             builder: (context, state) {
               if (state is WorkoutLoading) {
                 return Center(child: CircularProgressIndicator(color: AppSettings.primary));

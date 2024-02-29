@@ -1,11 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/settings_bloc/settings_bloc.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/login/startup.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -30,9 +35,8 @@ class _SettingsPageState extends State<SettingsPage> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppSettings.background,
-      body: BlocConsumer(
+      body: BlocBuilder(
         bloc: settingsBloc,
-        listener: (context, state) {},
         builder: (context, state) {
           if (state is SettingsLoading) {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
@@ -143,7 +147,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 SliverToBoxAdapter(
                   child: Center(
                     child: TextButton(
-                      //Alle lokalen Daten löschen aber auf dem Server behalten
                       child: Text(
                         "Log out",
                         style: TextStyle(
@@ -151,7 +154,16 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: AppSettings.error,
                         ),
                       ),
-                      onPressed: () => null,
+                      onPressed: () {
+                        userBox.clear();
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.fade,
+                            child: const StartUpPage(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -159,7 +171,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Center(
                     child: TextButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppSettings.background)),
-                      //Alle Daten löschen. Sowohl auf dem Server als auch lokal
                       child: Text(
                         "Delete Account",
                         style: TextStyle(
@@ -167,7 +178,29 @@ class _SettingsPageState extends State<SettingsPage> {
                           color: AppSettings.error,
                         ),
                       ),
-                      onPressed: () => null,
+                      onPressed: () async {
+                        UserAccountService uas = UserAccountService.create();
+                        final response = await uas.deleteUserAccount(userBox.get("flexusjwt"));
+                        if (response.isSuccessful) {
+                          userBox.clear();
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: const StartUpPage(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Center(
+                                child: Text(response.error.toString()),
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),

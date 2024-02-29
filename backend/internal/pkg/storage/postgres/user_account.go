@@ -55,3 +55,23 @@ func (db *DB) PutUserAccount(userAccountInformation types.UserAccountInformation
 
 	return nil
 }
+
+func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
+	updateQuery := `
+		DELETE 
+		FROM user_account
+		WHERE id = $1;
+	`
+
+	_, err := db.pool.Exec(updateQuery,
+		userAccountID,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	return nil
+}

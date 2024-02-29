@@ -90,9 +90,8 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
           ),
         ],
       ),
-      body: BlocConsumer(
+      body: BlocBuilder(
         bloc: userAccountBloc,
-        listener: (context, state) {},
         builder: (context, state) {
           if (state is UserAccountUpdating) {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));

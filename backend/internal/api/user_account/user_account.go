@@ -12,6 +12,7 @@ import (
 type UserAccountStore interface {
 	GetUserAccountInformation(userAccountID types.UserAccountID) (types.UserAccountInformation, error)
 	PutUserAccount(userAccountInformation types.UserAccountInformation) error
+	DeleteUserAccount(userAccountID types.UserAccountID) error
 }
 
 type service struct {
@@ -28,6 +29,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 
 	r.Get("/{userAccountID}", s.getUserAccountInformation())
 	r.Put("/", s.putUserAccount())
+	r.Delete("/", s.deleteUserAccount())
 
 	return s
 }
@@ -121,6 +123,27 @@ func (s service) putUserAccount() http.HandlerFunc {
 		}
 
 		err := s.userAccountStore.PutUserAccount(requestBody)
+		if err != nil {
+			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) deleteUserAccount() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
+			println("asd")
+			return
+		}
+
+		err := s.userAccountStore.DeleteUserAccount(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
 			println(err.Error())

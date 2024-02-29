@@ -62,10 +62,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocConsumer<WorkoutBloc, Object?> buildWorkouts() {
-    return BlocConsumer(
+  BlocBuilder<WorkoutBloc, Object?> buildWorkouts() {
+    return BlocBuilder(
       bloc: workoutBloc,
-      listener: (context, state) {},
       builder: (context, state) {
         if (state is WorkoutLoading) {
           return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
@@ -165,9 +164,8 @@ class _HomePageState extends State<HomePage> {
   FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc, double screenWidth) {
     return FlexusSliverAppBar(
       leading: SizedBox(
-        child: BlocConsumer(
+        child: BlocBuilder(
             bloc: userAccountBloc,
-            listener: (context, state) {},
             builder: (context, state) {
               final UserAccount userAccount = userBox.get("userAccount");
               if (state is UserAccountLoading) {

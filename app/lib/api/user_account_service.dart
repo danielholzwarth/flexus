@@ -16,6 +16,11 @@ abstract class UserAccountService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
+  @Delete(path: '/')
+  Future<Response> deleteUserAccount(
+    @Header('flexusjwt') String flexusJWTString,
+  );
+
   static UserAccountService create() {
     final client = ChopperClient(
         baseUrl: Uri.parse('http://10.0.2.2:8080'),
