@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    bestLiftsBloc.add(LoadBestLifts(userAccountID: 1));
+    bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
   }
 
   @override
@@ -159,23 +159,33 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Row buildBestLift(double screenHeight, double screenWidth, BestLiftsLoaded state) {
-    int bestLiftCount = 0;
-    bestLiftCount = state.bestLiftOverview.length;
+    if (state.bestLiftOverview != null) {
+      List<BestLiftOverview> bestLiftOverview = state.bestLiftOverview!;
+      int bestLiftCount = bestLiftOverview.length;
 
-    //Position mitgeben --> immer fixiert
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(state.bestLiftOverview[1]) : "",
-            bestLiftCount >= 2 ? state.bestLiftOverview[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
-        _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(state.bestLiftOverview[0]) : "",
-            bestLiftCount >= 1 ? state.bestLiftOverview[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
-        _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(state.bestLiftOverview[2]) : "",
-            bestLiftCount >= 3 ? state.bestLiftOverview[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
-      ],
-    );
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(bestLiftOverview[1]) : "",
+              bestLiftCount >= 2 ? bestLiftOverview[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
+          _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(bestLiftOverview[0]) : "",
+              bestLiftCount >= 1 ? bestLiftOverview[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
+          _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(bestLiftOverview[2]) : "",
+              bestLiftCount >= 3 ? bestLiftOverview[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildPedestal("", "Tap here", screenHeight * 0.08, screenWidth),
+          _buildPedestal("", "Tap here", screenHeight * 0.1, screenWidth),
+          _buildPedestal("", "Tap here", screenHeight * 0.06, screenWidth),
+        ],
+      );
+    }
   }
 
   String getCorrectPedestralText(BestLiftOverview bestLiftOverview) {

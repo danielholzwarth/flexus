@@ -42,7 +42,8 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     workoutBloc.add(LoadWorkout());
-    userAccountBloc.add(LoadUserAccount(userAccountID: 1));
+    UserAccount userAccount = userBox.get("userAccount");
+    userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
   }
 
   @override
@@ -203,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         PageTransition(
                           type: PageTransitionType.leftToRight,
-                          child: const ProfilePage(isOwnProfile: true, userID: 1),
+                          child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                         ),
                       ).then((value) {
                         userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
@@ -222,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.leftToRight,
-                        child: const ProfilePage(isOwnProfile: true, userID: 1),
+                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                       ),
                     ).then((value) {
                       userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));

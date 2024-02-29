@@ -28,7 +28,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
+      if (response.body != "null" && response.bodyString.isNotEmpty) {
         List<dynamic> jsonList = jsonDecode(response.bodyString);
 
         List<BestLiftOverview> bestLiftOverviews = jsonList.map((jsonMap) {
@@ -42,7 +42,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
 
         emit(BestLiftsLoaded(bestLiftOverview: bestLiftOverviews));
       } else {
-        emit(BestLiftsError());
+        emit(BestLiftsLoaded(bestLiftOverview: null));
       }
     } else {
       emit(BestLiftsError());
