@@ -90,7 +90,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       //   break;
 
       case "profilePicture":
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": event.value});
+        final profilePictureString = base64Encode(event.value);
+        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": profilePictureString});
         if (response.isSuccessful) {
           userAccount.profilePicture = event.value;
           userBox.put("userAccount", userAccount);
