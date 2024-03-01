@@ -89,26 +89,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       case "password":
-        final response =
-            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
-        if (response.isSuccessful) {
-          print("AS");
-        } else {
-          print("asa");
-        }
+        await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
         break;
 
       //Appearance
-      case "font_size":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"fontSize": event.value});
+      case "fontSize":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"font_size": event.value});
         if (response.isSuccessful) {
           userSettings.fontSize = event.value;
           userBox.put("userSettings", userSettings);
         }
         break;
 
-      case "dark_mode":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"isDarkMode": event.value});
+      case "isDarkMode":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_dark_mode": event.value});
         if (response.isSuccessful) {
           userSettings.isDarkMode = event.value;
           userBox.put("userSettings", userSettings);
@@ -116,6 +110,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       //Status
+
+      //Security
 
       //Data Storage
 

@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"errors"
 	"flexus/internal/types"
 )
 
@@ -52,4 +53,25 @@ func (db DB) GetUserSettings(userAccountID types.UserAccountID) (types.UserSetti
 	}
 
 	return settings, nil
+}
+
+func (db *DB) PatchUserSettings(columnName string, value any, userAccountID types.UserAccountID) error {
+	updateQuery := `
+			UPDATE user_settings
+			SET ` + columnName + ` = $1
+			WHERE user_id = $2;
+		`
+
+	_, err := db.pool.Exec(updateQuery,
+		value,
+		userAccountID,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	return nil
 }

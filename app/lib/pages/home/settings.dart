@@ -271,7 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: userSettings.isDarkMode,
                     isBool: true,
                     onChanged: (value) {
-                      settingsBloc.add(UpdateSettings(name: "dark_mode", value: value));
+                      settingsBloc.add(UpdateSettings(name: "isDarkMode", value: value));
                     },
                   ),
                 ),

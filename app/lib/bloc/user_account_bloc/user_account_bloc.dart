@@ -78,13 +78,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         break;
 
       case "password":
-        final response =
-            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
-        if (response.isSuccessful) {
-          print("AS");
-        } else {
-          print("asa");
-        }
+        await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
         break;
 
       // case "level":
