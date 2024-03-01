@@ -5,10 +5,12 @@ abstract class SettingsEvent {}
 
 class LoadSettings extends SettingsEvent {}
 
-class ChangeSettings extends SettingsEvent {
-  final UserSettings userSettings;
+class UpdateSettings extends SettingsEvent {
+  final String name;
+  final dynamic value;
 
-  ChangeSettings({
-    required this.userSettings,
+  UpdateSettings({
+    required this.name,
+    required this.value,
   });
 }

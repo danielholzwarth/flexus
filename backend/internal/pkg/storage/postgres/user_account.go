@@ -32,19 +32,16 @@ func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (type
 	return userAccount, nil
 }
 
-func (db *DB) PutUserAccount(userAccountInformation types.UserAccountInformation) error {
+func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error {
 	updateQuery := `
-		UPDATE user_account
-		SET username = $1, name = $2, level = $3, profile_picture = $4
-		WHERE id = $5;
-	`
+			UPDATE user_account
+			SET ` + columnName + ` = $1
+			WHERE id = $2;
+		`
 
 	_, err := db.pool.Exec(updateQuery,
-		userAccountInformation.Username,
-		userAccountInformation.Name,
-		userAccountInformation.Level,
-		userAccountInformation.ProfilePicture,
-		userAccountInformation.UserAccountID,
+		value,
+		userAccountID,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

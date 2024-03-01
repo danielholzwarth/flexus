@@ -11,10 +11,14 @@ class LoadUserAccount extends UserAccountEvent {
   });
 }
 
-class PutUserAccount extends UserAccountEvent {
-  final UserAccount userAccount;
+class UpdateUserAccount extends UserAccountEvent {
+  final String name;
+  final dynamic value;
+  final dynamic value2;
 
-  PutUserAccount({
-    required this.userAccount,
+  UpdateUserAccount({
+    required this.name,
+    required this.value,
+    this.value2,
   });
 }

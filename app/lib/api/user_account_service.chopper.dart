@@ -36,7 +36,7 @@ final class _$UserAccountService extends UserAccountService {
   }
 
   @override
-  Future<Response<dynamic>> putUserAccount(
+  Future<Response<dynamic>> patchUserAccount(
     String flexusJWTString,
     Map<String, dynamic> body,
   ) {
@@ -46,7 +46,7 @@ final class _$UserAccountService extends UserAccountService {
     };
     final $body = body;
     final Request $request = Request(
-      'PUT',
+      'PATCH',
       $url,
       client.baseUrl,
       body: $body,

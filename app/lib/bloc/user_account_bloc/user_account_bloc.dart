@@ -16,7 +16,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
   UserAccountBloc() : super(UserAccountInitial()) {
     on<LoadUserAccount>(_onLoadUserAccount);
-    on<PutUserAccount>(_onPutUserAccount);
+    on<UpdateUserAccount>(_onUpdateUserAccount);
   }
 
   void _onLoadUserAccount(LoadUserAccount event, Emitter<UserAccountState> emit) async {
@@ -52,26 +52,54 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
   }
 
-  void _onPutUserAccount(PutUserAccount event, Emitter<UserAccountState> emit) async {
+  void _onUpdateUserAccount(UpdateUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountUpdating());
 
     //simulate backend request delay
     await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response;
-    response = await _userAccountService.putUserAccount(userBox.get("flexusjwt"), {
-      "userAccountID": event.userAccount.id,
-      "username": event.userAccount.username,
-      "name": event.userAccount.name,
-      "level": event.userAccount.level,
-      "profilePicture": event.userAccount.profilePicture,
-    });
+    UserAccount userAccount = userBox.get("userAccount");
 
-    if (response.isSuccessful) {
-      userBox.put("userAccount", event.userAccount);
-      emit(UserAccountUpdated());
-    } else {
-      emit(UserAccountError());
+    switch (event.name) {
+      case "username":
+        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
+        if (response.isSuccessful) {
+          userAccount.username = event.value;
+          userBox.put("userAccount", userAccount);
+        }
+        break;
+
+      case "name":
+        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
+        if (response.isSuccessful) {
+          userAccount.name = event.value;
+          userBox.put("userAccount", userAccount);
+        }
+        break;
+
+      // case "password":
+      //   await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"newPassword": event.value, "oldPassword": event.value2});
+      //   break;
+
+      // case "level":
+      //   final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"level": event.value});
+      //   if (response.isSuccessful) {
+      //     userAccount.level = event.value;
+      //     userBox.put("userAccount", userAccount);
+      //   }
+      //   break;
+
+      case "profilePicture":
+        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": event.value});
+        print(event.value);
+        if (response.isSuccessful) {
+          userAccount.profilePicture = event.value;
+          userBox.put("userAccount", userAccount);
+        }
+        break;
+      default:
     }
+
+    emit(UserAccountUpdated());
   }
 }

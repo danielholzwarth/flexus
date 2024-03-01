@@ -10,8 +10,8 @@ abstract class UserAccountService extends ChopperService {
     @Path('userAccountID') int userAccountID,
   );
 
-  @Put(path: '/')
-  Future<Response> putUserAccount(
+  @Patch(path: '/')
+  Future<Response> patchUserAccount(
     @Header('flexusjwt') String flexusJWTString,
     @Body() Map<String, dynamic> body,
   );

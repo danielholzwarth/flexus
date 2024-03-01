@@ -7,12 +7,10 @@ class SettingsInitial extends SettingsState {}
 
 class SettingsLoading extends SettingsState {}
 
-class SettingsLoaded extends SettingsState {
-  final UserSettings userSettings;
+class SettingsLoaded extends SettingsState {}
 
-  SettingsLoaded({
-    required this.userSettings,
-  });
-}
+class SettingsUpdating extends SettingsState {}
+
+class SettingsUpdated extends SettingsState {}
 
 class SettingsError extends SettingsState {}

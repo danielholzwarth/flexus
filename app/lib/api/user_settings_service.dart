@@ -9,6 +9,12 @@ abstract class UserSettingsService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Patch(path: '/')
+  Future<Response> patchUserSettings(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static UserSettingsService create() {
     final client = ChopperClient(
         baseUrl: Uri.parse('http://10.0.2.2:8080'),

@@ -129,10 +129,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         List<int> imageBytes = await pickedFile.readAsBytes();
         Uint8List uint8List = Uint8List.fromList(imageBytes);
 
-        UserAccount userAccount = userBox.get("userAccount");
-        userAccount.profilePicture = uint8List;
-
-        userAccountBloc.add(PutUserAccount(userAccount: userAccount));
+        userAccountBloc.add(UpdateUserAccount(name: "profilePicture", value: uint8List));
       }
     } catch (e) {
       print("Error picking image from gallery: $e");
@@ -140,10 +137,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
   }
 
   void deleteImage() {
-    UserAccount userAccount = userBox.get("userAccount");
-    userAccount.profilePicture = null;
-
-    userAccountBloc.add(PutUserAccount(userAccount: userAccount));
+    userAccountBloc.add(UpdateUserAccount(name: "profilePicture", value: null));
   }
 
   Future<void> takeImage() async {
@@ -153,10 +147,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         List<int> imageBytes = await pickedFile.readAsBytes();
         Uint8List uint8List = Uint8List.fromList(imageBytes);
 
-        UserAccount userAccount = userBox.get("userAccount");
-        userAccount.profilePicture = uint8List;
-
-        userAccountBloc.add(PutUserAccount(userAccount: userAccount));
+        userAccountBloc.add(UpdateUserAccount(name: "profilePicture", value: uint8List));
       }
     } catch (e) {
       print("Error taking image: $e");

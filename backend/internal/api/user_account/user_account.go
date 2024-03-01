@@ -3,6 +3,8 @@ package user_account
 import (
 	"encoding/json"
 	"flexus/internal/types"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -11,7 +13,8 @@ import (
 
 type UserAccountStore interface {
 	GetUserAccountInformation(userAccountID types.UserAccountID) (types.UserAccountInformation, error)
-	PutUserAccount(userAccountInformation types.UserAccountInformation) error
+	PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error
+	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID types.UserAccountID) error
 }
 
@@ -28,7 +31,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	}
 
 	r.Get("/{userAccountID}", s.getUserAccountInformation())
-	r.Put("/", s.putUserAccount())
+	r.Patch("/", s.patchUserAccount())
 	r.Delete("/", s.deleteUserAccount())
 
 	return s
@@ -75,7 +78,7 @@ func (s service) getUserAccountInformation() http.HandlerFunc {
 	}
 }
 
-func (s service) putUserAccount() http.HandlerFunc {
+func (s service) patchUserAccount() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -84,49 +87,84 @@ func (s service) putUserAccount() http.HandlerFunc {
 			return
 		}
 
-		var requestBody types.UserAccountInformation
-		decoder := json.NewDecoder(r.Body)
-		if err := decoder.Decode(&requestBody); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
+		var requestBody map[string]interface{}
 
-		if requestBody.UserAccountID <= 0 {
-			http.Error(w, "UserAccountID can not be smaller or equal to 0", http.StatusBadRequest)
-			println("err")
-			return
-		}
-
-		if requestBody.Username == "" {
-			http.Error(w, "Username can not be empty", http.StatusBadRequest)
-			println("err")
-			return
-		}
-
-		if requestBody.Name == "" {
-			http.Error(w, "Name can not be empty", http.StatusBadRequest)
-			println("err")
-			return
-		}
-
-		if requestBody.Level <= 0 {
-			http.Error(w, "Level can not be smaller or equal to 0", http.StatusBadRequest)
-			println("err")
-			return
-		}
-
-		if requestBody.UserAccountID != claims.UserAccountID {
-			http.Error(w, "You do not have the permissions to update this account", http.StatusBadRequest)
-			print("ad")
-			return
-		}
-
-		err := s.userAccountStore.PutUserAccount(requestBody)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
-			println(err.Error())
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
 			return
+		}
+
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			return
+		}
+
+		if username, ok := requestBody["username"].(string); ok {
+			fmt.Println("Updating username:", username)
+
+			availability, err := s.userAccountStore.GetUsernameAvailability(username)
+			if err != nil {
+				http.Error(w, "Failed to create User", http.StatusInternalServerError)
+				return
+			}
+
+			if !availability {
+				http.Error(w, "Username is already assigned", http.StatusBadRequest)
+				return
+			}
+
+			err = s.userAccountStore.PatchUserAccount("username", username, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		if name, ok := requestBody["name"].(string); ok {
+			fmt.Println("Updating name:", name)
+			err := s.userAccountStore.PatchUserAccount("name", name, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		// if password, ok := requestBody["password"].([]byte); ok {
+		// 	fmt.Println("Updating password:", password)
+		// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		// 	if err != nil {
+		// 		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		// 		println(err.Error())
+		// 	}
+		// 	err = s.userAccountStore.PatchUserAccount("password", hashedPassword, claims.UserAccountID)
+		// 	if err != nil {
+		// 		http.Error(w, "Failed to patch password", http.StatusInternalServerError)
+		// 		println(err.Error())
+		// 		return
+		// 	}
+		// }
+
+		// if level, ok := requestBody["level"].(int); ok {
+		// 	fmt.Println("Updating level:", level)
+		// 	err := s.userAccountStore.PatchUserAccount("level", level, claims.UserAccountID)
+		// 	if err != nil {
+		// 		http.Error(w, "Failed to patch level", http.StatusInternalServerError)
+		// 		println(err.Error())
+		// 		return
+		// 	}
+		// }
+
+		if profilePicture, ok := requestBody["profile_picture"].([]byte); ok {
+			fmt.Println("Updating profilePicture:", profilePicture)
+			err := s.userAccountStore.PatchUserAccount("profile_picture", profilePicture, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch profilePicture", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")
