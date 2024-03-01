@@ -170,19 +170,28 @@ func (s service) patchUserAccount() http.HandlerFunc {
 		// }
 
 		if profilePicture, ok := requestBody["profile_picture"].(string); ok {
-			fmt.Println("Updating profilePicture:", profilePicture)
-			imageBytes, err := base64.StdEncoding.DecodeString(profilePicture)
-			if err != nil {
-				http.Error(w, "Failed to decode profilePicture", http.StatusBadRequest)
-				fmt.Println("Failed to decode profilePicture:", err)
-				return
-			}
+			if profilePicture != "" {
 
-			err = s.userAccountStore.PatchUserAccount("profile_picture", imageBytes, claims.UserAccountID)
-			if err != nil {
-				http.Error(w, "Failed to patch profilePicture", http.StatusInternalServerError)
-				println(err.Error())
-				return
+				imageBytes, err := base64.StdEncoding.DecodeString(profilePicture)
+				if err != nil {
+					http.Error(w, "Failed to decode profilePicture", http.StatusBadRequest)
+					fmt.Println("Failed to decode profilePicture:", err)
+					return
+				}
+
+				err = s.userAccountStore.PatchUserAccount("profile_picture", imageBytes, claims.UserAccountID)
+				if err != nil {
+					http.Error(w, "Failed to patch profilePicture", http.StatusInternalServerError)
+					println(err.Error())
+					return
+				}
+			} else {
+				err := s.userAccountStore.PatchUserAccount("profile_picture", nil, claims.UserAccountID)
+				if err != nil {
+					http.Error(w, "Failed to patch profilePicture", http.StatusInternalServerError)
+					println(err.Error())
+					return
+				}
 			}
 		}
 

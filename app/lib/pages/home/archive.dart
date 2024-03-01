@@ -25,20 +25,7 @@ class _ArchivePageState extends State<ArchivePage> {
   @override
   void initState() {
     super.initState();
-    scrollController.addListener(scrollListener);
     workoutBloc.add(LoadWorkout(isArchive: true));
-  }
-
-  void scrollListener() {
-    if (scrollController.offset == 0) {
-      setState(() {
-        isArchiveVisible = true;
-      });
-    } else {
-      setState(() {
-        isArchiveVisible = false;
-      });
-    }
   }
 
   @override

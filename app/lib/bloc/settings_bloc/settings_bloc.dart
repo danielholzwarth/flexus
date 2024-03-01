@@ -136,9 +136,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           userBox.put("userSettings", userSettings);
         }
         break;
-      //Security
-
-      //Data Storage
 
       default:
         emit(SettingsLoaded());

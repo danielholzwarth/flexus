@@ -122,9 +122,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
     try {
       final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        setState(() {
-          imageFile = pickedFile;
-        });
+        imageFile = pickedFile;
 
         List<int> imageBytes = await pickedFile.readAsBytes();
         Uint8List uint8List = Uint8List.fromList(imageBytes);

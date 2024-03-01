@@ -33,15 +33,27 @@ func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (type
 }
 
 func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error {
-	updateQuery := `
+	var updateQuery string
+	var args []interface{}
+
+	if value == nil {
+		updateQuery = `
+			UPDATE user_account
+			SET ` + columnName + ` = NULL
+			WHERE id = $1;
+		`
+		args = []interface{}{userAccountID}
+	} else {
+		updateQuery = `
 			UPDATE user_account
 			SET ` + columnName + ` = $1
 			WHERE id = $2;
 		`
+		args = []interface{}{value, userAccountID}
+	}
 
 	_, err := db.pool.Exec(updateQuery,
-		value,
-		userAccountID,
+		args...,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
