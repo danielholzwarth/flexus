@@ -7,12 +7,10 @@ class WorkoutInitial extends WorkoutState {}
 
 class WorkoutLoading extends WorkoutState {}
 
-class WorkoutLoaded extends WorkoutState {
-  final List<WorkoutOverview> workoutOverviews;
+class WorkoutLoaded extends WorkoutState {}
 
-  WorkoutLoaded({
-    required this.workoutOverviews,
-  });
-}
+class WorkoutDeleting extends WorkoutState {}
+
+class WorkoutDeleted extends WorkoutState {}
 
 class WorkoutError extends WorkoutState {}

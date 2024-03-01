@@ -56,13 +56,13 @@ func (db DB) GetUserSettings(userAccountID types.UserAccountID) (types.UserSetti
 }
 
 func (db *DB) PatchUserSettings(columnName string, value any, userAccountID types.UserAccountID) error {
-	updateQuery := `
+	query := `
 			UPDATE user_settings
 			SET ` + columnName + ` = $1
 			WHERE user_id = $2;
 		`
 
-	_, err := db.pool.Exec(updateQuery,
+	_, err := db.pool.Exec(query,
 		value,
 		userAccountID,
 	)

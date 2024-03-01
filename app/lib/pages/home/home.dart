@@ -68,29 +68,30 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder(
       bloc: workoutBloc,
       builder: (context, state) {
-        if (state is WorkoutLoading) {
+        if (state is WorkoutLoading || state is WorkoutDeleting) {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-        } else if (state is WorkoutLoaded) {
-          if (state.workoutOverviews.isNotEmpty) {
+        } else if (state is WorkoutLoaded || state is WorkoutDeleted) {
+          List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
+          if (workoutOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return FlexusWorkoutListTile(
                     workoutOverview: WorkoutOverview(
                       workout: Workout(
-                        id: state.workoutOverviews[index].workout.id,
-                        userAccountID: state.workoutOverviews[index].workout.userAccountID,
-                        starttime: state.workoutOverviews[index].workout.starttime,
-                        endtime: state.workoutOverviews[index].workout.endtime,
+                        id: workoutOverviews[index].workout.id,
+                        userAccountID: workoutOverviews[index].workout.userAccountID,
+                        starttime: workoutOverviews[index].workout.starttime,
+                        endtime: workoutOverviews[index].workout.endtime,
                         isArchived: false,
                       ),
-                      planName: state.workoutOverviews[index].planName,
-                      splitName: state.workoutOverviews[index].splitName,
+                      planName: workoutOverviews[index].planName,
+                      splitName: workoutOverviews[index].splitName,
                     ),
                     workoutBloc: workoutBloc,
                   );
                 },
-                childCount: state.workoutOverviews.length,
+                childCount: workoutOverviews.length,
               ),
             );
           } else {

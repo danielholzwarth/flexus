@@ -56,9 +56,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           );
         }).toList();
 
-        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+        userBox.put("workoutOverviews", workoutOverviews);
+        emit(WorkoutLoaded());
       } else {
-        emit(WorkoutLoaded(workoutOverviews: List.empty()));
+        userBox.put("workoutOverviews", List.empty());
+        emit(WorkoutLoaded());
       }
     } else {
       emit(WorkoutError());
@@ -92,9 +94,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           );
         }).toList();
 
-        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+        userBox.put("workoutOverviews", workoutOverviews);
+        emit(WorkoutLoaded());
       } else {
-        emit(WorkoutLoaded(workoutOverviews: List.empty()));
+        userBox.put("workoutOverviews", List.empty());
+        emit(WorkoutLoaded());
       }
     } else {
       emit(WorkoutError());
@@ -102,7 +106,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   }
 
   void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
-    emit(WorkoutLoading());
+    emit(WorkoutDeleting());
 
     //simulate backend request delay
     await Future.delayed(const Duration(seconds: 1));
@@ -111,27 +115,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final List<dynamic> jsonList = jsonDecode(response.bodyString);
-        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
-          return WorkoutOverview(
-            workout: Workout(
-              id: json['workout']['id'],
-              userAccountID: json['workout']['userAccountID'],
-              splitID: json['workout']['splitID'],
-              starttime: DateTime.parse(json['workout']['starttime']),
-              endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
-              isArchived: json['workout']['isArchived'],
-            ),
-            planName: json['planName'],
-            splitName: json['splitName'],
-          );
-        }).toList();
+      List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
 
-        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
-      } else {
-        emit(WorkoutLoaded(workoutOverviews: List.empty()));
-      }
+      workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
+
+      userBox.put("workoutOverviews", workoutOverviews);
+      emit(WorkoutDeleted());
     } else {
       emit(WorkoutError());
     }

@@ -33,18 +33,18 @@ func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (type
 }
 
 func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error {
-	var updateQuery string
+	var query string
 	var args []interface{}
 
 	if value == nil {
-		updateQuery = `
+		query = `
 			UPDATE user_account
 			SET ` + columnName + ` = NULL
 			WHERE id = $1;
 		`
 		args = []interface{}{userAccountID}
 	} else {
-		updateQuery = `
+		query = `
 			UPDATE user_account
 			SET ` + columnName + ` = $1
 			WHERE id = $2;
@@ -52,7 +52,7 @@ func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types
 		args = []interface{}{value, userAccountID}
 	}
 
-	_, err := db.pool.Exec(updateQuery,
+	_, err := db.pool.Exec(query,
 		args...,
 	)
 	if err != nil {
@@ -66,13 +66,13 @@ func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types
 }
 
 func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
-	updateQuery := `
+	query := `
 		DELETE 
 		FROM user_account
 		WHERE id = $1;
 	`
 
-	_, err := db.pool.Exec(updateQuery,
+	_, err := db.pool.Exec(query,
 		userAccountID,
 	)
 	if err != nil {

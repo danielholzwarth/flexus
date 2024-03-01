@@ -15,7 +15,7 @@ type WorkoutStore interface {
 	GetArchivedWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
 	GetSearchedArchivedWorkoutOverviews(userAccountID types.UserAccountID, keyWord string) ([]types.WorkoutOverview, error)
 	PutWorkoutArchiveStatus(userAccountID types.UserAccountID, workoutID types.WorkoutID) ([]types.WorkoutOverview, error)
-	DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) ([]types.WorkoutOverview, error)
+	DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) error
 }
 
 type service struct {
@@ -213,25 +213,16 @@ func (s service) deleteWorkout() http.HandlerFunc {
 			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
 			return
 		}
-
 		workoutID := types.WorkoutID(workoutIDInt)
 
-		workoutOverviews, err := s.workoutStore.DeleteWorkout(claims.UserAccountID, workoutID)
+		err = s.workoutStore.DeleteWorkout(claims.UserAccountID, workoutID)
 		if err != nil {
 			http.Error(w, "Failed to get WorkoutOverview", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workoutOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(response)
 	}
 }

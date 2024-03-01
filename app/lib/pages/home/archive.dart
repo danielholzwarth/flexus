@@ -7,6 +7,7 @@ import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
 class ArchivePage extends StatefulWidget {
   const ArchivePage({super.key});
@@ -21,6 +22,7 @@ class _ArchivePageState extends State<ArchivePage> {
   final WorkoutBloc workoutBloc = WorkoutBloc();
   bool isArchiveVisible = false;
   bool isSearch = false;
+  final userBox = Hive.box('userBox');
 
   @override
   void initState() {
@@ -38,29 +40,31 @@ class _ArchivePageState extends State<ArchivePage> {
           BlocBuilder(
             bloc: workoutBloc,
             builder: (context, state) {
-              if (state is WorkoutLoading) {
+              if (state is WorkoutLoading || state is WorkoutDeleting) {
                 return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-              } else if (state is WorkoutLoaded) {
-                if (state.workoutOverviews.isNotEmpty) {
+              } else if (state is WorkoutLoaded || state is WorkoutDeleted) {
+                List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
+
+                if (workoutOverviews.isNotEmpty) {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return FlexusWorkoutListTile(
                           workoutOverview: WorkoutOverview(
                             workout: Workout(
-                              id: state.workoutOverviews[index].workout.id,
-                              userAccountID: state.workoutOverviews[index].workout.userAccountID,
-                              starttime: state.workoutOverviews[index].workout.starttime,
-                              endtime: state.workoutOverviews[index].workout.endtime,
+                              id: workoutOverviews[index].workout.id,
+                              userAccountID: workoutOverviews[index].workout.userAccountID,
+                              starttime: workoutOverviews[index].workout.starttime,
+                              endtime: workoutOverviews[index].workout.endtime,
                               isArchived: true,
                             ),
-                            planName: state.workoutOverviews[index].planName,
-                            splitName: state.workoutOverviews[index].splitName,
+                            planName: workoutOverviews[index].planName,
+                            splitName: workoutOverviews[index].splitName,
                           ),
                           workoutBloc: workoutBloc,
                         );
                       },
-                      childCount: state.workoutOverviews.length,
+                      childCount: workoutOverviews.length,
                     ),
                   );
                 } else {
