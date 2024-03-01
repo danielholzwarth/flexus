@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserAccountStore interface {
@@ -16,6 +17,7 @@ type UserAccountStore interface {
 	PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error
 	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID types.UserAccountID) error
+	ValidatePasswordByID(userAccountID types.UserAccountID, password string) error
 }
 
 type service struct {
@@ -83,7 +85,6 @@ func (s service) patchUserAccount() http.HandlerFunc {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
 			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
-			println("asd")
 			return
 		}
 
@@ -132,20 +133,30 @@ func (s service) patchUserAccount() http.HandlerFunc {
 			}
 		}
 
-		// if password, ok := requestBody["password"].([]byte); ok {
-		// 	fmt.Println("Updating password:", password)
-		// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		// 	if err != nil {
-		// 		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
-		// 		println(err.Error())
-		// 	}
-		// 	err = s.userAccountStore.PatchUserAccount("password", hashedPassword, claims.UserAccountID)
-		// 	if err != nil {
-		// 		http.Error(w, "Failed to patch password", http.StatusInternalServerError)
-		// 		println(err.Error())
-		// 		return
-		// 	}
-		// }
+		if oldPassword, ok := requestBody["old_password"].(string); ok {
+			fmt.Println("Updating password")
+			err = s.userAccountStore.ValidatePasswordByID(claims.UserAccountID, oldPassword)
+			if err != nil {
+				http.Error(w, "Failed to validate password", http.StatusBadRequest)
+				println(err.Error())
+				return
+			}
+
+			if newPassword, ok := requestBody["new_password"].(string); ok {
+				hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+				if err != nil {
+					http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+					println(err.Error())
+					return
+				}
+				err = s.userAccountStore.PatchUserAccount("password", hashedPassword, claims.UserAccountID)
+				if err != nil {
+					http.Error(w, "Failed to patch new password", http.StatusInternalServerError)
+					println(err.Error())
+					return
+				}
+			}
+		}
 
 		// if level, ok := requestBody["level"].(int); ok {
 		// 	fmt.Println("Updating level:", level)

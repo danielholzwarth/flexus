@@ -73,7 +73,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     switch (event.name) {
       //My Account
       case "name":
-        print(event.value);
         final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
         if (response.isSuccessful) {
           userAccount.name = event.value;
@@ -90,7 +89,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       case "password":
-        await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"password": event.value});
+        final response =
+            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        if (response.isSuccessful) {
+          print("AS");
+        } else {
+          print("asa");
+        }
         break;
 
       //Appearance

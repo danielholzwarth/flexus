@@ -77,9 +77,15 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         }
         break;
 
-      // case "password":
-      //   await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"newPassword": event.value, "oldPassword": event.value2});
-      //   break;
+      case "password":
+        final response =
+            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        if (response.isSuccessful) {
+          print("AS");
+        } else {
+          print("asa");
+        }
+        break;
 
       // case "level":
       //   final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"level": event.value});
@@ -91,7 +97,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
       case "profilePicture":
         final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": event.value});
-        print(event.value);
         if (response.isSuccessful) {
           userAccount.profilePicture = event.value;
           userBox.put("userAccount", userAccount);

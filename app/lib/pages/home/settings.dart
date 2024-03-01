@@ -147,47 +147,76 @@ class _SettingsPageState extends State<SettingsPage> {
                     onPressed: () => showDialog(
                       context: context,
                       builder: (BuildContext context) {
+                        final TextEditingController oldPasswordController = TextEditingController();
+                        final TextEditingController newPasswordController = TextEditingController();
+                        final TextEditingController confirmNewPasswordController = TextEditingController();
+
                         return AlertDialog(
-                          content: TextField(
-                            autofocus: true,
-                            decoration: const InputDecoration(hintText: "****************"),
-                            controller: textEditingController,
-                            onEditingComplete: () {
-                              if (textEditingController.text.length > 128) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Center(
-                                      child: Text('Password can not be longer than 128 characters'),
-                                    ),
-                                  ),
-                                );
-                              } else if (textEditingController.text.length < 8) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Center(
-                                      child: Text('Username must be at least 8 characters long'),
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                //settingsBloc.add(UpdateSettings(name: "password", value: textEditingController.text));
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Center(
-                                      child: Text('Not implemented yet'),
-                                    ),
-                                  ),
-                                );
-                                Navigator.pop(context);
-                                textEditingController.clear();
-                              }
-                            },
-                            onTapOutside: (event) {
-                              textEditingController.clear();
-                            },
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                autofocus: true,
+                                decoration: const InputDecoration(
+                                  labelText: "Old Password",
+                                ),
+                                controller: oldPasswordController,
+                                obscureText: true,
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: "New Password",
+                                ),
+                                controller: newPasswordController,
+                                obscureText: true,
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: "Confirm New Password",
+                                ),
+                                controller: confirmNewPasswordController,
+                                obscureText: true,
+                                onEditingComplete: () {
+                                  final newPassword = newPasswordController.text;
+                                  final confirmedPassword = confirmNewPasswordController.text;
+
+                                  if (newPassword != confirmedPassword) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Passwords do not match'),
+                                      ),
+                                    );
+                                  } else if (newPassword.length > 128) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Password cannot be longer than 128 characters'),
+                                      ),
+                                    );
+                                  } else if (newPassword.length < 8) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Password must be at least 8 characters long'),
+                                      ),
+                                    );
+                                  } else {
+                                    settingsBloc.add(UpdateSettings(
+                                        name: "password", value: newPasswordController.text.trim(), value2: oldPasswordController.text.trim()));
+
+                                    Navigator.pop(context);
+                                    oldPasswordController.clear();
+                                    newPasswordController.clear();
+                                    confirmNewPasswordController.clear();
+                                  }
+                                },
+                                onTapOutside: (_) {
+                                  oldPasswordController.clear();
+                                  newPasswordController.clear();
+                                  confirmNewPasswordController.clear();
+                                },
+                              ),
+                            ],
                           ),
                         );
                       },

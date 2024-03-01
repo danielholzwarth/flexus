@@ -94,3 +94,22 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
 
 	return userAccount, nil
 }
+
+func (db DB) ValidatePasswordByID(userAccountID types.UserAccountID, password string) error {
+	var storedPassword []byte
+	query := `
+        SELECT password
+        FROM user_account
+        WHERE id = $1;
+    `
+	err := db.pool.QueryRow(query, userAccountID).Scan(&storedPassword)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+	return err
+}
