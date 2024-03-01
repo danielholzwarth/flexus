@@ -40,9 +40,9 @@ class _SettingsPageState extends State<SettingsPage> {
       body: BlocBuilder(
         bloc: settingsBloc,
         builder: (context, state) {
-          if (state is SettingsLoading || state is SettingsUpdating) {
+          if (state is SettingsLoading) {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          } else if (state is SettingsLoaded) {
+          } else if (state is SettingsLoaded || state is SettingsUpdating) {
             final UserSettings userSettings = userBox.get("userSettings");
             final UserAccount userAccount = userBox.get("userAccount");
             return CustomScrollView(

@@ -54,14 +54,14 @@ class FlexusSettingsListTile extends StatelessWidget {
         activeColor: AppSettings.primary,
         activeTrackColor: AppSettings.primaryShade80,
         inactiveThumbColor: AppSettings.primary,
-        inactiveTrackColor: AppSettings.primaryShade48,
+        inactiveTrackColor: AppSettings.background,
         trackOutlineColor: MaterialStateProperty.resolveWith(
           (final Set<MaterialState> states) {
             if (states.contains(MaterialState.selected)) {
               return null;
             }
 
-            return AppSettings.primaryShade48;
+            return AppSettings.primaryShade80;
           },
         ),
       );

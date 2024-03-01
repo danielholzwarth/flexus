@@ -22,7 +22,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     emit(BestLiftsLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);

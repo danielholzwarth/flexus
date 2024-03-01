@@ -4,6 +4,7 @@ import 'package:app/api/user_account_service.dart';
 import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(SettingsLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
@@ -65,7 +66,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(SettingsUpdating());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
 
     UserAccount userAccount = userBox.get("userAccount");
     UserSettings userSettings = userBox.get("userSettings");
@@ -98,6 +99,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         if (response.isSuccessful) {
           userSettings.fontSize = event.value;
           userBox.put("userSettings", userSettings);
+          AppSettings.fontSize = event.value;
         }
         break;
 
@@ -106,6 +108,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         if (response.isSuccessful) {
           userSettings.isDarkMode = event.value;
           userBox.put("userSettings", userSettings);
+          AppSettings.isDarkMode = event.value;
         }
         break;
 

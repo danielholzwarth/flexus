@@ -25,7 +25,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    // await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     if (event.isSearch && event.isArchive) {

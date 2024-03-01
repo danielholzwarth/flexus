@@ -1,7 +1,6 @@
 import 'package:app/pages/login/login.dart';
 import 'package:app/pages/login/register_username.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/resources/user_settings.dart';
 import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
@@ -105,7 +104,7 @@ class _StartUpPageState extends State<StartUpPage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          UserSettings.language == "DE" ? UserSettings.language = "ENG" : UserSettings.language = "DE";
+          AppSettings.language == "DE" ? AppSettings.language = "ENG" : AppSettings.language = "DE";
         });
       },
       child: Row(
@@ -120,7 +119,7 @@ class _StartUpPageState extends State<StartUpPage> {
             width: screenWidth * 0.02,
           ),
           Text(
-            UserSettings.language,
+            AppSettings.language,
             style: TextStyle(
               fontSize: AppSettings.fontSizeTitleSmall,
               color: AppSettings.fontV1,
