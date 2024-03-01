@@ -275,18 +275,32 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                 ),
-                _buildSection("Status"),
+                _buildSection("Privacy"),
+                SliverToBoxAdapter(
+                  child: FlexusSettingsListTile(
+                    title: "Is Listed",
+                    subtitle: "Do you want to be listed in the search of other users?",
+                    value: !userSettings.isUnlisted,
+                    isBool: true,
+                    onChanged: (value) {
+                      settingsBloc.add(UpdateSettings(name: "isUnlisted", value: !value));
+                    },
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: FlexusSettingsListTile(
                     title: "Pull From Everyone",
                     subtitle: "Who do you want to be notified by about the status?",
                     value: userSettings.isPullFromEveryone,
                     isBool: true,
+                    onChanged: (value) {
+                      settingsBloc.add(UpdateSettings(name: "isPullFromEveryone", value: value));
+                    },
                   ),
                 ),
                 SliverToBoxAdapter(
                   child: Visibility(
-                    visible: userSettings.isPullFromEveryone,
+                    visible: !userSettings.isPullFromEveryone,
                     child: const FlexusSettingsListTile(
                       title: "Pull User List",
                       value: "not implemented yet",
@@ -300,38 +314,41 @@ class _SettingsPageState extends State<SettingsPage> {
                     subtitle: "Who do you want to notify about your status?",
                     value: userSettings.isNotifyEveryone,
                     isBool: true,
+                    onChanged: (value) {
+                      settingsBloc.add(UpdateSettings(name: "isNotifyEveryone", value: value));
+                    },
                   ),
                 ),
-                const SliverToBoxAdapter(
+                SliverToBoxAdapter(
                   child: Visibility(
-                    visible: true,
-                    child: FlexusSettingsListTile(
+                    visible: !userSettings.isNotifyEveryone,
+                    child: const FlexusSettingsListTile(
                       title: "Notify User List",
                       value: "not implemented yet",
                       isText: true,
                     ),
                   ),
                 ),
-                _buildSection("Data Storage"),
-                const SliverToBoxAdapter(
-                  child: FlexusSettingsListTile(
-                    title: "Save all data on Server",
-                    subtitle: "Should we store all your data on the server so you have a backup?",
-                    value: true,
-                    isBool: true,
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: Visibility(
-                    visible: true,
-                    child: FlexusSettingsListTile(
-                      title: "Store only necessary data",
-                      subtitle: "For some features to work (friends) we need to save some data on the server.",
-                      value: false,
-                      isBool: true,
-                    ),
-                  ),
-                ),
+                // _buildSection("Data Storage"),
+                // const SliverToBoxAdapter(
+                //   child: FlexusSettingsListTile(
+                //     title: "Save all data on Server",
+                //     subtitle: "Should we store all your data on the server so you have a backup?",
+                //     value: true,
+                //     isBool: true,
+                //   ),
+                // ),
+                // const SliverToBoxAdapter(
+                //   child: Visibility(
+                //     visible: true,
+                //     child: FlexusSettingsListTile(
+                //       title: "Store only necessary data",
+                //       subtitle: "For some features to work (friends) we need to save some data on the server.",
+                //       value: false,
+                //       isBool: true,
+                //     ),
+                //   ),
+                // ),
                 SliverToBoxAdapter(
                   child: Center(
                     child: TextButton(

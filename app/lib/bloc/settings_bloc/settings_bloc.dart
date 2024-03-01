@@ -113,7 +113,29 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       //Status
+      case "isUnlisted":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_unlisted": event.value});
+        if (response.isSuccessful) {
+          userSettings.isUnlisted = event.value;
+          userBox.put("userSettings", userSettings);
+        }
+        break;
 
+      case "isPullFromEveryone":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_pull_from_everyone": event.value});
+        if (response.isSuccessful) {
+          userSettings.isPullFromEveryone = event.value;
+          userBox.put("userSettings", userSettings);
+        }
+        break;
+
+      case "isNotifyEveryone":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_notify_everyone": event.value});
+        if (response.isSuccessful) {
+          userSettings.isNotifyEveryone = event.value;
+          userBox.put("userSettings", userSettings);
+        }
+        break;
       //Security
 
       //Data Storage
