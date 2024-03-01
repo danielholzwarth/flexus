@@ -43,7 +43,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
         userBox.put("userAccount", userAccount);
 
-        emit(UserAccountLoaded(userAccount: userAccount));
+        emit(UserAccountLoaded());
       } else {
         emit(UserAccountError());
       }

@@ -10,11 +10,3 @@ class LoadBestLifts extends BestLiftsEvent {
     required this.userAccountID,
   });
 }
-
-class ChangeBestLifts extends BestLiftsEvent {
-  final BestLiftOverview bestLiftOverview;
-
-  ChangeBestLifts({
-    required this.bestLiftOverview,
-  });
-}

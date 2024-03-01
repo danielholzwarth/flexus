@@ -174,7 +174,8 @@ class _HomePageState extends State<HomePage> {
               if (state is UserAccountLoading) {
                 return Center(child: CircularProgressIndicator(color: AppSettings.primary));
               } else if (state is UserAccountLoaded) {
-                if (state.userAccount.profilePicture != null) {
+                UserAccount userAccount = userBox.get("userAccount");
+                if (userAccount.profilePicture != null) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
@@ -191,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: AppSettings.fontSize,
-                        backgroundImage: MemoryImage(state.userAccount.profilePicture!),
+                        backgroundImage: MemoryImage(userAccount.profilePicture!),
                       ),
                     ),
                   );

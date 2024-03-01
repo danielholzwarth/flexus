@@ -7,12 +7,6 @@ class BestLiftsInitial extends BestLiftsState {}
 
 class BestLiftsLoading extends BestLiftsState {}
 
-class BestLiftsLoaded extends BestLiftsState {
-  final List<BestLiftOverview>? bestLiftOverview;
-
-  BestLiftsLoaded({
-    this.bestLiftOverview,
-  });
-}
+class BestLiftsLoaded extends BestLiftsState {}
 
 class BestLiftsError extends BestLiftsState {}

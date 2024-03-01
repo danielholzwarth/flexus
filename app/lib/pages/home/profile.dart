@@ -159,8 +159,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Row buildBestLift(double screenHeight, double screenWidth, BestLiftsLoaded state) {
-    if (state.bestLiftOverview != null) {
-      List<BestLiftOverview> bestLiftOverview = state.bestLiftOverview!;
+    List<BestLiftOverview>? bestLiftOverview = userBox.get("bestLiftOverview");
+    if (bestLiftOverview != null) {
       int bestLiftCount = bestLiftOverview.length;
 
       return Row(

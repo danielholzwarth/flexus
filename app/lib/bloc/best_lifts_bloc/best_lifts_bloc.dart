@@ -40,10 +40,9 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
           );
         }).toList();
 
-        emit(BestLiftsLoaded(bestLiftOverview: bestLiftOverviews));
-      } else {
-        emit(BestLiftsLoaded(bestLiftOverview: null));
+        userBox.put("bestLiftOverview", bestLiftOverviews);
       }
+      emit(BestLiftsLoaded());
     } else {
       emit(BestLiftsError());
     }
