@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:app/api/report_service.dart';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
@@ -359,8 +362,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   Checkbox(
                                     value: isOtherChecked,
                                     onChanged: (bool? value) {
+                                      if (value! == false) {
+                                        reportTextController.clear();
+                                      }
                                       setState(() {
-                                        isOtherChecked = value!;
+                                        isOtherChecked = value;
                                       });
                                     },
                                     activeColor: AppSettings.primary,
@@ -390,6 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             TextButton(
                               onPressed: () {
                                 isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                reportTextController.clear();
                                 Navigator.of(context).pop();
                               },
                               child: Text(
@@ -401,9 +408,32 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {
-                                isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
-                                //Report
+                              onPressed: () async {
+                                ReportService reportService = ReportService.create();
+
+                                final response = await reportService.postReport(userBox.get("flexusjwt"), {
+                                  "ReportedID": widget.userID,
+                                  "isOffensiveProfilePicture": isProfilePictureChecked,
+                                  "isOffensiveName": isNameChecked,
+                                  "isOffensiveUsername": isUsernameChecked,
+                                  "isOther": isOtherChecked,
+                                  "message": reportTextController.text,
+                                });
+
+                                if (response.isSuccessful) {
+                                  isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                  reportTextController.clear();
+                                } else {
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Center(
+                                        child: Text(response.error.toString()),
+                                      ),
+                                    ),
+                                  );
+                                }
+
                                 Navigator.of(context).pop();
                               },
                               child: Text(

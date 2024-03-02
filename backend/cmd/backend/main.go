@@ -14,6 +14,7 @@ import (
 	"flexus/internal/api/best_lifts"
 	"flexus/internal/api/login_user_account"
 	flexusMiddleware "flexus/internal/api/middleware"
+	"flexus/internal/api/report"
 	"flexus/internal/api/user_account"
 	"flexus/internal/api/user_settings.go"
 	"flexus/internal/api/workout"
@@ -79,6 +80,7 @@ func run() error {
 	r.Mount("/workouts", flexusMiddleware.ValidateJWT(workout.NewService(db)))
 	r.Mount("/user_accounts", flexusMiddleware.ValidateJWT(user_account.NewService(db)))
 	r.Mount("/best_lifts", flexusMiddleware.ValidateJWT(best_lifts.NewService(db)))
+	r.Mount("/reports", flexusMiddleware.ValidateJWT(report.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

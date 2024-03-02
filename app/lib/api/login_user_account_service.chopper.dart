@@ -46,9 +46,9 @@ final class _$LoginUserAccountService extends LoginUserAccountService {
   }
 
   @override
-  Future<Response<dynamic>> getLogin(Map<String, dynamic> loginData) {
+  Future<Response<dynamic>> getLogin(Map<String, dynamic> body) {
     final Uri $url = Uri.parse('/login_user_accounts/login');
-    final $body = loginData;
+    final $body = body;
     final Request $request = Request(
       'GET',
       $url,

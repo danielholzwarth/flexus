@@ -78,11 +78,13 @@ func (s service) patchUserSettings() http.HandlerFunc {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
 		if err := json.Unmarshal(body, &requestBody); err != nil {
 			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 

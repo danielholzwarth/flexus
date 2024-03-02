@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:app/api/best_lifts_service.dart';
 import 'package:app/hive/best_lift_overview.dart';
-import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

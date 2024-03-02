@@ -47,10 +47,11 @@ CREATE TABLE report (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     reporter_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     reported_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    is_offensive_profile_picture BOOLEAN,
-    is_offensive_name BOOLEAN,
-    is_offensive_username BOOLEAN,
-    is_other BOOLEAN   
+    is_offensive_profile_picture BOOLEAN NOT NULL,
+    is_offensive_name BOOLEAN NOT NULL,
+    is_offensive_username BOOLEAN NOT NULL,
+    is_other BOOLEAN NOT NULL, 
+    message VARCHAR
 );
 
 CREATE TABLE gym (

@@ -16,7 +16,7 @@ abstract class LoginUserAccountService extends ChopperService {
 
   @Get(path: '/login')
   Future<Response> getLogin(
-    @Body() Map<String, dynamic> loginData,
+    @Body() Map<String, dynamic> body,
   );
 
   static LoginUserAccountService create() {
