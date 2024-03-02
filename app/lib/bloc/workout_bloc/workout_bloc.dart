@@ -18,7 +18,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   WorkoutBloc() : super(WorkoutInitial()) {
     on<LoadWorkout>(_onLoadWorkout);
     on<SearchWorkout>(_onSearchWorkout);
-    on<UpdateWorkout>(_onPatchWorkout);
+    on<PatchWorkout>(_onPatchWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
   }
 
@@ -83,7 +83,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
   }
 
-  void _onPatchWorkout(UpdateWorkout event, Emitter<WorkoutState> emit) async {
+  void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutUpdating());
 
     //simulate backend request delay

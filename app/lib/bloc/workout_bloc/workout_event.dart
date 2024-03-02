@@ -15,13 +15,13 @@ class SearchWorkout extends WorkoutEvent {
   });
 }
 
-class UpdateWorkout extends WorkoutEvent {
+class PatchWorkout extends WorkoutEvent {
   final int workoutID;
   final bool isArchive;
   final String name;
   final dynamic value;
 
-  UpdateWorkout({
+  PatchWorkout({
     required this.workoutID,
     this.isArchive = false,
     required this.name,

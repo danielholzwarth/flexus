@@ -22,7 +22,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc() : super(SettingsInitial()) {
     on<LoadSettings>(_onLoadSettings);
 
-    on<UpdateSettings>(_onUpdateSettings);
+    on<PatchSettings>(_onPatchSettings);
   }
 
   void _onLoadSettings(LoadSettings event, Emitter<SettingsState> emit) async {
@@ -62,7 +62,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
   }
 
-  void _onUpdateSettings(UpdateSettings event, Emitter<SettingsState> emit) async {
+  void _onPatchSettings(PatchSettings event, Emitter<SettingsState> emit) async {
     emit(SettingsUpdating());
 
     //simulate backend request delay

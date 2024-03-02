@@ -77,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 );
                               } else if (textEditingController.text.isNotEmpty) {
-                                settingsBloc.add(UpdateSettings(name: "name", value: textEditingController.text));
+                                settingsBloc.add(PatchSettings(name: "name", value: textEditingController.text));
                               }
                               Navigator.pop(context);
                               textEditingController.clear();
@@ -125,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 );
                               } else {
-                                settingsBloc.add(UpdateSettings(name: "username", value: textEditingController.text));
+                                settingsBloc.add(PatchSettings(name: "username", value: textEditingController.text));
                                 Navigator.pop(context);
                                 textEditingController.clear();
                               }
@@ -201,7 +201,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ),
                                     );
                                   } else {
-                                    settingsBloc.add(UpdateSettings(
+                                    settingsBloc.add(PatchSettings(
                                         name: "password", value: newPasswordController.text.trim(), value2: oldPasswordController.text.trim()));
 
                                     Navigator.pop(context);
@@ -242,7 +242,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             onEditingComplete: () {
                               double? fontSize = double.tryParse(textEditingController.text);
                               if (fontSize != null) {
-                                settingsBloc.add(UpdateSettings(name: "fontSize", value: fontSize));
+                                settingsBloc.add(PatchSettings(name: "fontSize", value: fontSize));
                                 textEditingController.clear();
                                 Navigator.pop(context);
                               } else {
@@ -271,7 +271,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: userSettings.isDarkMode,
                     isBool: true,
                     onChanged: (value) {
-                      settingsBloc.add(UpdateSettings(name: "isDarkMode", value: value));
+                      settingsBloc.add(PatchSettings(name: "isDarkMode", value: value));
                     },
                   ),
                 ),
@@ -283,7 +283,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: !userSettings.isUnlisted,
                     isBool: true,
                     onChanged: (value) {
-                      settingsBloc.add(UpdateSettings(name: "isUnlisted", value: !value));
+                      settingsBloc.add(PatchSettings(name: "isUnlisted", value: !value));
                     },
                   ),
                 ),
@@ -294,7 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: userSettings.isPullFromEveryone,
                     isBool: true,
                     onChanged: (value) {
-                      settingsBloc.add(UpdateSettings(name: "isPullFromEveryone", value: value));
+                      settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
                     },
                   ),
                 ),
@@ -315,7 +315,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: userSettings.isNotifyEveryone,
                     isBool: true,
                     onChanged: (value) {
-                      settingsBloc.add(UpdateSettings(name: "isNotifyEveryone", value: value));
+                      settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
                     },
                   ),
                 ),

@@ -16,7 +16,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
   UserAccountBloc() : super(UserAccountInitial()) {
     on<LoadUserAccount>(_onLoadUserAccount);
-    on<UpdateUserAccount>(_onUpdateUserAccount);
+    on<PatchUserAccount>(_onPatchUserAccount);
   }
 
   void _onLoadUserAccount(LoadUserAccount event, Emitter<UserAccountState> emit) async {
@@ -52,7 +52,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
   }
 
-  void _onUpdateUserAccount(UpdateUserAccount event, Emitter<UserAccountState> emit) async {
+  void _onPatchUserAccount(PatchUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountUpdating());
 
     //simulate backend request delay

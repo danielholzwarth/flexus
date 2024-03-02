@@ -11,12 +11,12 @@ class LoadUserAccount extends UserAccountEvent {
   });
 }
 
-class UpdateUserAccount extends UserAccountEvent {
+class PatchUserAccount extends UserAccountEvent {
   final String name;
   final dynamic value;
   final dynamic value2;
 
-  UpdateUserAccount({
+  PatchUserAccount({
     required this.name,
     required this.value,
     this.value2,
