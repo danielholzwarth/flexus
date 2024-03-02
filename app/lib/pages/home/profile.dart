@@ -1,6 +1,5 @@
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
-import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
@@ -31,11 +30,21 @@ class _ProfilePageState extends State<ProfilePage> {
   final userAccountService = UserAccountService.create();
   final userBox = Hive.box('userBox');
   final BestLiftsBloc bestLiftsBloc = BestLiftsBloc();
+  final TextEditingController reportTextController = TextEditingController();
+
+  late bool isProfilePictureChecked;
+  late bool isNameChecked;
+  late bool isUsernameChecked;
+  late bool isOtherChecked;
 
   @override
   void initState() {
     super.initState();
     bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
+    isProfilePictureChecked = false;
+    isNameChecked = false;
+    isUsernameChecked = false;
+    isOtherChecked = false;
   }
 
   @override
@@ -47,36 +56,19 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: AppSettings.background,
       appBar: buildAppBar(context),
-      body: Center(
-        child: BlocBuilder(
-          bloc: bestLiftsBloc,
-          builder: (context, state) {
-            if (state is BestLiftsLoading) {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-            } else if (state is BestLiftsLoaded) {
-              return Column(
-                children: [
-                  buildPictures(screenWidth, context, userAccount),
-                  SizedBox(height: screenHeight * 0.02),
-                  buildNames(userAccount),
-                  Text("Since ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
-                  const Spacer(),
-                  buildBestLift(screenHeight, screenWidth, state),
-                  SizedBox(height: screenHeight * 0.2)
-                ],
-              );
-            } else if (state is UserAccountError) {
-              return Text(
-                'Error loading workouts',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              );
-            } else {
-              return Text(
-                'Error XYZ',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              );
-            }
-          },
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              buildPictures(screenWidth, context, userAccount),
+              SizedBox(height: screenHeight * 0.02),
+              buildNames(userAccount),
+              Text("Since ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
+              SizedBox(height: screenHeight * 0.1),
+              buildBestLift(screenHeight, screenWidth),
+              SizedBox(height: screenHeight * 0.2)
+            ],
+          ),
         ),
       ),
     );
@@ -158,34 +150,42 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Row buildBestLift(double screenHeight, double screenWidth, BestLiftsLoaded state) {
-    List<BestLiftOverview>? bestLiftOverview = userBox.get("bestLiftOverview");
-    if (bestLiftOverview != null) {
-      int bestLiftCount = bestLiftOverview.length;
-
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _buildPedestal(bestLiftCount >= 2 ? getCorrectPedestralText(bestLiftOverview[1]) : "",
-              bestLiftCount >= 2 ? bestLiftOverview[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
-          _buildPedestal(bestLiftCount >= 1 ? getCorrectPedestralText(bestLiftOverview[0]) : "",
-              bestLiftCount >= 1 ? bestLiftOverview[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
-          _buildPedestal(bestLiftCount >= 3 ? getCorrectPedestralText(bestLiftOverview[2]) : "",
-              bestLiftCount >= 3 ? bestLiftOverview[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
-        ],
-      );
-    } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _buildPedestal("", "Tap here", screenHeight * 0.08, screenWidth),
-          _buildPedestal("", "Tap here", screenHeight * 0.1, screenWidth),
-          _buildPedestal("", "Tap here", screenHeight * 0.06, screenWidth),
-        ],
-      );
-    }
+  Widget buildBestLift(double screenHeight, double screenWidth) {
+    return BlocBuilder(
+      bloc: bestLiftsBloc,
+      builder: (context, state) {
+        if (state is BestLiftsLoading) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is BestLiftsLoaded) {
+          if (state.bestLiftOverviews.isNotEmpty) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildPedestal(state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
+                    state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
+                _buildPedestal(state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
+                    state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
+                _buildPedestal(state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
+                    state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
+              ],
+            );
+          } else {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildPedestal("", "Tap here", screenHeight * 0.08, screenWidth),
+                _buildPedestal("", "Tap here", screenHeight * 0.1, screenWidth),
+                _buildPedestal("", "Tap here", screenHeight * 0.06, screenWidth),
+              ],
+            );
+          }
+        } else {
+          return const Text("Error loading best lifts");
+        }
+      },
+    );
   }
 
   String getCorrectPedestralText(BestLiftOverview bestLiftOverview) {
@@ -217,13 +217,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           itemBuilder: (BuildContext context) {
             return widget.isOwnProfile
-                ? {'Settings', 'Leveling'}.map((String choice) {
+                ? ['Settings', 'Leveling'].map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
                     );
                   }).toList()
-                : {'Add Friend', 'Report'}.map((String choice) {
+                : ['Add Friend', 'Report'].map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
@@ -241,6 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
                 break;
+
               case "Leveling":
                 Navigator.push(
                   context,
@@ -250,8 +251,178 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
                 break;
+
+              case "Report":
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return AlertDialog(
+                          backgroundColor: AppSettings.background,
+                          title: Text(
+                            "What is the reason of your report?",
+                            style: TextStyle(
+                              color: AppSettings.font,
+                              fontSize: AppSettings.fontSizeTitle,
+                            ),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Offensive profile picture",
+                                    style: TextStyle(
+                                      color: AppSettings.font,
+                                      fontSize: AppSettings.fontSize,
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    value: isProfilePictureChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isProfilePictureChecked = value!;
+                                      });
+                                    },
+                                    activeColor: AppSettings.primary,
+                                    checkColor: AppSettings.background,
+                                    side: BorderSide(
+                                      color: AppSettings.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Offensive name",
+                                    style: TextStyle(
+                                      color: AppSettings.font,
+                                      fontSize: AppSettings.fontSize,
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    value: isNameChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isNameChecked = value!;
+                                      });
+                                    },
+                                    activeColor: AppSettings.primary,
+                                    side: BorderSide(
+                                      color: AppSettings.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Offensive username",
+                                    style: TextStyle(
+                                      color: AppSettings.font,
+                                      fontSize: AppSettings.fontSize,
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    value: isUsernameChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isUsernameChecked = value!;
+                                      });
+                                    },
+                                    activeColor: AppSettings.primary,
+                                    side: BorderSide(
+                                      color: AppSettings.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Other",
+                                    style: TextStyle(
+                                      color: AppSettings.font,
+                                      fontSize: AppSettings.fontSize,
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    value: isOtherChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isOtherChecked = value!;
+                                      });
+                                    },
+                                    activeColor: AppSettings.primary,
+                                    side: BorderSide(
+                                      color: AppSettings.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: isOtherChecked,
+                                child: TextField(
+                                  controller: reportTextController,
+                                  autofocus: true,
+                                  cursorColor: AppSettings.font,
+                                  decoration: InputDecoration(
+                                    border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
+                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
+                                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: AppSettings.primary,
+                                  fontSize: AppSettings.fontSize,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                //Report
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'Report',
+                                style: TextStyle(
+                                  color: AppSettings.primary,
+                                  fontSize: AppSettings.fontSize,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
+                break;
               default:
-                print("not implemented yet");
+                print("$choice not implemented yet");
             }
           },
         ),

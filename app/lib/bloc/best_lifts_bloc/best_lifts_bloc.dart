@@ -22,16 +22,15 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     emit(BestLiftsLoading());
 
     //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response;
-    response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);
+    List<BestLiftOverview> bestLiftOverviews = List.empty();
 
+    final response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);
     if (response.isSuccessful) {
       if (response.body != "null" && response.bodyString.isNotEmpty) {
         List<dynamic> jsonList = jsonDecode(response.bodyString);
-
-        List<BestLiftOverview> bestLiftOverviews = jsonList.map((jsonMap) {
+        bestLiftOverviews = jsonList.map((jsonMap) {
           return BestLiftOverview(
             exerciseName: jsonMap['exerciseName'],
             repetitions: jsonMap['repetitions'],
@@ -42,7 +41,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
 
         userBox.put("bestLiftOverview", bestLiftOverviews);
       }
-      emit(BestLiftsLoaded());
+      emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
     } else {
       emit(BestLiftsError());
     }

@@ -167,41 +167,18 @@ class _HomePageState extends State<HomePage> {
     return FlexusSliverAppBar(
       leading: SizedBox(
         child: BlocBuilder(
-            bloc: userAccountBloc,
-            builder: (context, state) {
-              final UserAccount userAccount = userBox.get("userAccount");
-              if (state is UserAccountLoading) {
-                return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-              } else if (state is UserAccountLoaded) {
-                UserAccount userAccount = userBox.get("userAccount");
-                if (userAccount.profilePicture != null) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.leftToRight,
-                            child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
-                          ),
-                        ).then((value) {
-                          userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
-                        });
-                      },
-                      child: CircleAvatar(
-                        radius: AppSettings.fontSize,
-                        backgroundImage: MemoryImage(userAccount.profilePicture!),
-                      ),
-                    ),
-                  );
-                } else {
-                  return IconButton(
-                    icon: Icon(
-                      Icons.person,
-                      size: AppSettings.fontSizeTitle,
-                    ),
-                    onPressed: () {
+          bloc: userAccountBloc,
+          builder: (context, state) {
+            final UserAccount userAccount = userBox.get("userAccount");
+            if (state is UserAccountLoading) {
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+            } else if (state is UserAccountLoaded) {
+              UserAccount userAccount = userBox.get("userAccount");
+              if (userAccount.profilePicture != null) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.push(
                         context,
                         PageTransition(
@@ -212,8 +189,12 @@ class _HomePageState extends State<HomePage> {
                         userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
                       });
                     },
-                  );
-                }
+                    child: CircleAvatar(
+                      radius: AppSettings.fontSize,
+                      backgroundImage: MemoryImage(userAccount.profilePicture!),
+                    ),
+                  ),
+                );
               } else {
                 return IconButton(
                   icon: Icon(
@@ -225,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.leftToRight,
-                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                        child: ProfilePage(isOwnProfile: false, userID: userAccount.id),
                       ),
                     ).then((value) {
                       userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
@@ -233,7 +214,27 @@ class _HomePageState extends State<HomePage> {
                   },
                 );
               }
-            }),
+            } else {
+              return IconButton(
+                icon: Icon(
+                  Icons.error,
+                  size: AppSettings.fontSizeTitle,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRight,
+                      child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                    ),
+                  ).then((value) {
+                    userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
+                  });
+                },
+              );
+            }
+          },
+        ),
       ),
       actions: [
         Visibility(
