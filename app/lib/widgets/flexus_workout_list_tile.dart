@@ -127,8 +127,10 @@ class FlexusWorkoutListTile extends StatelessWidget {
       onSelected: (String choice) {
         switch (choice) {
           case "Archive":
+            workoutBloc.add(UpdateWorkout(workoutID: workout.id, name: "isArchived", value: true));
+            break;
           case "Unarchive":
-            workoutBloc.add(ChangeArchiveWorkout(workoutID: workout.id));
+            workoutBloc.add(UpdateWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
             break;
           case "Delete":
             workoutBloc.add(DeleteWorkout(workoutID: workout.id));

@@ -9,27 +9,11 @@ abstract class WorkoutService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
-  @Get(path: '/search')
-  Future<Response> getSearchedWorkoutOverviews(
-    @Header('flexusjwt') String flexusJWTString,
-    @Query('keyword') String keyWord,
-  );
-
-  @Get(path: '/archive')
-  Future<Response> getArchivedWorkoutOverviews(
-    @Header('flexusjwt') String flexusJWTString,
-  );
-
-  @Get(path: '/archive/search')
-  Future<Response> getSearchedArchivedWorkoutOverviews(
-    @Header('flexusjwt') String flexusJWTString,
-    @Query('keyword') String keyWord,
-  );
-
-  @Put(path: '/{workoutID}')
-  Future<Response> putWorkoutArchiveStatus(
+  @Patch(path: '/{workoutID}')
+  Future<Response> patchWorkout(
     @Header('flexusjwt') String flexusJWTString,
     @Path('workoutID') int workoutID,
+    @Body() Map<String, dynamic> body,
   );
 
   @Delete(path: '/{workoutID}')

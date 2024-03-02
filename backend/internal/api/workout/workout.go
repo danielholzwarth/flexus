@@ -3,6 +3,8 @@ package workout
 import (
 	"encoding/json"
 	"flexus/internal/types"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -11,10 +13,7 @@ import (
 
 type WorkoutStore interface {
 	GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
-	GetSearchedWorkoutOverviews(userAccountID types.UserAccountID, keyWord string) ([]types.WorkoutOverview, error)
-	GetArchivedWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
-	GetSearchedArchivedWorkoutOverviews(userAccountID types.UserAccountID, keyWord string) ([]types.WorkoutOverview, error)
-	PutWorkoutArchiveStatus(userAccountID types.UserAccountID, workoutID types.WorkoutID) ([]types.WorkoutOverview, error)
+	PatchWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID, columnName string, value any) error
 	DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) error
 }
 
@@ -31,10 +30,7 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 	}
 
 	r.Get("/", s.getWorkoutOverviews())
-	r.Get("/search", s.getSearchedWorkoutOverviews())
-	r.Get("/archive", s.getArchivedWorkoutOverviews())
-	r.Get("/archive/search", s.getSearchedArchivedWorkoutOverviews())
-	r.Put("/{workoutID}", s.putWorkoutArchiveStatus())
+	r.Patch("/{workoutID}", s.patchWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
 
 	return s
@@ -72,95 +68,7 @@ func (s service) getWorkoutOverviews() http.HandlerFunc {
 	}
 }
 
-func (s service) getSearchedWorkoutOverviews() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
-		if !ok {
-			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
-			return
-		}
-
-		keyWord := r.URL.Query().Get("keyword")
-
-		workoutOverviews, err := s.workoutStore.GetSearchedWorkoutOverviews(claims.UserAccountID, keyWord)
-		if err != nil {
-			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		response, err := json.Marshal(workoutOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
-	}
-}
-
-func (s service) getArchivedWorkoutOverviews() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
-		if !ok {
-			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
-			return
-		}
-
-		workoutOverviews, err := s.workoutStore.GetArchivedWorkoutOverviews(claims.UserAccountID)
-		if err != nil {
-			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		response, err := json.Marshal(workoutOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
-	}
-}
-
-func (s service) getSearchedArchivedWorkoutOverviews() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
-		if !ok {
-			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
-			return
-		}
-
-		keyWord := r.URL.Query().Get("keyword")
-
-		workoutOverviews, err := s.workoutStore.GetSearchedArchivedWorkoutOverviews(claims.UserAccountID, keyWord)
-		if err != nil {
-			http.Error(w, "Failed to get workouts", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		response, err := json.Marshal(workoutOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
-	}
-}
-
-func (s service) putWorkoutArchiveStatus() http.HandlerFunc {
+func (s service) patchWorkout() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
 		if !ok {
@@ -175,26 +83,33 @@ func (s service) putWorkoutArchiveStatus() http.HandlerFunc {
 			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
 			return
 		}
-
 		workoutID := types.WorkoutID(workoutIDInt)
 
-		workoutOverviews, err := s.workoutStore.PutWorkoutArchiveStatus(claims.UserAccountID, workoutID)
+		var requestBody map[string]interface{}
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Failed to get WorkoutOverview", http.StatusInternalServerError)
-			println(err.Error())
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
 			return
 		}
 
-		response, err := json.Marshal(workoutOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
 			return
+		}
+
+		if isArchived, ok := requestBody["isArchived"].(bool); ok {
+			fmt.Println("Updating isArchived:", isArchived)
+
+			err = s.workoutStore.PatchWorkout(claims.UserAccountID, workoutID, "is_archived", isArchived)
+			if err != nil {
+				http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(response)
 	}
 }
 

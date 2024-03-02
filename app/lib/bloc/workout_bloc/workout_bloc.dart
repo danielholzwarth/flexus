@@ -17,7 +17,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
   WorkoutBloc() : super(WorkoutInitial()) {
     on<LoadWorkout>(_onLoadWorkout);
-    on<ChangeArchiveWorkout>(_onChangeArchiveWorkout);
+    on<SearchWorkout>(_onSearchWorkout);
+    on<UpdateWorkout>(_onPatchWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
   }
 
@@ -27,21 +28,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     //simulate backend request delay
     // await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response;
-    if (event.isSearch && event.isArchive) {
-      response = await _workoutService.getSearchedArchivedWorkoutOverviews(userBox.get("flexusjwt"), event.keyWord);
-    } else if (event.isArchive) {
-      response = await _workoutService.getArchivedWorkoutOverviews(userBox.get("flexusjwt"));
-    } else if (event.isSearch) {
-      response = await _workoutService.getSearchedWorkoutOverviews(userBox.get("flexusjwt"), event.keyWord);
-    } else {
-      response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
-    }
+    List<WorkoutOverview> workoutOverviews = List.empty();
+    final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
       if (response.bodyString != "null") {
         final List<dynamic> jsonList = jsonDecode(response.bodyString);
-        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
+        workoutOverviews = jsonList.map((json) {
           return WorkoutOverview(
             workout: Workout(
               id: json['workout']['id'],
@@ -55,53 +48,76 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
             splitName: json['splitName'],
           );
         }).toList();
-
-        userBox.put("workoutOverviews", workoutOverviews);
-        emit(WorkoutLoaded());
-      } else {
-        userBox.put("workoutOverviews", List.empty());
-        emit(WorkoutLoaded());
       }
+
+      userBox.put("workoutOverviews", workoutOverviews);
+
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == false).toList();
+
+      emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
     } else {
       emit(WorkoutError());
     }
   }
 
-  void _onChangeArchiveWorkout(ChangeArchiveWorkout event, Emitter<WorkoutState> emit) async {
-    emit(WorkoutLoading());
+  void _onSearchWorkout(SearchWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutSearching());
+
+    //simulate backend request delay
+    // await Future.delayed(const Duration(seconds: 1));
+
+    List<WorkoutOverview> workoutOverviews = List.empty();
+    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews");
+
+    if (allWorkoutOvervies.isNotEmpty) {
+      if (event.keyWord.isNotEmpty) {
+        workoutOverviews = allWorkoutOvervies
+            .where((workoutOverview) =>
+                workoutOverview.splitName != null && workoutOverview.splitName!.toLowerCase().contains(event.keyWord.toLowerCase()))
+            .toList();
+      } else {
+        workoutOverviews = allWorkoutOvervies;
+      }
+    }
+    workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+    emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+  }
+
+  void _onPatchWorkout(UpdateWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutUpdating());
 
     //simulate backend request delay
     await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response;
-    response = await _workoutService.putWorkoutArchiveStatus(userBox.get("flexusjwt"), event.workoutID);
+    switch (event.name) {
+      case "isArchived":
+        bool isArchived = event.value;
+        final response = await _workoutService.patchWorkout(
+          userBox.get("flexusjwt"),
+          event.workoutID,
+          {"isArchived": isArchived},
+        );
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
 
-    if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final List<dynamic> jsonList = jsonDecode(response.bodyString);
-        final List<WorkoutOverview> workoutOverviews = jsonList.map((json) {
-          return WorkoutOverview(
-            workout: Workout(
-              id: json['workout']['id'],
-              userAccountID: json['workout']['userAccountID'],
-              splitID: json['workout']['splitID'],
-              starttime: DateTime.parse(json['workout']['starttime']),
-              endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
-              isArchived: json['workout']['isArchived'],
-            ),
-            planName: json['planName'],
-            splitName: json['splitName'],
-          );
-        }).toList();
+        if (response.isSuccessful) {
+          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+          if (index != -1) {
+            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+            workoutOverview.workout.isArchived = event.value;
+            workoutOverviews[index] = workoutOverview;
 
-        userBox.put("workoutOverviews", workoutOverviews);
-        emit(WorkoutLoaded());
-      } else {
-        userBox.put("workoutOverviews", List.empty());
-        emit(WorkoutLoaded());
-      }
-    } else {
-      emit(WorkoutError());
+            userBox.put("workoutOverviews", workoutOverviews);
+          }
+        }
+
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+        break;
+
+      default:
+        emit(WorkoutError());
+        break;
     }
   }
 
@@ -120,7 +136,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
 
       userBox.put("workoutOverviews", workoutOverviews);
-      emit(WorkoutDeleted());
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
     } else {
       emit(WorkoutError());
     }

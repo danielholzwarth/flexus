@@ -27,7 +27,7 @@ class _ArchivePageState extends State<ArchivePage> {
   @override
   void initState() {
     super.initState();
-    workoutBloc.add(LoadWorkout(isArchive: true));
+    workoutBloc.add(SearchWorkout(isArchive: true));
   }
 
   @override
@@ -40,31 +40,29 @@ class _ArchivePageState extends State<ArchivePage> {
           BlocBuilder(
             bloc: workoutBloc,
             builder: (context, state) {
-              if (state is WorkoutLoading || state is WorkoutDeleting) {
+              if (state is WorkoutLoading || state is WorkoutUpdating || state is WorkoutDeleting) {
                 return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-              } else if (state is WorkoutLoaded || state is WorkoutDeleted) {
-                List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
-
-                if (workoutOverviews.isNotEmpty) {
+              } else if (state is WorkoutLoaded) {
+                if (state.workoutOverviews.isNotEmpty) {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return FlexusWorkoutListTile(
                           workoutOverview: WorkoutOverview(
                             workout: Workout(
-                              id: workoutOverviews[index].workout.id,
-                              userAccountID: workoutOverviews[index].workout.userAccountID,
-                              starttime: workoutOverviews[index].workout.starttime,
-                              endtime: workoutOverviews[index].workout.endtime,
+                              id: state.workoutOverviews[index].workout.id,
+                              userAccountID: state.workoutOverviews[index].workout.userAccountID,
+                              starttime: state.workoutOverviews[index].workout.starttime,
+                              endtime: state.workoutOverviews[index].workout.endtime,
                               isArchived: true,
                             ),
-                            planName: workoutOverviews[index].planName,
-                            splitName: workoutOverviews[index].splitName,
+                            planName: state.workoutOverviews[index].planName,
+                            splitName: state.workoutOverviews[index].splitName,
                           ),
                           workoutBloc: workoutBloc,
                         );
                       },
-                      childCount: workoutOverviews.length,
+                      childCount: state.workoutOverviews.length,
                     ),
                   );
                 } else {
@@ -113,9 +111,8 @@ class _ArchivePageState extends State<ArchivePage> {
       title: FlexusSearchTextField(
         hintText: "Search...",
         onChanged: (String newValue) {
-          workoutBloc.add(LoadWorkout(
+          workoutBloc.add(SearchWorkout(
             isArchive: true,
-            isSearch: true,
             keyWord: searchController.text,
           ));
         },
@@ -124,7 +121,7 @@ class _ArchivePageState extends State<ArchivePage> {
           setState(() {
             searchController.text = "";
             isSearch = false;
-            workoutBloc.add(LoadWorkout(isArchive: true));
+            workoutBloc.add(SearchWorkout(isArchive: true));
           });
         },
       ),
@@ -146,7 +143,7 @@ class _ArchivePageState extends State<ArchivePage> {
           onPressed: () {
             setState(() {
               isSearch = true;
-              workoutBloc.add(LoadWorkout(isSearch: true));
+              workoutBloc.add(SearchWorkout(isArchive: true));
             });
           },
         ),

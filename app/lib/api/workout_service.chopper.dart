@@ -33,74 +33,21 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
-  Future<Response<dynamic>> getSearchedWorkoutOverviews(
-    String flexusJWTString,
-    String keyWord,
-  ) {
-    final Uri $url = Uri.parse('/workouts/search');
-    final Map<String, dynamic> $params = <String, dynamic>{'keyword': keyWord};
-    final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
-    };
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-      headers: $headers,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> getArchivedWorkoutOverviews(
-      String flexusJWTString) {
-    final Uri $url = Uri.parse('/workouts/archive');
-    final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
-    };
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      headers: $headers,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> getSearchedArchivedWorkoutOverviews(
-    String flexusJWTString,
-    String keyWord,
-  ) {
-    final Uri $url = Uri.parse('/workouts/archive/search');
-    final Map<String, dynamic> $params = <String, dynamic>{'keyword': keyWord};
-    final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
-    };
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-      headers: $headers,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> putWorkoutArchiveStatus(
+  Future<Response<dynamic>> patchWorkout(
     String flexusJWTString,
     int workoutID,
+    Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/workouts/${workoutID}');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
+    final $body = body;
     final Request $request = Request(
-      'PUT',
+      'PATCH',
       $url,
       client.baseUrl,
+      body: $body,
       headers: $headers,
     );
     return client.send<dynamic, dynamic>($request);
