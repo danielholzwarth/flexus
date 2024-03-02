@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.leftToRight,
-                        child: ProfilePage(isOwnProfile: false, userID: userAccount.id),
+                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                       ),
                     ).then((value) {
                       userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));

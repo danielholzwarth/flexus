@@ -213,6 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: AppSettings.background,
       actions: [
         PopupMenuButton<String>(
+          color: AppSettings.background,
           icon: Icon(
             Icons.menu,
             color: AppSettings.font,
@@ -384,9 +385,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                   autofocus: true,
                                   cursorColor: AppSettings.font,
                                   decoration: InputDecoration(
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
-                                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary)),
+                                    border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
                                   ),
                                 ),
                               )

@@ -37,6 +37,9 @@ class FlexusSearchTextField extends StatelessWidget {
           fontSize: AppSettings.fontSize,
         ),
         decoration: InputDecoration(
+          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
           prefixIcon: Icon(
             Icons.search,
             size: AppSettings.fontSizeTitle,

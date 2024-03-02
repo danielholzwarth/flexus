@@ -11,6 +11,7 @@ class LevelingPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppSettings.background,
       appBar: AppBar(
+        backgroundColor: AppSettings.background,
         title: const Text('Leveling'),
         centerTitle: true,
       ),

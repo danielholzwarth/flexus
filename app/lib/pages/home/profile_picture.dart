@@ -38,6 +38,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
           Visibility(
             visible: widget.isOwnProfile,
             child: PopupMenuButton<String>(
+              color: AppSettings.background,
               icon: Icon(
                 Icons.menu,
                 color: AppSettings.font,
