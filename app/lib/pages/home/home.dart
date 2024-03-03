@@ -60,7 +60,10 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: buildFloatingActionButton(context),
-      bottomNavigationBar: FlexusBottomNavigationBar(scrollController: scrollController),
+      bottomNavigationBar: FlexusBottomNavigationBar(
+        scrollController: scrollController,
+        pageIndex: 1,
+      ),
     );
   }
 

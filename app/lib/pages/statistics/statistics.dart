@@ -1,38 +1,29 @@
-import 'package:app/pages/home/home.dart';
+import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
-class StatisticsPage extends StatelessWidget {
+class StatisticsPage extends StatefulWidget {
   const StatisticsPage({super.key});
 
   @override
+  State<StatisticsPage> createState() => _StatisticsPageState();
+}
+
+class _StatisticsPageState extends State<StatisticsPage> {
+  ScrollController scrollController = ScrollController();
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: (DragEndDetails details) {
-        _implementSwiping(details, context);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('StatisticsPage'),
-          centerTitle: true,
-        ),
-        body: const Center(
-          child: Text("Statistics"),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('StatisticsPage'),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text("Statistics"),
+      ),
+      bottomNavigationBar: FlexusBottomNavigationBar(
+        scrollController: scrollController,
+        pageIndex: 0,
       ),
     );
-  }
-
-  void _implementSwiping(DragEndDetails details, BuildContext context) {
-    if (details.primaryVelocity! < 0) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        PageTransition(
-          type: PageTransitionType.rightToLeft,
-          child: const HomePage(),
-        ),
-        (route) => false,
-      );
-    }
   }
 }
