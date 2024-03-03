@@ -41,9 +41,12 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
         );
 
-        userBox.put("userAccount", userAccount);
+        UserAccount storedUserAccount = userBox.get("userAccount");
+        if (event.userAccountID == storedUserAccount.id) {
+          userBox.put("userAccount", userAccount);
+        }
 
-        emit(UserAccountLoaded());
+        emit(UserAccountLoaded(userAccount: userAccount));
       } else {
         emit(UserAccountError());
       }
@@ -106,6 +109,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       default:
     }
 
-    emit(UserAccountUpdated());
+    emit(UserAccountLoaded(userAccount: userAccount));
   }
 }

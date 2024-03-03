@@ -51,11 +51,11 @@ class AppRoutes {
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomePage());
       case '/profile':
-        List<dynamic> userInfo = args as List<dynamic>;
-        return MaterialPageRoute(builder: (_) => ProfilePage(isOwnProfile: userInfo[0], userID: userInfo[1]));
+        int userID = args as int;
+        return MaterialPageRoute(builder: (_) => ProfilePage(userID: userID));
       case '/profile_picture':
-        bool isOwnProfile = args as bool;
-        return MaterialPageRoute(builder: (_) => ProfilePicturePage(isOwnProfile: isOwnProfile));
+        List<dynamic> userInfo = args as List<dynamic>;
+        return MaterialPageRoute(builder: (_) => ProfilePicturePage(userID: userInfo[0], profilePicture: userInfo[1]));
       case '/leveling':
         return MaterialPageRoute(builder: (_) => const LevelingPage());
       case '/settings':

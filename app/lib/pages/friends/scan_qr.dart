@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:app/pages/home/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -78,10 +76,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
                 context,
                 PageTransition(
                   type: PageTransitionType.rightToLeft,
-                  child: ProfilePage(
-                    isOwnProfile: false,
-                    userID: int.parse(barcode.rawValue!),
-                  ),
+                  child: ProfilePage(userID: int.parse(barcode.rawValue!)),
                 ),
               ).then((value) => cameraController.start());
             } else {

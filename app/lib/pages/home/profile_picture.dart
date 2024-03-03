@@ -9,11 +9,13 @@ import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePicturePage extends StatefulWidget {
-  final bool isOwnProfile;
+  final int userID;
+  final Uint8List? profilePicture;
 
   const ProfilePicturePage({
     super.key,
-    required this.isOwnProfile,
+    required this.userID,
+    required this.profilePicture,
   });
 
   @override
@@ -36,7 +38,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         automaticallyImplyLeading: false,
         actions: [
           Visibility(
-            visible: widget.isOwnProfile,
+            visible: widget.userID == userAccount.id,
             child: PopupMenuButton<String>(
               color: AppSettings.background,
               icon: Icon(
@@ -96,6 +98,23 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         builder: (context, state) {
           if (state is UserAccountUpdating) {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          } else if (state is UserAccountLoaded) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Center(
+                child: Hero(
+                  tag: 'profile_picture',
+                  child: state.userAccount.profilePicture != null
+                      ? Image.memory(state.userAccount.profilePicture!)
+                      : Icon(
+                          Icons.hide_image_outlined,
+                          size: screenWidth * 0.7,
+                        ),
+                ),
+              ),
+            );
           } else {
             return GestureDetector(
               onTap: () {
@@ -104,8 +123,8 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
               child: Center(
                 child: Hero(
                   tag: 'profile_picture',
-                  child: userAccount.profilePicture != null
-                      ? Image.memory(userAccount.profilePicture!)
+                  child: widget.profilePicture != null
+                      ? Image.memory(widget.profilePicture!)
                       : Icon(
                           Icons.hide_image_outlined,
                           size: screenWidth * 0.7,

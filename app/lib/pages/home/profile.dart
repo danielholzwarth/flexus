@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:app/api/friends_service.dart';
 import 'package:app/api/report_service.dart';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/leveling.dart';
@@ -13,15 +15,12 @@ import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ProfilePage extends StatefulWidget {
-  final bool isOwnProfile;
   final int userID;
   const ProfilePage({
     super.key,
-    required this.isOwnProfile,
     required this.userID,
   });
 
@@ -34,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final userBox = Hive.box('userBox');
   final BestLiftsBloc bestLiftsBloc = BestLiftsBloc();
   final TextEditingController reportTextController = TextEditingController();
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
 
   late bool isProfilePictureChecked;
   late bool isNameChecked;
@@ -44,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
+    userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID));
     isProfilePictureChecked = false;
     isNameChecked = false;
     isUsernameChecked = false;
@@ -58,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       backgroundColor: AppSettings.background,
-      appBar: buildAppBar(context),
+      appBar: buildAppBar(context, userAccount),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -66,7 +67,6 @@ class _ProfilePageState extends State<ProfilePage> {
               buildPictures(screenWidth, context, userAccount),
               SizedBox(height: screenHeight * 0.02),
               buildNames(userAccount),
-              Text("Since ${DateFormat('dd.MM.yyyy').format(userAccount.createdAt!)}"),
               SizedBox(height: screenHeight * 0.1),
               buildBestLift(screenHeight, screenWidth),
               SizedBox(height: screenHeight * 0.2)
@@ -77,24 +77,37 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Column buildNames(UserAccount userAccount) {
-    return Column(
-      children: [
-        Text(
-          userAccount.name,
-          style: TextStyle(
-            color: AppSettings.font,
-            fontSize: AppSettings.fontSizeTitle,
-          ),
-        ),
-        Text(
-          "@${userAccount.username}",
-          style: TextStyle(
-            color: AppSettings.font,
-            fontSize: AppSettings.fontSize,
-          ),
-        ),
-      ],
+  SizedBox buildNames(UserAccount userAccount) {
+    return SizedBox(
+      child: BlocBuilder(
+        bloc: userAccountBloc,
+        builder: (context, state) {
+          if (state is UserAccountLoading) {
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          } else if (state is UserAccountLoaded) {
+            return Column(
+              children: [
+                Text(
+                  state.userAccount.name,
+                  style: TextStyle(
+                    color: AppSettings.font,
+                    fontSize: AppSettings.fontSizeTitle,
+                  ),
+                ),
+                Text(
+                  "@${state.userAccount.username}",
+                  style: TextStyle(
+                    color: AppSettings.font,
+                    fontSize: AppSettings.fontSize,
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Text("error");
+          }
+        },
+      ),
     );
   }
 
@@ -102,53 +115,65 @@ class _ProfilePageState extends State<ProfilePage> {
     return SizedBox(
       width: screenWidth * 0.8,
       height: screenWidth * 0.8,
-      child: Stack(
-        children: [
-          const SizedBox(
-            child: Image(
-              fit: BoxFit.fill,
-              image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-            ),
-          ),
-          Positioned(
-            left: screenWidth * 0.25,
-            top: screenWidth * 0.12,
-            child: Hero(
-              tag: "profile_picture",
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: ProfilePicturePage(
-                      isOwnProfile: widget.isOwnProfile,
+      child: BlocBuilder(
+        bloc: userAccountBloc,
+        builder: (context, state) {
+          if (state is UserAccountLoading) {
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          } else if (state is UserAccountLoaded) {
+            return Stack(
+              children: [
+                const SizedBox(
+                  child: Image(
+                    fit: BoxFit.fill,
+                    image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
+                  ),
+                ),
+                Positioned(
+                  left: screenWidth * 0.25,
+                  top: screenWidth * 0.12,
+                  child: Hero(
+                    tag: "profile_picture",
+                    child: GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: ProfilePicturePage(
+                            userID: widget.userID,
+                            profilePicture: state.userAccount.profilePicture,
+                          ),
+                        ),
+                      ),
+                      child: state.userAccount.profilePicture != null
+                          ? CircleAvatar(
+                              radius: screenWidth * 0.15,
+                              backgroundImage: MemoryImage(state.userAccount.profilePicture!),
+                            )
+                          : CircleAvatar(
+                              radius: screenWidth * 0.15,
+                              backgroundColor: Colors.transparent,
+                            ),
                     ),
                   ),
-                ).then((value) => setState(() {})),
-                child: userAccount.profilePicture != null
-                    ? CircleAvatar(
-                        radius: screenWidth * 0.15,
-                        backgroundImage: MemoryImage(userAccount.profilePicture!),
-                      )
-                    : CircleAvatar(
-                        radius: screenWidth * 0.15,
-                        backgroundColor: Colors.transparent,
-                      ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: screenWidth * 0.28,
-            top: screenWidth * 0.5,
-            child: Text(
-              userAccount.level.toString(),
-              style: TextStyle(
-                color: AppSettings.primary,
-                fontSize: AppSettings.fontSizeTitle,
-              ),
-            ),
-          ),
-        ],
+                ),
+                Positioned(
+                  left: screenWidth * 0.28,
+                  top: screenWidth * 0.5,
+                  child: Text(
+                    state.userAccount.level.toString(),
+                    style: TextStyle(
+                      color: AppSettings.primary,
+                      fontSize: AppSettings.fontSizeTitle,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Text("error");
+          }
+        },
       ),
     );
   }
@@ -208,7 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return text;
   }
 
-  AppBar buildAppBar(BuildContext context) {
+  AppBar buildAppBar(BuildContext context, UserAccount userAccount) {
     return AppBar(
       backgroundColor: AppSettings.background,
       actions: [
@@ -220,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
             size: AppSettings.fontSizeTitle,
           ),
           itemBuilder: (BuildContext context) {
-            return widget.isOwnProfile
+            return widget.userID == userAccount.id
                 ? ['Settings', 'Leveling'].map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
@@ -254,6 +279,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: const LevelingPage(),
                   ),
                 );
+                break;
+
+              case "Add Friend":
+                //Post Friends
+                FriendsService friendsService = FriendsService.create();
+                await friendsService.postFriends(userBox.get("flexusjwt"), widget.userID);
+                break;
+
+              case "Friend requested":
+              case "Remove Friend":
+                //Delete Friends
+
                 break;
 
               case "Report":

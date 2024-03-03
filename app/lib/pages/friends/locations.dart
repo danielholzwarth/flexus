@@ -44,7 +44,13 @@ class _LocationsPageState extends State<LocationsPage> {
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
     return FlexusFloatingActionButton(
       onPressed: () async {
-        debugPrint("send Notification");
+        Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const ProfilePage(userID: 2),
+          ),
+        );
       },
       icon: Icons.notification_add_outlined,
     );
@@ -63,7 +69,7 @@ class _LocationsPageState extends State<LocationsPage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.fade,
-                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                        child: ProfilePage(userID: userAccount.id),
                       ),
                     );
                   },
@@ -82,7 +88,7 @@ class _LocationsPageState extends State<LocationsPage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.fade,
-                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                        child: ProfilePage(userID: userAccount.id),
                       ),
                     );
                   },

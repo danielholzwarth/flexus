@@ -173,12 +173,10 @@ class _HomePageState extends State<HomePage> {
         child: BlocBuilder(
           bloc: userAccountBloc,
           builder: (context, state) {
-            final UserAccount userAccount = userBox.get("userAccount");
             if (state is UserAccountLoading) {
               return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             } else if (state is UserAccountLoaded) {
-              UserAccount userAccount = userBox.get("userAccount");
-              if (userAccount.profilePicture != null) {
+              if (state.userAccount.profilePicture != null) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
@@ -187,15 +185,15 @@ class _HomePageState extends State<HomePage> {
                         context,
                         PageTransition(
                           type: PageTransitionType.fade,
-                          child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                          child: ProfilePage(userID: state.userAccount.id),
                         ),
                       ).then((value) {
-                        userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
+                        userAccountBloc.add(LoadUserAccount(userAccountID: state.userAccount.id));
                       });
                     },
                     child: CircleAvatar(
                       radius: AppSettings.fontSize,
-                      backgroundImage: MemoryImage(userAccount.profilePicture!),
+                      backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                     ),
                   ),
                 );
@@ -210,31 +208,18 @@ class _HomePageState extends State<HomePage> {
                       context,
                       PageTransition(
                         type: PageTransitionType.fade,
-                        child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
+                        child: ProfilePage(userID: state.userAccount.id),
                       ),
                     ).then((value) {
-                      userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
+                      userAccountBloc.add(LoadUserAccount(userAccountID: state.userAccount.id));
                     });
                   },
                 );
               }
             } else {
-              return IconButton(
-                icon: Icon(
-                  Icons.error,
-                  size: AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
-                    ),
-                  ).then((value) {
-                    userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
-                  });
-                },
+              return Icon(
+                Icons.error,
+                size: AppSettings.fontSizeTitle,
               );
             }
           },
