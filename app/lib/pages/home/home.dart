@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         PageTransition(
-                          type: PageTransitionType.leftToRight,
+                          type: PageTransitionType.fade,
                           child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                         ),
                       ).then((value) {
@@ -209,7 +209,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       PageTransition(
-                        type: PageTransitionType.leftToRight,
+                        type: PageTransitionType.fade,
                         child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                       ),
                     ).then((value) {
@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     PageTransition(
-                      type: PageTransitionType.leftToRight,
+                      type: PageTransitionType.fade,
                       child: ProfilePage(isOwnProfile: true, userID: userAccount.id),
                     ),
                   ).then((value) {

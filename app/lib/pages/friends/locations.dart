@@ -1,4 +1,5 @@
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/friends/add_friend.dart';
 import 'package:app/pages/friends/add_location.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
@@ -99,7 +100,7 @@ class _LocationsPageState extends State<LocationsPage> {
               context,
               PageTransition(
                 type: PageTransitionType.fade,
-                child: const AddLocationPage(),
+                child: const AddFriendPage(),
               ),
             );
           },
