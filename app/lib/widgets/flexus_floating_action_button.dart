@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 class FlexusFloatingActionButton extends StatelessWidget {
   final Function() onPressed;
+  final IconData icon;
 
   const FlexusFloatingActionButton({
     super.key,
     required this.onPressed,
+    required this.icon,
   });
 
   @override
@@ -17,7 +19,7 @@ class FlexusFloatingActionButton extends StatelessWidget {
       onPressed: onPressed,
       shape: const CircleBorder(),
       child: Icon(
-        Icons.add,
+        icon,
         size: AppSettings.fontSizeMainTitle,
       ),
     );

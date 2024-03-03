@@ -140,6 +140,7 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
+      icon: Icons.add,
     );
   }
 
