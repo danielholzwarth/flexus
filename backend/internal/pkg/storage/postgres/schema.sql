@@ -2,7 +2,7 @@ BEGIN;
 
 /*
 -- Drop all tables
-DROP TABLE IF EXISTS exercise_type, language, position, user_account, user_list, report, gym, user_account_gym, friends, user_settings, plan, split, exercise, exercise_split, workout, set, best_lifts CASCADE;
+DROP TABLE IF EXISTS exercise_type, language, position, user_account, user_list, report, gym, user_account_gym, friendship, user_settings, plan, split, exercise, exercise_split, workout, set, best_lifts CASCADE;
 
 or
 
@@ -66,9 +66,9 @@ CREATE TABLE user_account_gym (
     gym_id BIGINT NOT NULL REFERENCES gym(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE friends (
+CREATE TABLE friendship (
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    requester_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    requestor_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     requested_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     is_accepted BOOLEAN NOT NULL
 );

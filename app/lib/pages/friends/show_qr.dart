@@ -11,7 +11,6 @@ class ShowQRPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final userBox = Hive.box('userBox');
     final UserAccount userAccount = userBox.get("userAccount");
 

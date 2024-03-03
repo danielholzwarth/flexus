@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/friends_service.dart';
+import 'package:app/api/friendship_service.dart';
 import 'package:app/api/report_service.dart';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
@@ -144,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             profilePicture: state.userAccount.profilePicture,
                           ),
                         ),
-                      ),
+                      ).then((value) => userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID))),
                       child: state.userAccount.profilePicture != null
                           ? CircleAvatar(
                               radius: screenWidth * 0.15,
@@ -282,14 +282,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 break;
 
               case "Add Friend":
-                //Post Friends
-                FriendsService friendsService = FriendsService.create();
-                await friendsService.postFriends(userBox.get("flexusjwt"), widget.userID);
+                //Post Friendship
+                FriendshipService friendshiphiphipService = FriendshipService.create();
+                await friendshiphiphipService.postFriendship(userBox.get("flexusjwt"), widget.userID);
                 break;
 
               case "Friend requested":
               case "Remove Friend":
-                //Delete Friends
+                //Delete Friendship
 
                 break;
 

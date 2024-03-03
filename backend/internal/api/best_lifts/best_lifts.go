@@ -36,9 +36,9 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s service) getBestLifts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		_, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
+		_, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
-			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
 			return
 		}
 

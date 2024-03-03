@@ -38,7 +38,7 @@ func ValidateJWT(next http.Handler) http.Handler {
 			w.Header().Add("flexusjwt", newToken)
 		}
 
-		ctx := context.WithValue(r.Context(), types.RequesterContextKey, claims)
+		ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
 		println("useraccountID:", claims.UserAccountID)
 		println("username:", claims.Username)
 

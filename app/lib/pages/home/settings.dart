@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 //     visible: true,
                 //     child: FlexusSettingsListTile(
                 //       title: "Store only necessary data",
-                //       subtitle: "For some features to work (friends) we need to save some data on the server.",
+                //       subtitle: "For some features to work (friendship) we need to save some data on the server.",
                 //       value: false,
                 //       isBool: true,
                 //     ),
@@ -456,7 +456,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Name",
-        subtitle: "This is the name mostly shown to your friends.",
+        subtitle: "This is the name mostly shown to your friendship.",
         value: userAccount.name,
         isText: true,
         onPressed: () => showDialog(

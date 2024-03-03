@@ -12,10 +12,10 @@ entity user_account {
     created_at : timestamp
 }
 
-entity friends {
+entity friendship {
     id : number <<PK>>
     --
-    user_account_requester_id : number <<FK>>
+    user_account_requestor_id : number <<FK>>
     user_account_acceptor_id : number <<FK>>
     is_accepted : boolean
 }
@@ -157,7 +157,7 @@ enum positions {
 user_account ||--|| user_settings
 user_account ||--o{ user_account_gym
 user_account_gym }o--|| gym 
-user_account |o--o{ friends
+user_account |o--o{ friendship
 user_account ||--o{ user_list
 user_account ||--o{ workout 
 user_account ||--o{ report 

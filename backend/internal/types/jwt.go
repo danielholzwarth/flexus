@@ -2,7 +2,7 @@ package types
 
 import "github.com/dgrijalva/jwt-go"
 
-var RequesterContextKey = &ContextKey{Key: "requesterID"}
+var RequestorContextKey = &ContextKey{Key: "requestorID"}
 
 type Claims struct {
 	UserAccountID UserAccountID `json:"userAccountID"`
@@ -13,4 +13,3 @@ type Claims struct {
 type ContextKey struct {
 	Key string
 }
-

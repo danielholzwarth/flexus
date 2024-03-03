@@ -102,7 +102,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     return SizedBox(
       width: screenWidth * 0.7,
       child: Text(
-        "The name will be shown to your friends.",
+        "The name will be shown to your friendship.",
         style: TextStyle(
           color: AppSettings.font,
           decoration: TextDecoration.none,

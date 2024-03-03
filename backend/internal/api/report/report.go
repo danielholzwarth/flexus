@@ -35,9 +35,9 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s service) createReport() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		claims, ok := r.Context().Value(types.RequesterContextKey).(types.Claims)
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
-			http.Error(w, "Invalid requester ID", http.StatusInternalServerError)
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
 			return
 		}
 
