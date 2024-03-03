@@ -84,7 +84,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                     deleteImage();
                     break;
                   default:
-                    print("not implemented yet");
+                    debugPrint("not implemented yet");
                 }
               },
             ),
@@ -131,7 +131,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
       }
     } catch (e) {
-      print("Error picking image from gallery: $e");
+      debugPrint("Error picking image from gallery: $e");
     }
   }
 
@@ -149,7 +149,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
       }
     } catch (e) {
-      print("Error taking image: $e");
+      debugPrint("Error taking image: $e");
     }
   }
 }

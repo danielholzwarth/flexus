@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/hive/best_lift.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
@@ -11,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> main() async {
+  HttpOverrides.global = MyHttpOverrides();
+
   await initializeHive();
 
   runApp(const MainApp());
@@ -51,5 +55,12 @@ Future<void> initializeHive() async {
     if (kDebugMode) {
       print('Error initializing Hive: $e');
     }
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

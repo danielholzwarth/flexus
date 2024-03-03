@@ -23,7 +23,11 @@ abstract class UserAccountService extends ChopperService {
 
   static UserAccountService create() {
     final client = ChopperClient(
+        //For local device
+        //baseUrl: Uri.parse('http://ipv4:8080'),
+        //For virtual device
         baseUrl: Uri.parse('http://10.0.2.2:8080'),
+        //For Web
         //baseUrl: Uri.parse('http://localhost:8080'),
         services: [
           _$UserAccountService(),

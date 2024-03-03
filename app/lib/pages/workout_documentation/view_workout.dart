@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ViewWorkoutPage extends StatelessWidget {
-  final workoutID;
+  final int workoutID;
 
   const ViewWorkoutPage({
     super.key,
-    this.workoutID,
+    this.workoutID = -1,
   });
 
   @override

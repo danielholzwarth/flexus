@@ -44,7 +44,7 @@ class _LocationsPageState extends State<LocationsPage> {
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
     return FlexusFloatingActionButton(
       onPressed: () async {
-        print("send Notification");
+        debugPrint("send Notification");
       },
       icon: Icons.notification_add_outlined,
     );
@@ -126,7 +126,7 @@ class _LocationsPageState extends State<LocationsPage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            print("search");
+            debugPrint("search");
           },
         ),
       ],

@@ -136,7 +136,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
             workoutBloc.add(DeleteWorkout(workoutID: workout.id));
             break;
           default:
-            print("not implemented yed");
+            debugPrint("not implemented yed");
         }
       },
     );

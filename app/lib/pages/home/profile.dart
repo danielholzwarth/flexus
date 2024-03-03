@@ -453,7 +453,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 break;
               default:
-                print("$choice not implemented yet");
+                debugPrint("$choice not implemented yet");
             }
           },
         ),
