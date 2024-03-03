@@ -163,6 +163,9 @@ Insert INTO "position" ("name") VALUES ('third');
 Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
 VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
 
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
+VALUES ('pellob', 'Pelle', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
+
 Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
 Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));
 Insert INTO "gym" ("name", "location") VALUES ('Another Gym', POINT(43.7128, -71.0060));

@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:app/pages/home/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ScanQRPage extends StatefulWidget {
   const ScanQRPage({super.key});
@@ -12,7 +14,11 @@ class ScanQRPage extends StatefulWidget {
 }
 
 class _ScanQRPageState extends State<ScanQRPage> {
-  MobileScannerController cameraController = MobileScannerController();
+  MobileScannerController cameraController = MobileScannerController(
+    detectionSpeed: DetectionSpeed.normal,
+    facing: CameraFacing.back,
+    torchEnabled: false,
+  );
   final userBox = Hive.box("userBox");
 
   @override
@@ -23,7 +29,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            color: Colors.white,
+            color: Colors.black,
             icon: ValueListenableBuilder(
               valueListenable: cameraController.torchState,
               builder: (context, state, child) {
@@ -39,7 +45,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
             onPressed: () => cameraController.toggleTorch(),
           ),
           IconButton(
-            color: Colors.white,
+            color: Colors.black,
             icon: ValueListenableBuilder(
               valueListenable: cameraController.cameraFacingState,
               builder: (context, state, child) {
@@ -60,20 +66,29 @@ class _ScanQRPageState extends State<ScanQRPage> {
         // fit: BoxFit.contain,
         controller: cameraController,
         onDetect: (capture) {
-          final List<Barcode> barcodes = capture.barcodes;
-          final Uint8List? image = capture.image;
-          for (final barcode in barcodes) {
-            debugPrint('Barcode found! ${barcode.rawValue}');
-          }
+          final Barcode barcode = capture.barcodes.first;
+          debugPrint('Barcode found! ${barcode.rawValue}');
 
-          if (image != null) {
-            showDialog(
-              context: context,
-              builder: (context) => Image(image: MemoryImage(image)),
-            );
-            Future.delayed(const Duration(seconds: 5), () {
-              Navigator.pop(context);
-            });
+          if (barcode.rawValue != null) {
+            int? scannedUserID = int.tryParse(barcode.rawValue!);
+
+            if (scannedUserID != null) {
+              cameraController.stop();
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: ProfilePage(
+                    isOwnProfile: false,
+                    userID: int.parse(barcode.rawValue!),
+                  ),
+                ),
+              ).then((value) => cameraController.start());
+            } else {
+              debugPrint("failed parsing barcode.rawValue");
+            }
+          } else {
+            debugPrint("barcode.rawValue is null");
           }
         },
       ),
