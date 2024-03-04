@@ -32,7 +32,7 @@ func NewService(friendshipStore FriendshipStore) http.Handler {
 
 	r.Post("/{userAccountID}", s.createFriendship())
 	r.Get("/{userAccountID}", s.getFriendship())
-	r.Patch("/", s.patchFriendship())
+	r.Patch("/{userAccountID}", s.patchFriendship())
 	r.Delete("/{userAccountID}", s.deleteFriendship())
 
 	return s
@@ -138,11 +138,13 @@ func (s service) patchFriendship() http.HandlerFunc {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
 		if err := json.Unmarshal(body, &requestBody); err != nil {
 			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
@@ -152,6 +154,7 @@ func (s service) patchFriendship() http.HandlerFunc {
 			err := s.friendshipStore.PatchFriendship(claims.UserAccountID, requestedUserAccountID, "is_accepted", isAccepted)
 			if err != nil {
 				http.Error(w, "Failed to patch Friendship", http.StatusInternalServerError)
+				println(err.Error())
 				return
 			}
 		}

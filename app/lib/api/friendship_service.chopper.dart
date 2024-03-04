@@ -56,9 +56,10 @@ final class _$FriendshipService extends FriendshipService {
   @override
   Future<Response<dynamic>> patchFriendship(
     String flexusJWTString,
+    int userAccountID,
     Map<String, dynamic> body,
   ) {
-    final Uri $url = Uri.parse('/friendships/');
+    final Uri $url = Uri.parse('/friendships/${userAccountID}');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };

@@ -80,22 +80,28 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
     //simulate backend request delay
     // await Future.delayed(const Duration(seconds: 1));
 
-    Friendship friendship = userBox.get("friendship");
-
     switch (event.name) {
       case "isAccepted":
-        final response = await _friendshipService.patchFriendship(userBox.get("flexusjwt"), {"isAccepted": event.value});
+        final response = await _friendshipService.patchFriendship(userBox.get("flexusjwt"), event.requestedID, {"isAccepted": event.value});
         if (response.isSuccessful) {
-          friendship.isAccepted = event.value;
+          UserAccount userAccount = userBox.get("userAccount");
+
+          final friendship = Friendship(
+            requestorID: userAccount.id,
+            requestedID: event.requestedID,
+            isAccepted: event.value,
+          );
+          emit(FriendshipLoaded(friendship: friendship));
+        } else {
+          emit(FriendshipLoaded(friendship: null));
         }
         break;
 
       default:
         debugPrint("friendship patch not implemented yet");
+        emit(FriendshipLoaded(friendship: null));
         break;
     }
-
-    emit(FriendshipLoaded(friendship: friendship));
   }
 
   void _onDeleteFriendship(DeleteFriendship event, Emitter<FriendshipState> emit) async {

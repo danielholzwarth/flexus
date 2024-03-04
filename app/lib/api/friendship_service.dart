@@ -16,9 +16,10 @@ abstract class FriendshipService extends ChopperService {
     @Path('userAccountID') int userAccountID,
   );
 
-  @Patch(path: '/')
+  @Patch(path: '/{userAccountID}')
   Future<Response> patchFriendship(
     @Header('flexusjwt') String flexusJWTString,
+    @Path('userAccountID') int userAccountID,
     @Body() Map<String, dynamic> body,
   );
 
