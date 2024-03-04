@@ -63,6 +63,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                       name: state.userAccounts[index].name,
                       createdAt: state.userAccounts[index].createdAt,
                       level: state.userAccounts[index].level,
+                      profilePicture: state.userAccounts[index].profilePicture,
                     ),
                   );
                 },

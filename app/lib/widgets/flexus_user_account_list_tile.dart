@@ -90,21 +90,36 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
   }
 
   Widget buildPicture(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: ProfilePage(userID: widget.userAccount.id),
-          ),
-        );
-      },
-      child: CircleAvatar(
-        radius: AppSettings.fontSizeTitle,
-        backgroundColor: AppSettings.primaryShade48,
-        child: widget.userAccount.profilePicture != null ? Image.memory(widget.userAccount.profilePicture!) : const Icon(Icons.person),
-      ),
-    );
+    return widget.userAccount.profilePicture != null
+        ? GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: ProfilePage(userID: widget.userAccount.id),
+                ),
+              );
+            },
+            child: CircleAvatar(
+              radius: AppSettings.fontSizeTitle,
+              backgroundColor: AppSettings.primaryShade48,
+              backgroundImage: MemoryImage(widget.userAccount.profilePicture!),
+            ))
+        : IconButton(
+            icon: Icon(
+              Icons.person,
+              size: AppSettings.fontSizeTitle,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: ProfilePage(userID: widget.userAccount.id),
+                ),
+              );
+            },
+          );
   }
 }
