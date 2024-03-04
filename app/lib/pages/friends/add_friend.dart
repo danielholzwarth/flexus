@@ -121,6 +121,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
             border: InputBorder.none,
             icon: Icon(Icons.search, color: AppSettings.font),
           ),
+          onChanged: (value) {
+            userAccountBloc.add(LoadUserAccounts(keyword: value.trim()));
+          },
         ),
       ),
       centerTitle: true,

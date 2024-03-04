@@ -160,17 +160,30 @@ Insert INTO "position" ("name") VALUES ('first');
 Insert INTO "position" ("name") VALUES ('second');
 Insert INTO "position" ("name") VALUES ('third');
 
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
-VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
-
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
-VALUES ('hustler21', 'Karl', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
-
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
-VALUES ('gretchen22', 'Greta', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
-
-Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
-VALUES ('pellob', 'Pelle', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('hustler21', 'Karl', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2023-05-12', 5, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('gretchen22', 'Greta', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2022-11-28', 7, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pellob', 'Pelle', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2021-08-07', 22, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('sapphire88', 'Sophie', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2020-04-15', 13, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('rockstar27', 'Rick', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2019-09-23', 6, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('greenapple12', 'Grace', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2018-12-07', 14, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('thunderbird99', 'Tom', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2017-07-30', 48, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('moonlight21', 'Mia', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2016-05-12', 95, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('firefly88', 'Frank', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2015-03-18', 7, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('bluesky32', 'Bella', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2014-02-01', 82, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('silvershadow11', 'Sam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2013-11-22', 6, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('whiterabbit99', 'Will', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2012-08-09', 73, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('midnightowl45', 'Molly', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2011-06-17', 54, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('goldenlion22', 'George', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2010-04-25', 5, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('purplepeacock77', 'Peter', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2009-03-11', 36, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('silverdolphin88', 'Sara', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2008-01-05', 7, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('bluewhale99', 'Ben', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2007-09-28', 8, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('greendragon22', 'Grace', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2006-07-17', 3, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('redphoenix77', 'Ron', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2005-05-01', 15, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('silverfox88', 'Samantha', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2004-03-12', 6, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('whiterose99', 'Wendy', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2003-01-24', 17, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('blackpanther22', 'Brad', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2002-11-09', 24, null);
+INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pinkflamingo77', 'Pam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2001-09-15', 16, null);
 
 Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
 Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));

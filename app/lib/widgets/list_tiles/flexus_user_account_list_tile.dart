@@ -49,34 +49,94 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
           if (state.friendship != null) {
             if (state.friendship!.isAccepted) {
               return TextButton(
+                style: ButtonStyle(
+                  shadowColor: MaterialStateProperty.all(AppSettings.error),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: AppSettings.primaryShade48,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
                 onPressed: () => {
                   friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
                 },
-                child: const Text("Remove Friend"),
+                child: Text(
+                  "Remove",
+                  style: TextStyle(color: AppSettings.error),
+                ),
               );
             } else {
               if (state.friendship!.requestedID == widget.userAccount.id) {
                 return TextButton(
+                  style: ButtonStyle(
+                    shadowColor: MaterialStateProperty.all(AppSettings.error),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: AppSettings.primaryShade48,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
                   onPressed: () => {
                     friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
                   },
-                  child: const Text("Friend requested"),
+                  child: Text(
+                    "Request sent",
+                    style: TextStyle(color: AppSettings.primary),
+                  ),
                 );
               } else {
                 return TextButton(
+                  style: ButtonStyle(
+                    shadowColor: MaterialStateProperty.all(AppSettings.error),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: AppSettings.primaryShade48,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
                   onPressed: () => {
                     friendshipBloc.add(PatchFriendship(requestedID: widget.userAccount.id, name: "isAccepted", value: true)),
                   },
-                  child: const Text("Accept Friend"),
+                  child: Text(
+                    "Accept Request",
+                    style: TextStyle(color: AppSettings.primary),
+                  ),
                 );
               }
             }
           } else {
             return TextButton(
-              onPressed: () => {
-                friendshipBloc.add(CreateFriendship(requestedID: widget.userAccount.id)),
+              style: ButtonStyle(
+                shadowColor: MaterialStateProperty.all(AppSettings.error),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: AppSettings.primaryShade48,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                friendshipBloc.add(CreateFriendship(requestedID: widget.userAccount.id));
               },
-              child: const Text("Add Friend"),
+              child: Text(
+                "Add",
+                style: TextStyle(color: AppSettings.primary),
+              ),
             );
           }
         } else {

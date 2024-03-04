@@ -93,8 +93,8 @@ func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyw
 		FROM user_account ua
 		LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
 		WHERE ua.id != $1
-		AND (ua.username LIKE '%' || $2 || '%' OR ua.name LIKE '%' || $2 || '%')
-		ORDER BY f.is_accepted DESC, f.id IS NOT NULL DESC
+		AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%')
+		ORDER BY f.id IS NOT NULL DESC, f.is_accepted DESC;
 	`
 
 	rows, err := db.pool.Query(query, userAccountID, keyword)
