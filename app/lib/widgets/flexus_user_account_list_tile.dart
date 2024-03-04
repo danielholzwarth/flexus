@@ -33,14 +33,10 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
       leading: buildPicture(context),
-      title: buildTitle(context),
+      title: Text("@${widget.userAccount.name}"),
       trailing: buildTrailing(context),
-      subtitle: buildSubtitle(context),
+      subtitle: Text("@${widget.userAccount.username}"),
     );
-  }
-
-  Widget buildSubtitle(BuildContext context) {
-    return Text(widget.userAccount.username);
   }
 
   Widget buildTrailing(BuildContext context) {
@@ -91,10 +87,6 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
         }
       },
     );
-  }
-
-  Widget buildTitle(BuildContext context) {
-    return Text(widget.userAccount.name);
   }
 
   Widget buildPicture(BuildContext context) {

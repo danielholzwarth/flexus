@@ -69,4 +69,24 @@ final class _$UserAccountService extends UserAccountService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getUserAccounts(
+    String flexusJWTString,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/user_accounts/');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

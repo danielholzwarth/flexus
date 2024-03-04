@@ -17,6 +17,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   UserAccountBloc() : super(UserAccountInitial()) {
     on<LoadUserAccount>(_onLoadUserAccount);
     on<PatchUserAccount>(_onPatchUserAccount);
+    on<LoadUserAccounts>(_onLoadUserAccounts);
   }
 
   void _onLoadUserAccount(LoadUserAccount event, Emitter<UserAccountState> emit) async {
@@ -110,5 +111,42 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
 
     emit(UserAccountLoaded(userAccount: userAccount));
+  }
+
+  void _onLoadUserAccounts(LoadUserAccounts event, Emitter<UserAccountState> emit) async {
+    emit(UserAccountsLoading());
+
+    //simulate backend request delay
+    // await Future.delayed(const Duration(seconds: 1));
+
+    Response<dynamic> response = await _userAccountService.getUserAccounts(userBox.get("flexusjwt"), {"keyword": event.keyword});
+
+    if (response.isSuccessful) {
+      List<UserAccount> userAccounts = [];
+      if (response.bodyString != "null") {
+        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
+        final UserAccount userAccount = userBox.get("userAccount");
+
+        for (final userData in userAccountsJson) {
+          if (userData['userAccountID'] != userAccount.id) {
+            final loadedUserAccount = UserAccount(
+              id: userData['userAccountID'],
+              username: userData['username'],
+              name: userData['name'],
+              createdAt: DateTime.parse(userData['createdAt']),
+              level: userData['level'],
+              profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
+            );
+            userAccounts.add(loadedUserAccount);
+          }
+        }
+
+        emit(UserAccountsLoaded(userAccounts: userAccounts));
+      } else {
+        emit(UserAccountsLoaded(userAccounts: userAccounts));
+      }
+    } else {
+      emit(UserAccountsError());
+    }
   }
 }

@@ -22,3 +22,11 @@ class PatchUserAccount extends UserAccountEvent {
     this.value2,
   });
 }
+
+class LoadUserAccounts extends UserAccountEvent {
+  final String keyword;
+
+  LoadUserAccounts({
+    this.keyword = "",
+  });
+}

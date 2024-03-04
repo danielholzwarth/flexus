@@ -164,6 +164,12 @@ Insert INTO "user_account" ("username", "name", "password", "created_at", "level
 VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
 
 Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
+VALUES ('hustler21', 'Karl', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
+
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
+VALUES ('gretchen22', 'Greta', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
+
+Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") 
 VALUES ('pellob', 'Pelle', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 5, null);
 
 Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));

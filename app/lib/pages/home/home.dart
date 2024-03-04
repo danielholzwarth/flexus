@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocBuilder<WorkoutBloc, Object?> buildWorkouts() {
+  Widget buildWorkouts() {
     return BlocBuilder(
       bloc: workoutBloc,
       builder: (context, state) {

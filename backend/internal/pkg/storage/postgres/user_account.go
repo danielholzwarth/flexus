@@ -84,3 +84,44 @@ func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
 
 	return nil
 }
+
+func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyword string) ([]types.UserAccountInformation, error) {
+	var userAccounts []types.UserAccountInformation
+
+	query := `
+		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
+		FROM user_account ua
+		LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+		WHERE ua.id != $1
+		AND (ua.username LIKE '%' || $2 || '%' OR ua.name LIKE '%' || $2 || '%')
+		ORDER BY f.is_accepted DESC, f.id IS NOT NULL DESC
+	`
+
+	rows, err := db.pool.Query(query, userAccountID, keyword)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userAccount types.UserAccountInformation
+		err := rows.Scan(
+			&userAccount.UserAccountID,
+			&userAccount.Username,
+			&userAccount.Name,
+			&userAccount.CreatedAt,
+			&userAccount.Level,
+			&userAccount.ProfilePicture,
+		)
+		if err != nil {
+			return nil, err
+		}
+		userAccounts = append(userAccounts, userAccount)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return userAccounts, nil
+}

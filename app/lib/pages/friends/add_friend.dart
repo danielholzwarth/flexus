@@ -1,9 +1,11 @@
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/friends/show_qr.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexus_user_account_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -16,10 +18,12 @@ class AddFriendPage extends StatefulWidget {
 
 class _AddFriendPageState extends State<AddFriendPage> {
   final ScrollController scrollController = ScrollController();
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
   final userBox = Hive.box('userBox');
 
   @override
   void initState() {
+    userAccountBloc.add(LoadUserAccounts());
     super.initState();
   }
 
@@ -35,18 +39,66 @@ class _AddFriendPageState extends State<AddFriendPage> {
         slivers: [
           buildAppBar(context, screenWidth),
           buildSearchBar(screenHeight, screenWidth),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return FlexusUserAccountListTile(
-                  userAccount: UserAccount(id: index, username: "username", name: "name", createdAt: DateTime.now(), level: index),
-                );
-              },
-              childCount: 20,
-            ),
-          ),
+          buildUserAccounts(),
         ],
       ),
+    );
+  }
+
+  Widget buildUserAccounts() {
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountsLoading) {
+          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
+        } else if (state is UserAccountsLoaded) {
+          if (state.userAccounts.isNotEmpty) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return FlexusUserAccountListTile(
+                    userAccount: UserAccount(
+                      id: state.userAccounts[index].id,
+                      username: state.userAccounts[index].username,
+                      name: state.userAccounts[index].name,
+                      createdAt: state.userAccounts[index].createdAt,
+                      level: state.userAccounts[index].level,
+                    ),
+                  );
+                },
+                childCount: state.userAccounts.length,
+              ),
+            );
+          } else {
+            return SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'No users found',
+                  style: TextStyle(fontSize: AppSettings.fontSize),
+                ),
+              ),
+            );
+          }
+        } else if (state is UserAccountsError) {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'Error loading workouts',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(
+                'Error XYZ',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 

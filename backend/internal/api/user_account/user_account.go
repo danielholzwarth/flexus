@@ -19,6 +19,7 @@ type UserAccountStore interface {
 	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID types.UserAccountID) error
 	ValidatePasswordByID(userAccountID types.UserAccountID, password string) error
+	GetUserAccountInformations(userAccountID types.UserAccountID, keyword string) ([]types.UserAccountInformation, error)
 }
 
 type service struct {
@@ -36,6 +37,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	r.Get("/{userAccountID}", s.getUserAccountInformation())
 	r.Patch("/", s.patchUserAccount())
 	r.Delete("/", s.deleteUserAccount())
+	r.Get("/", s.getUserAccountInformations())
 
 	return s
 }
@@ -214,6 +216,53 @@ func (s service) deleteUserAccount() http.HandlerFunc {
 			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
 			println(err.Error())
 			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) getUserAccountInformations() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody map[string]interface{}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			return
+		}
+
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			return
+		}
+
+		if keyword, ok := requestBody["keyword"].(string); ok {
+			fmt.Println("Searching for users with keyword:", keyword)
+
+			userAccountOverviews, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, keyword)
+			if err != nil {
+				http.Error(w, "Failed to create User", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+
+			response, err := json.Marshal(userAccountOverviews)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+
+			w.Write(response)
+
 		}
 
 		w.Header().Set("Content-Type", "application/json")
