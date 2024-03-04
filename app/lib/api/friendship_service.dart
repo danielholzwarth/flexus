@@ -4,10 +4,28 @@ part 'friendship_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/friendships')
 abstract class FriendshipService extends ChopperService {
-  @Post(path: '/{userID}')
+  @Post(path: '/{userAccountID}')
   Future<Response> postFriendship(
     @Header('flexusjwt') String flexusJWTString,
-    @Path('userAccountID') int userID,
+    @Path('userAccountID') int userAccountID,
+  );
+
+  @Get(path: '/{userAccountID}')
+  Future<Response> getFriendship(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('userAccountID') int userAccountID,
+  );
+
+  @Patch(path: '/')
+  Future<Response> patchFriendship(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @Delete(path: '/{userAccountID}')
+  Future<Response> deleteFriendship(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('userAccountID') int userAccountID,
   );
 
   static FriendshipService create() {

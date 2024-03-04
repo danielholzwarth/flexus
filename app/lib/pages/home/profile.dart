@@ -4,6 +4,7 @@ import 'package:app/api/friendship_service.dart';
 import 'package:app/api/report_service.dart';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
+import 'package:app/bloc/friends_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
@@ -34,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final BestLiftsBloc bestLiftsBloc = BestLiftsBloc();
   final TextEditingController reportTextController = TextEditingController();
   final UserAccountBloc userAccountBloc = UserAccountBloc();
+  final FriendshipBloc friendshipBloc = FriendshipBloc();
 
   late bool isProfilePictureChecked;
   late bool isNameChecked;
@@ -45,6 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
     userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID));
+    //No need to load on own profile
+    friendshipBloc.add(LoadFriendship(requestedID: widget.userID));
     isProfilePictureChecked = false;
     isNameChecked = false;
     isUsernameChecked = false;
@@ -237,260 +241,296 @@ class _ProfilePageState extends State<ProfilePage> {
     return AppBar(
       backgroundColor: AppSettings.background,
       actions: [
-        PopupMenuButton<String>(
-          color: AppSettings.background,
-          icon: Icon(
-            Icons.menu,
-            color: AppSettings.font,
-            size: AppSettings.fontSizeTitle,
-          ),
-          itemBuilder: (BuildContext context) {
-            return widget.userID == userAccount.id
-                ? ['Settings', 'Leveling'].map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList()
-                : ['Add Friend', 'Report'].map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
-          },
-          onSelected: (String choice) async {
-            switch (choice) {
-              case "Settings":
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: const SettingsPage(),
-                  ),
-                );
-                break;
+        BlocBuilder(
+          bloc: friendshipBloc,
+          builder: (context, state) {
+            if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipUpdating || state is FriendshipDeleting) {
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+            } else if (state is FriendshipLoaded) {
+              return PopupMenuButton<String>(
+                color: AppSettings.background,
+                icon: Icon(
+                  Icons.menu,
+                  color: AppSettings.font,
+                  size: AppSettings.fontSizeTitle,
+                ),
+                itemBuilder: (BuildContext context) {
+                  if (widget.userID != userAccount.id) {
+                    if (state.friendship != null) {
+                      if (state.friendship!.isAccepted) {
+                        return ['Remove Friend', 'Report'].map((String choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(choice),
+                          );
+                        }).toList();
+                      } else {
+                        return ['Friend requested', 'Report'].map((String choice) {
+                          return PopupMenuItem<String>(
+                            value: choice,
+                            child: Text(choice),
+                          );
+                        }).toList();
+                      }
+                    } else {
+                      return ['Add Friend', 'Report'].map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    }
+                  } else {
+                    return ['Settings', 'Leveling'].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  }
+                },
+                onSelected: (String choice) async {
+                  switch (choice) {
+                    case "Settings":
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: const SettingsPage(),
+                        ),
+                      );
+                      break;
 
-              case "Leveling":
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: const LevelingPage(),
-                  ),
-                );
-                break;
+                    case "Leveling":
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: const LevelingPage(),
+                        ),
+                      );
+                      break;
 
-              case "Add Friend":
-                //Post Friendship
-                FriendshipService friendshiphiphipService = FriendshipService.create();
-                await friendshiphiphipService.postFriendship(userBox.get("flexusjwt"), widget.userID);
-                break;
+                    case "Add Friend":
+                      friendshipBloc.add(CreateFriendship(requestedID: widget.userID));
+                      break;
 
-              case "Friend requested":
-              case "Remove Friend":
-                //Delete Friendship
+                    case "Accept request":
+                      friendshipBloc.add(PatchFriendship(
+                        requestedID: widget.userID,
+                        name: "isAccepted",
+                        value: true,
+                      ));
+                      break;
 
-                break;
+                    case "Friend requested":
+                    case "Remove Friend":
+                      friendshipBloc.add(DeleteFriendship(requestedID: widget.userID));
+                      break;
 
-              case "Report":
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return StatefulBuilder(
-                      builder: (context, setState) {
-                        return AlertDialog(
-                          backgroundColor: AppSettings.background,
-                          title: Text(
-                            "What is the reason of your report?",
-                            style: TextStyle(
-                              color: AppSettings.font,
-                              fontSize: AppSettings.fontSizeTitle,
-                            ),
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Offensive profile picture",
-                                    style: TextStyle(
-                                      color: AppSettings.font,
-                                      fontSize: AppSettings.fontSize,
-                                    ),
-                                  ),
-                                  Checkbox(
-                                    value: isProfilePictureChecked,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isProfilePictureChecked = value!;
-                                      });
-                                    },
-                                    activeColor: AppSettings.primary,
-                                    checkColor: AppSettings.background,
-                                    side: BorderSide(
-                                      color: AppSettings.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Offensive name",
-                                    style: TextStyle(
-                                      color: AppSettings.font,
-                                      fontSize: AppSettings.fontSize,
-                                    ),
-                                  ),
-                                  Checkbox(
-                                    value: isNameChecked,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isNameChecked = value!;
-                                      });
-                                    },
-                                    activeColor: AppSettings.primary,
-                                    side: BorderSide(
-                                      color: AppSettings.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Offensive username",
-                                    style: TextStyle(
-                                      color: AppSettings.font,
-                                      fontSize: AppSettings.fontSize,
-                                    ),
-                                  ),
-                                  Checkbox(
-                                    value: isUsernameChecked,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        isUsernameChecked = value!;
-                                      });
-                                    },
-                                    activeColor: AppSettings.primary,
-                                    side: BorderSide(
-                                      color: AppSettings.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Other",
-                                    style: TextStyle(
-                                      color: AppSettings.font,
-                                      fontSize: AppSettings.fontSize,
-                                    ),
-                                  ),
-                                  Checkbox(
-                                    value: isOtherChecked,
-                                    onChanged: (bool? value) {
-                                      if (value! == false) {
-                                        reportTextController.clear();
-                                      }
-                                      setState(() {
-                                        isOtherChecked = value;
-                                      });
-                                    },
-                                    activeColor: AppSettings.primary,
-                                    side: BorderSide(
-                                      color: AppSettings.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Visibility(
-                                visible: isOtherChecked,
-                                child: TextField(
-                                  controller: reportTextController,
-                                  autofocus: true,
-                                  cursorColor: AppSettings.font,
-                                  decoration: InputDecoration(
-                                    border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                                    focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                    case "Report":
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return AlertDialog(
+                                backgroundColor: AppSettings.background,
+                                title: Text(
+                                  "What is the reason of your report?",
+                                  style: TextStyle(
+                                    color: AppSettings.font,
+                                    fontSize: AppSettings.fontSizeTitle,
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
-                                reportTextController.clear();
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: AppSettings.primary,
-                                  fontSize: AppSettings.fontSize,
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Offensive profile picture",
+                                          style: TextStyle(
+                                            color: AppSettings.font,
+                                            fontSize: AppSettings.fontSize,
+                                          ),
+                                        ),
+                                        Checkbox(
+                                          value: isProfilePictureChecked,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              isProfilePictureChecked = value!;
+                                            });
+                                          },
+                                          activeColor: AppSettings.primary,
+                                          checkColor: AppSettings.background,
+                                          side: BorderSide(
+                                            color: AppSettings.primary,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Offensive name",
+                                          style: TextStyle(
+                                            color: AppSettings.font,
+                                            fontSize: AppSettings.fontSize,
+                                          ),
+                                        ),
+                                        Checkbox(
+                                          value: isNameChecked,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              isNameChecked = value!;
+                                            });
+                                          },
+                                          activeColor: AppSettings.primary,
+                                          side: BorderSide(
+                                            color: AppSettings.primary,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Offensive username",
+                                          style: TextStyle(
+                                            color: AppSettings.font,
+                                            fontSize: AppSettings.fontSize,
+                                          ),
+                                        ),
+                                        Checkbox(
+                                          value: isUsernameChecked,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              isUsernameChecked = value!;
+                                            });
+                                          },
+                                          activeColor: AppSettings.primary,
+                                          side: BorderSide(
+                                            color: AppSettings.primary,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Other",
+                                          style: TextStyle(
+                                            color: AppSettings.font,
+                                            fontSize: AppSettings.fontSize,
+                                          ),
+                                        ),
+                                        Checkbox(
+                                          value: isOtherChecked,
+                                          onChanged: (bool? value) {
+                                            if (value! == false) {
+                                              reportTextController.clear();
+                                            }
+                                            setState(() {
+                                              isOtherChecked = value;
+                                            });
+                                          },
+                                          activeColor: AppSettings.primary,
+                                          side: BorderSide(
+                                            color: AppSettings.primary,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Visibility(
+                                      visible: isOtherChecked,
+                                      child: TextField(
+                                        controller: reportTextController,
+                                        autofocus: true,
+                                        cursorColor: AppSettings.font,
+                                        decoration: InputDecoration(
+                                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                ReportService reportService = ReportService.create();
-
-                                final response = await reportService.postReport(userBox.get("flexusjwt"), {
-                                  "ReportedID": widget.userID,
-                                  "isOffensiveProfilePicture": isProfilePictureChecked,
-                                  "isOffensiveName": isNameChecked,
-                                  "isOffensiveUsername": isUsernameChecked,
-                                  "isOther": isOtherChecked,
-                                  "message": reportTextController.text,
-                                });
-
-                                if (response.isSuccessful) {
-                                  isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
-                                  reportTextController.clear();
-                                } else {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Center(
-                                        child: Text(response.error.toString()),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                      reportTextController.clear();
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        color: AppSettings.primary,
+                                        fontSize: AppSettings.fontSize,
                                       ),
                                     ),
-                                  );
-                                }
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      ReportService reportService = ReportService.create();
 
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(
-                                'Report',
-                                style: TextStyle(
-                                  color: AppSettings.primary,
-                                  fontSize: AppSettings.fontSize,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
-                break;
-              default:
-                debugPrint("$choice not implemented yet");
+                                      final response = await reportService.postReport(userBox.get("flexusjwt"), {
+                                        "ReportedID": widget.userID,
+                                        "isOffensiveProfilePicture": isProfilePictureChecked,
+                                        "isOffensiveName": isNameChecked,
+                                        "isOffensiveUsername": isUsernameChecked,
+                                        "isOther": isOtherChecked,
+                                        "message": reportTextController.text,
+                                      });
+
+                                      if (response.isSuccessful) {
+                                        isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
+                                        reportTextController.clear();
+                                      } else {
+                                        ScaffoldMessenger.of(context).clearSnackBars();
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Center(
+                                              child: Text(response.error.toString()),
+                                            ),
+                                          ),
+                                        );
+                                      }
+
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      'Report',
+                                      style: TextStyle(
+                                        color: AppSettings.primary,
+                                        fontSize: AppSettings.fontSize,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      );
+                      break;
+                    default:
+                      debugPrint("$choice not implemented yet");
+                  }
+                },
+              );
+            } else {
+              return Text("error"); // Return an empty container or handle other states
             }
           },
         ),
