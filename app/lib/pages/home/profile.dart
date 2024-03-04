@@ -161,10 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               radius: screenWidth * 0.15,
                               backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                             )
-                          : CircleAvatar(
-                              radius: screenWidth * 0.15,
-                              backgroundColor: const Color.fromARGB(50, 110, 82, 82),
-                            ),
+                          : null,
                     ),
                   ),
                 ),

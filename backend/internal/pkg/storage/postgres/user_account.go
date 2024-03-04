@@ -97,7 +97,8 @@ func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyw
 			SELECT 1
 			FROM friendship f
 			WHERE (ua.id = f.requestor_id OR ua.id = f.requested_id)))
-		AND (LOWER(ua.username) LIKE '%' || LOWER($3) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($3) || '%');
+		AND (LOWER(ua.username) LIKE '%' || LOWER($3) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($3) || '%')
+		ORDER BY f.is_accepted ASC, f.created_at DESC;
 	`
 
 	rows, err := db.pool.Query(query, userAccountID, isFriends, keyword)

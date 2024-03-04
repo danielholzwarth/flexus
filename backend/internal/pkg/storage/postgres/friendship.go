@@ -27,8 +27,8 @@ func (db *DB) CreateFriendship(friendship types.Friendship) error {
 	}
 
 	query = `
-        INSERT INTO friendship (requestor_id, requested_id, is_accepted)
-        VALUES ($1, $2, $3);
+        INSERT INTO friendship (created_at, requestor_id, requested_id, is_accepted)
+        VALUES (NOW(), $1, $2, $3);
 	`
 
 	_, err = db.pool.Exec(query, friendship.RequestorID, friendship.RequestedID, friendship.IsAccepted)

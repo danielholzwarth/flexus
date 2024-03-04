@@ -31,7 +31,7 @@ CREATE TABLE user_account (
     username VARCHAR(20) NOT NULL,
     name VARCHAR(20) NOT NULL,
     password VARCHAR NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL,
     level INTEGER NOT NULL,
     profile_picture BYTEA
 );
@@ -68,6 +68,7 @@ CREATE TABLE user_account_gym (
 
 CREATE TABLE friendship (
     id BIGSERIAL NOT NULL PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL,
     requestor_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     requested_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     is_accepted BOOLEAN NOT NULL

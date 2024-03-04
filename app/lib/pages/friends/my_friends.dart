@@ -96,7 +96,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
             return SliverFillRemaining(
               child: Center(
                 child: Text(
-                  'No users found',
+                  'No friends found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
