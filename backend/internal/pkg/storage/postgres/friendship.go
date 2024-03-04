@@ -42,11 +42,9 @@ func (db *DB) CreateFriendship(friendship types.Friendship) error {
 
 func (db *DB) GetFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID) (*types.Friendship, error) {
 	friendship := &types.Friendship{}
-	friendship.RequestorID = requestorID
-	friendship.RequestedID = requestedID
 
 	query := `
-		SELECT id, is_accepted
+		SELECT id, requestor_id, requested_id, is_accepted
 		FROM friendship
 		WHERE (requestor_id = $1 AND requested_id = $2)
 		OR (requestor_id = $2 AND requested_id = $1);
@@ -54,6 +52,8 @@ func (db *DB) GetFriendship(requestorID types.UserAccountID, requestedID types.U
 
 	err := db.pool.QueryRow(query, requestorID, requestedID).Scan(
 		&friendship.ID,
+		&friendship.RequestorID,
+		&friendship.RequestedID,
 		&friendship.IsAccepted)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
