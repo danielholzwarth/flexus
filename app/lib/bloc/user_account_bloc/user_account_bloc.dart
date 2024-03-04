@@ -119,7 +119,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     //simulate backend request delay
     // await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response = await _userAccountService.getUserAccounts(userBox.get("flexusjwt"), {"keyword": event.keyword});
+    Response<dynamic> response =
+        await _userAccountService.getUserAccounts(userBox.get("flexusjwt"), {"keyword": event.keyword, "isFriends": event.isFriends});
 
     if (response.isSuccessful) {
       List<UserAccount> userAccounts = [];

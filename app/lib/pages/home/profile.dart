@@ -7,6 +7,7 @@ import 'package:app/bloc/friends_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/friends/my_friends.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
 import 'package:app/pages/home/settings.dart';
@@ -46,7 +47,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
     userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID));
-    //No need to load on own profile
     friendshipBloc.add(LoadFriendship(requestedID: widget.userID));
     isProfilePictureChecked = false;
     isNameChecked = false;
@@ -265,22 +265,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   if (widget.userID != userAccount.id) {
                     if (state.friendship != null) {
                       if (state.friendship!.isAccepted) {
-                        return ['Remove Friend', 'Report'].map((String choice) {
+                        return ['Remove Friend', 'Friends', 'Report'].map((String choice) {
                           return PopupMenuItem<String>(
                             value: choice,
                             child: Text(choice),
                           );
                         }).toList();
                       } else {
-                        return ['Friend requested', 'Report'].map((String choice) {
-                          return PopupMenuItem<String>(
-                            value: choice,
-                            child: Text(choice),
-                          );
-                        }).toList();
+                        if (state.friendship!.requestorID == userAccount.id) {
+                          return ['Friendrequest sent', 'Friends', 'Report'].map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        } else {
+                          return ['Accept friendrequest', 'Friends', 'Report'].map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        }
                       }
                     } else {
-                      return ['Add Friend', 'Report'].map((String choice) {
+                      return ['Add Friend', 'Friends', 'Report'].map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
                           child: Text(choice),
@@ -288,7 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       }).toList();
                     }
                   } else {
-                    return ['Settings', 'Leveling'].map((String choice) {
+                    return ['Settings', 'Friends', 'Leveling'].map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
                         child: Text(choice),
@@ -322,7 +331,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       friendshipBloc.add(CreateFriendship(requestedID: widget.userID));
                       break;
 
-                    case "Accept request":
+                    case "Accept friendrequest":
                       friendshipBloc.add(PatchFriendship(
                         requestedID: widget.userID,
                         name: "isAccepted",
@@ -330,7 +339,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       ));
                       break;
 
-                    case "Friend requested":
+                    case "Friends":
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: const MyFriendsPage(),
+                        ),
+                      );
+                      break;
+
+                    case "Friendrequest sent":
                     case "Remove Friend":
                       friendshipBloc.add(DeleteFriendship(requestedID: widget.userID));
                       break;
@@ -537,7 +556,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               );
             } else {
-              return Text("error"); // Return an empty container or handle other states
+              return const Text("error"); // Return an empty container or handle other states
             }
           },
         ),

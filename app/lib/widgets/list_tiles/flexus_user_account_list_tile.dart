@@ -50,7 +50,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
             if (state.friendship!.isAccepted) {
               return TextButton(
                 style: ButtonStyle(
-                  shadowColor: MaterialStateProperty.all(AppSettings.error),
+                  overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       side: BorderSide(
@@ -73,7 +73,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               if (state.friendship!.requestedID == widget.userAccount.id) {
                 return TextButton(
                   style: ButtonStyle(
-                    shadowColor: MaterialStateProperty.all(AppSettings.error),
+                    overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         side: BorderSide(
@@ -95,7 +95,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               } else {
                 return TextButton(
                   style: ButtonStyle(
-                    shadowColor: MaterialStateProperty.all(AppSettings.error),
+                    overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         side: BorderSide(
@@ -119,7 +119,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
           } else {
             return TextButton(
               style: ButtonStyle(
-                shadowColor: MaterialStateProperty.all(AppSettings.error),
+                overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     side: BorderSide(

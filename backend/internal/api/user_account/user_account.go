@@ -19,7 +19,7 @@ type UserAccountStore interface {
 	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID types.UserAccountID) error
 	ValidatePasswordByID(userAccountID types.UserAccountID, password string) error
-	GetUserAccountInformations(userAccountID types.UserAccountID, keyword string) ([]types.UserAccountInformation, error)
+	GetUserAccountInformations(userAccountID types.UserAccountID, keyword string, isFriends bool) ([]types.UserAccountInformation, error)
 }
 
 type service struct {
@@ -244,10 +244,12 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 			return
 		}
 
+		isFriends := requestBody["isFriends"].(bool)
+
 		if keyword, ok := requestBody["keyword"].(string); ok {
 			fmt.Println("Searching for users with keyword:", keyword)
 
-			userAccountOverviews, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, keyword)
+			userAccountOverviews, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, keyword, isFriends)
 			if err != nil {
 				http.Error(w, "Failed to create User", http.StatusInternalServerError)
 				println(err.Error())

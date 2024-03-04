@@ -85,19 +85,22 @@ func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
 	return nil
 }
 
-func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyword string) ([]types.UserAccountInformation, error) {
+func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyword string, isFriends bool) ([]types.UserAccountInformation, error) {
 	var userAccounts []types.UserAccountInformation
 
 	query := `
 		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
 		FROM user_account ua
 		LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
-		WHERE ua.id != $1
-		AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%')
-		ORDER BY f.id IS NOT NULL DESC, f.is_accepted DESC;
+		WHERE ua.id != $1 AND f.is_accepted = $2 
+		OR ($2 = FALSE AND NOT EXISTS (
+			SELECT 1
+			FROM friendship f
+			WHERE (ua.id = f.requestor_id OR ua.id = f.requested_id)))
+		AND (LOWER(ua.username) LIKE '%' || LOWER($3) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($3) || '%');
 	`
 
-	rows, err := db.pool.Query(query, userAccountID, keyword)
+	rows, err := db.pool.Query(query, userAccountID, isFriends, keyword)
 	if err != nil {
 		return nil, err
 	}
