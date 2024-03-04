@@ -71,7 +71,7 @@ class _LocationsPageState extends State<LocationsPage> {
                         type: PageTransitionType.fade,
                         child: ProfilePage(userID: userAccount.id),
                       ),
-                    );
+                    ).then((value) => setState(() {}));
                   },
                   child: CircleAvatar(
                     radius: AppSettings.fontSize,

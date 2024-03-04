@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/friendship_service.dart';
 import 'package:app/api/report_service.dart';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
@@ -127,12 +126,20 @@ class _ProfilePageState extends State<ProfilePage> {
           } else if (state is UserAccountLoaded) {
             return Stack(
               children: [
-                const SizedBox(
-                  child: Image(
-                    fit: BoxFit.fill,
-                    image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-                  ),
-                ),
+                state.userAccount.level < 10
+                    ? SizedBox(
+                        child: Image(
+                          color: AppSettings.primaryShade80,
+                          fit: BoxFit.fill,
+                          image: const NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
+                        ),
+                      )
+                    : const SizedBox(
+                        child: Image(
+                          fit: BoxFit.fill,
+                          image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
+                        ),
+                      ),
                 Positioned(
                   left: screenWidth * 0.25,
                   top: screenWidth * 0.12,
@@ -144,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         PageTransition(
                           type: PageTransitionType.fade,
                           child: ProfilePicturePage(
-                            userID: widget.userID,
+                            userID: state.userAccount.id,
                             profilePicture: state.userAccount.profilePicture,
                           ),
                         ),
@@ -156,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             )
                           : CircleAvatar(
                               radius: screenWidth * 0.15,
-                              backgroundColor: Colors.transparent,
+                              backgroundColor: const Color.fromARGB(50, 110, 82, 82),
                             ),
                     ),
                   ),
