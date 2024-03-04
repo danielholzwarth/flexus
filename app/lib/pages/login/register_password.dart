@@ -6,9 +6,8 @@ import 'package:app/api/login_user_account_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
-import 'package:app/widgets/flexus_button.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             ),
             SizedBox(height: screenHeight * 0.235),
             _buildCreateAccountButton(context, loginUserAccountService),
-            FlexusBottomSizedBox(screenHeight: screenHeight),
+            SizedBox(height: screenHeight * 0.12),
           ],
         ),
       ),

@@ -1,8 +1,7 @@
 import 'package:app/pages/login/register_password.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_bottom_sized_box.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
-import 'package:app/widgets/flexus_button.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +49,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
             ),
             SizedBox(height: screenHeight * 0.345),
             _buildContinueButton(context),
-            FlexusBottomSizedBox(screenHeight: screenHeight)
+            SizedBox(height: screenHeight * 0.12),
           ],
         ),
       ),

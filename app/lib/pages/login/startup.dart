@@ -1,8 +1,7 @@
 import 'package:app/pages/login/login.dart';
 import 'package:app/pages/login/register_username.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_bottom_sized_box.dart';
-import 'package:app/widgets/flexus_button.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -61,7 +60,7 @@ class _StartUpPageState extends State<StartUpPage> {
             _buildSignUpButton(context),
             SizedBox(height: screenHeight * 0.03),
             _buildLoginButton(context),
-            FlexusBottomSizedBox(screenHeight: screenHeight)
+            SizedBox(height: screenHeight * 0.12),
           ],
         ),
       ),

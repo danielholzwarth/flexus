@@ -4,7 +4,7 @@ import 'package:app/api/login_user_account_service.dart';
 import 'package:app/pages/login/register_name.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
-import 'package:app/widgets/flexus_button.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';

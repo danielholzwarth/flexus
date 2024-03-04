@@ -4,7 +4,7 @@ import 'package:app/pages/friends/add_location.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
-import 'package:app/widgets/flexus_floating_action_button.dart';
+import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

@@ -4,7 +4,7 @@ import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
-import 'package:app/widgets/flexus_workout_list_tile.dart';
+import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';

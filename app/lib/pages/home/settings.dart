@@ -6,7 +6,7 @@ import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/login/startup.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_settings_list_tile.dart';
+import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
