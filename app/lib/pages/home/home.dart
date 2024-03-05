@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    workoutBloc.add(LoadWorkout());
+    workoutBloc.add(GetWorkout());
     UserAccount userAccount = userBox.get("userAccount");
     userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
   }
@@ -152,14 +152,14 @@ class _HomePageState extends State<HomePage> {
       title: FlexusSearchTextField(
         hintText: "Search...",
         onChanged: (String newValue) {
-          workoutBloc.add(SearchWorkout(keyWord: searchController.text));
+          workoutBloc.add(GetSearchWorkout(keyWord: searchController.text));
         },
         textController: searchController,
         suffixOnPressed: () {
           setState(() {
             searchController.text = "";
             isSearch = false;
-            workoutBloc.add(LoadWorkout());
+            workoutBloc.add(GetWorkout());
           });
         },
       ),
@@ -256,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                 type: PageTransitionType.fade,
                 child: const ArchivePage(),
               ),
-            ).then((value) => workoutBloc.add(LoadWorkout()));
+            ).then((value) => workoutBloc.add(GetWorkout()));
           },
         ),
         IconButton(
@@ -283,7 +283,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               isArchiveVisible = false;
               isSearch = true;
-              workoutBloc.add(SearchWorkout());
+              workoutBloc.add(GetSearchWorkout());
             });
           },
         ),

@@ -1,9 +1,7 @@
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
-import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class FlexusGymOverviewListTile extends StatefulWidget {
   final GymOverview gymOverview;
@@ -26,17 +24,18 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        debugPrint("asd");
+      },
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
       leading: buildLeading(context),
       title: Text(widget.gymOverview.gym.name),
       trailing: GestureDetector(
-          onTap: () {
-            debugPrint("asd");
-          },
-          child: Container(
-            child: buildTrailing(context),
-          )),
+        child: Container(
+          child: buildTrailing(context),
+        ),
+      ),
       subtitle: buildSubTitle(),
     );
   }
@@ -54,7 +53,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       switch (userAccounts.length) {
         case 1:
           return SizedBox(
-            width: 100,
+            width: 125,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -65,11 +64,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
         case 2:
           return SizedBox(
-            width: 100,
+            width: 125,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned(right: 20, child: buildCorrectUserPicture(userAccounts[0], 0)),
+                Positioned(right: 25, child: buildCorrectUserPicture(userAccounts[0], 0)),
                 Positioned(right: 0, child: buildCorrectUserPicture(userAccounts[1], 1)),
               ],
             ),
@@ -77,12 +76,12 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
         case 3:
           return SizedBox(
-            width: 100,
+            width: 125,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned(right: 40, child: buildCorrectUserPicture(userAccounts[0], 0)),
-                Positioned(right: 20, child: buildCorrectUserPicture(userAccounts[1], 1)),
+                Positioned(right: 50, child: buildCorrectUserPicture(userAccounts[0], 0)),
+                Positioned(right: 25, child: buildCorrectUserPicture(userAccounts[1], 1)),
                 Positioned(right: 0, child: buildCorrectUserPicture(userAccounts[2], 2)),
               ],
             ),
@@ -90,13 +89,13 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
         case 4:
           return SizedBox(
-            width: 100,
+            width: 125,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned(right: 60, child: buildCorrectUserPicture(userAccounts[0], 0)),
-                Positioned(right: 40, child: buildCorrectUserPicture(userAccounts[1], 1)),
-                Positioned(right: 20, child: buildCorrectUserPicture(userAccounts[2], 2)),
+                Positioned(right: 75, child: buildCorrectUserPicture(userAccounts[0], 0)),
+                Positioned(right: 50, child: buildCorrectUserPicture(userAccounts[1], 1)),
+                Positioned(right: 25, child: buildCorrectUserPicture(userAccounts[2], 2)),
                 Positioned(right: 0, child: buildCorrectUserPicture(userAccounts[3], 3)),
               ],
             ),
@@ -104,17 +103,17 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
         case > 4:
           return SizedBox(
-            width: 100,
+            width: 125,
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Positioned(right: 60, child: buildCorrectUserPicture(userAccounts[0], 0)),
-                Positioned(right: 40, child: buildCorrectUserPicture(userAccounts[1], 1)),
-                Positioned(right: 20, child: buildCorrectUserPicture(userAccounts[2], 2)),
+                Positioned(right: 75, child: buildCorrectUserPicture(userAccounts[0], 0)),
+                Positioned(right: 50, child: buildCorrectUserPicture(userAccounts[1], 1)),
+                Positioned(right: 25, child: buildCorrectUserPicture(userAccounts[2], 2)),
                 Positioned(
                   right: 0,
                   child: CircleAvatar(
-                    radius: 20,
+                    radius: AppSettings.fontSizeTitle,
                     backgroundColor: Colors.grey.shade100,
                     child: Text("+${userAccounts.length - 3}"),
                   ),
@@ -127,48 +126,27 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
           return Text("error ${userAccounts.length}");
       }
     } else {
-      return const SizedBox(width: 100);
+      return const SizedBox(width: 120);
     }
   }
 
   Widget buildCorrectUserPicture(UserAccount userAccount, int element) {
     return userAccount.profilePicture != null
-        ? GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.fade,
-                  child: ProfilePage(userID: userAccount.id),
-                ),
-              );
-            },
-            child: CircleAvatar(
-              radius: AppSettings.fontSizeTitle,
-              backgroundColor: AppSettings.primaryShade48,
-              backgroundImage: MemoryImage(userAccount.profilePicture!),
-            ),
+        ? CircleAvatar(
+            radius: AppSettings.fontSizeTitle,
+            backgroundColor: AppSettings.primaryShade48,
+            backgroundImage: MemoryImage(userAccount.profilePicture!),
           )
         : Container(
-            width: 40,
+            padding: EdgeInsets.all(AppSettings.fontSizeTitle / 2),
+            width: AppSettings.fontSizeTitle * 2,
             decoration: BoxDecoration(
               color: getCorrectShade(element),
               shape: BoxShape.circle,
             ),
-            child: IconButton(
-              icon: Icon(
-                Icons.person,
-                size: AppSettings.fontSizeTitle,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: ProfilePage(userID: userAccount.id),
-                  ),
-                );
-              },
+            child: Icon(
+              Icons.person,
+              size: AppSettings.fontSizeTitle,
             ),
           );
   }

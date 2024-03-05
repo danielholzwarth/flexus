@@ -27,7 +27,7 @@ class _ArchivePageState extends State<ArchivePage> {
   @override
   void initState() {
     super.initState();
-    workoutBloc.add(SearchWorkout(isArchive: true));
+    workoutBloc.add(GetSearchWorkout(isArchive: true));
   }
 
   @override
@@ -111,7 +111,7 @@ class _ArchivePageState extends State<ArchivePage> {
       title: FlexusSearchTextField(
         hintText: "Search...",
         onChanged: (String newValue) {
-          workoutBloc.add(SearchWorkout(
+          workoutBloc.add(GetSearchWorkout(
             isArchive: true,
             keyWord: searchController.text,
           ));
@@ -121,7 +121,7 @@ class _ArchivePageState extends State<ArchivePage> {
           setState(() {
             searchController.text = "";
             isSearch = false;
-            workoutBloc.add(SearchWorkout(isArchive: true));
+            workoutBloc.add(GetSearchWorkout(isArchive: true));
           });
         },
       ),
@@ -143,7 +143,7 @@ class _ArchivePageState extends State<ArchivePage> {
           onPressed: () {
             setState(() {
               isSearch = true;
-              workoutBloc.add(SearchWorkout(isArchive: true));
+              workoutBloc.add(GetSearchWorkout(isArchive: true));
             });
           },
         ),

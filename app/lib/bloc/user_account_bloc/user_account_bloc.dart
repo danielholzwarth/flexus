@@ -15,12 +15,12 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   final userBox = Hive.box('userBox');
 
   UserAccountBloc() : super(UserAccountInitial()) {
-    on<GetUserAccount>(_onLoadUserAccount);
+    on<GetUserAccount>(_onGetUserAccount);
     on<PatchUserAccount>(_onPatchUserAccount);
-    on<GetUserAccounts>(_onLoadUserAccounts);
+    on<GetUserAccounts>(_onGetUserAccounts);
   }
 
-  void _onLoadUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
+  void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountLoading());
 
     //simulate backend request delay
@@ -113,7 +113,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountLoaded(userAccount: userAccount));
   }
 
-  void _onLoadUserAccounts(GetUserAccounts event, Emitter<UserAccountState> emit) async {
+  void _onGetUserAccounts(GetUserAccounts event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
     //simulate backend request delay

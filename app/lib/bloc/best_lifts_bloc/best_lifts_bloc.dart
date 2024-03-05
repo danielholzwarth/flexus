@@ -14,10 +14,10 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   final userBox = Hive.box('userBox');
 
   BestLiftsBloc() : super(BestLiftsInitial()) {
-    on<GetBestLifts>(_onLoadBestLifts);
+    on<GetBestLifts>(_onGetBestLifts);
   }
 
-  void _onLoadBestLifts(GetBestLifts event, Emitter<BestLiftsState> emit) async {
+  void _onGetBestLifts(GetBestLifts event, Emitter<BestLiftsState> emit) async {
     emit(BestLiftsLoading());
 
     //simulate backend request delay

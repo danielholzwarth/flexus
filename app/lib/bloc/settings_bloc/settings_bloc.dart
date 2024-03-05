@@ -20,11 +20,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final userBox = Hive.box('userBox');
 
   SettingsBloc() : super(SettingsInitial()) {
-    on<GetSettings>(_onLoadSettings);
+    on<GetSettings>(_onGetSettings);
     on<PatchSettings>(_onPatchSettings);
   }
 
-  void _onLoadSettings(GetSettings event, Emitter<SettingsState> emit) async {
+  void _onGetSettings(GetSettings event, Emitter<SettingsState> emit) async {
     emit(SettingsLoading());
 
     //simulate backend request delay

@@ -63,26 +63,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 buildPullUserList(userSettings),
                 buildNotifyEveryone(userSettings),
                 buildNotifyUserList(userSettings),
-                // _buildSection("Data Storage"),
-                // const SliverToBoxAdapter(
-                //   child: FlexusSettingsListTile(
-                //     title: "Save all data on Server",
-                //     subtitle: "Should we store all your data on the server so you have a backup?",
-                //     value: true,
-                //     isBool: true,
-                //   ),
-                // ),
-                // const SliverToBoxAdapter(
-                //   child: Visibility(
-                //     visible: true,
-                //     child: FlexusSettingsListTile(
-                //       title: "Store only necessary data",
-                //       subtitle: "For some features to work (friendship) we need to save some data on the server.",
-                //       value: false,
-                //       isBool: true,
-                //     ),
-                //   ),
-                // ),
                 buildLogOut(context),
                 buildDeleteAccount(context),
                 SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),

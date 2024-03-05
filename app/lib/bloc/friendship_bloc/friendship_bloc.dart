@@ -16,13 +16,13 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   final userBox = Hive.box('userBox');
 
   FriendshipBloc() : super(FriendshipInitial()) {
-    on<PostFriendship>(_onCreateFriendship);
-    on<GetFriendship>(_onLoadFriendship);
+    on<PostFriendship>(_onPostFriendship);
+    on<GetFriendship>(_onGetFriendship);
     on<PatchFriendship>(_onPatchFriendship);
     on<DeleteFriendship>(_onDeleteFriendship);
   }
 
-  void _onCreateFriendship(PostFriendship event, Emitter<FriendshipState> emit) async {
+  void _onPostFriendship(PostFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipCreating());
 
     //simulate backend request delay
@@ -46,7 +46,7 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
     }
   }
 
-  void _onLoadFriendship(GetFriendship event, Emitter<FriendshipState> emit) async {
+  void _onGetFriendship(GetFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipLoading());
 
     //simulate backend request delay

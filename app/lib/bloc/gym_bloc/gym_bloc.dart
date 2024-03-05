@@ -107,7 +107,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
               name: accountJson['name'],
               createdAt: DateTime.parse(accountJson['createdAt']),
               level: accountJson['level'],
-              profilePicture: accountJson['profilePicture'],
+              profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
             );
           }));
         }

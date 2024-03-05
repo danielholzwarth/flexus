@@ -3,13 +3,13 @@ part of 'workout_bloc.dart';
 @immutable
 abstract class WorkoutEvent {}
 
-class LoadWorkout extends WorkoutEvent {}
+class GetWorkout extends WorkoutEvent {}
 
-class SearchWorkout extends WorkoutEvent {
+class GetSearchWorkout extends WorkoutEvent {
   final bool isArchive;
   final String keyWord;
 
-  SearchWorkout({
+  GetSearchWorkout({
     this.isArchive = false,
     this.keyWord = "",
   });

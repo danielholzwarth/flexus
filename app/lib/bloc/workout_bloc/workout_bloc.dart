@@ -16,13 +16,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   final userBox = Hive.box('userBox');
 
   WorkoutBloc() : super(WorkoutInitial()) {
-    on<LoadWorkout>(_onLoadWorkout);
-    on<SearchWorkout>(_onSearchWorkout);
+    on<GetWorkout>(_onGetWorkout);
+    on<GetSearchWorkout>(_onGetSearchWorkout);
     on<PatchWorkout>(_onPatchWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
   }
 
-  void _onLoadWorkout(LoadWorkout event, Emitter<WorkoutState> emit) async {
+  void _onGetWorkout(GetWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutLoading());
 
     //simulate backend request delay
@@ -60,7 +60,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     }
   }
 
-  void _onSearchWorkout(SearchWorkout event, Emitter<WorkoutState> emit) async {
+  void _onGetSearchWorkout(GetSearchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutSearching());
 
     //simulate backend request delay
