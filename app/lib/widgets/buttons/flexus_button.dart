@@ -17,12 +17,9 @@ class FlexusButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return SizedBox(
-      width: screenWidth * 0.7,
-      height: screenHeight * 0.08,
+      width: AppSettings.screenWidth * 0.7,
+      height: AppSettings.screenHeight * 0.08,
       child: ElevatedButton(
         onPressed: () => function(),
         style: ButtonStyle(

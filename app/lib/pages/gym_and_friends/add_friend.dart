@@ -29,16 +29,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: [
-          buildAppBar(context, screenWidth),
-          buildSearchBar(screenHeight, screenWidth),
+          buildAppBar(context),
+          buildSearchBar(),
           buildUserAccounts(),
         ],
       ),
@@ -103,12 +100,12 @@ class _AddFriendPageState extends State<AddFriendPage> {
     );
   }
 
-  SliverAppBar buildSearchBar(double screenHeight, double screenWidth) {
+  SliverAppBar buildSearchBar() {
     return SliverAppBar(
       surfaceTintColor: AppSettings.background,
       title: Container(
-        height: screenHeight * 0.06,
-        width: screenWidth * 0.8,
+        height: AppSettings.screenHeight * 0.06,
+        width: AppSettings.screenWidth * 0.8,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           color: AppSettings.primaryShade48,
@@ -131,11 +128,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
       automaticallyImplyLeading: false,
       backgroundColor: AppSettings.background,
       foregroundColor: AppSettings.font,
-      toolbarHeight: screenHeight * 0.07,
+      toolbarHeight: AppSettings.screenHeight * 0.07,
     );
   }
 
-  FlexusSliverAppBar buildAppBar(BuildContext context, double screenWidth) {
+  FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
       isPinned: true,
       title: Text(

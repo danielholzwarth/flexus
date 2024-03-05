@@ -5,6 +5,9 @@ class AppSettings {
   static var isDarkMode = false;
   static var language = "DE";
 
+  static double screenWidth = 0.0;
+  static double screenHeight = 0.0;
+
   //Colors
   static Color get primary => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF0074B6);
   static Color get primaryShade80 => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0x500074B6);

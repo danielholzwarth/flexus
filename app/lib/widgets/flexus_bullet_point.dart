@@ -3,20 +3,18 @@ import 'package:flutter/material.dart';
 
 class FlexusBulletPoint extends StatelessWidget {
   final String text;
-  final double screenWidth;
   final bool condition;
 
   const FlexusBulletPoint({
     super.key,
     required this.text,
-    required this.screenWidth,
     required this.condition,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: screenWidth * 0.7,
+      width: AppSettings.screenWidth * 0.7,
       child: Row(
         children: [
           Icon(
@@ -24,7 +22,7 @@ class FlexusBulletPoint extends StatelessWidget {
             size: 14,
             color: condition ? const Color.fromARGB(255, 23, 117, 26) : const Color.fromARGB(255, 128, 13, 5),
           ),
-          SizedBox(width: screenWidth * 0.02),
+          SizedBox(width: AppSettings.screenWidth * 0.02),
           Text(
             text,
             style: TextStyle(

@@ -31,7 +31,6 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
   @override
   Widget build(BuildContext context) {
     final UserAccount userAccount = userBox.get("userAccount");
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
@@ -110,7 +109,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                       ? Image.memory(state.userAccount.profilePicture!)
                       : Icon(
                           Icons.hide_image_outlined,
-                          size: screenWidth * 0.7,
+                          size: AppSettings.screenWidth * 0.7,
                         ),
                 ),
               ),
@@ -127,7 +126,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                       ? Image.memory(widget.profilePicture!)
                       : Icon(
                           Icons.hide_image_outlined,
-                          size: screenWidth * 0.7,
+                          size: AppSettings.screenWidth * 0.7,
                         ),
                 ),
               ),

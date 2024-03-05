@@ -8,6 +8,7 @@ import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/login/startup.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -25,6 +26,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppSettings.screenHeight = MediaQuery.of(context).size.height;
+    AppSettings.screenWidth = MediaQuery.of(context).size.width;
+
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {

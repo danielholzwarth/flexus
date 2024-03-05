@@ -22,8 +22,6 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -32,13 +30,13 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.15),
-            _buildTitleRow(screenWidth, context),
-            SizedBox(height: screenHeight * 0.02),
-            _buildDescription(screenWidth),
-            SizedBox(height: screenHeight * 0.02),
-            _buildBulletPoints(screenWidth),
-            SizedBox(height: screenHeight * 0.07),
+            SizedBox(height: AppSettings.screenHeight * 0.15),
+            _buildTitleRow(context),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
+            _buildDescription(),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
+            _buildBulletPoints(),
+            SizedBox(height: AppSettings.screenHeight * 0.07),
             FlexusTextField(
               hintText: "Username",
               textController: usernameController,
@@ -46,7 +44,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.3),
+            SizedBox(height: AppSettings.screenHeight * 0.3),
             _buildContinueButton(context, loginUserAccountService),
           ],
         ),
@@ -116,9 +114,9 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     );
   }
 
-  SizedBox _buildDescription(double screenWidth) {
+  SizedBox _buildDescription() {
     return SizedBox(
-      width: screenWidth * 0.7,
+      width: AppSettings.screenWidth * 0.7,
       child: Text(
         "A username can only exist once. It is used to identify you.",
         style: TextStyle(
@@ -131,11 +129,11 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     );
   }
 
-  Row _buildTitleRow(double screenWidth, BuildContext context) {
+  Row _buildTitleRow(BuildContext context) {
     return Row(
       children: [
         SizedBox(
-          width: screenWidth * 0.15,
+          width: AppSettings.screenWidth * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
@@ -144,7 +142,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           ),
         ),
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.7,
+          width: AppSettings.screenWidth * 0.7,
           child: Text(
             "Please enter your username.",
             style: TextStyle(
@@ -159,17 +157,15 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     );
   }
 
-  Column _buildBulletPoints(double screenWidth) {
+  Column _buildBulletPoints() {
     return Column(
       children: [
         FlexusBulletPoint(
           text: "At least 6 characters",
-          screenWidth: screenWidth,
           condition: usernameController.text.length >= 6,
         ),
         FlexusBulletPoint(
           text: "Maximum 20 characters",
-          screenWidth: screenWidth,
           condition: usernameController.text.length <= 20,
         ),
       ],

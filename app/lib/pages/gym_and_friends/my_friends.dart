@@ -30,22 +30,20 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: [
-          _buildFlexusSliverAppBar(context, screenWidth),
+          _buildFlexusSliverAppBar(context),
           buildUserAccounts(),
         ],
       ),
     );
   }
 
-  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context, double screenWidth) {
-    return isSearch ? buildSearchBar(context) : buildAppBar(context, screenWidth);
+  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
+    return isSearch ? buildSearchBar(context) : buildAppBar(context);
   }
 
   FlexusSliverAppBar buildSearchBar(BuildContext context) {
@@ -125,7 +123,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
     );
   }
 
-  FlexusSliverAppBar buildAppBar(BuildContext context, double screenWidth) {
+  FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
       isPinned: true,
       title: Text(

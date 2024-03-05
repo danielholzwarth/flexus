@@ -56,8 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
@@ -67,12 +65,12 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Center(
           child: Column(
             children: [
-              buildPictures(screenWidth, context, userAccount),
-              SizedBox(height: screenHeight * 0.02),
+              buildPictures(context, userAccount),
+              SizedBox(height: AppSettings.screenHeight * 0.02),
               buildNames(userAccount),
-              SizedBox(height: screenHeight * 0.1),
-              buildBestLift(screenHeight, screenWidth),
-              SizedBox(height: screenHeight * 0.2)
+              SizedBox(height: AppSettings.screenHeight * 0.1),
+              buildBestLift(),
+              SizedBox(height: AppSettings.screenHeight * 0.2)
             ],
           ),
         ),
@@ -114,10 +112,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  SizedBox buildPictures(double screenWidth, BuildContext context, UserAccount userAccount) {
+  SizedBox buildPictures(BuildContext context, UserAccount userAccount) {
     return SizedBox(
-      width: screenWidth * 0.8,
-      height: screenWidth * 0.8,
+      width: AppSettings.screenWidth * 0.8,
+      height: AppSettings.screenWidth * 0.8,
       child: BlocBuilder(
         bloc: userAccountBloc,
         builder: (context, state) {
@@ -141,8 +139,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                 Positioned(
-                  left: screenWidth * 0.25,
-                  top: screenWidth * 0.12,
+                  left: AppSettings.screenWidth * 0.25,
+                  top: AppSettings.screenWidth * 0.12,
                   child: Hero(
                     tag: "profile_picture",
                     child: GestureDetector(
@@ -158,19 +156,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       ).then((value) => userAccountBloc.add(GetUserAccount(userAccountID: widget.userID))),
                       child: state.userAccount.profilePicture != null
                           ? CircleAvatar(
-                              radius: screenWidth * 0.15,
+                              radius: AppSettings.screenWidth * 0.15,
                               backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                             )
                           : CircleAvatar(
-                              radius: screenWidth * 0.15,
+                              radius: AppSettings.screenWidth * 0.15,
                               backgroundColor: Colors.transparent,
                             ),
                     ),
                   ),
                 ),
                 Positioned(
-                  left: screenWidth * 0.28,
-                  top: screenWidth * 0.5,
+                  left: AppSettings.screenWidth * 0.28,
+                  top: AppSettings.screenWidth * 0.5,
                   child: Text(
                     state.userAccount.level.toString(),
                     style: TextStyle(
@@ -189,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildBestLift(double screenHeight, double screenWidth) {
+  Widget buildBestLift() {
     return BlocBuilder(
       bloc: bestLiftsBloc,
       builder: (context, state) {
@@ -201,12 +199,21 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _buildPedestal(state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
-                    state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here", screenHeight * 0.08, screenWidth),
-                _buildPedestal(state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
-                    state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here", screenHeight * 0.1, screenWidth),
-                _buildPedestal(state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
-                    state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here", screenHeight * 0.06, screenWidth),
+                _buildPedestal(
+                    state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
+                    state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here",
+                    AppSettings.screenHeight * 0.08,
+                    AppSettings.screenWidth),
+                _buildPedestal(
+                    state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
+                    state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here",
+                    AppSettings.screenHeight * 0.1,
+                    AppSettings.screenWidth),
+                _buildPedestal(
+                    state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
+                    state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here",
+                    AppSettings.screenHeight * 0.06,
+                    AppSettings.screenWidth),
               ],
             );
           } else {
@@ -214,9 +221,9 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                _buildPedestal("", "Tap here", screenHeight * 0.08, screenWidth),
-                _buildPedestal("", "Tap here", screenHeight * 0.1, screenWidth),
-                _buildPedestal("", "Tap here", screenHeight * 0.06, screenWidth),
+                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
+                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
+                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
               ],
             );
           }

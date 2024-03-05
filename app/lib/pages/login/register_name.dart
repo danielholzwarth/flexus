@@ -24,22 +24,19 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
       bottomColor: AppSettings.primary,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.15),
-            _buildTitleRow(screenWidth, context),
-            SizedBox(height: screenHeight * 0.02),
-            _buildDescription(screenWidth),
-            SizedBox(height: screenHeight * 0.02),
-            _buildBulletPoints(screenWidth),
-            SizedBox(height: screenHeight * 0.07),
+            SizedBox(height: AppSettings.screenHeight * 0.15),
+            _buildTitleRow(context),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
+            _buildDescription(),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
+            _buildBulletPoints(),
+            SizedBox(height: AppSettings.screenHeight * 0.07),
             FlexusTextField(
               hintText: "Name",
               textController: nameController,
@@ -47,9 +44,9 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.345),
+            SizedBox(height: AppSettings.screenHeight * 0.345),
             _buildContinueButton(context),
-            SizedBox(height: screenHeight * 0.12),
+            SizedBox(height: AppSettings.screenHeight * 0.12),
           ],
         ),
       ),
@@ -97,9 +94,9 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     );
   }
 
-  SizedBox _buildDescription(double screenWidth) {
+  SizedBox _buildDescription() {
     return SizedBox(
-      width: screenWidth * 0.7,
+      width: AppSettings.screenWidth * 0.7,
       child: Text(
         "The name will be shown to your friendship.",
         style: TextStyle(
@@ -112,11 +109,11 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     );
   }
 
-  Row _buildTitleRow(double screenWidth, BuildContext context) {
+  Row _buildTitleRow(BuildContext context) {
     return Row(
       children: [
         SizedBox(
-          width: screenWidth * 0.15,
+          width: AppSettings.screenWidth * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
             icon: Icon(Icons.adaptive.arrow_back),
@@ -125,7 +122,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ),
         ),
         SizedBox(
-          width: screenWidth * 0.7,
+          width: AppSettings.screenWidth * 0.7,
           child: Text(
             "Please enter your name.",
             style: TextStyle(
@@ -140,17 +137,15 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     );
   }
 
-  Column _buildBulletPoints(double screenWidth) {
+  Column _buildBulletPoints() {
     return Column(
       children: [
         FlexusBulletPoint(
           text: "At least 1 characters",
-          screenWidth: screenWidth,
           condition: nameController.text.isNotEmpty,
         ),
         FlexusBulletPoint(
           text: "Maximum 20 characters",
-          screenWidth: screenWidth,
           condition: nameController.text.length <= 20,
         ),
       ],

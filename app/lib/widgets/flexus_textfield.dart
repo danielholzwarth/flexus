@@ -27,14 +27,12 @@ class FlexusTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Material(
       elevation: 10,
       borderRadius: BorderRadius.circular(50),
       child: SizedBox(
-        width: screenWidth * 0.7,
-        height: screenHeight * 0.08,
+        width: AppSettings.screenWidth * 0.7,
+        height: AppSettings.screenHeight * 0.08,
         child: Center(
           child: TextField(
             obscureText: isObscure,

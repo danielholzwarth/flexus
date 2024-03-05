@@ -34,7 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: BlocBuilder(
@@ -54,7 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildSection("My Account"),
                 buildName(userAccount, context),
                 buildUsername(userAccount, context),
-                buildPassword(context, screenHeight),
+                buildPassword(context),
                 _buildSection("Appearance"),
                 buildFontSize(userSettings, context),
                 buildDarkMode(userSettings),
@@ -86,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 // ),
                 buildLogOut(context),
                 buildDeleteAccount(context),
-                SliverToBoxAdapter(child: SizedBox(height: screenHeight * 0.3)),
+                SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),
               ],
             );
           } else {
@@ -294,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SliverToBoxAdapter buildPassword(BuildContext context, double screenHeight) {
+  SliverToBoxAdapter buildPassword(BuildContext context) {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Password",
@@ -324,7 +323,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     controller: oldPasswordController,
                     obscureText: true,
                   ),
-                  SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: AppSettings.screenHeight * 0.02),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: "New Password",
@@ -336,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     controller: newPasswordController,
                     obscureText: true,
                   ),
-                  SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: AppSettings.screenHeight * 0.02),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: "Confirm New Password",

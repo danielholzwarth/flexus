@@ -34,19 +34,16 @@ class _GymPageState extends State<GymPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
-          buildAppBar(context, screenWidth),
+          buildAppBar(context),
           buildGyms(),
         ],
       ),
-      floatingActionButton: buildFloatingActionButton(context, screenWidth, screenHeight),
+      floatingActionButton: buildFloatingActionButton(context),
       bottomNavigationBar: FlexusBottomNavigationBar(
         scrollController: scrollController,
         pageIndex: 2,
@@ -105,7 +102,7 @@ class _GymPageState extends State<GymPage> {
     );
   }
 
-  FlexusFloatingActionButton buildFloatingActionButton(BuildContext context, double screenWidth, double screenHeight) {
+  FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
     String selectedItem = 'Energym';
     List<String> items = ['Energym', 'Jumpers', 'CleverFit'];
 
@@ -131,7 +128,7 @@ class _GymPageState extends State<GymPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text("Let your friends know when you arrive at your destination!"),
-                      SizedBox(height: screenHeight * 0.02),
+                      SizedBox(height: AppSettings.screenHeight * 0.02),
                       DropdownButton<String>(
                         focusColor: AppSettings.error,
                         underline: Container(),
@@ -148,9 +145,9 @@ class _GymPageState extends State<GymPage> {
                           );
                         }).toList(),
                       ),
-                      SizedBox(height: screenHeight * 0.01),
-                      Container(width: screenWidth / 2, height: 1, color: AppSettings.primaryShade80),
-                      SizedBox(height: screenHeight * 0.01),
+                      SizedBox(height: AppSettings.screenHeight * 0.01),
+                      Container(width: AppSettings.screenWidth / 2, height: 1, color: AppSettings.primaryShade80),
+                      SizedBox(height: AppSettings.screenHeight * 0.01),
                       TextButton(
                         onPressed: () async {
                           final TimeOfDay? pickedTime = await showTimePicker(
@@ -192,7 +189,7 @@ class _GymPageState extends State<GymPage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.01),
+                      SizedBox(height: AppSettings.screenHeight * 0.01),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -220,7 +217,7 @@ class _GymPageState extends State<GymPage> {
     );
   }
 
-  FlexusSliverAppBar buildAppBar(BuildContext context, double screenWidth) {
+  FlexusSliverAppBar buildAppBar(BuildContext context) {
     UserAccount userAccount = userBox.get("userAccount");
     return FlexusSliverAppBar(
       leading: SizedBox(

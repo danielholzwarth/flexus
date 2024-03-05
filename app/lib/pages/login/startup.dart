@@ -16,24 +16,21 @@ class StartUpPage extends StatefulWidget {
 class _StartUpPageState extends State<StartUpPage> {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return FlexusGradientScaffold(
       topColor: AppSettings.startUp,
       bottomColor: AppSettings.primary,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.05),
-            _buildLanguageDetector(screenWidth),
-            SizedBox(height: screenHeight * 0.045),
+            SizedBox(height: AppSettings.screenHeight * 0.05),
+            _buildLanguageDetector(),
+            SizedBox(height: AppSettings.screenHeight * 0.045),
             Icon(
               Icons.star,
               size: 100,
               color: AppSettings.background,
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
             Text(
               "FLEXUS",
               style: TextStyle(
@@ -43,9 +40,9 @@ class _StartUpPageState extends State<StartUpPage> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: screenHeight * 0.27),
+            SizedBox(height: AppSettings.screenHeight * 0.27),
             SizedBox(
-              width: screenWidth * 0.7,
+              width: AppSettings.screenWidth * 0.7,
               child: Text(
                 "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
                 style: TextStyle(
@@ -56,11 +53,11 @@ class _StartUpPageState extends State<StartUpPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: screenHeight * 0.07),
+            SizedBox(height: AppSettings.screenHeight * 0.07),
             _buildSignUpButton(context),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: AppSettings.screenHeight * 0.03),
             _buildLoginButton(context),
-            SizedBox(height: screenHeight * 0.12),
+            SizedBox(height: AppSettings.screenHeight * 0.12),
           ],
         ),
       ),
@@ -99,7 +96,7 @@ class _StartUpPageState extends State<StartUpPage> {
     );
   }
 
-  GestureDetector _buildLanguageDetector(double screenWidth) {
+  GestureDetector _buildLanguageDetector() {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -115,7 +112,7 @@ class _StartUpPageState extends State<StartUpPage> {
             color: AppSettings.fontV1,
           ),
           SizedBox(
-            width: screenWidth * 0.02,
+            width: AppSettings.screenWidth * 0.02,
           ),
           Text(
             AppSettings.language,
@@ -125,7 +122,7 @@ class _StartUpPageState extends State<StartUpPage> {
             ),
           ),
           SizedBox(
-            width: screenWidth * 0.07,
+            width: AppSettings.screenWidth * 0.07,
           ),
         ],
       ),

@@ -35,8 +35,6 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -45,11 +43,11 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.15),
-            _buildTitleRow(screenWidth, context),
-            SizedBox(height: screenHeight * 0.02),
-            _buildBulletPoints(screenWidth),
-            SizedBox(height: screenHeight * 0.07),
+            SizedBox(height: AppSettings.screenHeight * 0.15),
+            _buildTitleRow(context),
+            SizedBox(height: AppSettings.screenHeight * 0.02),
+            _buildBulletPoints(),
+            SizedBox(height: AppSettings.screenHeight * 0.07),
             FlexusTextField(
               hintText: "Password",
               textController: passwordController,
@@ -58,7 +56,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               },
               isObscure: true,
             ),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: AppSettings.screenHeight * 0.03),
             FlexusTextField(
               hintText: "Confirm Password",
               textController: confirmPasswordController,
@@ -67,20 +65,20 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               },
               isObscure: true,
             ),
-            SizedBox(height: screenHeight * 0.235),
+            SizedBox(height: AppSettings.screenHeight * 0.235),
             _buildCreateAccountButton(context, loginUserAccountService),
-            SizedBox(height: screenHeight * 0.12),
+            SizedBox(height: AppSettings.screenHeight * 0.12),
           ],
         ),
       ),
     );
   }
 
-  Row _buildTitleRow(double screenWidth, BuildContext context) {
+  Row _buildTitleRow(BuildContext context) {
     return Row(
       children: [
         SizedBox(
-          width: screenWidth * 0.15,
+          width: AppSettings.screenWidth * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
             icon: Icon(Icons.adaptive.arrow_back),
@@ -89,7 +87,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ),
         ),
         SizedBox(
-          width: screenWidth * 0.7,
+          width: AppSettings.screenWidth * 0.7,
           child: Text(
             "Please enter your password.",
             style: TextStyle(
@@ -183,22 +181,19 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
     );
   }
 
-  Column _buildBulletPoints(double screenWidth) {
+  Column _buildBulletPoints() {
     return Column(
       children: [
         FlexusBulletPoint(
           text: "At least 8 characters",
-          screenWidth: screenWidth,
           condition: passwordController.text.length >= 8,
         ),
         FlexusBulletPoint(
           text: "Maximum 128 characters",
-          screenWidth: screenWidth,
           condition: passwordController.text.length <= 128,
         ),
         FlexusBulletPoint(
           text: "Passwords must be equal",
-          screenWidth: screenWidth,
           condition: passwordController.text == confirmPasswordController.text,
         ),
       ],

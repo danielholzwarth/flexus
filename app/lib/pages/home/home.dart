@@ -48,14 +48,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
     isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
-          _buildFlexusSliverAppBar(context, screenWidth),
+          _buildFlexusSliverAppBar(context),
           buildWorkouts(),
         ],
       ),
@@ -144,8 +143,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context, double screenWidth) {
-    return isSearch ? buildSearchBar(context) : buildAppBar(context, userAccountBloc, screenWidth);
+  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
+    return isSearch ? buildSearchBar(context) : buildAppBar(context, userAccountBloc);
   }
 
   FlexusSliverAppBar buildSearchBar(BuildContext context) {
@@ -167,7 +166,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc, double screenWidth) {
+  FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc) {
     return FlexusSliverAppBar(
       isPinned: false,
       leading: SizedBox(

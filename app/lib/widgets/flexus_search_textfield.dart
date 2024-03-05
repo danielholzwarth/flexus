@@ -22,10 +22,8 @@ class FlexusSearchTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return SizedBox(
-      width: screenWidth * 0.8,
+      width: AppSettings.screenWidth * 0.8,
       child: TextField(
         autofocus: true,
         onChanged: onChanged,

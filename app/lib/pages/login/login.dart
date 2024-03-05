@@ -27,8 +27,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -37,9 +35,9 @@ class _LoginPageState extends State<LoginPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: screenHeight * 0.15),
-            _buildTitleRow(screenWidth, context),
-            SizedBox(height: screenHeight * 0.08),
+            SizedBox(height: AppSettings.screenHeight * 0.15),
+            _buildTitleRow(context),
+            SizedBox(height: AppSettings.screenHeight * 0.08),
             FlexusTextField(
               hintText: "Username",
               textController: usernameController,
@@ -47,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: AppSettings.screenHeight * 0.03),
             FlexusTextField(
               hintText: "Password",
               textController: passwordController,
@@ -55,9 +53,9 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: screenHeight * 0.32),
+            SizedBox(height: AppSettings.screenHeight * 0.32),
             _buildLoginButton(loginUserAccountService, context),
-            SizedBox(height: screenHeight * 0.12),
+            SizedBox(height: AppSettings.screenHeight * 0.12),
           ],
         ),
       ),
@@ -111,11 +109,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Row _buildTitleRow(double screenWidth, BuildContext context) {
+  Row _buildTitleRow(BuildContext context) {
     return Row(
       children: [
         SizedBox(
-          width: screenWidth * 0.15,
+          width: AppSettings.screenWidth * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
@@ -124,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         SizedBox(
-          width: screenWidth * 0.7,
+          width: AppSettings.screenWidth * 0.7,
           child: Text(
             "Login with username and password",
             style: TextStyle(
