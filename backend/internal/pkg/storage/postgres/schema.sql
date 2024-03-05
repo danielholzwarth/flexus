@@ -57,6 +57,11 @@ CREATE TABLE report (
 CREATE TABLE gym (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
+    country VARCHAR(50) NOT NULL,
+    city_name VARCHAR(50) NOT NULL,
+    zip_code VARCHAR(50) NOT NULL,
+    street_name VARCHAR(50) NOT NULL,
+    house_number VARCHAR(50) NOT NULL,
     location POINT NOT NULL
 );
 
@@ -127,6 +132,7 @@ CREATE TABLE workout (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     split_id BIGINT REFERENCES split(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    gym_id BIGINT REFERENCES gym(id) ON DELETE SET NULL ON UPDATE CASCADE,
     starttime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     endtime TIMESTAMP,
     is_archived BOOLEAN NOT NULL
@@ -186,12 +192,21 @@ INSERT INTO "user_account" ("username", "name", "password", "created_at", "level
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('blackpanther22', 'Brad', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2002-11-09', 24, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pinkflamingo77', 'Pam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2001-09-15', 16, null);
 
-Insert INTO "gym" ("name", "location") VALUES ('Energym Öhringen', POINT(40.7128, -74.0060));
-Insert INTO "gym" ("name", "location") VALUES ('Cleverfit XYZ', POINT(41.7128, -72.0060));
-Insert INTO "gym" ("name", "location") VALUES ('Another Gym', POINT(43.7128, -71.0060));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Fitness Zone', 'United States', 'New York City', '10001', 'Broadway', '123', POINT(40.7128, -74.0060));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Powerhouse Gym', 'Canada', 'Toronto', 'M5V 2X5', 'King Street West', '456', POINT(43.6532, -79.3832));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Elite Fitness Center', 'United Kingdom', 'London', 'SW1A 1AA', 'Westminster', '789', POINT(51.5074, -0.1278));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Muscle Beach Gym', 'Australia', 'Sydney', '2000', 'Bondi Beach Road', '1011', POINT(-33.8915, 151.2767));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Iron Works Fitness', 'Germany', 'Berlin', '10178', 'Friedrichstraße', '1213', POINT(52.5200, 13.4050));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Fit & Flex Gym', 'France', 'Paris', '75001', 'Rue de Rivoli', '1415', POINT(48.8566, 2.3522));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Flex Fitness', 'Spain', 'Barcelona', '08001', 'La Rambla', '1617', POINT(41.3851, 2.1734));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Strength Zone', 'Italy', 'Rome', '00184', 'Via del Corso', '1819', POINT(41.9028, 12.4964));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Peak Performance Gym', 'Japan', 'Tokyo', '100-0005', 'Chiyoda', '2021', POINT(35.6895, 139.6917));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Dynamic Fitness', 'Brazil', 'São Paulo', '01000-000', 'Avenida Paulista', '2223', POINT(-23.5505, -46.6333));
 
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 3);
+
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null);
 
 Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
@@ -210,30 +225,31 @@ Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
 
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, '2024-01-11 12:00:00', '2024-01-11 12:45:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, '2024-01-13 09:30:00', '2024-01-13 10:30:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, '2024-01-15 07:00:00', '2024-01-15 07:30:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-01-17 18:00:00', '2024-01-17 19:00:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-01-21 08:30:00', '2024-01-21 09:45:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-01-22 17:45:00', '2024-01-22 18:45:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-01-23 08:15:00', '2024-01-23 09:10:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-01-25 07:45:00', '2024-01-25 08:43:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-01-28 18:00:00', '2024-01-28 18:31:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-01-30 09:00:00', '2024-01-30 10:19:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-02-01 07:30:00', '2024-02-01 08:28:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-02-03 08:00:00', '2024-02-03 08:58:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-02-05 18:30:00', '2024-02-05 19:03:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-02-07 10:30:00', '2024-02-07 11:42:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, '2024-02-09 08:15:00', '2024-02-09 09:10:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, '2024-02-10 07:45:00', '2024-02-10 08:43:00', 'true');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 7, '2024-02-13 08:00:00', '2024-02-13 08:58:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 4, '2024-02-14 07:30:00', '2024-02-14 08:34:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 5, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
-INSERT INTO "workout" ("user_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 6, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 3, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 1, '2024-01-11 12:00:00', '2024-01-11 12:45:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, 2, '2024-01-13 09:30:00', '2024-01-13 10:30:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 3, '2024-01-15 07:00:00', '2024-01-15 07:30:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, null, '2024-01-17 18:00:00', '2024-01-17 19:00:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-01-19 10:00:00', '2024-01-19 11:15:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, 4, '2024-01-21 08:30:00', '2024-01-21 09:45:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 5, '2024-01-22 17:45:00', '2024-01-22 18:45:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 6, '2024-01-23 08:15:00', '2024-01-23 09:10:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 7, '2024-01-25 07:45:00', '2024-01-25 08:43:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 4, '2024-01-28 18:00:00', '2024-01-28 18:31:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 5, '2024-01-30 09:00:00', '2024-01-30 10:19:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 6, '2024-02-01 07:30:00', '2024-02-01 08:28:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 3, 7, '2024-02-03 08:00:00', '2024-02-03 08:58:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 4, '2024-02-05 18:30:00', '2024-02-05 19:03:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 5, '2024-02-07 10:30:00', '2024-02-07 11:42:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, null, '2024-02-09 08:15:00', '2024-02-09 09:10:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 6, '2024-02-10 07:45:00', '2024-02-10 08:43:00', 'true');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 7, '2024-02-13 08:00:00', '2024-02-13 08:58:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, null, 4, '2024-02-14 07:30:00', '2024-02-14 08:34:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 5, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 6, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (2, 2, null, now(), null, 'false');
 
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (1, 1, 1, 3, 215.5, null);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (4, 2, 1, null, null, 203.3);
