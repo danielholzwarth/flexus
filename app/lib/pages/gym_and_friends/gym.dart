@@ -1,27 +1,36 @@
+import 'package:app/bloc/gym_bloc/gym_bloc.dart';
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
-import 'package:app/pages/friends/add_friend.dart';
-import 'package:app/pages/friends/add_location.dart';
+import 'package:app/pages/gym_and_friends/add_friend.dart';
+import 'package:app/pages/gym_and_friends/add_location.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
-class LocationsPage extends StatefulWidget {
-  const LocationsPage({super.key});
+class GymPage extends StatefulWidget {
+  const GymPage({super.key});
 
   @override
-  State<LocationsPage> createState() => _LocationsPageState();
+  State<GymPage> createState() => _GymPageState();
 }
 
-class _LocationsPageState extends State<LocationsPage> {
+class _GymPageState extends State<GymPage> {
   final ScrollController scrollController = ScrollController();
   final userBox = Hive.box('userBox');
-  final LocationB locationBloc 
+  final GymBloc locationBloc = GymBloc();
+
+  @override
+  void initState() {
+    locationBloc.add(GetGymOverviews());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,37 +54,29 @@ class _LocationsPageState extends State<LocationsPage> {
     );
   }
 
-  
   Widget buildLocations() {
     return BlocBuilder(
-      bloc: userAccountBloc,
+      bloc: locationBloc,
       builder: (context, state) {
-        if (state is UserAccountsLoading) {
+        if (state is GymOverviewsLoading) {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-        } else if (state is UserAccountsLoaded) {
-          if (state.userAccounts.isNotEmpty) {
+        } else if (state is GymOverviewsLoaded) {
+          if (state.gymOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  return FlexusUserAccountListTile(
-                    userAccount: UserAccount(
-                      id: state.userAccounts[index].id,
-                      username: state.userAccounts[index].username,
-                      name: state.userAccounts[index].name,
-                      createdAt: state.userAccounts[index].createdAt,
-                      level: state.userAccounts[index].level,
-                      profilePicture: state.userAccounts[index].profilePicture,
-                    ),
+                  return FlexusGymOverviewListTile(
+                    gymOverview: state.gymOverviews[index],
                   );
                 },
-                childCount: state.userAccounts.length,
+                childCount: state.gymOverviews.length,
               ),
             );
           } else {
             return SliverFillRemaining(
               child: Center(
                 child: Text(
-                  'No user found',
+                  'No location found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
@@ -183,7 +184,7 @@ class _LocationsPageState extends State<LocationsPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                           child: Text(
-                            "30 min",
+                            "When?",
                             style: TextStyle(
                               fontSize: AppSettings.fontSize,
                               color: AppSettings.font,

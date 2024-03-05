@@ -1,7 +1,7 @@
-import 'package:app/pages/friends/add_friend.dart';
-import 'package:app/pages/friends/locations.dart';
-import 'package:app/pages/friends/scan_qr.dart';
-import 'package:app/pages/friends/show_qr.dart';
+import 'package:app/pages/gym_and_friends/add_friend.dart';
+import 'package:app/pages/gym_and_friends/gym.dart';
+import 'package:app/pages/gym_and_friends/scan_qr.dart';
+import 'package:app/pages/gym_and_friends/show_qr.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile.dart';
@@ -62,7 +62,7 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SettingsPage());
       //FRIENDS
       case '/locations':
-        return MaterialPageRoute(builder: (_) => const LocationsPage());
+        return MaterialPageRoute(builder: (_) => const GymPage());
       case '/add_friend':
         return MaterialPageRoute(builder: (_) => const AddFriendPage());
       case '/scan_qr':

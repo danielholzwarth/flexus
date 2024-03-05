@@ -7,7 +7,7 @@ import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/user_account.dart';
-import 'package:app/pages/friends/my_friends.dart';
+import 'package:app/pages/gym_and_friends/my_friends.dart';
 import 'package:app/pages/home/leveling.dart';
 import 'package:app/pages/home/profile_picture.dart';
 import 'package:app/pages/home/settings.dart';
@@ -161,7 +161,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               radius: screenWidth * 0.15,
                               backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                             )
-                          : null,
+                          : CircleAvatar(
+                              radius: screenWidth * 0.15,
+                              backgroundColor: Colors.transparent,
+                            ),
                     ),
                   ),
                 ),

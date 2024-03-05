@@ -21,7 +21,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   SettingsBloc() : super(SettingsInitial()) {
     on<LoadSettings>(_onLoadSettings);
-
     on<PatchSettings>(_onPatchSettings);
   }
 

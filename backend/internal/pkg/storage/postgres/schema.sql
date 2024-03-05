@@ -62,7 +62,8 @@ CREATE TABLE gym (
     zip_code VARCHAR(50) NOT NULL,
     street_name VARCHAR(50) NOT NULL,
     house_number VARCHAR(50) NOT NULL,
-    location POINT NOT NULL
+    latitude DECIMAL NOT NULL,
+    longitude DECIMAL NOT NULL
 );
 
 CREATE TABLE user_account_gym (
@@ -192,22 +193,51 @@ INSERT INTO "user_account" ("username", "name", "password", "created_at", "level
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('blackpanther22', 'Brad', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2002-11-09', 24, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pinkflamingo77', 'Pam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2001-09-15', 16, null);
 
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Fitness Zone', 'United States', 'New York City', '10001', 'Broadway', '123', POINT(40.7128, -74.0060));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Powerhouse Gym', 'Canada', 'Toronto', 'M5V 2X5', 'King Street West', '456', POINT(43.6532, -79.3832));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Elite Fitness Center', 'United Kingdom', 'London', 'SW1A 1AA', 'Westminster', '789', POINT(51.5074, -0.1278));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Muscle Beach Gym', 'Australia', 'Sydney', '2000', 'Bondi Beach Road', '1011', POINT(-33.8915, 151.2767));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Iron Works Fitness', 'Germany', 'Berlin', '10178', 'Friedrichstraße', '1213', POINT(52.5200, 13.4050));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Fit & Flex Gym', 'France', 'Paris', '75001', 'Rue de Rivoli', '1415', POINT(48.8566, 2.3522));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Flex Fitness', 'Spain', 'Barcelona', '08001', 'La Rambla', '1617', POINT(41.3851, 2.1734));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Strength Zone', 'Italy', 'Rome', '00184', 'Via del Corso', '1819', POINT(41.9028, 12.4964));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Peak Performance Gym', 'Japan', 'Tokyo', '100-0005', 'Chiyoda', '2021', POINT(35.6895, 139.6917));
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "location") VALUES ('Dynamic Fitness', 'Brazil', 'São Paulo', '01000-000', 'Avenida Paulista', '2223', POINT(-23.5505, -46.6333));
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Fitness Zone', 'United States', 'New York City', '10001', 'Broadway', '123', 40.7128, -74.0060);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Powerhouse Gym', 'Canada', 'Toronto', 'M5V 2X5', 'King Street West', '456', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Elite Fitness Center', 'United Kingdom', 'London', 'SW1A 1AA', 'Westminster', '789', 51.5074, -0.1278);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Muscle Beach Gym', 'Australia', 'Sydney', '2000', 'Bondi Beach Road', '1011', -33.8915, 151.2767);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Iron Works Fitness', 'Germany', 'Berlin', '10178', 'Friedrichstraße', '1213', 52.5200, 13.4050);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Fit & Flex Gym', 'France', 'Paris', '75001', 'Rue de Rivoli', '1415', 48.8566, 2.3522);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Flex Fitness', 'Spain', 'Barcelona', '08001', 'La Rambla', '1617', 41.3851, 2.1734);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Strength Zone', 'Italy', 'Rome', '00184', 'Via del Corso', '1819', 41.9028, 12.4964);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Peak Performance Gym', 'Japan', 'Tokyo', '100-0005', 'Chiyoda', '2021', 35.6895, 139.6917);
+Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Dynamic Fitness', 'Brazil', 'São Paulo', '01000-000', 'Avenida Paulista', '2223', -23.5505, -46.6333);
 
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 3);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (2, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (2, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (3, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (3, 3);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (4, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (4, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (5, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (5, 3);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (6, 1);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (7, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (8, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (9, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (10, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (11, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (12, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (13, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (14, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (15, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (16, 2);
+Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (17, 2);
 
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null);
+
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 2, true);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 3, true);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 4, 1, true);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 5, 1, true);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 6, false);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 7, 1, true);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 8, false);
+Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 9, 1, true);
 
 Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
 Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
@@ -250,6 +280,14 @@ INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", 
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 2, 5, '2024-02-16 09:00:00', '2024-02-16 10:15:00', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (1, 1, 6, now(), null, 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (2, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (4, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (7, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (9, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (11, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (12, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (13, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (14, 2, null, now(), null, 'false');
+INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived") VALUES (17, 2, null, now(), null, 'false');
 
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (1, 1, 1, 3, 215.5, null);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (4, 2, 1, null, null, 203.3);

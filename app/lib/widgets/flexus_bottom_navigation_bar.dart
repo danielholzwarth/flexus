@@ -1,4 +1,4 @@
-import 'package:app/pages/friends/locations.dart';
+import 'package:app/pages/gym_and_friends/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/statistics/statistics.dart';
 import 'package:app/resources/app_settings.dart';
@@ -77,7 +77,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                     context,
                     PageTransition(
                       type: PageTransitionType.rightToLeft,
-                      child: const LocationsPage(),
+                      child: const GymPage(),
                     ),
                   );
                 }

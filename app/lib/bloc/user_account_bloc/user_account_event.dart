@@ -26,9 +26,11 @@ class PatchUserAccount extends UserAccountEvent {
 class LoadUserAccounts extends UserAccountEvent {
   final String keyword;
   final bool isFriends;
+  final int? locationID;
 
   LoadUserAccounts({
     this.keyword = "",
     this.isFriends = false,
+    this.locationID,
   });
 }
