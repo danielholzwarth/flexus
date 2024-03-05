@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 part 'gym.g.dart';
 

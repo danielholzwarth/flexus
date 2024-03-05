@@ -3,10 +3,10 @@ part of 'best_lifts_bloc.dart';
 @immutable
 abstract class BestLiftsEvent {}
 
-class LoadBestLifts extends BestLiftsEvent {
+class GetBestLifts extends BestLiftsEvent {
   final int userAccountID;
 
-  LoadBestLifts({
+  GetBestLifts({
     required this.userAccountID,
   });
 }

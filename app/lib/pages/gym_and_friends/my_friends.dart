@@ -24,7 +24,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(LoadUserAccounts(isFriends: true));
+    userAccountBloc.add(GetUserAccounts(isFriends: true));
     super.initState();
   }
 
@@ -53,14 +53,14 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       title: FlexusSearchTextField(
         hintText: "Search...",
         onChanged: (String newValue) {
-          userAccountBloc.add(LoadUserAccounts(keyword: searchController.text, isFriends: true));
+          userAccountBloc.add(GetUserAccounts(keyword: searchController.text, isFriends: true));
         },
         textController: searchController,
         suffixOnPressed: () {
           setState(() {
             searchController.clear();
             isSearch = false;
-            userAccountBloc.add(LoadUserAccounts(isFriends: true));
+            userAccountBloc.add(GetUserAccounts(isFriends: true));
           });
         },
       ),

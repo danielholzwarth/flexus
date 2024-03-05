@@ -23,7 +23,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
 
   @override
   void initState() {
-    friendshipBloc.add(LoadFriendship(requestedID: widget.userAccount.id));
+    friendshipBloc.add(GetFriendship(requestedID: widget.userAccount.id));
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
     return BlocBuilder(
       bloc: friendshipBloc,
       builder: (context, state) {
-        if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipUpdating || state is FriendshipDeleting) {
+        if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipPatching || state is FriendshipDeleting) {
           return CircularProgressIndicator(color: AppSettings.primary);
         } else if (state is FriendshipLoaded) {
           if (state.friendship != null) {
@@ -131,7 +131,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                 ),
               ),
               onPressed: () {
-                friendshipBloc.add(CreateFriendship(requestedID: widget.userAccount.id));
+                friendshipBloc.add(PostFriendship(requestedID: widget.userAccount.id));
               },
               child: Text(
                 "Add",

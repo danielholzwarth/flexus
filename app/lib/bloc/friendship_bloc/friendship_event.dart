@@ -3,18 +3,18 @@ part of 'friendship_bloc.dart';
 @immutable
 abstract class FriendshipEvent {}
 
-class CreateFriendship extends FriendshipEvent {
+class PostFriendship extends FriendshipEvent {
   final int requestedID;
 
-  CreateFriendship({
+  PostFriendship({
     required this.requestedID,
   });
 }
 
-class LoadFriendship extends FriendshipEvent {
+class GetFriendship extends FriendshipEvent {
   final int requestedID;
 
-  LoadFriendship({
+  GetFriendship({
     required this.requestedID,
   });
 }

@@ -45,9 +45,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    bestLiftsBloc.add(LoadBestLifts(userAccountID: widget.userID));
-    userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID));
-    friendshipBloc.add(LoadFriendship(requestedID: widget.userID));
+    bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
+    userAccountBloc.add(GetUserAccount(userAccountID: widget.userID));
+    friendshipBloc.add(GetFriendship(requestedID: widget.userID));
     isProfilePictureChecked = false;
     isNameChecked = false;
     isUsernameChecked = false;
@@ -155,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             profilePicture: state.userAccount.profilePicture,
                           ),
                         ),
-                      ).then((value) => userAccountBloc.add(LoadUserAccount(userAccountID: widget.userID))),
+                      ).then((value) => userAccountBloc.add(GetUserAccount(userAccountID: widget.userID))),
                       child: state.userAccount.profilePicture != null
                           ? CircleAvatar(
                               radius: screenWidth * 0.15,
@@ -251,7 +251,7 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocBuilder(
           bloc: friendshipBloc,
           builder: (context, state) {
-            if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipUpdating || state is FriendshipDeleting) {
+            if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipPatching || state is FriendshipDeleting) {
               return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             } else if (state is FriendshipLoaded) {
               return PopupMenuButton<String>(
@@ -328,7 +328,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       break;
 
                     case "Add Friend":
-                      friendshipBloc.add(CreateFriendship(requestedID: widget.userID));
+                      friendshipBloc.add(PostFriendship(requestedID: widget.userID));
                       break;
 
                     case "Accept friendrequest":

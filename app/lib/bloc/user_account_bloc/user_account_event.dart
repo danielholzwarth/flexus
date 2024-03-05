@@ -3,10 +3,10 @@ part of 'user_account_bloc.dart';
 @immutable
 abstract class UserAccountEvent {}
 
-class LoadUserAccount extends UserAccountEvent {
+class GetUserAccount extends UserAccountEvent {
   final int userAccountID;
 
-  LoadUserAccount({
+  GetUserAccount({
     required this.userAccountID,
   });
 }
@@ -23,12 +23,12 @@ class PatchUserAccount extends UserAccountEvent {
   });
 }
 
-class LoadUserAccounts extends UserAccountEvent {
+class GetUserAccounts extends UserAccountEvent {
   final String keyword;
   final bool isFriends;
   final int? gymID;
 
-  LoadUserAccounts({
+  GetUserAccounts({
     this.keyword = "",
     this.isFriends = false,
     this.gymID,

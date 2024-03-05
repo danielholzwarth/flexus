@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     workoutBloc.add(LoadWorkout());
     UserAccount userAccount = userBox.get("userAccount");
-    userAccountBloc.add(LoadUserAccount(userAccountID: userAccount.id));
+    userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
   }
 
   @override
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                           child: ProfilePage(userID: state.userAccount.id),
                         ),
                       ).then((value) {
-                        userAccountBloc.add(LoadUserAccount(userAccountID: state.userAccount.id));
+                        userAccountBloc.add(GetUserAccount(userAccountID: state.userAccount.id));
                       });
                     },
                     child: CircleAvatar(
@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                         child: ProfilePage(userID: state.userAccount.id),
                       ),
                     ).then((value) {
-                      userAccountBloc.add(LoadUserAccount(userAccountID: state.userAccount.id));
+                      userAccountBloc.add(GetUserAccount(userAccountID: state.userAccount.id));
                     });
                   },
                 );

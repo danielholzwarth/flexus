@@ -9,7 +9,7 @@ class FriendshipCreating extends FriendshipState {}
 
 class FriendshipLoading extends FriendshipState {}
 
-class FriendshipUpdating extends FriendshipState {}
+class FriendshipPatching extends FriendshipState {}
 
 class FriendshipDeleting extends FriendshipState {}
 
