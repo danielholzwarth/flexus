@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class AddLocationPage extends StatelessWidget {
-  const AddLocationPage({super.key});
+class AddGymPage extends StatelessWidget {
+  const AddGymPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AddLocationPage'),
+        title: const Text('AddGymPage'),
         centerTitle: true,
       ),
       body: const Center(

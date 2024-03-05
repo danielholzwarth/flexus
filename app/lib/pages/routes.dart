@@ -61,7 +61,7 @@ class AppRoutes {
       case '/settings':
         return MaterialPageRoute(builder: (_) => const SettingsPage());
       //FRIENDS
-      case '/locations':
+      case '/gyms':
         return MaterialPageRoute(builder: (_) => const GymPage());
       case '/add_friend':
         return MaterialPageRoute(builder: (_) => const AddFriendPage());

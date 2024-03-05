@@ -169,6 +169,7 @@ class _HomePageState extends State<HomePage> {
 
   FlexusSliverAppBar buildAppBar(BuildContext context, UserAccountBloc userAccountBloc, double screenWidth) {
     return FlexusSliverAppBar(
+      isPinned: false,
       leading: SizedBox(
         child: BlocBuilder(
           bloc: userAccountBloc,

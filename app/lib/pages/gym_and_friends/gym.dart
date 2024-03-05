@@ -2,7 +2,7 @@ import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/gym_and_friends/add_friend.dart';
-import 'package:app/pages/gym_and_friends/add_location.dart';
+import 'package:app/pages/gym_and_friends/add_gym.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
@@ -24,11 +24,11 @@ class GymPage extends StatefulWidget {
 class _GymPageState extends State<GymPage> {
   final ScrollController scrollController = ScrollController();
   final userBox = Hive.box('userBox');
-  final GymBloc locationBloc = GymBloc();
+  final GymBloc gymBloc = GymBloc();
 
   @override
   void initState() {
-    locationBloc.add(GetGymOverviews());
+    gymBloc.add(GetGymOverviews());
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _GymPageState extends State<GymPage> {
         controller: scrollController,
         slivers: <Widget>[
           buildAppBar(context, screenWidth),
-          buildLocations(),
+          buildGyms(),
         ],
       ),
       floatingActionButton: buildFloatingActionButton(context, screenWidth, screenHeight),
@@ -54,9 +54,9 @@ class _GymPageState extends State<GymPage> {
     );
   }
 
-  Widget buildLocations() {
+  Widget buildGyms() {
     return BlocBuilder(
-      bloc: locationBloc,
+      bloc: gymBloc,
       builder: (context, state) {
         if (state is GymOverviewsLoading) {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
@@ -76,7 +76,7 @@ class _GymPageState extends State<GymPage> {
             return SliverFillRemaining(
               child: Center(
                 child: Text(
-                  'No location found',
+                  'No gym found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
@@ -285,7 +285,7 @@ class _GymPageState extends State<GymPage> {
               context,
               PageTransition(
                 type: PageTransitionType.fade,
-                child: const AddLocationPage(),
+                child: const AddGymPage(),
               ),
             );
           },

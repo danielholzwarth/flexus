@@ -30,7 +30,13 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       tileColor: AppSettings.background,
       leading: buildLeading(context),
       title: Text(widget.gymOverview.gym.name),
-      trailing: buildTrailing(context),
+      trailing: GestureDetector(
+          onTap: () {
+            debugPrint("asd");
+          },
+          child: Container(
+            child: buildTrailing(context),
+          )),
       subtitle: buildSubTitle(),
     );
   }
@@ -82,7 +88,21 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
             ),
           );
 
-        case >= 4:
+        case 4:
+          return SizedBox(
+            width: 100,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(right: 60, child: buildCorrectUserPicture(userAccounts[0], 0)),
+                Positioned(right: 40, child: buildCorrectUserPicture(userAccounts[1], 1)),
+                Positioned(right: 20, child: buildCorrectUserPicture(userAccounts[2], 2)),
+                Positioned(right: 0, child: buildCorrectUserPicture(userAccounts[3], 3)),
+              ],
+            ),
+          );
+
+        case > 4:
           return SizedBox(
             width: 100,
             child: Stack(
@@ -107,42 +127,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
           return Text("error ${userAccounts.length}");
       }
     } else {
-      return SizedBox(
-        width: 100,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              right: 60,
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.grey.shade400,
-              ),
-            ),
-            Positioned(
-              right: 40,
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.grey.shade300,
-              ),
-            ),
-            Positioned(
-              right: 20,
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.grey.shade200,
-              ),
-            ),
-            Positioned(
-              right: 0,
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.grey.shade100,
-              ),
-            ),
-          ],
-        ),
-      );
+      return const SizedBox(width: 100);
     }
   }
 
