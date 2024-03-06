@@ -5,11 +5,14 @@ import 'package:app/pages/gym_and_friends/add_friend.dart';
 import 'package:app/pages/gym_and_friends/add_gym.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -106,106 +109,156 @@ class _GymPageState extends State<GymPage> {
     String selectedItem = 'Energym';
     List<String> items = ['Energym', 'Jumpers', 'CleverFit'];
 
+    TimeOfDay selectedTime = TimeOfDay.now();
+
     return FlexusFloatingActionButton(
       onPressed: () {
-        showDialog(
+        showModalBottomSheet(
+          backgroundColor: AppSettings.background,
           context: context,
           builder: (BuildContext context) {
             return StatefulBuilder(
               builder: (context, setState) {
-                return AlertDialog(
-                  titleTextStyle: TextStyle(color: AppSettings.font),
-                  backgroundColor: AppSettings.background,
-                  title: Text(
-                    textAlign: TextAlign.center,
-                    "Send Notification?",
-                    style: TextStyle(
-                      color: AppSettings.font,
-                      fontSize: AppSettings.fontSizeTitle,
-                    ),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text("Let your friends know when you arrive at your destination!"),
-                      SizedBox(height: AppSettings.screenHeight * 0.02),
-                      DropdownButton<String>(
-                        focusColor: AppSettings.error,
-                        underline: Container(),
-                        value: selectedItem,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedItem = value!;
-                          });
-                        },
-                        items: items.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                      SizedBox(height: AppSettings.screenHeight * 0.01),
-                      Container(width: AppSettings.screenWidth / 2, height: 1, color: AppSettings.primaryShade80),
-                      SizedBox(height: AppSettings.screenHeight * 0.01),
-                      TextButton(
-                        onPressed: () async {
-                          final TimeOfDay? pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                            initialEntryMode: TimePickerEntryMode.dial,
-                            barrierColor: AppSettings.background,
-                            builder: (BuildContext context, Widget? child) {
-                              return Theme(
-                                data: ThemeData(
-                                  colorScheme: ColorScheme.light(primary: AppSettings.primary),
-                                  dialogBackgroundColor: Colors.white,
-                                  timePickerTheme: TimePickerThemeData(
-                                    dayPeriodTextColor: AppSettings.background,
-                                    backgroundColor: AppSettings.primaryShade48,
-                                    dayPeriodColor: AppSettings.primary,
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Send Notification",
+                          style: TextStyle(
+                            fontSize: AppSettings.fontSizeTitleSmall,
+                            color: AppSettings.font,
+                          ),
+                        ),
+                        SizedBox(height: AppSettings.screenHeight * 0.06),
+                        Container(
+                          width: AppSettings.screenWidth * 0.7,
+                          height: AppSettings.screenHeight * 0.07,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppSettings.background,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  focusColor: AppSettings.error,
+                                  underline: Container(),
+                                  value: selectedItem,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedItem = value!;
+                                    });
+                                  },
+                                  items: items.map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      alignment: Alignment.center,
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(
+                                          fontSize: AppSettings.fontSizeTitleSmall,
+                                          color: AppSettings.font,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: AppSettings.screenHeight * 0.03),
+                        GestureDetector(
+                          onTap: () async {
+                            final TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                              initialEntryMode: TimePickerEntryMode.dial,
+                              barrierColor: AppSettings.background,
+                              builder: (BuildContext context, Widget? child) {
+                                return Theme(
+                                  data: ThemeData(
+                                    colorScheme: ColorScheme.light(primary: AppSettings.primary),
+                                    dialogBackgroundColor: Colors.white,
+                                    timePickerTheme: TimePickerThemeData(
+                                      dayPeriodTextColor: AppSettings.background,
+                                      backgroundColor: AppSettings.primaryShade48,
+                                      dayPeriodColor: AppSettings.primary,
+                                    ),
+                                    textSelectionTheme: TextSelectionThemeData(
+                                      cursorColor: AppSettings.fontV1,
+                                      selectionColor: AppSettings.fontV1.withOpacity(0.3),
+                                    ),
                                   ),
-                                  textSelectionTheme: TextSelectionThemeData(
-                                    cursorColor: AppSettings.fontV1,
-                                    selectionColor: AppSettings.fontV1.withOpacity(0.3),
+                                  child: child!,
+                                );
+                              },
+                            );
+                            if (pickedTime != null) {
+                              setState(() {
+                                selectedTime = pickedTime;
+                              });
+                            }
+                          },
+                          child: Container(
+                            width: AppSettings.screenWidth * 0.7,
+                            height: AppSettings.screenHeight * 0.07,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                color: AppSettings.background,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  selectedTime.format(context),
+                                  style: TextStyle(
+                                    fontSize: AppSettings.fontSizeTitleSmall,
+                                    color: AppSettings.font,
                                   ),
                                 ),
-                                child: child!,
-                              );
-                            },
-                          );
-                          if (pickedTime != null) {
-                            debugPrint(pickedTime.toString());
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                          child: Text(
-                            "When?",
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSize,
-                              color: AppSettings.font,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: AppSettings.screenHeight * 0.01),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                          child: Text(
-                            "Send Notification",
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSize,
-                              color: AppSettings.font,
-                            ),
-                          ),
+                        SizedBox(height: AppSettings.screenHeight * 0.09),
+                        FlexusButton(
+                          function: () {
+                            Navigator.pop(context);
+                          },
+                          text: "Send Notification",
+                          fontColor: AppSettings.fontV1,
+                          backgroundColor: AppSettings.primary,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
