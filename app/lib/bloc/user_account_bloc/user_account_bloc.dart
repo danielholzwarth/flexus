@@ -128,7 +128,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     );
 
     if (response.isSuccessful) {
-      debugPrint(response.bodyString);
       List<UserAccount> userAccounts = [];
       if (response.bodyString != "null") {
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
@@ -170,7 +169,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     );
 
     if (response.isSuccessful) {
-      debugPrint(response.bodyString);
       List<UserAccount> userAccounts = [];
       if (response.bodyString != "null") {
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
@@ -203,7 +201,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountsLoading());
 
     //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),
@@ -213,7 +211,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     );
 
     if (response.isSuccessful) {
-      debugPrint(response.bodyString);
       List<UserAccountGymOverview> userAccountGymOverviews = [];
       if (response.bodyString != "null") {
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);

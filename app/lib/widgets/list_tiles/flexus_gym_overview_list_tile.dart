@@ -2,6 +2,7 @@ import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,15 +71,30 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                       bloc: userAccountBloc,
                       builder: (context, state) {
                         if (state is UserAccountsLoading) {
-                          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+                          return Expanded(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
                         } else if (state is UserAccountGymOverviewsLoaded) {
                           if (state.userAccountGymOverviews.isNotEmpty) {
-                            return Text(state.userAccountGymOverviews.length.toString());
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                child: ListView(
+                                  children: [
+                                    ...state.userAccountGymOverviews.map(
+                                      (userAccountGymOverview) => FlexusUserAccountGymListTile(
+                                        userAccountGymOverview: userAccountGymOverview,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           } else {
-                            return Center(
-                              child: Text(
-                                'No users training',
-                                style: TextStyle(fontSize: AppSettings.fontSize),
+                            return Expanded(
+                              child: Center(
+                                child: Text(
+                                  'No users training right now',
+                                  style: TextStyle(fontSize: AppSettings.fontSize),
+                                ),
                               ),
                             );
                           }

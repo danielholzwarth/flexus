@@ -33,7 +33,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
       leading: buildPicture(context),
-      title: Text("@${widget.userAccount.name}"),
+      title: Text(widget.userAccount.name),
       trailing: buildTrailing(context),
       subtitle: Text("@${widget.userAccount.username}"),
     );
