@@ -36,7 +36,7 @@ func (db *DB) GetGymOverviews(userAccountID types.UserAccountID) ([]types.GymOve
                    (SELECT COUNT(*) FROM friendship f WHERE (f.requestor_id = ua.id OR f.requested_id = ua.id) AND f.is_accepted = TRUE) AS friend_count
             FROM user_account ua
             INNER JOIN workout w ON ua.id = w.user_id
-            WHERE w.gym_id = $1 AND w.endtime IS NULL AND EXISTS (
+            WHERE ua.id != $2 AND w.gym_id = $1 AND w.endtime IS NULL AND EXISTS (
                 SELECT 1 FROM friendship f WHERE (f.requestor_id = ua.id OR f.requested_id = ua.id) AND f.is_accepted = TRUE AND (
                     f.requestor_id = $2 OR f.requested_id = $2
                 )
