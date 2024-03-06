@@ -29,4 +29,12 @@ class UserAccountsLoaded extends UserAccountState {
   });
 }
 
+class UserAccountGymOverviewsLoaded extends UserAccountState {
+  final List<UserAccountGymOverview> userAccountGymOverviews;
+
+  UserAccountGymOverviewsLoaded({
+    required this.userAccountGymOverviews,
+  });
+}
+
 class UserAccountsError extends UserAccountState {}

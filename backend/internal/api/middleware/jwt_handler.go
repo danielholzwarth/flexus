@@ -46,7 +46,7 @@ func ValidateJWT(next http.Handler) http.Handler {
 	})
 }
 
-func CreateJWT(userAccountID types.UserAccountID, username string) (string, error) {
+func CreateJWT(userAccountID int, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
 	//expirationTime := time.Now().Add(time.Minute)
 

@@ -6,7 +6,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db DB) CreateUserSettings(tx *sql.Tx, userAccountID types.UserAccountID) error {
+func (db DB) CreateUserSettings(tx *sql.Tx, userAccountID int) error {
 	query := `
         INSERT INTO user_settings (user_id, font_size, is_dark_mode, language_id, is_unlisted, is_pull_from_everyone, is_notify_everyone)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -15,7 +15,7 @@ func (db DB) CreateUserSettings(tx *sql.Tx, userAccountID types.UserAccountID) e
 	return err
 }
 
-func (db DB) GetUserSettings(userAccountID types.UserAccountID) (types.UserSettings, error) {
+func (db DB) GetUserSettings(userAccountID int) (types.UserSettings, error) {
 	query := `
         SELECT *
         FROM user_settings
@@ -55,7 +55,7 @@ func (db DB) GetUserSettings(userAccountID types.UserAccountID) (types.UserSetti
 	return settings, nil
 }
 
-func (db *DB) PatchUserSettings(columnName string, value any, userAccountID types.UserAccountID) error {
+func (db *DB) PatchUserSettings(columnName string, value any, userAccountID int) error {
 	query := `
 			UPDATE user_settings
 			SET ` + columnName + ` = $1

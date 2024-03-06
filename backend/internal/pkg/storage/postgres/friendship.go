@@ -40,7 +40,7 @@ func (db *DB) CreateFriendship(friendship types.Friendship) error {
 	return nil
 }
 
-func (db *DB) GetFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID) (*types.Friendship, error) {
+func (db *DB) GetFriendship(requestorID int, requestedID int) (*types.Friendship, error) {
 	friendship := &types.Friendship{}
 
 	query := `
@@ -65,7 +65,7 @@ func (db *DB) GetFriendship(requestorID types.UserAccountID, requestedID types.U
 	return friendship, nil
 }
 
-func (db *DB) PatchFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID, columnName string, value any) error {
+func (db *DB) PatchFriendship(requestorID int, requestedID int, columnName string, value any) error {
 	query := `
 		UPDATE friendship
 		SET ` + columnName + ` = $3
@@ -84,7 +84,7 @@ func (db *DB) PatchFriendship(requestorID types.UserAccountID, requestedID types
 	return nil
 }
 
-func (db *DB) DeleteFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID) error {
+func (db *DB) DeleteFriendship(requestorID int, requestedID int) error {
 	query := `
 		DELETE 
 		FROM friendship

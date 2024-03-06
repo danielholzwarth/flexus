@@ -11,8 +11,8 @@ import (
 )
 
 type UserSettingsStore interface {
-	GetUserSettings(userAccountID types.UserAccountID) (types.UserSettings, error)
-	PatchUserSettings(columnName string, value any, userAccountID types.UserAccountID) error
+	GetUserSettings(userAccountID int) (types.UserSettings, error)
+	PatchUserSettings(columnName string, value any, userAccountID int) error
 }
 
 type service struct {

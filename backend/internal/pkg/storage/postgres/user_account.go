@@ -6,7 +6,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (types.UserAccountInformation, error) {
+func (db *DB) GetUserAccountInformation(userAccountID int) (types.UserAccountInformation, error) {
 	var userAccount types.UserAccountInformation
 
 	query := `
@@ -32,7 +32,7 @@ func (db *DB) GetUserAccountInformation(userAccountID types.UserAccountID) (type
 	return userAccount, nil
 }
 
-func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error {
+func (db *DB) PatchUserAccount(columnName string, value any, userAccountID int) error {
 	var query string
 	var args []interface{}
 
@@ -65,7 +65,7 @@ func (db *DB) PatchUserAccount(columnName string, value any, userAccountID types
 	return nil
 }
 
-func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
+func (db *DB) DeleteUserAccount(userAccountID int) error {
 	query := `
 		DELETE 
 		FROM user_account
@@ -85,47 +85,104 @@ func (db *DB) DeleteUserAccount(userAccountID types.UserAccountID) error {
 	return nil
 }
 
-func (db *DB) GetUserAccountInformations(userAccountID types.UserAccountID, keyword string, isFriends bool) ([]types.UserAccountInformation, error) {
-	var userAccounts []types.UserAccountInformation
+func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]any) ([]any, error) {
+	_, exists := params["gymID"]
+	if !exists {
+		var informations []any
+
+		query := `
+				SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
+				FROM user_account ua
+				LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+				WHERE ua.id != $1 AND (f.is_accepted = $2 
+				OR ($2 = FALSE AND NOT EXISTS (
+					SELECT 1
+					FROM friendship f
+					WHERE (ua.id = f.requestor_id OR ua.id = f.requested_id))))
+				AND (LOWER(ua.username) LIKE '%' || LOWER($3) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($3) || '%')
+				ORDER BY f.is_accepted ASC, f.created_at DESC;
+			`
+
+		rows, err := db.pool.Query(query, userAccountID, params["isFriend"], params["keyword"])
+		if err != nil {
+			return nil, err
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			var information types.UserAccountInformation
+			err := rows.Scan(
+				&information.UserAccountID,
+				&information.Username,
+				&information.Name,
+				&information.CreatedAt,
+				&information.Level,
+				&information.ProfilePicture,
+			)
+			if err != nil {
+				return nil, err
+			}
+			informations = append(informations, information)
+		}
+
+		if err := rows.Err(); err != nil {
+			return nil, err
+		}
+
+		return informations, nil
+	}
+
+	var informations []any
 
 	query := `
-		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
-		FROM user_account ua
-		LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
-		WHERE ua.id != $1 AND f.is_accepted = $2 
-		OR ($2 = FALSE AND NOT EXISTS (
-			SELECT 1
-			FROM friendship f
-			WHERE (ua.id = f.requestor_id OR ua.id = f.requested_id)))
-		AND (LOWER(ua.username) LIKE '%' || LOWER($3) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($3) || '%')
-		ORDER BY f.is_accepted ASC, f.created_at DESC;
+		SELECT
+			ua.id,
+			ua.username,
+			ua.name,
+			ua.profile_picture,
+			(SELECT w.starttime
+			FROM workout w
+			WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime,
+			(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
+			FROM workout w
+			WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
+		FROM
+			user_account ua
+		LEFT JOIN
+			friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+		LEFT JOIN
+			workout w ON w.user_id = ua.id
+		WHERE
+			ua.id != $1 AND f.is_accepted = $2 AND w.gym_id = $3 AND w.starttime IS NOT NULL
+		ORDER BY
+			starttime DESC;
 	`
 
-	rows, err := db.pool.Query(query, userAccountID, isFriends, keyword)
+	rows, err := db.pool.Query(query, userAccountID, params["isFriend"], params["gymID"])
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var userAccount types.UserAccountInformation
+		var information types.UserAccountWorkoutInformation
 		err := rows.Scan(
-			&userAccount.UserAccountID,
-			&userAccount.Username,
-			&userAccount.Name,
-			&userAccount.CreatedAt,
-			&userAccount.Level,
-			&userAccount.ProfilePicture,
+			&information.UserAccountID,
+			&information.Username,
+			&information.Name,
+			&information.ProfilePicture,
+			&information.WorkoutStartTime,
+			&information.AverageWorkoutDuration,
 		)
 		if err != nil {
 			return nil, err
 		}
-		userAccounts = append(userAccounts, userAccount)
+		informations = append(informations, information)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return userAccounts, nil
+	return informations, nil
 }

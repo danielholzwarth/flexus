@@ -13,9 +13,9 @@ import (
 
 type FriendshipStore interface {
 	CreateFriendship(friendship types.Friendship) error
-	GetFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID) (*types.Friendship, error)
-	PatchFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID, columnName string, value any) error
-	DeleteFriendship(requestorID types.UserAccountID, requestedID types.UserAccountID) error
+	GetFriendship(requestorID int, requestedID int) (*types.Friendship, error)
+	PatchFriendship(requestorID int, requestedID int, columnName string, value any) error
+	DeleteFriendship(requestorID int, requestedID int) error
 }
 
 type service struct {
@@ -53,13 +53,12 @@ func (s service) createFriendship() http.HandlerFunc {
 		}
 
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
-		requestedUserAccountIDInt, err := strconv.Atoi(requestedUserAccountIDValue)
-		if err != nil || requestedUserAccountIDInt <= 0 {
+		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
+		if err != nil || requestedUserAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
 			return
 		}
-		requestedUserAccountID := types.UserAccountID(requestedUserAccountIDInt)
 
 		friendship.RequestorID = claims.UserAccountID
 		friendship.RequestedID = requestedUserAccountID
@@ -86,14 +85,13 @@ func (s service) getFriendship() http.HandlerFunc {
 		}
 
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
-		requestedUserAccountIDInt, err := strconv.Atoi(requestedUserAccountIDValue)
-		if err != nil || requestedUserAccountIDInt <= 0 {
+		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
+		if err != nil || requestedUserAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
 			println(err.Error())
 			return
 		}
-		requestedUserAccountID := types.UserAccountID(requestedUserAccountIDInt)
 
 		friendship, err := s.friendshipStore.GetFriendship(claims.UserAccountID, requestedUserAccountID)
 		if err != nil {
@@ -124,14 +122,13 @@ func (s service) patchFriendship() http.HandlerFunc {
 		}
 
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
-		requestedUserAccountIDInt, err := strconv.Atoi(requestedUserAccountIDValue)
-		if err != nil || requestedUserAccountIDInt <= 0 {
+		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
+		if err != nil || requestedUserAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
 			println(err.Error())
 			return
 		}
-		requestedUserAccountID := types.UserAccountID(requestedUserAccountIDInt)
 
 		var requestBody map[string]interface{}
 
@@ -173,14 +170,13 @@ func (s service) deleteFriendship() http.HandlerFunc {
 		}
 
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
-		requestedUserAccountIDInt, err := strconv.Atoi(requestedUserAccountIDValue)
-		if err != nil || requestedUserAccountIDInt <= 0 {
+		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
+		if err != nil || requestedUserAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
 			println(err.Error())
 			return
 		}
-		requestedUserAccountID := types.UserAccountID(requestedUserAccountIDInt)
 
 		err = s.friendshipStore.DeleteFriendship(claims.UserAccountID, requestedUserAccountID)
 		if err != nil {

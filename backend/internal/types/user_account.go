@@ -2,16 +2,14 @@ package types
 
 import "time"
 
-type UserAccountID uint
-
 type UserAccount struct {
-	ID             UserAccountID `json:"id"`
-	Username       string        `json:"username"`
-	Name           string        `json:"name"`
-	Password       []byte        `json:"password"`
-	CreatedAt      time.Time     `json:"createdAt"`
-	Level          int           `json:"level"`
-	ProfilePicture *[]byte       `json:"profilePicture"`
+	ID             int       `json:"id"`
+	Username       string    `json:"username"`
+	Name           string    `json:"name"`
+	Password       []byte    `json:"password"`
+	CreatedAt      time.Time `json:"createdAt"`
+	Level          int       `json:"level"`
+	ProfilePicture *[]byte   `json:"profilePicture"`
 }
 
 type CreateUserRequest struct {
@@ -26,10 +24,19 @@ type LoginUserRequest struct {
 }
 
 type UserAccountInformation struct {
-	UserAccountID  UserAccountID `json:"userAccountID"`
-	Username       string        `json:"username"`
-	Name           string        `json:"name"`
-	CreatedAt      time.Time     `json:"createdAt"`
-	Level          int           `json:"level"`
-	ProfilePicture *[]byte       `json:"profilePicture"`
+	UserAccountID  int       `json:"userAccountID"`
+	Username       string    `json:"username"`
+	Name           string    `json:"name"`
+	CreatedAt      time.Time `json:"createdAt"`
+	Level          int       `json:"level"`
+	ProfilePicture *[]byte   `json:"profilePicture"`
+}
+
+type UserAccountWorkoutInformation struct {
+	UserAccountID          int       `json:"userAccountID"`
+	Username               string    `json:"username"`
+	Name                   string    `json:"name"`
+	ProfilePicture         *[]byte   `json:"profilePicture"`
+	WorkoutStartTime       time.Time `json:"workoutStartTime"`
+	AverageWorkoutDuration *float64  `json:"averageWorkoutDuration"`
 }

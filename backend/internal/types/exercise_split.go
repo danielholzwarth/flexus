@@ -1,9 +1,7 @@
 package types
 
-type ExerciseSplitID uint
-
 type ExerciseSplit struct {
-	ID         ExerciseSplitID `json:"id"`
-	SplitID    *SplitID        `json:"splitID"`
-	ExerciseID *ExerciseID     `json:"exerciseID"`
+	ID         int  `json:"id"`
+	SplitID    *int `json:"splitID"`
+	ExerciseID *int `json:"exerciseID"`
 }

@@ -16,72 +16,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   final userBox = Hive.box('userBox');
 
   GymBloc() : super(GymInitial()) {
-    // on<CreateGym>(_onCreateGym);
-    // on<GetGymOverview>(_onGetGymOverview);
     on<GetGymOverviews>(_onGetGymOverviews);
-    // on<DeleteGym>(_onDeleteGym);
   }
-
-  // void _onCreateGym(CreateGym event, Emitter<GymState> emit) async {
-  //   emit(GymCreating());
-
-  //   //simulate backend request delay
-  //   // await Future.delayed(const Duration(seconds: 1));
-
-  //   Response<dynamic> response = await _gymService.postGym(userBox.get("flexusjwt"), {"geoPint": event.gym});
-
-  //   if (response.isSuccessful) {
-  //     emit(GymCreated());
-  //   } else {
-  //     emit(GymError());
-  //   }
-  // }
-
-  // void _onGetGymOverview(GetGymOverview event, Emitter<GymState> emit) async {
-  //   emit(GymLoading());
-
-  //   //simulate backend request delay
-  //   await Future.delayed(const Duration(seconds: 1));
-
-  //   Response<dynamic> response = await _gymService.getGymOverview(userBox.get("flexusjwt"), event.gym);
-  //   if (response.isSuccessful) {
-  //     if (response.bodyString != "null") {
-  //       //final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
-
-  //       final gymOverview = GymOverview(
-  //         id: 1,
-  //         name: "name",
-  //         cityName: "cityName",
-  //         zipCode: "zipCode",
-  //         streetName: "streetName",
-  //         houseNumber: "houseNumber",
-  //         userAccounts: [UserAccount(id: 1, username: "username", name: "name", createdAt: DateTime.now(), level: 1)],
-  //         totalFriends: 5,
-  //       );
-
-  //       emit(GymOverviewLoaded(gymOverview: gymOverview));
-  //     } else {
-  //       emit(GymOverviewLoaded(gymOverview: null));
-  //     }
-  //   } else {
-  //     emit(GymError());
-  //   }
-  // }
-
-  // void _onDeleteGym(DeleteGym event, Emitter<GymState> emit) async {
-  //   emit(GymDeleting());
-
-  //   //simulate backend request delay
-  //   // await Future.delayed(const Duration(seconds: 1));
-
-  //   final response = await _gymService.deleteGym(userBox.get("flexusjwt"), {"geoPoint": event.gym});
-
-  //   if (response.isSuccessful) {
-  //     emit(GymDeleted());
-  //   } else {
-  //     emit(GymError());
-  //   }
-  // }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
     emit(GymOverviewsLoading());

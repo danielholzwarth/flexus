@@ -1,7 +1,9 @@
+import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FlexusGymOverviewListTile extends StatefulWidget {
   final GymOverview gymOverview;
@@ -16,6 +18,8 @@ class FlexusGymOverviewListTile extends StatefulWidget {
 }
 
 class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
+  final UserAccountBloc userAccountBloc = UserAccountBloc();
+
   @override
   void initState() {
     super.initState();
@@ -25,7 +29,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        debugPrint("asd");
+        showPopUp();
       },
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
@@ -37,6 +41,71 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
         ),
       ),
       subtitle: buildSubTitle(),
+    );
+  }
+
+  void showPopUp() {
+    userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
+    showModalBottomSheet(
+      backgroundColor: AppSettings.background,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.gymOverview.totalFriends > 0
+                          ? "${widget.gymOverview.gym.name} ${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends}"
+                          : widget.gymOverview.gym.name,
+                      style: TextStyle(
+                        fontSize: AppSettings.fontSizeTitleSmall,
+                        color: AppSettings.font,
+                      ),
+                    ),
+                    BlocBuilder(
+                      bloc: userAccountBloc,
+                      builder: (context, state) {
+                        if (state is UserAccountsLoading) {
+                          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+                        } else if (state is UserAccountGymOverviewsLoaded) {
+                          if (state.userAccountGymOverviews.isNotEmpty) {
+                            return Text(state.userAccountGymOverviews.length.toString());
+                          } else {
+                            return Center(
+                              child: Text(
+                                'No users training',
+                                style: TextStyle(fontSize: AppSettings.fontSize),
+                              ),
+                            );
+                          }
+                        } else if (state is UserAccountsError) {
+                          return Center(
+                            child: Text(
+                              'Error loading workouts',
+                              style: TextStyle(fontSize: AppSettings.fontSize),
+                            ),
+                          );
+                        } else {
+                          return Center(
+                            child: Text(
+                              'Error XYZ',
+                              style: TextStyle(fontSize: AppSettings.fontSize),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

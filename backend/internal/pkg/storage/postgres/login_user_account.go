@@ -95,7 +95,7 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
 	return userAccount, nil
 }
 
-func (db DB) ValidatePasswordByID(userAccountID types.UserAccountID, password string) error {
+func (db DB) ValidatePasswordByID(userAccountID int, password string) error {
 	var storedPassword []byte
 	query := `
         SELECT password

@@ -1,12 +1,10 @@
 package types
 
-type BestLiftID uint
-
 type BestLift struct {
-	ID            BestLiftID     `json:"id"`
-	UserAccountID *UserAccountID `json:"userAccountID"`
-	SetID         *SetID         `json:"setID"`
-	PositionID    *PositionID    `json:"positionID"`
+	ID            int  `json:"id"`
+	UserAccountID *int `json:"userAccountID"`
+	SetID         *int `json:"setID"`
+	PositionID    *int `json:"positionID"`
 }
 
 type BestLiftOverview struct {

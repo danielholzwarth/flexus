@@ -10,9 +10,7 @@ import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -322,7 +320,9 @@ class _GymPageState extends State<GymPage> {
                 type: PageTransitionType.fade,
                 child: const AddFriendPage(),
               ),
-            );
+            ).then((value) {
+              gymBloc.add(GetGymOverviews());
+            });
           },
         ),
         IconButton(

@@ -9,7 +9,7 @@ import (
 )
 
 type GymStore interface {
-	GetGymOverviews(userAccountID types.UserAccountID) ([]types.GymOverview, error)
+	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
 }
 
 type service struct {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/api/user_account_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_account_gym_overview.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,9 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   UserAccountBloc() : super(UserAccountInitial()) {
     on<GetUserAccount>(_onGetUserAccount);
     on<PatchUserAccount>(_onPatchUserAccount);
-    on<GetUserAccounts>(_onGetUserAccounts);
+    on<GetUserAccountsFriends>(_onGetUserAccountsFriends);
+    on<GetUserAccountsFriendsSearch>(_onGetUserAccountsFriendsSearch);
+    on<GetUserAccountsFriendsGym>(_onGetUserAccountsFriendsGym);
   }
 
   void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
@@ -113,16 +116,19 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountLoaded(userAccount: userAccount));
   }
 
-  void _onGetUserAccounts(GetUserAccounts event, Emitter<UserAccountState> emit) async {
+  void _onGetUserAccountsFriends(GetUserAccountsFriends event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
     //simulate backend request delay
     // await Future.delayed(const Duration(seconds: 1));
 
-    Response<dynamic> response =
-        await _userAccountService.getUserAccounts(userBox.get("flexusjwt"), {"keyword": event.keyword, "isFriends": event.isFriends});
+    Response<dynamic> response = await _userAccountService.getUserAccounts(
+      userBox.get("flexusjwt"),
+      isFriend: event.isFriend,
+    );
 
     if (response.isSuccessful) {
+      debugPrint(response.bodyString);
       List<UserAccount> userAccounts = [];
       if (response.bodyString != "null") {
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
@@ -145,6 +151,91 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         emit(UserAccountsLoaded(userAccounts: userAccounts));
       } else {
         emit(UserAccountsLoaded(userAccounts: userAccounts));
+      }
+    } else {
+      emit(UserAccountsError());
+    }
+  }
+
+  void _onGetUserAccountsFriendsSearch(GetUserAccountsFriendsSearch event, Emitter<UserAccountState> emit) async {
+    emit(UserAccountsLoading());
+
+    //simulate backend request delay
+    // await Future.delayed(const Duration(seconds: 1));
+
+    Response<dynamic> response = await _userAccountService.getUserAccounts(
+      userBox.get("flexusjwt"),
+      isFriend: event.isFriend,
+      keyword: event.keyword ?? "",
+    );
+
+    if (response.isSuccessful) {
+      debugPrint(response.bodyString);
+      List<UserAccount> userAccounts = [];
+      if (response.bodyString != "null") {
+        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
+        final UserAccount userAccount = userBox.get("userAccount");
+
+        for (final userData in userAccountsJson) {
+          if (userData['userAccountID'] != userAccount.id) {
+            final loadedUserAccount = UserAccount(
+              id: userData['userAccountID'],
+              username: userData['username'],
+              name: userData['name'],
+              createdAt: DateTime.parse(userData['createdAt']),
+              level: userData['level'],
+              profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
+            );
+            userAccounts.add(loadedUserAccount);
+          }
+        }
+
+        emit(UserAccountsLoaded(userAccounts: userAccounts));
+      } else {
+        emit(UserAccountsLoaded(userAccounts: userAccounts));
+      }
+    } else {
+      emit(UserAccountsError());
+    }
+  }
+
+  void _onGetUserAccountsFriendsGym(GetUserAccountsFriendsGym event, Emitter<UserAccountState> emit) async {
+    emit(UserAccountsLoading());
+
+    //simulate backend request delay
+    // await Future.delayed(const Duration(seconds: 1));
+
+    Response<dynamic> response = await _userAccountService.getUserAccounts(
+      userBox.get("flexusjwt"),
+      isFriend: event.isFriend,
+      gymID: event.gymID,
+      isWorkingOut: event.isWorkingOut,
+    );
+
+    if (response.isSuccessful) {
+      debugPrint(response.bodyString);
+      List<UserAccountGymOverview> userAccountGymOverviews = [];
+      if (response.bodyString != "null") {
+        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
+        final UserAccount userAccount = userBox.get("userAccount");
+
+        for (final userData in userAccountsJson) {
+          if (userData['userAccountID'] != userAccount.id) {
+            final userAccountGymOverview = UserAccountGymOverview(
+              id: userData['userAccountID'],
+              username: userData['username'],
+              name: userData['name'],
+              profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
+              workoutStartTime: DateTime.parse(userData['workoutStartTime']),
+              averageWorkoutDuration: Duration(seconds: userData['averageWorkoutDuration'].toInt()),
+            );
+            userAccountGymOverviews.add(userAccountGymOverview);
+          }
+        }
+
+        emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
+      } else {
+        emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
       }
     } else {
       emit(UserAccountsError());

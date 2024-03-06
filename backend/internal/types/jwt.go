@@ -5,8 +5,8 @@ import "github.com/dgrijalva/jwt-go"
 var RequestorContextKey = &ContextKey{Key: "requestorID"}
 
 type Claims struct {
-	UserAccountID UserAccountID `json:"userAccountID"`
-	Username      string        `json:"username"`
+	UserAccountID int    `json:"userAccountID"`
+	Username      string `json:"username"`
 	jwt.StandardClaims
 }
 

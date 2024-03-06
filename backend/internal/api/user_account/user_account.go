@@ -14,12 +14,12 @@ import (
 )
 
 type UserAccountStore interface {
-	GetUserAccountInformation(userAccountID types.UserAccountID) (types.UserAccountInformation, error)
-	PatchUserAccount(columnName string, value any, userAccountID types.UserAccountID) error
+	GetUserAccountInformation(userAccountID int) (types.UserAccountInformation, error)
+	PatchUserAccount(columnName string, value any, userAccountID int) error
 	GetUsernameAvailability(username string) (bool, error)
-	DeleteUserAccount(userAccountID types.UserAccountID) error
-	ValidatePasswordByID(userAccountID types.UserAccountID, password string) error
-	GetUserAccountInformations(userAccountID types.UserAccountID, keyword string, isFriends bool) ([]types.UserAccountInformation, error)
+	DeleteUserAccount(userAccountID int) error
+	ValidatePasswordByID(userAccountID int, password string) error
+	GetUserAccountInformations(userAccountID int, params map[string]any) ([]any, error)
 }
 
 type service struct {
@@ -55,13 +55,12 @@ func (s service) getUserAccountInformation() http.HandlerFunc {
 		}
 
 		userAccountIDValue := chi.URLParam(r, "userAccountID")
-		userAccountIDInt, err := strconv.Atoi(userAccountIDValue)
-		if err != nil || userAccountIDInt <= 0 {
+		userAccountID, err := strconv.Atoi(userAccountIDValue)
+		if err != nil || userAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for userAccountIDInt. Must be integer greater than 0."))
 			return
 		}
-		userAccountID := types.UserAccountID(userAccountIDInt)
 
 		userAccountOverview, err := s.userAccountStore.GetUserAccountInformation(userAccountID)
 		if err != nil {
@@ -161,16 +160,6 @@ func (s service) patchUserAccount() http.HandlerFunc {
 			}
 		}
 
-		// if level, ok := requestBody["level"].(int); ok {
-		// 	fmt.Println("Updating level:", level)
-		// 	err := s.userAccountStore.PatchUserAccount("level", level, claims.UserAccountID)
-		// 	if err != nil {
-		// 		http.Error(w, "Failed to patch level", http.StatusInternalServerError)
-		// 		println(err.Error())
-		// 		return
-		// 	}
-		// }
-
 		if profilePicture, ok := requestBody["profile_picture"].(string); ok {
 			if profilePicture != "" {
 
@@ -231,43 +220,54 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
+		params := make(map[string]any)
+		query := r.URL.Query()
 
-		body, err := io.ReadAll(r.Body)
+		if v := query.Get("isFriend"); v != "" {
+			b, err := strconv.ParseBool(v)
+			if err != nil {
+				println(err.Error())
+			} else {
+				params["isFriend"] = b
+			}
+		}
+
+		params["keyword"] = query.Get("keyword")
+
+		if v := query.Get("gymID"); v != "" {
+			id, err := strconv.Atoi(v)
+			if err != nil || id <= 0 {
+				println(err.Error())
+			} else {
+				params["gymID"] = id
+			}
+		}
+
+		if v := query.Get("isWorkingOut"); v != "" {
+			b, err := strconv.ParseBool(v)
+			if err != nil {
+				println(err.Error())
+			} else {
+				params["isWorkingOut"] = b
+			}
+		}
+
+		informations, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, params)
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+		response, err := json.Marshal(informations)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
 			return
-		}
-
-		isFriends := requestBody["isFriends"].(bool)
-
-		if keyword, ok := requestBody["keyword"].(string); ok {
-			fmt.Println("Searching for users with keyword:", keyword)
-
-			userAccountOverviews, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, keyword, isFriends)
-			if err != nil {
-				http.Error(w, "Failed to create User", http.StatusInternalServerError)
-				println(err.Error())
-				return
-			}
-
-			response, err := json.Marshal(userAccountOverviews)
-			if err != nil {
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-				println(err.Error())
-				return
-			}
-
-			w.Write(response)
-
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	}
 }

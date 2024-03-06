@@ -4,7 +4,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetGymOverviews(userAccountID types.UserAccountID) ([]types.GymOverview, error) {
+func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 	var gymOverviews []types.GymOverview
 
 	query := `

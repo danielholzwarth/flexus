@@ -12,9 +12,9 @@ import (
 )
 
 type WorkoutStore interface {
-	GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error)
-	PatchWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID, columnName string, value any) error
-	DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) error
+	GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error)
+	PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error
+	DeleteWorkout(userAccountID int, workoutID int) error
 }
 
 type service struct {
@@ -77,13 +77,12 @@ func (s service) patchWorkout() http.HandlerFunc {
 		}
 
 		workoutIDValue := chi.URLParam(r, "workoutID")
-		workoutIDInt, err := strconv.Atoi(workoutIDValue)
-		if err != nil || workoutIDInt <= 0 {
+		workoutID, err := strconv.Atoi(workoutIDValue)
+		if err != nil || workoutID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
 			return
 		}
-		workoutID := types.WorkoutID(workoutIDInt)
 
 		var requestBody map[string]interface{}
 		body, err := io.ReadAll(r.Body)
@@ -122,13 +121,12 @@ func (s service) deleteWorkout() http.HandlerFunc {
 		}
 
 		workoutIDValue := chi.URLParam(r, "workoutID")
-		workoutIDInt, err := strconv.Atoi(workoutIDValue)
-		if err != nil || workoutIDInt <= 0 {
+		workoutID, err := strconv.Atoi(workoutIDValue)
+		if err != nil || workoutID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
 			return
 		}
-		workoutID := types.WorkoutID(workoutIDInt)
 
 		err = s.workoutStore.DeleteWorkout(claims.UserAccountID, workoutID)
 		if err != nil {

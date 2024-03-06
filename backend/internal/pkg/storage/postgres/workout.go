@@ -6,7 +6,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db DB) GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.WorkoutOverview, error) {
+func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error) {
 	query := `
 		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
 		FROM workout w
@@ -26,12 +26,11 @@ func (db DB) GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.Wor
 	for rows.Next() {
 		var workoutOverview types.WorkoutOverview
 		var workout types.Workout
-		var splitID *types.SplitID
 
 		err := rows.Scan(
 			&workout.ID,
 			&workout.UserAccountID,
-			&splitID,
+			&workout.SplitID,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
@@ -42,10 +41,6 @@ func (db DB) GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.Wor
 			return nil, err
 		}
 
-		if splitID == nil {
-			splitID = new(types.SplitID)
-		}
-		workout.SplitID = splitID
 		workoutOverview.Workout = workout
 
 		workoutOverviews = append(workoutOverviews, workoutOverview)
@@ -58,7 +53,7 @@ func (db DB) GetWorkoutOverviews(userAccountID types.UserAccountID) ([]types.Wor
 	return workoutOverviews, nil
 }
 
-func (db DB) PatchWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID, columnName string, value any) error {
+func (db DB) PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error {
 	var query string
 	var args []interface{}
 
@@ -91,7 +86,7 @@ func (db DB) PatchWorkout(userAccountID types.UserAccountID, workoutID types.Wor
 	return nil
 }
 
-func (db DB) DeleteWorkout(userAccountID types.UserAccountID, workoutID types.WorkoutID) error {
+func (db DB) DeleteWorkout(userAccountID int, workoutID int) error {
 	query := `
 		DELETE 
 		FROM workout 

@@ -23,9 +23,12 @@ abstract class UserAccountService extends ChopperService {
 
   @Get(path: '/')
   Future<Response> getUserAccounts(
-    @Header('flexusjwt') String flexusJWTString,
-    @Body() Map<String, dynamic> body,
-  );
+    @Header('flexusjwt') String flexusJWTString, {
+    @Query('keyword') String? keyword,
+    @Query('isFriend') bool? isFriend,
+    @Query('gymID') int? gymID,
+    @Query('isWorkingOut') bool? isWorkingOut,
+  });
 
   static UserAccountService create() {
     final client = ChopperClient(

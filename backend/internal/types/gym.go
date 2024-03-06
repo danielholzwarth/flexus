@@ -1,9 +1,7 @@
 package types
 
-type GymID uint
-
 type Gym struct {
-	ID          GymID   `json:"id"`
+	ID          int     `json:"id"`
 	Name        string  `json:"name"`
 	Country     string  `json:"country"`
 	CityName    string  `json:"cityName"`

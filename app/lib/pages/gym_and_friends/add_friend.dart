@@ -23,7 +23,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccounts());
+    userAccountBloc.add(GetUserAccountsFriends(isFriend: false));
     super.initState();
   }
 
@@ -119,7 +119,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
             icon: Icon(Icons.search, color: AppSettings.font),
           ),
           onChanged: (value) {
-            userAccountBloc.add(GetUserAccounts(keyword: value.trim()));
+            userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: value.trim()));
           },
         ),
       ),

@@ -10,7 +10,7 @@ import (
 )
 
 type BestLiftsStore interface {
-	GetBestLifts(userAccountID types.UserAccountID) ([]types.BestLiftOverview, error)
+	GetBestLifts(userAccountID int) ([]types.BestLiftOverview, error)
 }
 
 type service struct {
@@ -43,13 +43,12 @@ func (s service) getBestLifts() http.HandlerFunc {
 		}
 
 		userAccountIDValue := chi.URLParam(r, "userAccountID")
-		userAccountIDInt, err := strconv.Atoi(userAccountIDValue)
-		if err != nil || userAccountIDInt <= 0 {
+		userAccountID, err := strconv.Atoi(userAccountIDValue)
+		if err != nil || userAccountID <= 0 {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong input for userAccountIDInt. Must be integer greater than 0."))
 			return
 		}
-		userAccountID := types.UserAccountID(userAccountIDInt)
 
 		bestLiftsOverview, err := s.bestLiftsStore.GetBestLifts(userAccountID)
 		if err != nil {
