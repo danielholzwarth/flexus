@@ -113,7 +113,10 @@ class _ArchivePageState extends State<ArchivePage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
+            showSearch(
+              context: context,
+              delegate: CustomSearchDelegate(),
+            );
           },
         ),
       ],
@@ -154,20 +157,36 @@ class CustomSearchDelegate extends SearchDelegate {
       bloc: workoutBloc,
       builder: (context, state) {
         if (state is WorkoutSearching) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         } else if (state is WorkoutLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
-              },
-              itemCount: state.workoutOverviews.length,
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                },
+                itemCount: state.workoutOverviews.length,
+              ),
             );
           } else {
-            return const Text("No workouts found");
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No workouts found"),
+              ),
+            );
           }
         } else {
-          return const Text("error");
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error loading workouts"),
+            ),
+          );
         }
       },
     );
@@ -181,20 +200,36 @@ class CustomSearchDelegate extends SearchDelegate {
       bloc: workoutBloc,
       builder: (context, state) {
         if (state is WorkoutSearching) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         } else if (state is WorkoutLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
-              },
-              itemCount: state.workoutOverviews.length,
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                },
+                itemCount: state.workoutOverviews.length,
+              ),
             );
           } else {
-            return const Text("No workouts found");
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No workouts found"),
+              ),
+            );
           }
         } else {
-          return const Text("error");
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error loading workouts"),
+            ),
+          );
         }
       },
     );

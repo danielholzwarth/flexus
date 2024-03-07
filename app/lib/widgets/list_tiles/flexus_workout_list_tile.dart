@@ -185,7 +185,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
 
         return RichText(
           text: TextSpan(
-            text: startIndex > 1 ? splitName.substring(0, startIndex) : "",
+            text: startIndex > 0 ? splitName.substring(0, startIndex) : "",
             style: TextStyle(
               fontSize: AppSettings.fontSize,
               color: Colors.grey,
