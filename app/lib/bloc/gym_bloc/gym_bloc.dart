@@ -22,9 +22,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
     emit(GymOverviewsLoading());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     final response = await _gymService.getGymOverviews(userBox.get("flexusjwt"));
     List<GymOverview> gymOverviews = [];
 

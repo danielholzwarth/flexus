@@ -25,9 +25,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetWorkout(GetWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutLoading());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     List<WorkoutOverview> workoutOverviews = List.empty();
     final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
 
@@ -63,9 +60,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetSearchWorkout(GetSearchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutSearching());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     List<WorkoutOverview> workoutOverviews = List.empty();
     List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews");
 
@@ -85,9 +79,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
   void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutUpdating());
-
-    //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
 
     switch (event.name) {
       case "isArchived":
@@ -123,9 +114,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
   void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutDeleting());
-
-    //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);

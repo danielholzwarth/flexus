@@ -2,7 +2,6 @@ import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class _ArchivePageState extends State<ArchivePage> {
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
-          _buildFlexusSliverAppBar(context),
+          buildAppBar(context),
           BlocBuilder(
             bloc: workoutBloc,
             builder: (context, state) {
@@ -101,33 +100,6 @@ class _ArchivePageState extends State<ArchivePage> {
     );
   }
 
-  Widget _buildFlexusSliverAppBar(BuildContext context) {
-    return isSearch ? buildSearchBar(context) : buildAppBar(context);
-  }
-
-  FlexusSliverAppBar buildSearchBar(BuildContext context) {
-    return FlexusSliverAppBar(
-      hasLeading: false,
-      title: FlexusSearchTextField(
-        hintText: "Search...",
-        onChanged: (String newValue) {
-          workoutBloc.add(GetSearchWorkout(
-            isArchive: true,
-            keyWord: searchController.text,
-          ));
-        },
-        textController: searchController,
-        suffixOnPressed: () {
-          setState(() {
-            searchController.text = "";
-            isSearch = false;
-            workoutBloc.add(GetSearchWorkout(isArchive: true));
-          });
-        },
-      ),
-    );
-  }
-
   FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
       title: Text(
@@ -141,13 +113,90 @@ class _ArchivePageState extends State<ArchivePage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            setState(() {
-              isSearch = true;
-              workoutBloc.add(GetSearchWorkout(isArchive: true));
-            });
+            showSearch(context: context, delegate: CustomSearchDelegate());
           },
         ),
       ],
+    );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+  WorkoutBloc workoutBloc = WorkoutBloc();
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    workoutBloc.add(GetSearchWorkout(isArchive: true, keyWord: query));
+
+    return BlocBuilder(
+      bloc: workoutBloc,
+      builder: (context, state) {
+        if (state is WorkoutSearching) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is WorkoutLoaded) {
+          if (state.workoutOverviews.isNotEmpty) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
+              },
+              itemCount: state.workoutOverviews.length,
+            );
+          } else {
+            return const Text("No workouts found");
+          }
+        } else {
+          return const Text("error");
+        }
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    workoutBloc.add(GetSearchWorkout(isArchive: true, keyWord: query));
+
+    return BlocBuilder(
+      bloc: workoutBloc,
+      builder: (context, state) {
+        if (state is WorkoutSearching) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is WorkoutLoaded) {
+          if (state.workoutOverviews.isNotEmpty) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
+              },
+              itemCount: state.workoutOverviews.length,
+            );
+          } else {
+            return const Text("No workouts found");
+          }
+        } else {
+          return const Text("error");
+        }
+      },
     );
   }
 }

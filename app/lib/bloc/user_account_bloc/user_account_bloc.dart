@@ -26,9 +26,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountLoading());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     Response<dynamic> response;
     response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
 
@@ -61,9 +58,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
   void _onPatchUserAccount(PatchUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountUpdating());
-
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
 
     UserAccount userAccount = userBox.get("userAccount");
 
@@ -119,9 +113,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccountsFriends(GetUserAccountsFriends event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),
       isFriend: event.isFriend,
@@ -158,9 +149,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
   void _onGetUserAccountsFriendsSearch(GetUserAccountsFriendsSearch event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
-
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),

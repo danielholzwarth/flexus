@@ -35,32 +35,9 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       body: CustomScrollView(
         controller: scrollController,
         slivers: [
-          _buildFlexusSliverAppBar(context),
+          buildAppBar(context),
           buildUserAccounts(),
         ],
-      ),
-    );
-  }
-
-  FlexusSliverAppBar _buildFlexusSliverAppBar(BuildContext context) {
-    return isSearch ? buildSearchBar(context) : buildAppBar(context);
-  }
-
-  FlexusSliverAppBar buildSearchBar(BuildContext context) {
-    return FlexusSliverAppBar(
-      title: FlexusSearchTextField(
-        hintText: "Search...",
-        onChanged: (String newValue) {
-          userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: searchController.text));
-        },
-        textController: searchController,
-        suffixOnPressed: () {
-          setState(() {
-            searchController.clear();
-            isSearch = false;
-            userAccountBloc.add(GetUserAccountsFriends(isFriend: true));
-          });
-        },
       ),
     );
   }
@@ -137,12 +114,90 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            setState(() {
-              isSearch = true;
-            });
+            showSearch(context: context, delegate: CustomSearchDelegate());
           },
         ),
       ],
+    );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+  UserAccountBloc userAccountBloc = UserAccountBloc();
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: query));
+
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountsLoading) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is UserAccountsLoaded) {
+          if (state.userAccounts.isNotEmpty) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return FlexusUserAccountListTile(userAccount: state.userAccounts[index]);
+              },
+              itemCount: state.userAccounts.length,
+            );
+          } else {
+            return const Text("No workouts ");
+          }
+        } else {
+          return const Text("dat2a");
+        }
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: query));
+
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountsLoading) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is UserAccountsLoaded) {
+          if (state.userAccounts.isNotEmpty) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return FlexusUserAccountListTile(userAccount: state.userAccounts[index]);
+              },
+              itemCount: state.userAccounts.length,
+            );
+          } else {
+            return const Text("data1");
+          }
+        } else {
+          return const Text("data2");
+        }
+      },
     );
   }
 }

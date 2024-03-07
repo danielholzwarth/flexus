@@ -25,9 +25,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   void _onPostFriendship(PostFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipCreating());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     Response<dynamic> response;
     response = await _friendshipService.postFriendship(userBox.get("flexusjwt"), event.requestedID);
 
@@ -48,9 +45,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
 
   void _onGetFriendship(GetFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipLoading());
-
-    //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
 
     Response<dynamic> response;
     response = await _friendshipService.getFriendship(userBox.get("flexusjwt"), event.requestedID);
@@ -76,9 +70,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
 
   void _onPatchFriendship(PatchFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipPatching());
-
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
 
     switch (event.name) {
       case "isAccepted":
@@ -106,9 +97,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
 
   void _onDeleteFriendship(DeleteFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipDeleting());
-
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
 
     final response = await _friendshipService.deleteFriendship(userBox.get("flexusjwt"), event.requestedID);
 

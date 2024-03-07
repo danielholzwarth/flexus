@@ -21,7 +21,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     emit(BestLiftsLoading());
 
     //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
+    //await Future.delayed(const Duration(seconds: 1));
 
     List<BestLiftOverview> bestLiftOverviews = List.empty();
 

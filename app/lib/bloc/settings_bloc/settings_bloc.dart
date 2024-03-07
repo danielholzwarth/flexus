@@ -27,9 +27,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   void _onGetSettings(GetSettings event, Emitter<SettingsState> emit) async {
     emit(SettingsLoading());
 
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
-
     Response<dynamic> response;
     response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
 
@@ -63,9 +60,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   void _onPatchSettings(PatchSettings event, Emitter<SettingsState> emit) async {
     emit(SettingsUpdating());
-
-    //simulate backend request delay
-    // await Future.delayed(const Duration(seconds: 1));
 
     UserAccount userAccount = userBox.get("userAccount");
     UserSettings userSettings = userBox.get("userSettings");
