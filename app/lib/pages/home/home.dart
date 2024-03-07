@@ -9,7 +9,6 @@ import 'package:app/pages/login/login.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_search_textfield.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
@@ -59,10 +58,6 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: buildFloatingActionButton(context),
-      bottomNavigationBar: FlexusBottomNavigationBar(
-        scrollController: scrollController,
-        pageIndex: 1,
-      ),
     );
   }
 

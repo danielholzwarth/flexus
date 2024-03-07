@@ -6,7 +6,6 @@ import 'package:app/pages/gym_and_friends/add_gym.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
-import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
@@ -45,10 +44,6 @@ class _GymPageState extends State<GymPage> {
         ],
       ),
       floatingActionButton: buildFloatingActionButton(context),
-      bottomNavigationBar: FlexusBottomNavigationBar(
-        scrollController: scrollController,
-        pageIndex: 2,
-      ),
     );
   }
 

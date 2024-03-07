@@ -7,10 +7,9 @@ import 'package:page_transition/page_transition.dart';
 
 class FlexusBottomNavigationBar extends StatelessWidget {
   final int pageIndex;
-  final ScrollController scrollController;
+
   const FlexusBottomNavigationBar({
     super.key,
-    required this.scrollController,
     required this.pageIndex,
   });
 
@@ -30,9 +29,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                 size: pageIndex == 0 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
               onPressed: () {
-                if (pageIndex == 0) {
-                  scrollToTop();
-                } else {
+                if (pageIndex != 0) {
                   Navigator.pushReplacement(
                     context,
                     PageTransition(
@@ -50,9 +47,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                 size: pageIndex == 1 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
               onPressed: () {
-                if (pageIndex == 1) {
-                  scrollToTop();
-                } else {
+                if (pageIndex != 1) {
                   Navigator.pushReplacement(
                     context,
                     PageTransition(
@@ -70,9 +65,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
                 size: pageIndex == 2 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
               onPressed: () {
-                if (pageIndex == 2) {
-                  scrollToTop();
-                } else {
+                if (pageIndex != 2) {
                   Navigator.pushReplacement(
                     context,
                     PageTransition(
@@ -86,14 +79,6 @@ class FlexusBottomNavigationBar extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  void scrollToTop() {
-    scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.linear,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:app/widgets/flexus_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsPage extends StatefulWidget {
@@ -19,10 +18,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
       ),
       body: const Center(
         child: Text("Statistics"),
-      ),
-      bottomNavigationBar: FlexusBottomNavigationBar(
-        scrollController: scrollController,
-        pageIndex: 0,
       ),
     );
   }

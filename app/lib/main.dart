@@ -6,8 +6,8 @@ import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
-import 'package:app/pages/home/home.dart';
 import 'package:app/pages/login/startup.dart';
+import 'package:app/pages/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class MainApp extends StatelessWidget {
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
       return const MaterialApp(
-        home: HomePage(),
+        home: PageViewPage(),
       );
     } else {
       return const MaterialApp(
