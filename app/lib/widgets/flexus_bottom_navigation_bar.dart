@@ -1,6 +1,6 @@
-import 'package:app/pages/gym_and_friends/gym.dart';
+import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
-import 'package:app/pages/statistics/statistics.dart';
+import 'package:app/pages/home/statistics.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';

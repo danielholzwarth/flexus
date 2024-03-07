@@ -1,4 +1,4 @@
-import 'package:app/pages/home/profile.dart';
+import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

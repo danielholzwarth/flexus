@@ -4,7 +4,7 @@ import 'package:app/api/user_account_service.dart';
 import 'package:app/bloc/settings_bloc/settings_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
-import 'package:app/pages/login/startup.dart';
+import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';

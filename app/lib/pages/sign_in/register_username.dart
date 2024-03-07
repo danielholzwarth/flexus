@@ -1,4 +1,7 @@
-import 'package:app/pages/login/register_password.dart';
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:app/api/login_user_account_service.dart';
+import 'package:app/pages/sign_in/register_name.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
@@ -7,23 +10,20 @@ import 'package:app/widgets/flexus_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
-class RegisterNamePage extends StatefulWidget {
-  final String username;
-
-  const RegisterNamePage({
-    super.key,
-    required this.username,
-  });
+class RegisterUsernamePage extends StatefulWidget {
+  const RegisterUsernamePage({super.key});
 
   @override
-  State<RegisterNamePage> createState() => _RegisterNamePageState();
+  State<RegisterUsernamePage> createState() => _RegisterUsernamePageState();
 }
 
-class _RegisterNamePageState extends State<RegisterNamePage> {
-  final TextEditingController nameController = TextEditingController();
+class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
+  final TextEditingController usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final loginUserAccountService = LoginUserAccountService.create();
+
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
       bottomColor: AppSettings.primary,
@@ -38,57 +38,77 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
             _buildBulletPoints(),
             SizedBox(height: AppSettings.screenHeight * 0.07),
             FlexusTextField(
-              hintText: "Name",
-              textController: nameController,
+              hintText: "Username",
+              textController: usernameController,
               onChanged: (String newValue) {
                 setState(() {});
               },
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.345),
-            _buildContinueButton(context),
-            SizedBox(height: AppSettings.screenHeight * 0.12),
+            SizedBox(height: AppSettings.screenHeight * 0.3),
+            _buildContinueButton(context, loginUserAccountService),
           ],
         ),
       ),
     );
   }
 
-  FlexusButton _buildContinueButton(BuildContext context) {
+  FlexusButton _buildContinueButton(BuildContext context, LoginUserAccountService loginUserAccountService) {
     return FlexusButton(
-      text: "CONTINUE (2/3)",
+      text: "CONTINUE (1/3)",
       backgroundColor: AppSettings.backgroundV1,
       fontColor: AppSettings.fontV1,
-      function: () {
-        if (nameController.text.isEmpty) {
+      function: () async {
+        if (usernameController.text.length < 6) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Name must not be empty!'),
+                child: Text('Username must be at least 6 characters long!'),
               ),
             ),
           );
-        } else if (nameController.text.length > 20) {
+        } else if (usernameController.text.length > 20) {
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Name must not be longer than 20 characters!'),
+                child: Text('Username must be shorter than 20 characters!'),
               ),
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: RegisterPasswordPage(
-                username: widget.username,
-                name: nameController.text,
+          final response = await loginUserAccountService.getUsernameAvailability(usernameController.text);
+          if (response.statusCode == 200) {
+            final bool availability = response.body;
+            if (!availability) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Center(
+                    child: Text('Username is already assigned!'),
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.rightToLeft,
+                  child: RegisterNamePage(username: usernameController.text),
+                ),
+              );
+            }
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Center(
+                  child: Text("Statuscode ${response.statusCode}\nError: ${response.error}"),
+                ),
               ),
-            ),
-          );
+            );
+          }
         }
       },
     );
@@ -98,7 +118,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     return SizedBox(
       width: AppSettings.screenWidth * 0.7,
       child: Text(
-        "The name will be shown to your friendship.",
+        "A username can only exist once. It is used to identify you.",
         style: TextStyle(
           color: AppSettings.font,
           decoration: TextDecoration.none,
@@ -115,7 +135,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
         SizedBox(
           width: AppSettings.screenWidth * 0.15,
           child: IconButton(
-            onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
+            onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
             iconSize: AppSettings.fontSizeTitle,
             alignment: Alignment.center,
@@ -124,7 +144,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
         SizedBox(
           width: AppSettings.screenWidth * 0.7,
           child: Text(
-            "Please enter your name.",
+            "Please enter your username.",
             style: TextStyle(
               color: AppSettings.font,
               decoration: TextDecoration.none,
@@ -141,12 +161,12 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     return Column(
       children: [
         FlexusBulletPoint(
-          text: "At least 1 characters",
-          condition: nameController.text.isNotEmpty,
+          text: "At least 6 characters",
+          condition: usernameController.text.length >= 6,
         ),
         FlexusBulletPoint(
           text: "Maximum 20 characters",
-          condition: nameController.text.length <= 20,
+          condition: usernameController.text.length <= 20,
         ),
       ],
     );

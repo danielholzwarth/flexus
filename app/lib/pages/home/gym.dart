@@ -1,8 +1,8 @@
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
-import 'package:app/pages/gym_and_friends/add_friend.dart';
-import 'package:app/pages/home/profile.dart';
+import 'package:app/pages/friends/add_friend.dart';
+import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';

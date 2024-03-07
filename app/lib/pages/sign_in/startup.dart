@@ -1,5 +1,5 @@
-import 'package:app/pages/login/login.dart';
-import 'package:app/pages/login/register_username.dart';
+import 'package:app/pages/sign_in/login.dart';
+import 'package:app/pages/sign_in/register_username.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
