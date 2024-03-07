@@ -42,10 +42,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     workoutBloc.add(GetWorkout());
     UserAccount userAccount = userBox.get("userAccount");
     userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
+    super.initState();
   }
 
   @override

@@ -22,11 +22,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   final UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {

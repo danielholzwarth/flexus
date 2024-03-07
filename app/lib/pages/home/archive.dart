@@ -25,8 +25,8 @@ class _ArchivePageState extends State<ArchivePage> {
 
   @override
   void initState() {
-    super.initState();
     workoutBloc.add(GetSearchWorkout(isArchive: true));
+    super.initState();
   }
 
   @override
