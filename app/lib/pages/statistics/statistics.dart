@@ -1,3 +1,4 @@
+import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsPage extends StatefulWidget {
@@ -12,7 +13,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppSettings.background,
       appBar: AppBar(
+        backgroundColor: AppSettings.background,
         title: const Text('StatisticsPage'),
         centerTitle: true,
       ),
