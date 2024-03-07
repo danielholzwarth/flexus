@@ -11,11 +11,13 @@ import 'package:page_transition/page_transition.dart';
 class FlexusWorkoutListTile extends StatelessWidget {
   final WorkoutOverview workoutOverview;
   final WorkoutBloc workoutBloc;
+  final String? query;
 
   const FlexusWorkoutListTile({
     super.key,
     required this.workoutOverview,
     required this.workoutBloc,
+    this.query,
   });
 
   @override
@@ -147,13 +149,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         workoutOverview.splitName != null
-            ? Text(
-                workoutOverview.splitName!,
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: AppSettings.font,
-                ),
-              )
+            ? highlightTitle(workoutOverview.splitName!)
             : Text(
                 "Custom Workout",
                 style: TextStyle(
@@ -178,6 +174,52 @@ class FlexusWorkoutListTile extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget highlightTitle(String splitName) {
+    if (query != null && query != "") {
+      if (splitName.toLowerCase().contains(query!.toLowerCase())) {
+        int startIndex = workoutOverview.splitName!.toLowerCase().indexOf(query!.toLowerCase());
+        int endIndex = startIndex + query!.length;
+
+        return RichText(
+          text: TextSpan(
+            text: startIndex > 1 ? splitName.substring(0, startIndex) : "",
+            style: TextStyle(
+              fontSize: AppSettings.fontSize,
+              color: Colors.grey,
+            ),
+            children: [
+              TextSpan(
+                text: splitName.substring(startIndex, endIndex),
+                style: TextStyle(
+                  fontSize: AppSettings.fontSize,
+                  color: AppSettings.font,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: endIndex < splitName.length ? splitName.substring(endIndex) : "",
+                style: TextStyle(
+                  fontSize: AppSettings.fontSize,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+    return RichText(
+      text: TextSpan(
+        text: splitName,
+        style: TextStyle(
+          fontSize: AppSettings.fontSize,
+          color: AppSettings.font,
+        ),
+      ),
     );
   }
 

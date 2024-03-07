@@ -11,7 +11,6 @@ import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
-import 'package:app/widgets/list_tiles/flexus_user_account_list_tile.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +19,11 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final bool isStartup;
+  const HomePage({
+    super.key,
+    this.isStartup = false,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -48,17 +51,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: <Widget>[
-          buildAppBar(context, userAccountBloc),
-          buildWorkouts(),
-        ],
-      ),
-      floatingActionButton: buildFloatingActionButton(context),
-    );
+
+    if (widget.isStartup && !isTokenExpired) {
+      return Scaffold(
+        backgroundColor: AppSettings.primary,
+        body: const Center(),
+        floatingActionButton: buildFloatingActionButton(context),
+      );
+    } else {
+      return Scaffold(
+        backgroundColor: AppSettings.background,
+        body: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            buildAppBar(context, userAccountBloc),
+            buildWorkouts(),
+          ],
+        ),
+        floatingActionButton: buildFloatingActionButton(context),
+      );
+    }
   }
 
   Widget buildWorkouts() {
@@ -295,7 +307,11 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return ListView.builder(
               itemBuilder: (context, index) {
-                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
+                return FlexusWorkoutListTile(
+                  workoutBloc: workoutBloc,
+                  workoutOverview: state.workoutOverviews[index],
+                  query: query,
+                );
               },
               itemCount: state.workoutOverviews.length,
             );
@@ -322,7 +338,11 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return ListView.builder(
               itemBuilder: (context, index) {
-                return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index]);
+                return FlexusWorkoutListTile(
+                  workoutBloc: workoutBloc,
+                  workoutOverview: state.workoutOverviews[index],
+                  query: query,
+                );
               },
               itemCount: state.workoutOverviews.length,
             );
