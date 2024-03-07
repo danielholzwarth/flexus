@@ -8,10 +8,12 @@ import 'package:page_transition/page_transition.dart';
 
 class FlexusUserAccountListTile extends StatefulWidget {
   final UserAccount userAccount;
+  final String? query;
 
   const FlexusUserAccountListTile({
     super.key,
     required this.userAccount,
+    this.query,
   });
 
   @override
@@ -33,9 +35,9 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
       leading: buildPicture(context),
-      title: Text(widget.userAccount.name),
+      title: highlightText(widget.userAccount.name),
       trailing: buildTrailing(context),
-      subtitle: Text("@${widget.userAccount.username}"),
+      subtitle: highlightText("@${widget.userAccount.username}"),
     );
   }
 
@@ -181,5 +183,60 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               );
             },
           );
+  }
+
+  Widget highlightText(String text) {
+    if (widget.query != null && widget.query != "") {
+      if (text.toLowerCase().contains(widget.query!.toLowerCase())) {
+        int startIndex = text.toLowerCase().indexOf(widget.query!.toLowerCase());
+        int endIndex = startIndex + widget.query!.length;
+
+        return RichText(
+          text: TextSpan(
+            text: startIndex > 0 ? text.substring(0, startIndex) : "",
+            style: TextStyle(
+              fontSize: AppSettings.fontSize,
+              color: Colors.grey,
+            ),
+            children: [
+              TextSpan(
+                text: text.substring(startIndex, endIndex),
+                style: TextStyle(
+                  fontSize: AppSettings.fontSize,
+                  color: AppSettings.font,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: endIndex < text.length ? text.substring(endIndex) : "",
+                style: TextStyle(
+                  fontSize: AppSettings.fontSize,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return RichText(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(
+            fontSize: AppSettings.fontSize,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+    return RichText(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: AppSettings.fontSize,
+          color: AppSettings.font,
+        ),
+      ),
+    );
   }
 }

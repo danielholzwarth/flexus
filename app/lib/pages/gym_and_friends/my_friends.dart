@@ -154,20 +154,39 @@ class CustomSearchDelegate extends SearchDelegate {
       bloc: userAccountBloc,
       builder: (context, state) {
         if (state is UserAccountsLoading) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         } else if (state is UserAccountsLoaded) {
           if (state.userAccounts.isNotEmpty) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return FlexusUserAccountListTile(userAccount: state.userAccounts[index]);
-              },
-              itemCount: state.userAccounts.length,
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusUserAccountListTile(
+                    userAccount: state.userAccounts[index],
+                    query: query,
+                  );
+                },
+                itemCount: state.userAccounts.length,
+              ),
             );
           } else {
-            return const Text("No workouts ");
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No users found"),
+              ),
+            );
           }
         } else {
-          return const Text("dat2a");
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error"),
+            ),
+          );
         }
       },
     );
@@ -181,20 +200,39 @@ class CustomSearchDelegate extends SearchDelegate {
       bloc: userAccountBloc,
       builder: (context, state) {
         if (state is UserAccountsLoading) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         } else if (state is UserAccountsLoaded) {
           if (state.userAccounts.isNotEmpty) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                return FlexusUserAccountListTile(userAccount: state.userAccounts[index]);
-              },
-              itemCount: state.userAccounts.length,
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusUserAccountListTile(
+                    userAccount: state.userAccounts[index],
+                    query: query,
+                  );
+                },
+                itemCount: state.userAccounts.length,
+              ),
             );
           } else {
-            return const Text("data1");
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No users found"),
+              ),
+            );
           }
         } else {
-          return const Text("data2");
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error"),
+            ),
+          );
         }
       },
     );

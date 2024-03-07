@@ -1,4 +1,5 @@
 import 'package:app/pages/home/profile.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -25,6 +26,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
       appBar: AppBar(
         title: const Text('Mobile Scanner'),
         centerTitle: true,
+        backgroundColor: AppSettings.background,
         actions: [
           IconButton(
             color: Colors.black,

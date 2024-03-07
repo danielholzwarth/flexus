@@ -2,7 +2,6 @@ import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/gym_and_friends/add_friend.dart';
-import 'package:app/pages/gym_and_friends/add_gym.dart';
 import 'package:app/pages/home/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
@@ -305,7 +304,7 @@ class _GymPageState extends State<GymPage> {
       actions: [
         IconButton(
           icon: Icon(
-            Icons.person_add,
+            Icons.people,
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
@@ -326,16 +325,158 @@ class _GymPageState extends State<GymPage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            Navigator.push(
-              context,
-              PageTransition(
-                type: PageTransitionType.fade,
-                child: const AddGymPage(),
-              ),
-            );
+            showSearch(context: context, delegate: CustomSearchDelegate());
           },
         ),
       ],
+    );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+  GymBloc gymBloc = GymBloc();
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    gymBloc.add(GetGymOverviews());
+
+    return BlocBuilder(
+      bloc: gymBloc,
+      builder: (context, state) {
+        if (state is GymOverviewsLoading) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
+        } else if (state is GymOverviewsLoaded) {
+          if (state.gymOverviews.isNotEmpty) {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusGymOverviewListTile(
+                    gymOverview: state.gymOverviews[index],
+                  );
+                },
+                itemCount: state.gymOverviews.length,
+              ),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: Center(
+                child: Text(
+                  'No gym found',
+                  style: TextStyle(fontSize: AppSettings.fontSize),
+                ),
+              ),
+            );
+          }
+        } else if (state is UserAccountsError) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error loading workouts',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error XYZ',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    gymBloc.add(GetGymOverviews());
+
+    return BlocBuilder(
+      bloc: gymBloc,
+      builder: (context, state) {
+        if (state is GymOverviewsLoading) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
+        } else if (state is GymOverviewsLoaded) {
+          if (state.gymOverviews.isNotEmpty) {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusGymOverviewListTile(
+                    gymOverview: state.gymOverviews[index],
+                  );
+                },
+                itemCount: state.gymOverviews.length,
+              ),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: Center(
+                child: Text(
+                  'No gym found',
+                  style: TextStyle(fontSize: AppSettings.fontSize),
+                ),
+              ),
+            );
+          }
+        } else if (state is UserAccountsError) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error loading workouts',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error XYZ',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

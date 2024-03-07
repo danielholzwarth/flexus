@@ -32,6 +32,7 @@ class _ArchivePageState extends State<ArchivePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppSettings.background,
       body: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[

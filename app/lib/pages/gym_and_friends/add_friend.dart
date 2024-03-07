@@ -35,7 +35,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
         controller: scrollController,
         slivers: [
           buildAppBar(context),
-          buildSearchBar(),
           buildUserAccounts(),
         ],
       ),
@@ -100,38 +99,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
     );
   }
 
-  SliverAppBar buildSearchBar() {
-    return SliverAppBar(
-      surfaceTintColor: AppSettings.background,
-      title: Container(
-        height: AppSettings.screenHeight * 0.06,
-        width: AppSettings.screenWidth * 0.8,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: AppSettings.primaryShade48,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search',
-            hintStyle: TextStyle(color: AppSettings.font),
-            border: InputBorder.none,
-            icon: Icon(Icons.search, color: AppSettings.font),
-          ),
-          onChanged: (value) {
-            userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: value.trim()));
-          },
-        ),
-      ),
-      centerTitle: true,
-      pinned: true,
-      automaticallyImplyLeading: false,
-      backgroundColor: AppSettings.background,
-      foregroundColor: AppSettings.font,
-      toolbarHeight: AppSettings.screenHeight * 0.07,
-    );
-  }
-
   FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
       isPinned: true,
@@ -155,7 +122,134 @@ class _AddFriendPageState extends State<AddFriendPage> {
             );
           },
         ),
+        IconButton(
+          icon: Icon(
+            Icons.person_add,
+            size: AppSettings.fontSizeTitle,
+          ),
+          onPressed: () {
+            showSearch(context: context, delegate: CustomSearchDelegate());
+          },
+        ),
       ],
+    );
+  }
+}
+
+class CustomSearchDelegate extends SearchDelegate {
+  UserAccountBloc userAccountBloc = UserAccountBloc();
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        close(context, null);
+      },
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: query));
+
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountsLoading) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
+        } else if (state is UserAccountsLoaded) {
+          if (state.userAccounts.isNotEmpty) {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusUserAccountListTile(
+                    userAccount: state.userAccounts[index],
+                    query: query,
+                  );
+                },
+                itemCount: state.userAccounts.length,
+              ),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No users found"),
+              ),
+            );
+          }
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error"),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: query));
+
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountsLoading) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
+        } else if (state is UserAccountsLoaded) {
+          if (state.userAccounts.isNotEmpty) {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: ListView.builder(
+                itemBuilder: (context, index) {
+                  return FlexusUserAccountListTile(
+                    userAccount: state.userAccounts[index],
+                    query: query,
+                  );
+                },
+                itemCount: state.userAccounts.length,
+              ),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: const Center(
+                child: Text("No users found"),
+              ),
+            );
+          }
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: const Center(
+              child: Text("Error"),
+            ),
+          );
+        }
+      },
     );
   }
 }
