@@ -1,8 +1,11 @@
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
+import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
   const PageViewPage({super.key});
@@ -12,11 +15,26 @@ class PageViewPage extends StatefulWidget {
 }
 
 class _PageViewPageState extends State<PageViewPage> {
+  bool isFirstTime = true;
   int currentPageIndex = 1;
   PageController pageController = PageController(initialPage: 1);
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isFirstTime) {
+      isFirstTime = false;
+      return buildQuickAccess(context);
+    } else {
+      return buildPages();
+    }
+  }
+
+  Scaffold buildPages() {
     return Scaffold(
       body: PageView(
         onPageChanged: (value) => {
@@ -79,6 +97,61 @@ class _PageViewPageState extends State<PageViewPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Scaffold buildQuickAccess(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        color: AppSettings.primary,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            FlexusButton(
+              text: "Start Workout",
+              function: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const StartWorkoutPage(),
+                  ),
+                ).then((value) => setState(() {}));
+              },
+              backgroundColor: AppSettings.background,
+              fontColor: AppSettings.font,
+            ),
+            SizedBox(height: AppSettings.screenHeight * 0.1),
+            FlexusButton(
+              text: "Send Notification",
+              function: () {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text("Not implemented yet :("),
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: AppSettings.backgroundV1,
+              fontColor: AppSettings.fontV1,
+            ),
+            SizedBox(height: AppSettings.screenHeight * 0.1),
+            IconButton(
+              icon: Icon(
+                Icons.close,
+                size: AppSettings.fontSizeMainTitle,
+              ),
+              onPressed: () {
+                setState(() {});
+              },
+            )
+          ],
         ),
       ),
     );
