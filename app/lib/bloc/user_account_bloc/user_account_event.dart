@@ -23,14 +23,6 @@ class PatchUserAccount extends UserAccountEvent {
   });
 }
 
-class GetUserAccountsFriends extends UserAccountEvent {
-  final bool? isFriend;
-
-  GetUserAccountsFriends({
-    this.isFriend,
-  });
-}
-
 class GetUserAccountsFriendsSearch extends UserAccountEvent {
   final bool? isFriend;
   final String? keyword;

@@ -18,7 +18,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   UserAccountBloc() : super(UserAccountInitial()) {
     on<GetUserAccount>(_onGetUserAccount);
     on<PatchUserAccount>(_onPatchUserAccount);
-    on<GetUserAccountsFriends>(_onGetUserAccountsFriends);
     on<GetUserAccountsFriendsSearch>(_onGetUserAccountsFriendsSearch);
     on<GetUserAccountsFriendsGym>(_onGetUserAccountsFriendsGym);
   }
@@ -108,43 +107,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
 
     emit(UserAccountLoaded(userAccount: userAccount));
-  }
-
-  void _onGetUserAccountsFriends(GetUserAccountsFriends event, Emitter<UserAccountState> emit) async {
-    emit(UserAccountsLoading());
-
-    Response<dynamic> response = await _userAccountService.getUserAccounts(
-      userBox.get("flexusjwt"),
-      isFriend: event.isFriend,
-    );
-
-    if (response.isSuccessful) {
-      List<UserAccount> userAccounts = [];
-      if (response.bodyString != "null") {
-        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
-        final UserAccount userAccount = userBox.get("userAccount");
-
-        for (final userData in userAccountsJson) {
-          if (userData['userAccountID'] != userAccount.id) {
-            final loadedUserAccount = UserAccount(
-              id: userData['userAccountID'],
-              username: userData['username'],
-              name: userData['name'],
-              createdAt: DateTime.parse(userData['createdAt']),
-              level: userData['level'],
-              profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
-            );
-            userAccounts.add(loadedUserAccount);
-          }
-        }
-
-        emit(UserAccountsLoaded(userAccounts: userAccounts));
-      } else {
-        emit(UserAccountsLoaded(userAccounts: userAccounts));
-      }
-    } else {
-      emit(UserAccountsError());
-    }
   }
 
   void _onGetUserAccountsFriendsSearch(GetUserAccountsFriendsSearch event, Emitter<UserAccountState> emit) async {

@@ -23,7 +23,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccountsFriends(isFriend: true));
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true));
     super.initState();
   }
 
