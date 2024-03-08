@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:app/api/login_user_account_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
@@ -48,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             FlexusTextField(
               hintText: "Password",
               textController: passwordController,
+              isObscure: true,
               onChanged: (String newValue) {
                 setState(() {});
               },
@@ -90,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
             context,
             PageTransition(
               type: PageTransitionType.rightToLeft,
-              child: PageView(),
+              child: const PageViewPage(isFirst: false),
             ),
             (route) => false,
           );

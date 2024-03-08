@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:app/api/login_user_account_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
@@ -161,7 +162,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               context,
               PageTransition(
                 type: PageTransitionType.rightToLeft,
-                child: PageView(),
+                child: const PageViewPage(isFirst: false),
               ),
               (route) => false,
             );

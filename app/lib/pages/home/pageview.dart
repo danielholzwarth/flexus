@@ -8,7 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
-  const PageViewPage({super.key});
+  final bool isFirst;
+
+  const PageViewPage({
+    super.key,
+    this.isFirst = false,
+  });
 
   @override
   State<PageViewPage> createState() => _PageViewPageState();
@@ -16,17 +21,13 @@ class PageViewPage extends StatefulWidget {
 
 class _PageViewPageState extends State<PageViewPage> {
   bool isFirstTime = true;
+
   int currentPageIndex = 1;
   PageController pageController = PageController(initialPage: 1);
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (isFirstTime) {
+    if (isFirstTime && widget.isFirst) {
       isFirstTime = false;
       return buildQuickAccess(context);
     } else {

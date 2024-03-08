@@ -23,7 +23,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccountsFriends(isFriend: false));
+    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false));
     super.initState();
   }
 

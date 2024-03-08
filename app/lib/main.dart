@@ -33,7 +33,7 @@ class MainApp extends StatelessWidget {
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
       return const MaterialApp(
-        home: PageViewPage(),
+        home: PageViewPage(isFirst: true),
       );
     } else {
       return const MaterialApp(
