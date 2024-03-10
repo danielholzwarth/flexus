@@ -26,6 +26,7 @@ abstract class UserAccountService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString, {
     @Query('keyword') String? keyword,
     @Query('isFriend') bool? isFriend,
+    @Query('hasRequest') bool? hasRequest,
     @Query('gymID') int? gymID,
     @Query('isWorkingOut') bool? isWorkingOut,
   });

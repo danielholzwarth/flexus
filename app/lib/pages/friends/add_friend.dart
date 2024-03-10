@@ -23,7 +23,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false));
+    userAccountBloc.add(GetUserAccountsFriendsSearch(hasRequest: true));
     super.initState();
   }
 
@@ -163,7 +163,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: query));
+    userAccountBloc.add(GetUserAccountsFriendsSearch(keyword: query));
 
     return BlocBuilder(
       bloc: userAccountBloc,
@@ -209,7 +209,7 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: false, keyword: query));
+    userAccountBloc.add(GetUserAccountsFriendsSearch(keyword: query));
 
     return BlocBuilder(
       bloc: userAccountBloc,

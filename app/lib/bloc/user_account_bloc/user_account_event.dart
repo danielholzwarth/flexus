@@ -25,10 +25,12 @@ class PatchUserAccount extends UserAccountEvent {
 
 class GetUserAccountsFriendsSearch extends UserAccountEvent {
   final bool? isFriend;
+  final bool? hasRequest;
   final String? keyword;
 
   GetUserAccountsFriendsSearch({
     this.isFriend,
+    this.hasRequest,
     this.keyword,
   });
 }

@@ -75,6 +75,7 @@ final class _$UserAccountService extends UserAccountService {
     String flexusJWTString, {
     String? keyword,
     bool? isFriend,
+    bool? hasRequest,
     int? gymID,
     bool? isWorkingOut,
   }) {
@@ -82,6 +83,7 @@ final class _$UserAccountService extends UserAccountService {
     final Map<String, dynamic> $params = <String, dynamic>{
       'keyword': keyword,
       'isFriend': isFriend,
+      'hasRequest': hasRequest,
       'gymID': gymID,
       'isWorkingOut': isWorkingOut,
     };

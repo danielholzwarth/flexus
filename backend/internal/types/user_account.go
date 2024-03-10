@@ -24,19 +24,12 @@ type LoginUserRequest struct {
 }
 
 type UserAccountInformation struct {
-	UserAccountID  int       `json:"userAccountID"`
-	Username       string    `json:"username"`
-	Name           string    `json:"name"`
-	CreatedAt      time.Time `json:"createdAt"`
-	Level          int       `json:"level"`
-	ProfilePicture *[]byte   `json:"profilePicture"`
-}
-
-type UserAccountWorkoutInformation struct {
-	UserAccountID          int       `json:"userAccountID"`
-	Username               string    `json:"username"`
-	Name                   string    `json:"name"`
-	ProfilePicture         *[]byte   `json:"profilePicture"`
-	WorkoutStartTime       time.Time `json:"workoutStartTime"`
-	AverageWorkoutDuration *float64  `json:"averageWorkoutDuration"`
+	UserAccountID          int        `json:"userAccountID"`
+	Username               string     `json:"username"`
+	Name                   string     `json:"name"`
+	CreatedAt              time.Time  `json:"createdAt"`
+	Level                  int        `json:"level"`
+	ProfilePicture         *[]byte    `json:"profilePicture,omitempty"`
+	WorkoutStartTime       *time.Time `json:"workoutStartTime,omitempty"`
+	AverageWorkoutDuration *float64   `json:"averageWorkoutDuration,omitempty"`
 }
