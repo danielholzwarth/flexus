@@ -315,7 +315,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       radius: AppSettings.fontSizeTitle,
       backgroundColor: AppSettings.primaryShade48,
       child: Text(
-        widget.gymOverview.gym.name.substring(0, 2).toUpperCase(),
+        widget.gymOverview.gym.name.length > 2 ? widget.gymOverview.gym.name.substring(0, 2).toUpperCase() : widget.gymOverview.gym.name,
         style: TextStyle(
           fontSize: AppSettings.fontSizeTitleSmall,
           color: AppSettings.font,

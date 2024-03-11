@@ -252,6 +252,7 @@ class _GymPageState extends State<GymPage> {
             );
           },
         );
+        gymBloc.add(GetGymOverviews());
       },
       icon: Icons.notification_add_outlined,
     );
@@ -320,7 +321,7 @@ class _GymPageState extends State<GymPage> {
             size: AppSettings.fontSizeTitle,
           ),
           onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
+            showSearch(context: context, delegate: CustomSearchDelegate()).then((value) => gymBloc.add(GetGymOverviews()));
           },
         ),
       ],

@@ -57,17 +57,31 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
 		}
 	}
 
-	insertUserAccountGymQuery := `
-        INSERT INTO user_account_gym (user_id, gym_id)
-        VALUES ($1, $2);
+	existsQuery = `
+        SELECT COUNT(*)
+        FROM user_account_gym
+        WHERE user_id = $1 AND gym_id = $2;
     `
 
-	_, err = tx.Exec(insertUserAccountGymQuery, userAccountID, id)
+	err = db.pool.QueryRow(existsQuery, userAccountID, id).Scan(&count)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	if count == 0 {
+		insertUserAccountGymQuery := `
+			INSERT INTO user_account_gym (user_id, gym_id)
+			VALUES ($1, $2);
+		`
+
+		_, err = tx.Exec(insertUserAccountGymQuery, userAccountID, id)
+		if err != nil {
+			return err
+		}
+		return nil
+	} else {
+		return errors.New("relation already exists")
+	}
 }
 
 func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
