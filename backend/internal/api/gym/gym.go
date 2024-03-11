@@ -65,6 +65,7 @@ func (s service) postGym() http.HandlerFunc {
 		err := s.gymStore.PostGym(claims.UserAccountID, requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create Gym", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 

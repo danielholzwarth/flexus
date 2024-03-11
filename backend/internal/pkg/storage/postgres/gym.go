@@ -5,18 +5,62 @@ import (
 )
 
 func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
-	query := `
-		INSERT INTO gym (name, display_name, latitude, longitude)
-		VALUES ($1, $2, $3, $4);
-	`
+	existsQuery := `
+        SELECT COUNT(*)
+        FROM gym
+        WHERE name = $1 AND latitude = $2 AND longitude = $3;
+    `
 
-	_, err := db.pool.Exec(query,
-		gym.Name,
-		gym.DisplayName,
-		gym.Latitude,
-		gym.Longitude,
-	)
+	var count int
+	var id int
+	err := db.pool.QueryRow(existsQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&count)
+	if err != nil {
+		return err
+	}
 
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	if count == 0 {
+		insertGymQuery := `
+            INSERT INTO gym (name, display_name, latitude, longitude)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id;
+        `
+
+		err = tx.QueryRow(insertGymQuery, gym.Name, gym.DisplayName, gym.Latitude, gym.Longitude).Scan(&id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if count > 0 {
+		selectGymIDQuery := `
+            SELECT id
+            FROM gym
+            WHERE name = $1 AND latitude = $2 AND longitude = $3;
+        `
+		err := db.pool.QueryRow(selectGymIDQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&id)
+		if err != nil {
+			return err
+		}
+	}
+
+	insertUserAccountGymQuery := `
+        INSERT INTO user_account_gym (user_id, gym_id)
+        VALUES ($1, $2);
+    `
+
+	_, err = tx.Exec(insertUserAccountGymQuery, userAccountID, id)
 	if err != nil {
 		return err
 	}
