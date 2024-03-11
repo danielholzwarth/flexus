@@ -62,8 +62,6 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
               ),
               onPressed: () {
-                debugPrint(widget.locationData['lat'] + "  " + widget.locationData['lon']);
-
                 openMaps(double.parse(widget.locationData['lat']), double.parse(widget.locationData['lon']));
               },
               child: const Text('Open in Maps'),

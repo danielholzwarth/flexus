@@ -44,8 +44,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     List<GymOverview> gymOverviews = [];
 
     if (response.isSuccessful) {
-      debugPrint(response.bodyString);
-
       final List<dynamic> jsonList = jsonDecode(response.bodyString);
 
       gymOverviews = jsonList.map((json) {

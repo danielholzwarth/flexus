@@ -89,7 +89,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
         break;
 
       default:
-        debugPrint("friendship patch not implemented yet");
         emit(FriendshipLoaded(friendship: null));
         break;
     }

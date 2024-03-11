@@ -122,7 +122,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     if (response.isSuccessful) {
       List<UserAccount> userAccounts = [];
       if (response.bodyString != "null") {
-        debugPrint(response.bodyString);
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
         final UserAccount userAccount = userBox.get("userAccount");
 
@@ -165,7 +164,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     if (response.isSuccessful) {
       List<UserAccountGymOverview> userAccountGymOverviews = [];
       if (response.bodyString != "null") {
-        debugPrint(response.bodyString);
         final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
         final UserAccount userAccount = userBox.get("userAccount");
 
