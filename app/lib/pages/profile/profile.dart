@@ -83,9 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: BlocBuilder(
         bloc: userAccountBloc,
         builder: (context, state) {
-          if (state is UserAccountLoading) {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          } else if (state is UserAccountLoaded) {
+          if (state is UserAccountLoaded) {
             return Column(
               children: [
                 Text(
@@ -105,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           } else {
-            return const Text("error");
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
         },
       ),
@@ -119,9 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: BlocBuilder(
         bloc: userAccountBloc,
         builder: (context, state) {
-          if (state is UserAccountLoading) {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          } else if (state is UserAccountLoaded) {
+          if (state is UserAccountLoaded) {
             return Stack(
               children: [
                 state.userAccount.level < 10
@@ -180,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           } else {
-            return const Text("error");
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
         },
       ),
@@ -191,9 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return BlocBuilder(
       bloc: bestLiftsBloc,
       builder: (context, state) {
-        if (state is BestLiftsLoading) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-        } else if (state is BestLiftsLoaded) {
+        if (state is BestLiftsLoaded) {
           if (state.bestLiftOverviews.isNotEmpty) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
         } else {
-          return const Text("Error loading best lifts");
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
         }
       },
     );
@@ -258,9 +252,7 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocBuilder(
           bloc: friendshipBloc,
           builder: (context, state) {
-            if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipPatching || state is FriendshipDeleting) {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-            } else if (state is FriendshipLoaded) {
+            if (state is FriendshipLoaded) {
               return PopupMenuButton<String>(
                 color: AppSettings.background,
                 icon: Icon(
@@ -563,7 +555,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               );
             } else {
-              return const Text("error"); // Return an empty container or handle other states
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             }
           },
         ),

@@ -100,16 +100,14 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 );
                               }
                             } else if (state is UserAccountsError) {
-                              return SliverFillRemaining(
-                                child: Center(
-                                  child: Text(
-                                    'Error: ${state.error}',
-                                    style: TextStyle(fontSize: AppSettings.fontSize),
-                                  ),
+                              return Center(
+                                child: Text(
+                                  'Error: ${state.error}',
+                                  style: TextStyle(fontSize: AppSettings.fontSize),
                                 ),
                               );
                             } else {
-                              return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
+                              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
                             }
                           },
                         ),

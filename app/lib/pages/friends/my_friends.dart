@@ -144,12 +144,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return BlocBuilder(
       bloc: userAccountBloc,
       builder: (context, state) {
-        if (state is UserAccountsLoading) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (state is UserAccountsLoaded) {
+        if (state is UserAccountsLoaded) {
           if (state.userAccounts.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
@@ -174,9 +169,7 @@ class CustomSearchDelegate extends SearchDelegate {
         } else {
           return Scaffold(
             backgroundColor: AppSettings.background,
-            body: const Center(
-              child: Text("Error"),
-            ),
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
           );
         }
       },
@@ -190,12 +183,7 @@ class CustomSearchDelegate extends SearchDelegate {
     return BlocBuilder(
       bloc: userAccountBloc,
       builder: (context, state) {
-        if (state is UserAccountsLoading) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (state is UserAccountsLoaded) {
+        if (state is UserAccountsLoaded) {
           if (state.userAccounts.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
@@ -220,9 +208,7 @@ class CustomSearchDelegate extends SearchDelegate {
         } else {
           return Scaffold(
             backgroundColor: AppSettings.background,
-            body: const Center(
-              child: Text("Error"),
-            ),
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
           );
         }
       },

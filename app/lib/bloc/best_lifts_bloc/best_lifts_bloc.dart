@@ -20,9 +20,6 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   void _onGetBestLifts(GetBestLifts event, Emitter<BestLiftsState> emit) async {
     emit(BestLiftsLoading());
 
-    //simulate backend request delay
-    //await Future.delayed(const Duration(seconds: 1));
-
     List<BestLiftOverview> bestLiftOverviews = List.empty();
 
     final response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);

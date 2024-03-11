@@ -45,9 +45,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
     return BlocBuilder(
       bloc: friendshipBloc,
       builder: (context, state) {
-        if (state is FriendshipCreating || state is FriendshipLoading || state is FriendshipPatching || state is FriendshipDeleting) {
-          return CircularProgressIndicator(color: AppSettings.primary);
-        } else if (state is FriendshipLoaded) {
+        if (state is FriendshipLoaded) {
           if (state.friendship != null) {
             if (state.friendship!.isAccepted) {
               return TextButton(
@@ -142,10 +140,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
             );
           }
         } else {
-          return Text(
-            'Error XYZ',
-            style: TextStyle(fontSize: AppSettings.fontSize),
-          );
+          return CircularProgressIndicator(color: AppSettings.primary);
         }
       },
     );

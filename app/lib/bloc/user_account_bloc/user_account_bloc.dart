@@ -144,9 +144,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccountsFriendsGym(GetUserAccountsFriendsGym event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
-    //simulate backend request delay
-    await Future.delayed(const Duration(seconds: 1));
-
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),
       isFriend: event.isFriend,

@@ -148,9 +148,7 @@ class _HomePageState extends State<HomePage> {
         child: BlocBuilder(
           bloc: userAccountBloc,
           builder: (context, state) {
-            if (state is UserAccountLoading) {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-            } else if (state is UserAccountLoaded) {
+            if (state is UserAccountLoaded) {
               if (state.userAccount.profilePicture != null) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -192,10 +190,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }
             } else {
-              return Icon(
-                Icons.error,
-                size: AppSettings.fontSizeTitle,
-              );
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             }
           },
         ),
