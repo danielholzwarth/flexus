@@ -21,4 +21,10 @@ class WorkoutLoaded extends WorkoutState {
   });
 }
 
-class WorkoutError extends WorkoutState {}
+class WorkoutError extends WorkoutState {
+  final String error;
+
+  WorkoutError({
+    required this.error,
+  });
+}

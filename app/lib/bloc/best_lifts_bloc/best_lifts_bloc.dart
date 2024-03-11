@@ -42,7 +42,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       }
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
     } else {
-      emit(BestLiftsError());
+      emit(BestLiftsError(error: response.error.toString()));
     }
   }
 }

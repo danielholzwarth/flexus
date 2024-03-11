@@ -15,4 +15,10 @@ class BestLiftsLoaded extends BestLiftsState {
   });
 }
 
-class BestLiftsError extends BestLiftsState {}
+class BestLiftsError extends BestLiftsState {
+  final String error;
+
+  BestLiftsError({
+    required this.error,
+  });
+}

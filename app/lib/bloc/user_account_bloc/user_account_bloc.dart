@@ -48,10 +48,10 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
         emit(UserAccountLoaded(userAccount: userAccount));
       } else {
-        emit(UserAccountError());
+        emit(UserAccountError(error: response.error.toString()));
       }
     } else {
-      emit(UserAccountError());
+      emit(UserAccountError(error: response.error.toString()));
     }
   }
 
@@ -81,14 +81,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
         break;
 
-      // case "level":
-      //   final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"level": event.value});
-      //   if (response.isSuccessful) {
-      //     userAccount.level = event.value;
-      //     userBox.put("userAccount", userAccount);
-      //   }
-      //   break;
-
       case "profilePicture":
         Response<dynamic> response;
 
@@ -104,6 +96,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         }
         break;
       default:
+        emit(UserAccountsError(error: "Patch not implemented yet!"));
     }
 
     emit(UserAccountLoaded(userAccount: userAccount));
@@ -144,7 +137,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         emit(UserAccountsLoaded(userAccounts: userAccounts));
       }
     } else {
-      emit(UserAccountsError());
+      emit(UserAccountsError(error: response.error.toString()));
     }
   }
 
@@ -186,7 +179,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
       }
     } else {
-      emit(UserAccountsError());
+      emit(UserAccountsError(error: response.error.toString()));
     }
   }
 }

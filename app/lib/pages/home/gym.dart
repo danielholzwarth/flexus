@@ -54,9 +54,7 @@ class _GymPageState extends State<GymPage> {
     return BlocBuilder(
       bloc: gymBloc,
       builder: (context, state) {
-        if (state is GymOverviewsLoading) {
-          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-        } else if (state is GymOverviewsLoaded) {
+        if (state is GymOverviewsLoaded) {
           if (state.gymOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -82,20 +80,13 @@ class _GymPageState extends State<GymPage> {
           return SliverFillRemaining(
             child: Center(
               child: Text(
-                'Error loading workouts',
+                'Error: ${state.error}',
                 style: TextStyle(fontSize: AppSettings.fontSize),
               ),
             ),
           );
         } else {
-          return SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'Error XYZ',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         }
       },
     );

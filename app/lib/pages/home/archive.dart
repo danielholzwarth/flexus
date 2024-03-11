@@ -40,9 +40,7 @@ class _ArchivePageState extends State<ArchivePage> {
           BlocBuilder(
             bloc: workoutBloc,
             builder: (context, state) {
-              if (state is WorkoutLoading || state is WorkoutUpdating || state is WorkoutDeleting) {
-                return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-              } else if (state is WorkoutLoaded) {
+              if (state is WorkoutLoaded) {
                 if (state.workoutOverviews.isNotEmpty) {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
@@ -79,20 +77,13 @@ class _ArchivePageState extends State<ArchivePage> {
                 return SliverFillRemaining(
                   child: Center(
                     child: Text(
-                      'Error loading workouts',
+                      'Error: ${state.error}',
                       style: TextStyle(fontSize: AppSettings.fontSize),
                     ),
                   ),
                 );
               } else {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      'Error XYZ',
-                      style: TextStyle(fontSize: AppSettings.fontSize),
-                    ),
-                  ),
-                );
+                return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
               }
             },
           ),

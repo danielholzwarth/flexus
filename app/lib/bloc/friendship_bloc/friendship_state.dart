@@ -19,4 +19,10 @@ class FriendshipLoaded extends FriendshipState {
   FriendshipLoaded({required this.friendship});
 }
 
-class FriendshipError extends FriendshipState {}
+class FriendshipError extends FriendshipState {
+  final String error;
+
+  FriendshipError({
+    required this.error,
+  });
+}

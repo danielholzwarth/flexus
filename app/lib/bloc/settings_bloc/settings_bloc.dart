@@ -51,10 +51,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
         emit(SettingsLoaded());
       } else {
-        emit(SettingsError());
+        emit(SettingsError(error: "No Settings found!"));
       }
     } else {
-      emit(SettingsError());
+      emit(SettingsError(error: response.error.toString()));
     }
   }
 

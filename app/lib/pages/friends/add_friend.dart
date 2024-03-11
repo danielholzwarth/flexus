@@ -45,9 +45,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
     return BlocBuilder(
       bloc: userAccountBloc,
       builder: (context, state) {
-        if (state is UserAccountsLoading) {
-          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-        } else if (state is UserAccountsLoaded) {
+        if (state is UserAccountsLoaded) {
           if (state.userAccounts.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -80,20 +78,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
           return SliverFillRemaining(
             child: Center(
               child: Text(
-                'Error loading workouts',
+                'Error: ${state.error}',
                 style: TextStyle(fontSize: AppSettings.fontSize),
               ),
             ),
           );
         } else {
-          return SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'Error XYZ',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         }
       },
     );

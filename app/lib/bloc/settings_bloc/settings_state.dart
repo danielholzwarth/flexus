@@ -13,4 +13,10 @@ class SettingsUpdating extends SettingsState {}
 
 class SettingsUpdated extends SettingsState {}
 
-class SettingsError extends SettingsState {}
+class SettingsError extends SettingsState {
+  final String error;
+
+  SettingsError({
+    required this.error,
+  });
+}

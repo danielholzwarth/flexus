@@ -53,7 +53,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
     } else {
-      emit(WorkoutError());
+      emit(WorkoutError(error: response.error.toString()));
     }
   }
 
@@ -107,7 +107,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         break;
 
       default:
-        emit(WorkoutError());
+        emit(WorkoutError(error: "Patch not implemented yet"));
         break;
     }
   }
@@ -126,7 +126,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       userBox.put("workoutOverviews", workoutOverviews);
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
     } else {
-      emit(WorkoutError());
+      emit(WorkoutError(error: response.error.toString()));
     }
   }
 }

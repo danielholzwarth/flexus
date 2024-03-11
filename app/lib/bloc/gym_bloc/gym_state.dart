@@ -19,4 +19,10 @@ class GymOverviewsLoaded extends GymState {
   });
 }
 
-class GymError extends GymState {}
+class GymError extends GymState {
+  final String error;
+
+  GymError({
+    required this.error,
+  });
+}

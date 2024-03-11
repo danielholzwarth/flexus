@@ -33,7 +33,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     if (response.isSuccessful) {
       emit(GymCreated());
     } else {
-      emit(GymError());
+      emit(GymError(error: response.error.toString()));
     }
   }
 
@@ -72,8 +72,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
           totalFriends: json['totalFriends'],
         );
       }).toList();
-    }
 
-    emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
+      emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
+    } else {
+      emit(GymError(error: response.error.toString()));
+    }
   }
 }

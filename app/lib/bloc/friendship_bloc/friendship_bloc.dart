@@ -39,7 +39,7 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
 
       emit(FriendshipLoaded(friendship: friendship));
     } else {
-      emit(FriendshipError());
+      emit(FriendshipError(error: response.error.toString()));
     }
   }
 
@@ -64,7 +64,7 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
         emit(FriendshipLoaded(friendship: null));
       }
     } else {
-      emit(FriendshipError());
+      emit(FriendshipError(error: response.error.toString()));
     }
   }
 
@@ -102,7 +102,7 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
     if (response.isSuccessful) {
       emit(FriendshipLoaded(friendship: null));
     } else {
-      emit(FriendshipError());
+      emit(FriendshipError(error: response.error.toString()));
     }
   }
 }

@@ -73,9 +73,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         BlocBuilder(
                           bloc: userAccountBloc,
                           builder: (context, state) {
-                            if (state is UserAccountsLoading) {
-                              return Expanded(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-                            } else if (state is UserAccountGymOverviewsLoaded) {
+                            if (state is UserAccountGymOverviewsLoaded) {
                               if (state.userAccountGymOverviews.isNotEmpty) {
                                 return Expanded(
                                   child: Padding(
@@ -102,19 +100,16 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 );
                               }
                             } else if (state is UserAccountsError) {
-                              return Center(
-                                child: Text(
-                                  'Error loading workouts',
-                                  style: TextStyle(fontSize: AppSettings.fontSize),
+                              return SliverFillRemaining(
+                                child: Center(
+                                  child: Text(
+                                    'Error: ${state.error}',
+                                    style: TextStyle(fontSize: AppSettings.fontSize),
+                                  ),
                                 ),
                               );
                             } else {
-                              return Center(
-                                child: Text(
-                                  'Error XYZ',
-                                  style: TextStyle(fontSize: AppSettings.fontSize),
-                                ),
-                              );
+                              return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
                             }
                           },
                         ),

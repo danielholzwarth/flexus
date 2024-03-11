@@ -17,7 +17,13 @@ class UserAccountLoaded extends UserAccountState {
   });
 }
 
-class UserAccountError extends UserAccountState {}
+class UserAccountError extends UserAccountState {
+  final String error;
+
+  UserAccountError({
+    required this.error,
+  });
+}
 
 class UserAccountsLoading extends UserAccountState {}
 
@@ -37,4 +43,10 @@ class UserAccountGymOverviewsLoaded extends UserAccountState {
   });
 }
 
-class UserAccountsError extends UserAccountState {}
+class UserAccountsError extends UserAccountState {
+  final String error;
+
+  UserAccountsError({
+    required this.error,
+  });
+}
