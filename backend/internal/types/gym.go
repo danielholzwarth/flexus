@@ -3,11 +3,7 @@ package types
 type Gym struct {
 	ID          int     `json:"id"`
 	Name        string  `json:"name"`
-	Country     string  `json:"country"`
-	CityName    string  `json:"cityName"`
-	ZipCode     string  `json:"zipCode"`
-	StreetName  string  `json:"streetName"`
-	HouseNumber string  `json:"houseNumber"`
+	DisplayName string  `json:"displayName"`
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 }

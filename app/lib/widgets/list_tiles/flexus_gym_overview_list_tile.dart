@@ -122,7 +122,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   Text buildSubTitle() {
     return Text(
-      "${widget.gymOverview.gym.streetName} ${widget.gymOverview.gym.houseNumber}, ${widget.gymOverview.gym.cityName}\n${widget.gymOverview.gym.country}",
+      widget.gymOverview.gym.displayName,
       style: TextStyle(fontSize: AppSettings.fontSizeDescription),
     );
   }

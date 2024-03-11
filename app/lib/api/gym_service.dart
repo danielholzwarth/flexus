@@ -4,6 +4,12 @@ part 'gym_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/gyms')
 abstract class GymService extends ChopperService {
+  @Post(path: '/')
+  Future<Response> postGym(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> gym,
+  );
+
   @Get(path: '/')
   Future<Response> getGymOverviews(
     @Header('flexusjwt') String flexusJWTString,

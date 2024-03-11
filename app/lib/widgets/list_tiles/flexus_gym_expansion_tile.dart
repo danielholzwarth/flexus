@@ -1,10 +1,10 @@
+import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class FlexusGymExpansionTile extends StatelessWidget {
-  final Map<String, dynamic> locationData; // Data for the gym location
+class FlexusGymExpansionTile extends StatefulWidget {
+  final Map<String, dynamic> locationData;
 
   const FlexusGymExpansionTile({
     super.key,
@@ -12,12 +12,19 @@ class FlexusGymExpansionTile extends StatelessWidget {
   });
 
   @override
+  State<FlexusGymExpansionTile> createState() => _FlexusGymExpansionTileState();
+}
+
+class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
+  @override
   Widget build(BuildContext context) {
+    final GymBloc gymBloc = GymBloc();
+
     return ExpansionTile(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(locationData['name'],
+          Text(widget.locationData['name'],
               style: TextStyle(
                 fontSize: AppSettings.fontSizeTitleSmall,
                 fontWeight: FontWeight.bold,
@@ -25,7 +32,7 @@ class FlexusGymExpansionTile extends StatelessWidget {
               )),
           SizedBox(height: AppSettings.screenHeight * 0.01),
           Text(
-            '${locationData['display_name']}',
+            '${widget.locationData['display_name']}',
             style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
           ),
         ],
@@ -43,7 +50,7 @@ class FlexusGymExpansionTile extends StatelessWidget {
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
               ),
               onPressed: () {
-                //Add to my gyms
+                gymBloc.add(PostGym(locationData: widget.locationData));
               },
               child: const Text('Add to Gyms'),
             ),
@@ -55,8 +62,9 @@ class FlexusGymExpansionTile extends StatelessWidget {
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
               ),
               onPressed: () {
-                debugPrint(locationData['lat'] + "  " + locationData['lon']);
-                openMaps(double.parse(locationData['lat']), double.parse(locationData['lon']));
+                debugPrint(widget.locationData['lat'] + "  " + widget.locationData['lon']);
+
+                openMaps(double.parse(widget.locationData['lat']), double.parse(widget.locationData['lon']));
               },
               child: const Text('Open in Maps'),
             ),

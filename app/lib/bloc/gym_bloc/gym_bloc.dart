@@ -16,7 +16,25 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   final userBox = Hive.box('userBox');
 
   GymBloc() : super(GymInitial()) {
+    on<PostGym>(_onPostGym);
     on<GetGymOverviews>(_onGetGymOverviews);
+  }
+
+  void _onPostGym(PostGym event, Emitter<GymState> emit) async {
+    emit(GymCreating());
+
+    final response = await _gymService.postGym(userBox.get("flexusjwt"), {
+      "name": event.locationData['name'],
+      "displayName": event.locationData['display_name'],
+      "latitude": double.parse(event.locationData['lat']),
+      "longitude": double.parse(event.locationData['lon']),
+    });
+
+    if (response.isSuccessful) {
+      emit(GymCreated());
+    } else {
+      emit(GymError());
+    }
   }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
@@ -48,11 +66,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
           gym: Gym(
             id: json['gym']['id'],
             name: json['gym']['name'],
-            country: json['gym']['country'],
-            cityName: json['gym']['cityName'],
-            zipCode: json['gym']['zipCode'],
-            streetName: json['gym']['streetName'],
-            houseNumber: json['gym']['houseNumber'],
+            displayName: json['gym']['displayName'],
             latitude: json['gym']['latitude'],
             longitude: json['gym']['longitude'],
           ),

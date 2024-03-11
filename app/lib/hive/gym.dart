@@ -11,34 +11,18 @@ class Gym extends HiveObject {
   String name;
 
   @HiveField(2)
-  String country;
+  String displayName;
 
   @HiveField(3)
-  String cityName;
-
-  @HiveField(4)
-  String zipCode;
-
-  @HiveField(5)
-  String streetName;
-
-  @HiveField(6)
-  String houseNumber;
-
-  @HiveField(7)
   double latitude;
 
-  @HiveField(8)
+  @HiveField(4)
   double longitude;
 
   Gym({
     required this.id,
     required this.name,
-    required this.country,
-    required this.cityName,
-    required this.zipCode,
-    required this.streetName,
-    required this.houseNumber,
+    required this.displayName,
     required this.latitude,
     required this.longitude,
   });

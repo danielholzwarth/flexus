@@ -10,6 +10,7 @@ import (
 
 type GymStore interface {
 	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
+	PostGym(userAccountID int, gym types.Gym) error
 }
 
 type service struct {
@@ -24,6 +25,7 @@ func NewService(gymStore GymStore) http.Handler {
 		gymStore: gymStore,
 	}
 
+	r.Post("/", s.postGym())
 	r.Get("/", s.getGymOverviews())
 
 	return s
@@ -31,6 +33,44 @@ func NewService(gymStore GymStore) http.Handler {
 
 func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
+}
+
+func (s service) postGym() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody types.Gym
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if requestBody.Name == "" {
+			http.Error(w, "Gym Name can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		if requestBody.DisplayName == "" {
+			http.Error(w, "Gym DisplayName can not be empty", http.StatusBadRequest)
+			return
+		}
+
+		err := s.gymStore.PostGym(claims.UserAccountID, requestBody)
+		if err != nil {
+			http.Error(w, "Failed to create Gym", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+	}
 }
 
 func (s service) getGymOverviews() http.HandlerFunc {

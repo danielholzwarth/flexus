@@ -57,11 +57,7 @@ CREATE TABLE report (
 CREATE TABLE gym (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    country VARCHAR(50) NOT NULL,
-    city_name VARCHAR(50) NOT NULL,
-    zip_code VARCHAR(50) NOT NULL,
-    street_name VARCHAR(50) NOT NULL,
-    house_number VARCHAR(50) NOT NULL,
+    display_name VARCHAR NOT NULL,
     latitude DECIMAL NOT NULL,
     longitude DECIMAL NOT NULL
 );
@@ -193,16 +189,11 @@ INSERT INTO "user_account" ("username", "name", "password", "created_at", "level
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('blackpanther22', 'Brad', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2002-11-09', 24, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pinkflamingo77', 'Pam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2001-09-15', 16, null);
 
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Fitness Zone', 'United States', 'New York City', '10001', 'Broadway', '123', 40.7128, -74.0060);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Powerhouse Gym', 'Canada', 'Toronto', 'M5V 2X5', 'King Street West', '456', 43.6532, -79.3832);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Elite Fitness Center', 'United Kingdom', 'London', 'SW1A 1AA', 'Westminster', '789', 51.5074, -0.1278);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Muscle Beach Gym', 'Australia', 'Sydney', '2000', 'Bondi Beach Road', '1011', -33.8915, 151.2767);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Iron Works Fitness', 'Germany', 'Berlin', '10178', 'Friedrichstraße', '1213', 52.5200, 13.4050);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Fit & Flex Gym', 'France', 'Paris', '75001', 'Rue de Rivoli', '1415', 48.8566, 2.3522);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Flex Fitness', 'Spain', 'Barcelona', '08001', 'La Rambla', '1617', 41.3851, 2.1734);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Strength Zone', 'Italy', 'Rome', '00184', 'Via del Corso', '1819', 41.9028, 12.4964);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Peak Performance Gym', 'Japan', 'Tokyo', '100-0005', 'Chiyoda', '2021', 35.6895, 139.6917);
-Insert INTO "gym" ("name", "country", "city_name", "zip_code", "street_name", "house_number", "latitude", "longitude") VALUES ('Dynamic Fitness', 'Brazil', 'São Paulo', '01000-000', 'Avenida Paulista', '2223', -23.5505, -46.6333);
+Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Energym', 'Energym, Siemensstraße, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Powerhouse', 'Energym, Hier könnte deine Werbung stehen, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Mc Fit', 'Energym, Lalala, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Jumpers', 'Jumpers, Irgendeine Straße, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
+
 
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);

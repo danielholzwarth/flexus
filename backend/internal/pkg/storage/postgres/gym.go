@@ -4,11 +4,31 @@ import (
 	"flexus/internal/types"
 )
 
+func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
+	query := `
+		INSERT INTO gym (name, display_name, latitude, longitude)
+		VALUES ($1, $2, $3, $4);
+	`
+
+	_, err := db.pool.Exec(query,
+		gym.Name,
+		gym.DisplayName,
+		gym.Latitude,
+		gym.Longitude,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 	var gymOverviews []types.GymOverview
 
 	query := `
-        SELECT g.id, g.name, g.country, g.city_name, g.zip_code, g.street_name, g.house_number, g.latitude, g.longitude
+        SELECT g.id, g.name, g.display_name, g.latitude, g.longitude
         FROM gym g
         INNER JOIN user_account_gym uag ON g.id = uag.gym_id
         WHERE uag.user_id = $1;
@@ -24,7 +44,7 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 		var gymOverview types.GymOverview
 		var gym types.Gym
 
-		err := rows.Scan(&gym.ID, &gym.Name, &gym.Country, &gym.CityName, &gym.ZipCode, &gym.StreetName, &gym.HouseNumber, &gym.Latitude, &gym.Longitude)
+		err := rows.Scan(&gym.ID, &gym.Name, &gym.DisplayName, &gym.Latitude, &gym.Longitude)
 		if err != nil {
 			return nil, err
 		}

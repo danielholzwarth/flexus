@@ -19,37 +19,25 @@ class GymAdapter extends TypeAdapter<Gym> {
     return Gym(
       id: fields[0] as int,
       name: fields[1] as String,
-      country: fields[2] as String,
-      cityName: fields[3] as String,
-      zipCode: fields[4] as String,
-      streetName: fields[5] as String,
-      houseNumber: fields[6] as String,
-      latitude: fields[7] as double,
-      longitude: fields[8] as double,
+      displayName: fields[2] as String,
+      latitude: fields[3] as double,
+      longitude: fields[4] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Gym obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.country)
+      ..write(obj.displayName)
       ..writeByte(3)
-      ..write(obj.cityName)
-      ..writeByte(4)
-      ..write(obj.zipCode)
-      ..writeByte(5)
-      ..write(obj.streetName)
-      ..writeByte(6)
-      ..write(obj.houseNumber)
-      ..writeByte(7)
       ..write(obj.latitude)
-      ..writeByte(8)
+      ..writeByte(4)
       ..write(obj.longitude);
   }
 
