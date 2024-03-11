@@ -6,7 +6,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
+func (db *DB) PostGym(userAccountID int, gym types.Gym) (types.Gym, error) {
 	existsQuery := `
         SELECT COUNT(*)
         FROM gym
@@ -14,15 +14,14 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
     `
 
 	var count int
-	var id int
 	err := db.pool.QueryRow(existsQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&count)
 	if err != nil {
-		return err
+		return types.Gym{}, err
 	}
 
 	tx, err := db.pool.Begin()
 	if err != nil {
-		return err
+		return types.Gym{}, err
 	}
 	defer func() {
 		if err != nil {
@@ -39,9 +38,9 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
             RETURNING id;
         `
 
-		err = tx.QueryRow(insertGymQuery, gym.Name, gym.DisplayName, gym.Latitude, gym.Longitude).Scan(&id)
+		err = tx.QueryRow(insertGymQuery, gym.Name, gym.DisplayName, gym.Latitude, gym.Longitude).Scan(&gym.ID)
 		if err != nil {
-			return err
+			return types.Gym{}, err
 		}
 	}
 
@@ -51,9 +50,9 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
             FROM gym
             WHERE name = $1 AND latitude = $2 AND longitude = $3;
         `
-		err := db.pool.QueryRow(selectGymIDQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&id)
+		err := db.pool.QueryRow(selectGymIDQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&gym.ID)
 		if err != nil {
-			return err
+			return types.Gym{}, err
 		}
 	}
 
@@ -63,9 +62,9 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
         WHERE user_id = $1 AND gym_id = $2;
     `
 
-	err = db.pool.QueryRow(existsQuery, userAccountID, id).Scan(&count)
+	err = db.pool.QueryRow(existsQuery, userAccountID, gym.ID).Scan(&count)
 	if err != nil {
-		return err
+		return types.Gym{}, err
 	}
 
 	if count == 0 {
@@ -74,13 +73,13 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
 			VALUES ($1, $2);
 		`
 
-		_, err = tx.Exec(insertUserAccountGymQuery, userAccountID, id)
+		_, err = tx.Exec(insertUserAccountGymQuery, userAccountID, gym.ID)
 		if err != nil {
-			return err
+			return types.Gym{}, err
 		}
-		return nil
+		return gym, nil
 	} else {
-		return errors.New("relation already exists")
+		return types.Gym{}, errors.New("relation already exists")
 	}
 }
 

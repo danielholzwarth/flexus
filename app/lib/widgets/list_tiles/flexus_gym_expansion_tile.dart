@@ -1,6 +1,7 @@
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FlexusGymExpansionTile extends StatefulWidget {
@@ -42,17 +43,48 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-              ),
-              onPressed: () {
-                gymBloc.add(PostGym(locationData: widget.locationData));
+            BlocBuilder(
+              bloc: gymBloc,
+              builder: (context, state) {
+                if (state is GymCreating) {
+                  return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                      overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                      foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                    ),
+                    onPressed: null,
+                    child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+                  );
+                } else if (state is GymCreated) {
+                  return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                      overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                      foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                    ),
+                    onPressed: () {
+                      gymBloc.add(DeleteGym(gymID: state.gym.id));
+                    },
+                    child: Icon(Icons.check, color: AppSettings.primary, size: AppSettings.fontSize),
+                  );
+                } else {
+                  return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                      overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                      foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                    ),
+                    onPressed: () {
+                      gymBloc.add(PostGym(locationData: widget.locationData));
+                    },
+                    child: const Text('Add to Gyms'),
+                  );
+                }
               },
-              child: const Text('Add to Gyms'),
             ),
             ElevatedButton(
               style: ButtonStyle(

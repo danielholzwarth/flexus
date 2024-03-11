@@ -10,8 +10,8 @@ import (
 )
 
 type GymStore interface {
+	PostGym(userAccountID int, gym types.Gym) (types.Gym, error)
 	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
-	PostGym(userAccountID int, gym types.Gym) error
 	DeleteGym(userAccountID int, gymID int) error
 }
 
@@ -65,15 +65,23 @@ func (s service) postGym() http.HandlerFunc {
 			return
 		}
 
-		err := s.gymStore.PostGym(claims.UserAccountID, requestBody)
+		gym, err := s.gymStore.PostGym(claims.UserAccountID, requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create Gym", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
+		response, err := json.Marshal(gym)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		w.Write(response)
 	}
 }
 

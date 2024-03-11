@@ -7,7 +7,13 @@ class GymInitial extends GymState {}
 
 class GymCreating extends GymState {}
 
-class GymCreated extends GymState {}
+class GymCreated extends GymState {
+  final Gym gym;
+
+  GymCreated({
+    required this.gym,
+  });
+}
 
 class GymDeleting extends GymState {}
 

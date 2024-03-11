@@ -32,7 +32,21 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     });
 
     if (response.isSuccessful) {
-      emit(GymCreated());
+      if (response.bodyString != "null") {
+        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+
+        final gym = Gym(
+          id: jsonMap['id'],
+          name: jsonMap['name'],
+          displayName: jsonMap['displayName'],
+          latitude: jsonMap['latitude'],
+          longitude: jsonMap['longitude'],
+        );
+
+        emit(GymCreated(gym: gym));
+      } else {
+        emit(GymError(error: "No Settings found!"));
+      }
     } else {
       emit(GymError(error: response.error.toString()));
     }

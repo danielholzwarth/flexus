@@ -139,7 +139,15 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Map<String, dynamic> locationData = {
+                                        "name": widget.gymOverview.gym.name,
+                                        "display_name": widget.gymOverview.gym.displayName,
+                                        "lat": widget.gymOverview.gym.latitude.toString(),
+                                        "lon": widget.gymOverview.gym.longitude.toString(),
+                                      };
+                                      gymBloc.add(PostGym(locationData: locationData));
+                                    },
                                     child: Icon(Icons.check, color: AppSettings.error, size: AppSettings.fontSize),
                                   );
                                 } else {
