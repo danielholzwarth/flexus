@@ -96,8 +96,7 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 		var userAccountInformations []types.UserAccountInformation
 
 		userQuery := `
-            SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture, 
-                   (SELECT COUNT(*) FROM friendship f WHERE (f.requestor_id = ua.id OR f.requested_id = ua.id) AND f.is_accepted = TRUE) AS friend_count
+            SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
             FROM user_account ua
             INNER JOIN workout w ON ua.id = w.user_id
             WHERE ua.id != $2 AND w.gym_id = $1 AND w.endtime IS NULL AND EXISTS (
@@ -116,7 +115,7 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 		for innerRows.Next() {
 			var userAccountInformation types.UserAccountInformation
 
-			err := innerRows.Scan(&userAccountInformation.UserAccountID, &userAccountInformation.Username, &userAccountInformation.Name, &userAccountInformation.CreatedAt, &userAccountInformation.Level, &userAccountInformation.ProfilePicture, &gymOverview.TotalFriends)
+			err := innerRows.Scan(&userAccountInformation.UserAccountID, &userAccountInformation.Username, &userAccountInformation.Name, &userAccountInformation.CreatedAt, &userAccountInformation.Level, &userAccountInformation.ProfilePicture)
 			if err != nil {
 				return nil, err
 			}
@@ -124,6 +123,19 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 			userAccountInformations = append(userAccountInformations, userAccountInformation)
 		}
 		if err := innerRows.Err(); err != nil {
+			return nil, err
+		}
+
+		totalCountQuery := `
+			SELECT COUNT(*) 
+			FROM user_account ua
+			INNER JOIN friendship f ON f.requestor_id = ua.id OR f.requested_id = ua.id
+			INNER JOIN workout w ON ua.id = w.user_id
+			WHERE ua.id != $1 AND f.is_accepted = TRUE AND w.gym_id = $2;
+		`
+
+		err = db.pool.QueryRow(totalCountQuery, userAccountID, gym.ID).Scan(&gymOverview.TotalFriends)
+		if err != nil {
 			return nil, err
 		}
 
