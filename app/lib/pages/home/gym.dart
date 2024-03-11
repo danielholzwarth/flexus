@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
@@ -7,11 +9,13 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/list_tiles/flexus_gym_expansion_tile.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:http/http.dart' as http;
 
 class GymPage extends StatefulWidget {
   const GymPage({super.key});
@@ -334,7 +338,20 @@ class _GymPageState extends State<GymPage> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  GymBloc gymBloc = GymBloc();
+  TextEditingController searchController = TextEditingController();
+  List<Map<String, dynamic>> searchResults = [];
+
+  Future<List<Map<String, dynamic>>> searchLocations(String query) async {
+    final response = await http.get(Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> results = json.decode(response.body);
+      final List<Map<String, dynamic>> firstFiveResults = results.take(10).cast<Map<String, dynamic>>().toList();
+      return firstFiveResults;
+    } else {
+      throw Exception('Failed to load search results');
+    }
+  }
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -360,27 +377,35 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    gymBloc.add(GetGymOverviews());
-
-    return BlocBuilder(
-      bloc: gymBloc,
-      builder: (context, state) {
-        if (state is GymOverviewsLoading) {
+    return FutureBuilder(
+      future: searchLocations(query),
+      builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: AppSettings.background,
             body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
           );
-        } else if (state is GymOverviewsLoaded) {
-          if (state.gymOverviews.isNotEmpty) {
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+
+          if (searchResults.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
               body: ListView.builder(
                 itemBuilder: (context, index) {
-                  return FlexusGymOverviewListTile(
-                    gymOverview: state.gymOverviews[index],
-                  );
+                  return FlexusGymExpansionTile(locationData: searchResults[index]);
                 },
-                itemCount: state.gymOverviews.length,
+                itemCount: searchResults.length,
               ),
             );
           } else {
@@ -388,32 +413,12 @@ class CustomSearchDelegate extends SearchDelegate {
               backgroundColor: AppSettings.background,
               body: Center(
                 child: Text(
-                  'No gym found',
+                  'No results found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
             );
           }
-        } else if (state is UserAccountsError) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error loading workouts',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error XYZ',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
         }
       },
     );
@@ -421,27 +426,35 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    gymBloc.add(GetGymOverviews());
-
-    return BlocBuilder(
-      bloc: gymBloc,
-      builder: (context, state) {
-        if (state is GymOverviewsLoading) {
+    return FutureBuilder(
+      future: searchLocations(query),
+      builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             backgroundColor: AppSettings.background,
             body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
           );
-        } else if (state is GymOverviewsLoaded) {
-          if (state.gymOverviews.isNotEmpty) {
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(fontSize: AppSettings.fontSize),
+              ),
+            ),
+          );
+        } else {
+          final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+
+          if (searchResults.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
               body: ListView.builder(
                 itemBuilder: (context, index) {
-                  return FlexusGymOverviewListTile(
-                    gymOverview: state.gymOverviews[index],
-                  );
+                  return FlexusGymExpansionTile(locationData: searchResults[index]);
                 },
-                itemCount: state.gymOverviews.length,
+                itemCount: searchResults.length,
               ),
             );
           } else {
@@ -449,32 +462,12 @@ class CustomSearchDelegate extends SearchDelegate {
               backgroundColor: AppSettings.background,
               body: Center(
                 child: Text(
-                  'No gym found',
+                  'No results found',
                   style: TextStyle(fontSize: AppSettings.fontSize),
                 ),
               ),
             );
           }
-        } else if (state is UserAccountsError) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error loading workouts',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error XYZ',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
         }
       },
     );

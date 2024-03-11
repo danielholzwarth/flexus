@@ -25,11 +25,18 @@ dependencies:
   #State Management
   flutter_bloc: ^8.0.8
 
+  #picking image from galerie or taking new one
   image_picker: ^1.0.7
 
   #Displaying and scanning QR-Code
   qr_flutter: ^4.1.0
   mobile_scanner: ^4.0.1
+
+  #Deep links for Maps
+  url_launcher: ^6.2.5
+
+  #OSM http request
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
