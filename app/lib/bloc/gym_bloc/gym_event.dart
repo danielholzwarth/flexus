@@ -12,3 +12,11 @@ class PostGym extends GymEvent {
 }
 
 class GetGymOverviews extends GymEvent {}
+
+class DeleteGym extends GymEvent {
+  final int gymID;
+
+  DeleteGym({
+    required this.gymID,
+  });
+}

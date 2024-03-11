@@ -51,4 +51,22 @@ final class _$GymService extends GymService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> deleteGym(
+    String flexusJWTString,
+    int gymID,
+  ) {
+    final Uri $url = Uri.parse('/gyms/${gymID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

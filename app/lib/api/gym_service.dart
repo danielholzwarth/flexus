@@ -15,6 +15,12 @@ abstract class GymService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Delete(path: '/{gymID}')
+  Future<Response> deleteGym(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('gymID') int gymID,
+  );
+
   static GymService create() {
     final client = ChopperClient(
         //For local device

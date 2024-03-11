@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flexus/internal/types"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -11,6 +12,7 @@ import (
 type GymStore interface {
 	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
 	PostGym(userAccountID int, gym types.Gym) error
+	DeleteGym(userAccountID int, gymID int) error
 }
 
 type service struct {
@@ -27,6 +29,7 @@ func NewService(gymStore GymStore) http.Handler {
 
 	r.Post("/", s.postGym())
 	r.Get("/", s.getGymOverviews())
+	r.Delete("/{gymID}", s.deleteGym())
 
 	return s
 }
@@ -99,5 +102,34 @@ func (s service) getGymOverviews() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
+	}
+}
+
+func (s service) deleteGym() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		gymIDValue := chi.URLParam(r, "gymID")
+		gymID, err := strconv.Atoi(gymIDValue)
+		if err != nil || gymID <= 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Wrong input for gymID. Must be integer greater than 0."))
+			println(err.Error())
+			return
+		}
+
+		err = s.gymStore.DeleteGym(claims.UserAccountID, gymID)
+		if err != nil {
+			http.Error(w, "Failed to delete Gym", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 	}
 }

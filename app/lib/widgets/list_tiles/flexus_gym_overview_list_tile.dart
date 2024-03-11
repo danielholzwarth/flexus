@@ -1,3 +1,4 @@
+import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
@@ -43,6 +44,8 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   void showPopUp() {
     userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
+    GymBloc gymBloc = GymBloc();
+
     showModalBottomSheet(
       backgroundColor: AppSettings.background,
       context: context,
@@ -114,15 +117,46 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                                surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                                overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
-                                foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                              ),
-                              onPressed: () {},
-                              child: const Text('Delete Gym'),
+                            BlocBuilder(
+                              bloc: gymBloc,
+                              builder: (context, state) {
+                                if (state is GymDeleting) {
+                                  return ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                                      overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
+                                      foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                    ),
+                                    onPressed: null,
+                                    child: Center(child: CircularProgressIndicator(color: AppSettings.error)),
+                                  );
+                                } else if (state is GymDeleted) {
+                                  return ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                                      overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
+                                      foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                    ),
+                                    onPressed: () {},
+                                    child: Icon(Icons.check, color: AppSettings.error, size: AppSettings.fontSize),
+                                  );
+                                } else {
+                                  return ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                                      overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
+                                      foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                    ),
+                                    onPressed: () {
+                                      gymBloc.add(DeleteGym(gymID: widget.gymOverview.gym.id));
+                                    },
+                                    child: const Text('Delete Gym'),
+                                  );
+                                }
+                              },
                             ),
                             ElevatedButton(
                               style: ButtonStyle(

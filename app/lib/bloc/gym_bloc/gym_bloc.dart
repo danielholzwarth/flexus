@@ -18,6 +18,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   GymBloc() : super(GymInitial()) {
     on<PostGym>(_onPostGym);
     on<GetGymOverviews>(_onGetGymOverviews);
+    on<DeleteGym>(_onDeleteGym);
   }
 
   void _onPostGym(PostGym event, Emitter<GymState> emit) async {
@@ -44,36 +45,52 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     List<GymOverview> gymOverviews = [];
 
     if (response.isSuccessful) {
-      final List<dynamic> jsonList = jsonDecode(response.bodyString);
+      if (response.bodyString != "null") {
+        final List<dynamic> jsonList = jsonDecode(response.bodyString);
 
-      gymOverviews = jsonList.map((json) {
-        List<UserAccount> userAccounts = [];
-        if (json['currentUserAccounts'] != null) {
-          userAccounts = List<UserAccount>.from(json['currentUserAccounts'].map((accountJson) {
-            return UserAccount(
-              id: accountJson['userAccountID'],
-              username: accountJson['username'],
-              name: accountJson['name'],
-              createdAt: DateTime.parse(accountJson['createdAt']),
-              level: accountJson['level'],
-              profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
-            );
-          }));
-        }
-        return GymOverview(
-          gym: Gym(
-            id: json['gym']['id'],
-            name: json['gym']['name'],
-            displayName: json['gym']['displayName'],
-            latitude: json['gym']['latitude'],
-            longitude: json['gym']['longitude'],
-          ),
-          userAccounts: userAccounts,
-          totalFriends: json['totalFriends'],
-        );
-      }).toList();
-
+        gymOverviews = jsonList.map((json) {
+          List<UserAccount> userAccounts = [];
+          if (json['currentUserAccounts'] != null) {
+            userAccounts = List<UserAccount>.from(json['currentUserAccounts'].map((accountJson) {
+              return UserAccount(
+                id: accountJson['userAccountID'],
+                username: accountJson['username'],
+                name: accountJson['name'],
+                createdAt: DateTime.parse(accountJson['createdAt']),
+                level: accountJson['level'],
+                profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
+              );
+            }));
+          }
+          return GymOverview(
+            gym: Gym(
+              id: json['gym']['id'],
+              name: json['gym']['name'],
+              displayName: json['gym']['displayName'],
+              latitude: json['gym']['latitude'],
+              longitude: json['gym']['longitude'],
+            ),
+            userAccounts: userAccounts,
+            totalFriends: json['totalFriends'],
+          );
+        }).toList();
+      }
       emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
+    } else {
+      emit(GymError(error: response.error.toString()));
+    }
+  }
+
+  void _onDeleteGym(DeleteGym event, Emitter<GymState> emit) async {
+    emit(GymDeleting());
+
+    final response = await _gymService.deleteGym(
+      userBox.get("flexusjwt"),
+      event.gymID,
+    );
+
+    if (response.isSuccessful) {
+      emit(GymDeleted());
     } else {
       emit(GymError(error: response.error.toString()));
     }

@@ -9,6 +9,10 @@ class GymCreating extends GymState {}
 
 class GymCreated extends GymState {}
 
+class GymDeleting extends GymState {}
+
+class GymDeleted extends GymState {}
+
 class GymOverviewsLoading extends GymState {}
 
 class GymOverviewsLoaded extends GymState {

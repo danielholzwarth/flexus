@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"database/sql"
+	"errors"
 	"flexus/internal/types"
 )
 
@@ -149,4 +151,48 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 	}
 
 	return gymOverviews, nil
+}
+
+func (db *DB) DeleteGym(userAccountID int, gymID int) error {
+	query := `
+		DELETE 
+		FROM user_account_gym
+		WHERE user_id = $1 AND gym_id = $2;
+	`
+
+	_, err := db.pool.Exec(query, userAccountID, gymID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("relation not found")
+		}
+		return err
+	}
+
+	existQuery := `
+		SELECT EXISTS (
+			SELECT 1
+			FROM user_account_gym
+			WHERE gym_id = $1
+		);
+	`
+
+	var exist bool
+	err = db.pool.QueryRow(existQuery, gymID).Scan(&exist)
+	if err != nil {
+		return err
+	}
+
+	if !exist {
+		deleteGymQuery := `
+			DELETE
+			FROM gym
+			WHERE id = $1;
+		`
+
+		_, err = db.pool.Exec(deleteGymQuery, gymID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
