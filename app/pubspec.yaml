@@ -38,6 +38,9 @@ dependencies:
   #OSM http request
   http: ^1.2.1
 
+  #Slidable
+  flutter_slidable: ^3.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

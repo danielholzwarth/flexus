@@ -125,6 +125,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       userBox.put("workoutOverviews", workoutOverviews);
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+      emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
     } else {
       emit(WorkoutError(error: response.error.toString()));
     }

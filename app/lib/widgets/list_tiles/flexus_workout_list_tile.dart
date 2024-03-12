@@ -4,6 +4,7 @@ import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/workout_documentation/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
@@ -25,24 +26,53 @@ class FlexusWorkoutListTile extends StatelessWidget {
     final userBox = Hive.box('userBox');
     final workout = workoutOverview.workout;
 
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
-      tileColor: AppSettings.background,
-      onTap: () {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.rightToLeft,
-            child: ViewWorkoutPage(
-              workoutID: workout.id,
-            ),
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const StretchMotion(),
+        extentRatio: 0.5,
+        children: [
+          SlidableAction(
+            backgroundColor: AppSettings.primary,
+            icon: workout.isArchived ? Icons.unarchive : Icons.archive,
+            label: workout.isArchived ? "Unarchive" : "Archive",
+            foregroundColor: AppSettings.fontV1,
+            onPressed: workout.isArchived
+                ? (context) {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
+                  }
+                : (context) {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, name: "isArchived", value: true));
+                  },
           ),
-        );
-      },
-      leading: buildDate(workout),
-      title: buildTitle(),
-      trailing: buildTrailing(workout),
-      subtitle: buildSubtitle(workout, userBox),
+          SlidableAction(
+            backgroundColor: AppSettings.error,
+            icon: Icons.delete,
+            label: "Delete",
+            foregroundColor: AppSettings.fontV1,
+            onPressed: (context) {
+              workoutBloc.add(DeleteWorkout(workoutID: workout.id));
+            },
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+        tileColor: AppSettings.background,
+        onTap: () {
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child: ViewWorkoutPage(
+                workoutID: workout.id,
+              ),
+            ),
+          );
+        },
+        leading: buildDate(workout),
+        title: buildTitle(),
+        subtitle: buildSubtitle(workout, userBox),
+      ),
     );
   }
 
@@ -101,46 +131,6 @@ class FlexusWorkoutListTile extends StatelessWidget {
                 ),
               ),
       ],
-    );
-  }
-
-  PopupMenuButton<String> buildTrailing(Workout workout) {
-    return PopupMenuButton<String>(
-      icon: Icon(
-        Icons.more_vert,
-        color: AppSettings.font,
-        size: AppSettings.fontSizeTitle,
-      ),
-      itemBuilder: (BuildContext context) {
-        return workout.isArchived
-            ? {'Unarchive', 'Delete'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList()
-            : {'Archive', 'Delete'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-      },
-      onSelected: (String choice) {
-        switch (choice) {
-          case "Archive":
-            workoutBloc.add(PatchWorkout(workoutID: workout.id, name: "isArchived", value: true));
-            break;
-          case "Unarchive":
-            workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
-            break;
-          case "Delete":
-            workoutBloc.add(DeleteWorkout(workoutID: workout.id));
-            break;
-          default:
-            debugPrint("not implemented yed");
-        }
-      },
     );
   }
 
