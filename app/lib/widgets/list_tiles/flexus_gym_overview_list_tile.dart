@@ -10,10 +10,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class FlexusGymOverviewListTile extends StatefulWidget {
   final GymOverview gymOverview;
+  final Function func;
 
   const FlexusGymOverviewListTile({
     super.key,
     required this.gymOverview,
+    required this.func,
   });
 
   @override
@@ -61,7 +63,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                 color: AppSettings.background,
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(40.0),
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Column(
                       children: [
                         Text(
@@ -80,7 +82,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                               if (state.userAccountGymOverviews.isNotEmpty) {
                                 return Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
                                     child: ListView(
                                       children: [
                                         ...state.userAccountGymOverviews.map(
@@ -127,27 +129,23 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                                     ),
-                                    onPressed: null,
+                                    onPressed: () {},
                                     child: Center(child: CircularProgressIndicator(color: AppSettings.error)),
                                   );
                                 } else if (state is GymDeleted) {
+                                  widget.func();
+
                                   return ElevatedButton(
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(AppSettings.background),
                                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                                     ),
-                                    onPressed: () {
-                                      Map<String, dynamic> locationData = {
-                                        "name": widget.gymOverview.gym.name,
-                                        "display_name": widget.gymOverview.gym.displayName,
-                                        "lat": widget.gymOverview.gym.latitude.toString(),
-                                        "lon": widget.gymOverview.gym.longitude.toString(),
-                                      };
-                                      gymBloc.add(PostGym(locationData: locationData));
-                                    },
+                                    onPressed: () {},
                                     child: Icon(Icons.check, color: AppSettings.error, size: AppSettings.fontSize),
                                   );
                                 } else {
@@ -157,6 +155,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                                     ),
                                     onPressed: () {
                                       gymBloc.add(DeleteGym(gymID: widget.gymOverview.gym.id));
@@ -172,6 +171,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                 overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                                fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                               ),
                               onPressed: () {
                                 openMaps(widget.gymOverview.gym.latitude, widget.gymOverview.gym.longitude);

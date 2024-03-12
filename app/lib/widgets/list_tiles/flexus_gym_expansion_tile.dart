@@ -53,6 +53,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                     ),
                     onPressed: null,
                     child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
@@ -64,6 +65,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                     ),
                     onPressed: () {
                       gymBloc.add(DeleteGym(gymID: state.gym.id));
@@ -77,6 +79,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                     ),
                     onPressed: () {
                       gymBloc.add(PostGym(locationData: widget.locationData));
@@ -92,6 +95,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                 surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                 overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
               ),
               onPressed: () {
                 openMaps(double.parse(widget.locationData['lat']), double.parse(widget.locationData['lon']));

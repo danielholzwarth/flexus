@@ -66,6 +66,9 @@ class _GymPageState extends State<GymPage> {
                 (BuildContext context, int index) {
                   return FlexusGymOverviewListTile(
                     gymOverview: state.gymOverviews[index],
+                    func: () {
+                      gymBloc.add(GetGymOverviews());
+                    },
                   );
                 },
                 childCount: state.gymOverviews.length,
