@@ -53,9 +53,7 @@ func (db *DB) PatchUserAccount(columnName string, value any, userAccountID int) 
 		args = []interface{}{value, userAccountID}
 	}
 
-	_, err := db.pool.Exec(query,
-		args...,
-	)
+	_, err := db.pool.Exec(query, args...)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("user not found")
@@ -73,9 +71,7 @@ func (db *DB) DeleteUserAccount(userAccountID int) error {
 		WHERE id = $1;
 	`
 
-	_, err := db.pool.Exec(query,
-		userAccountID,
-	)
+	_, err := db.pool.Exec(query, userAccountID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("user not found")
@@ -104,12 +100,12 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	_, exists := params["gymID"]
 	if exists {
 		query += `, 
-		(SELECT w.starttime 
-			FROM workout w 
-			WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime, 
-		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
-			FROM workout w
-			WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
+			(SELECT w.starttime 
+				FROM workout w 
+				WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime, 
+			(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
+				FROM workout w
+				WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
 		`
 
 		whereConditions = append(whereConditions, " w.gym_id = $"+strconv.Itoa(conditionParamIndex)+" AND w.starttime IS NOT NULL")
@@ -135,7 +131,6 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 		orderConditions = append(orderConditions, " f.created_at DESC")
 	}
 
-	//DOESNT WORRRRRK
 	_, exists = params["hasRequest"]
 	if exists {
 		fromConditions = append(fromConditions, " LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id")
@@ -174,8 +169,6 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	}
 
 	query += ";"
-
-	println(query)
 
 	//Execute Query
 	var informations []any
@@ -224,5 +217,4 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	}
 
 	return informations, nil
-
 }

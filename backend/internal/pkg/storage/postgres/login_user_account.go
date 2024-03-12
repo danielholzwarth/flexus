@@ -53,11 +53,13 @@ func (db DB) CreateUserAccount(createUserRequest types.CreateUserRequest) (types
 
 func (db DB) GetUsernameAvailability(username string) (bool, error) {
 	var userCount int
+
 	query := `
         SELECT COUNT(*) AS user_count
         FROM user_account
         WHERE username = $1;
     `
+
 	err := db.pool.QueryRow(query, username).Scan(&userCount)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -70,12 +72,22 @@ func (db DB) GetUsernameAvailability(username string) (bool, error) {
 
 func (db DB) GetLoginUser(username string, password string) (types.UserAccount, error) {
 	var userAccount types.UserAccount
+
 	query := `
         SELECT *
         FROM user_account
         WHERE username = $1;
     `
-	err := db.pool.QueryRow(query, username).Scan(&userAccount.ID, &userAccount.Username, &userAccount.Name, &userAccount.Password, &userAccount.CreatedAt, &userAccount.Level, &userAccount.ProfilePicture)
+
+	err := db.pool.QueryRow(query, username).Scan(
+		&userAccount.ID,
+		&userAccount.Username,
+		&userAccount.Name,
+		&userAccount.Password,
+		&userAccount.CreatedAt,
+		&userAccount.Level,
+		&userAccount.ProfilePicture,
+	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return types.UserAccount{}, errors.New("user not found")
@@ -97,11 +109,13 @@ func (db DB) GetLoginUser(username string, password string) (types.UserAccount, 
 
 func (db DB) ValidatePasswordByID(userAccountID int, password string) error {
 	var storedPassword []byte
+
 	query := `
         SELECT password
         FROM user_account
         WHERE id = $1;
     `
+
 	err := db.pool.QueryRow(query, userAccountID).Scan(&storedPassword)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

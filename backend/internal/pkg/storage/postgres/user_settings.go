@@ -57,15 +57,12 @@ func (db DB) GetUserSettings(userAccountID int) (types.UserSettings, error) {
 
 func (db *DB) PatchUserSettings(columnName string, value any, userAccountID int) error {
 	query := `
-			UPDATE user_settings
-			SET ` + columnName + ` = $1
-			WHERE user_id = $2;
-		`
+		UPDATE user_settings
+		SET ` + columnName + ` = $1
+		WHERE user_id = $2;
+	`
 
-	_, err := db.pool.Exec(query,
-		value,
-		userAccountID,
-	)
+	_, err := db.pool.Exec(query, value, userAccountID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("user not found")

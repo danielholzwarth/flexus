@@ -42,7 +42,6 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 		}
 
 		workoutOverview.Workout = workout
-
 		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
@@ -73,9 +72,7 @@ func (db DB) PatchWorkout(userAccountID int, workoutID int, columnName string, v
 		args = []interface{}{value, workoutID, userAccountID}
 	}
 
-	_, err := db.pool.Exec(query,
-		args...,
-	)
+	_, err := db.pool.Exec(query, args...)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("workout not found")
