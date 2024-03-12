@@ -107,8 +107,9 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
             Icons.search,
             size: AppSettings.fontSizeTitle,
           ),
-          onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
+          onPressed: () async {
+            await showSearch(context: context, delegate: CustomSearchDelegate());
+            userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true));
           },
         ),
       ],

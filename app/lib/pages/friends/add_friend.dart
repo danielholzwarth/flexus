@@ -122,8 +122,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
             Icons.person_add,
             size: AppSettings.fontSizeTitle,
           ),
-          onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
+          onPressed: () async {
+            await showSearch(context: context, delegate: CustomSearchDelegate());
+            userAccountBloc.add(GetUserAccountsFriendsSearch(hasRequest: true));
           },
         ),
       ],

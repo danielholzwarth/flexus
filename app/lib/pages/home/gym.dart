@@ -353,8 +353,9 @@ class _GymPageState extends State<GymPage> {
             Icons.add_business,
             size: AppSettings.fontSizeTitle,
           ),
-          onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate()).then((value) => gymBloc.add(GetGymOverviews()));
+          onPressed: () async {
+            await showSearch(context: context, delegate: CustomSearchDelegate());
+            gymBloc.add(GetGymOverviews());
           },
         ),
       ],

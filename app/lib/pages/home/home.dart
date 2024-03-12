@@ -249,8 +249,9 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         IconButton(
-          onPressed: () {
-            showSearch(context: context, delegate: CustomSearchDelegate());
+          onPressed: () async {
+            await showSearch(context: context, delegate: CustomSearchDelegate());
+            workoutBloc.add(GetWorkout());
           },
           icon: const Icon(Icons.search),
         )

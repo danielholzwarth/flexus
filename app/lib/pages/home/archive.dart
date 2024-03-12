@@ -110,11 +110,9 @@ class _ArchivePageState extends State<ArchivePage> {
             Icons.search,
             size: AppSettings.fontSizeTitle,
           ),
-          onPressed: () {
-            showSearch(
-              context: context,
-              delegate: CustomSearchDelegate(),
-            );
+          onPressed: () async {
+            await showSearch(context: context, delegate: CustomSearchDelegate());
+            workoutBloc.add(GetSearchWorkout(isArchive: true));
           },
         ),
       ],
