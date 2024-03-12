@@ -107,7 +107,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     );
 
     if (response.isSuccessful) {
-      List<GymOverview> gymOverviews = userBox.get("gymOverviews");
+      List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
       gymOverviews.removeWhere((element) => element.gym.id == event.gymID);
       userBox.put("gymOverviews", gymOverviews);
 

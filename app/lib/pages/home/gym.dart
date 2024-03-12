@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
+import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/friends/add_friend.dart';
 import 'package:app/pages/profile/profile.dart';
@@ -97,8 +98,8 @@ class _GymPageState extends State<GymPage> {
   }
 
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
-    List<String> items = ["A", "B", "C"];
-    String selectedItem = userBox.get("recentGymName") ?? "A";
+    List<String> items = ["No Gym selected"];
+    String selectedItem = "No Gym selected";
 
     dynamic selectedTimeHour = userBox.get("recentGymTimeHour");
     dynamic selectedTimeMinute = userBox.get("recentGymTimeMinute");
@@ -111,6 +112,17 @@ class _GymPageState extends State<GymPage> {
 
     return FlexusFloatingActionButton(
       onPressed: () {
+        List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
+
+        for (var gymOverview in gymOverviews) {
+          items.add(gymOverview.gym.name);
+
+          String recentName = userBox.get("recentGymName") ?? "";
+          if (gymOverview.gym.name == recentName) {
+            selectedItem = recentName;
+          }
+        }
+
         showModalBottomSheet(
           backgroundColor: AppSettings.background,
           context: context,
