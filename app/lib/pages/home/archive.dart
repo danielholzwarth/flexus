@@ -2,6 +2,7 @@ import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -33,61 +34,66 @@ class _ArchivePageState extends State<ArchivePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: <Widget>[
-          buildAppBar(context),
-          BlocBuilder(
-            bloc: workoutBloc,
-            builder: (context, state) {
-              if (state is WorkoutLoaded) {
-                if (state.workoutOverviews.isNotEmpty) {
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return FlexusWorkoutListTile(
-                          workoutOverview: WorkoutOverview(
-                            workout: Workout(
-                              id: state.workoutOverviews[index].workout.id,
-                              userAccountID: state.workoutOverviews[index].workout.userAccountID,
-                              starttime: state.workoutOverviews[index].workout.starttime,
-                              endtime: state.workoutOverviews[index].workout.endtime,
-                              isArchived: true,
+      body: FlexusScrollBar(
+        scrollController: scrollController,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            buildAppBar(context),
+            BlocBuilder(
+              bloc: workoutBloc,
+              builder: (context, state) {
+                if (state is WorkoutLoaded) {
+                  if (state.workoutOverviews.isNotEmpty) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return FlexusWorkoutListTile(
+                            workoutOverview: WorkoutOverview(
+                              workout: Workout(
+                                id: state.workoutOverviews[index].workout.id,
+                                userAccountID: state.workoutOverviews[index].workout.userAccountID,
+                                starttime: state.workoutOverviews[index].workout.starttime,
+                                endtime: state.workoutOverviews[index].workout.endtime,
+                                isArchived: true,
+                              ),
+                              planName: state.workoutOverviews[index].planName,
+                              splitName: state.workoutOverviews[index].splitName,
                             ),
-                            planName: state.workoutOverviews[index].planName,
-                            splitName: state.workoutOverviews[index].splitName,
-                          ),
-                          workoutBloc: workoutBloc,
-                        );
-                      },
-                      childCount: state.workoutOverviews.length,
-                    ),
-                  );
-                } else {
+                            workoutBloc: workoutBloc,
+                          );
+                        },
+                        childCount: state.workoutOverviews.length,
+                      ),
+                    );
+                  } else {
+                    return SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          'No workouts found',
+                          style: TextStyle(fontSize: AppSettings.fontSize),
+                        ),
+                      ),
+                    );
+                  }
+                } else if (state is WorkoutError) {
                   return SliverFillRemaining(
                     child: Center(
                       child: Text(
-                        'No workouts found',
+                        'Error: ${state.error}',
                         style: TextStyle(fontSize: AppSettings.fontSize),
                       ),
                     ),
                   );
+                } else {
+                  return SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+                  );
                 }
-              } else if (state is WorkoutError) {
-                return SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      'Error: ${state.error}',
-                      style: TextStyle(fontSize: AppSettings.fontSize),
-                    ),
-                  ),
-                );
-              } else {
-                return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -118,6 +124,7 @@ class _ArchivePageState extends State<ArchivePage> {
 
 class CustomSearchDelegate extends SearchDelegate {
   WorkoutBloc workoutBloc = WorkoutBloc();
+  ScrollController scrollController = ScrollController();
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -157,11 +164,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                },
-                itemCount: state.workoutOverviews.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                  },
+                  itemCount: state.workoutOverviews.length,
+                ),
               ),
             );
           } else {
@@ -200,11 +211,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                },
-                itemCount: state.workoutOverviews.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                  },
+                  itemCount: state.workoutOverviews.length,
+                ),
               ),
             );
           } else {

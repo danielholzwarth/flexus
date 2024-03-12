@@ -2,6 +2,7 @@ import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/friends/show_qr.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +32,15 @@ class _AddFriendPageState extends State<AddFriendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          buildAppBar(context),
-          buildUserAccounts(),
-        ],
+      body: FlexusScrollBar(
+        scrollController: scrollController,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            buildAppBar(context),
+            buildUserAccounts(),
+          ],
+        ),
       ),
     );
   }
@@ -128,6 +132,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
+  ScrollController scrollController = ScrollController();
   UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
@@ -163,14 +168,18 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.userAccounts.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusUserAccountListTile(
-                    userAccount: state.userAccounts[index],
-                    query: query,
-                  );
-                },
-                itemCount: state.userAccounts.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusUserAccountListTile(
+                      userAccount: state.userAccounts[index],
+                      query: query,
+                    );
+                  },
+                  itemCount: state.userAccounts.length,
+                ),
               ),
             );
           } else {
@@ -202,14 +211,18 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.userAccounts.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusUserAccountListTile(
-                    userAccount: state.userAccounts[index],
-                    query: query,
-                  );
-                },
-                itemCount: state.userAccounts.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusUserAccountListTile(
+                      userAccount: state.userAccounts[index],
+                      query: query,
+                    );
+                  },
+                  itemCount: state.userAccounts.length,
+                ),
               ),
             );
           } else {

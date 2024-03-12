@@ -8,6 +8,7 @@ import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_expansion_tile.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
@@ -39,12 +40,15 @@ class _GymPageState extends State<GymPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: <Widget>[
-          buildAppBar(context),
-          buildGyms(),
-        ],
+      body: FlexusScrollBar(
+        scrollController: scrollController,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            buildAppBar(context),
+            buildGyms(),
+          ],
+        ),
       ),
       floatingActionButton: buildFloatingActionButton(context),
     );
@@ -261,6 +265,7 @@ class _GymPageState extends State<GymPage> {
   FlexusSliverAppBar buildAppBar(BuildContext context) {
     UserAccount userAccount = userBox.get("userAccount");
     return FlexusSliverAppBar(
+      isPinned: false,
       leading: SizedBox(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -330,6 +335,7 @@ class _GymPageState extends State<GymPage> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
+  ScrollController scrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> searchResults = [];
 
@@ -338,8 +344,8 @@ class CustomSearchDelegate extends SearchDelegate {
 
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body);
-      final List<Map<String, dynamic>> firstFiveResults = results.take(10).cast<Map<String, dynamic>>().toList();
-      return firstFiveResults;
+      final List<Map<String, dynamic>> firstTenResults = results.take(10).cast<Map<String, dynamic>>().toList();
+      return firstTenResults;
     } else {
       throw Exception('Failed to load search results');
     }
@@ -393,11 +399,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (searchResults.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusGymExpansionTile(locationData: searchResults[index]);
-                },
-                itemCount: searchResults.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusGymExpansionTile(locationData: searchResults[index]);
+                  },
+                  itemCount: searchResults.length,
+                ),
               ),
             );
           } else {
@@ -442,11 +452,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (searchResults.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusGymExpansionTile(locationData: searchResults[index]);
-                },
-                itemCount: searchResults.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusGymExpansionTile(locationData: searchResults[index]);
+                  },
+                  itemCount: searchResults.length,
+                ),
               ),
             );
           } else {

@@ -10,6 +10,7 @@ import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -61,12 +62,15 @@ class _HomePageState extends State<HomePage> {
     } else {
       return Scaffold(
         backgroundColor: AppSettings.background,
-        body: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            buildAppBar(context, userAccountBloc),
-            buildWorkouts(),
-          ],
+        body: FlexusScrollBar(
+          scrollController: scrollController,
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: <Widget>[
+              buildAppBar(context, userAccountBloc),
+              buildWorkouts(),
+            ],
+          ),
         ),
         floatingActionButton: buildFloatingActionButton(context),
       );
@@ -257,6 +261,7 @@ class _HomePageState extends State<HomePage> {
 
 class CustomSearchDelegate extends SearchDelegate {
   WorkoutBloc workoutBloc = WorkoutBloc();
+  ScrollController scrollController = ScrollController();
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -296,11 +301,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                },
-                itemCount: state.workoutOverviews.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                  },
+                  itemCount: state.workoutOverviews.length,
+                ),
               ),
             );
           } else {
@@ -339,11 +348,15 @@ class CustomSearchDelegate extends SearchDelegate {
           if (state.workoutOverviews.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: ListView.builder(
-                itemBuilder: (context, index) {
-                  return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                },
-                itemCount: state.workoutOverviews.length,
+              body: FlexusScrollBar(
+                scrollController: scrollController,
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                  },
+                  itemCount: state.workoutOverviews.length,
+                ),
               ),
             );
           } else {

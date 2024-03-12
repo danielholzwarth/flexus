@@ -6,6 +6,7 @@ import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:flutter/material.dart';
@@ -42,29 +43,32 @@ class _SettingsPageState extends State<SettingsPage> {
           if (state is SettingsLoaded || state is SettingsUpdating) {
             final UserSettings userSettings = userBox.get("userSettings");
             final UserAccount userAccount = userBox.get("userAccount");
-            return CustomScrollView(
-              controller: scrollController,
-              slivers: <Widget>[
-                const FlexusSliverAppBar(
-                  title: Text("Settings"),
-                ),
-                _buildSection("My Account"),
-                buildName(userAccount, context),
-                buildUsername(userAccount, context),
-                buildPassword(context),
-                _buildSection("Appearance"),
-                buildFontSize(userSettings, context),
-                buildDarkMode(userSettings),
-                _buildSection("Privacy"),
-                buildIsListed(userSettings),
-                buildIsPullFromEveryone(userSettings),
-                buildPullUserList(userSettings),
-                buildNotifyEveryone(userSettings),
-                buildNotifyUserList(userSettings),
-                buildLogOut(context),
-                buildDeleteAccount(context),
-                SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),
-              ],
+            return FlexusScrollBar(
+              scrollController: scrollController,
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: <Widget>[
+                  const FlexusSliverAppBar(
+                    title: Text("Settings"),
+                  ),
+                  _buildSection("My Account"),
+                  buildName(userAccount, context),
+                  buildUsername(userAccount, context),
+                  buildPassword(context),
+                  _buildSection("Appearance"),
+                  buildFontSize(userSettings, context),
+                  buildDarkMode(userSettings),
+                  _buildSection("Privacy"),
+                  buildIsListed(userSettings),
+                  buildIsPullFromEveryone(userSettings),
+                  buildPullUserList(userSettings),
+                  buildNotifyEveryone(userSettings),
+                  buildNotifyUserList(userSettings),
+                  buildLogOut(context),
+                  buildDeleteAccount(context),
+                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),
+                ],
+              ),
             );
           } else {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
