@@ -114,19 +114,24 @@ class _GymPageState extends State<GymPage> {
     }
 
     return FlexusFloatingActionButton(
-      onPressed: () {
+      onPressed: () async {
         List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
+
+        String recentName = userBox.get("recentGymName") ?? "";
 
         for (var gymOverview in gymOverviews) {
           items.add(gymOverview.gym.name);
 
-          String recentName = userBox.get("recentGymName") ?? "";
           if (gymOverview.gym.name == recentName) {
             selectedItem = recentName;
           }
         }
 
-        showModalBottomSheet(
+        if (recentName != selectedItem) {
+          userBox.delete("recentGymName");
+        }
+
+        await showModalBottomSheet(
           backgroundColor: AppSettings.background,
           context: context,
           builder: (BuildContext context) {
@@ -285,6 +290,8 @@ class _GymPageState extends State<GymPage> {
             );
           },
         );
+        gymBloc.add(GetGymOverviews());
+        setState(() {});
       },
       icon: Icons.notification_add_outlined,
     );
