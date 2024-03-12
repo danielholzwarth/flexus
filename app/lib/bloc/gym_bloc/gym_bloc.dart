@@ -89,6 +89,9 @@ class GymBloc extends Bloc<GymEvent, GymState> {
           );
         }).toList();
       }
+
+      userBox.put("gymOverviews", gymOverviews);
+
       emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
     } else {
       emit(GymError(error: response.error.toString()));
@@ -104,6 +107,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     );
 
     if (response.isSuccessful) {
+      List<GymOverview> gymOverviews = userBox.get("gymOverviews");
+      gymOverviews.removeWhere((element) => element.gym.id == event.gymID);
+      userBox.put("gymOverviews", gymOverviews);
+
       emit(GymDeleted());
     } else {
       emit(GymError(error: response.error.toString()));

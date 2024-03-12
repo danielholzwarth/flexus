@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:app/hive/best_lift.dart';
 import 'package:app/hive/best_lift_overview.dart';
+import 'package:app/hive/friendship.dart';
+import 'package:app/hive/gym.dart';
+import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_account_gym_overview.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
@@ -53,6 +57,10 @@ Future<void> initializeHive() async {
     Hive.registerAdapter(WorkoutOverviewAdapter());
     Hive.registerAdapter(BestLiftAdapter());
     Hive.registerAdapter(BestLiftOverviewAdapter());
+    Hive.registerAdapter(GymOverviewAdapter());
+    Hive.registerAdapter(FriendshipAdapter());
+    Hive.registerAdapter(GymAdapter());
+    Hive.registerAdapter(UserAccountGymOverviewAdapter());
 
     var userBox = await Hive.openBox('userBox');
   } catch (e) {

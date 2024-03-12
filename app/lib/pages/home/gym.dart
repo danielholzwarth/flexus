@@ -97,10 +97,17 @@ class _GymPageState extends State<GymPage> {
   }
 
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
-    String selectedItem = 'Energym';
-    List<String> items = ['Energym', 'Jumpers', 'CleverFit'];
+    List<String> items = ["A", "B", "C"];
+    String selectedItem = userBox.get("recentGymName") ?? "A";
 
-    TimeOfDay selectedTime = TimeOfDay.now();
+    dynamic selectedTimeHour = userBox.get("recentGymTimeHour");
+    dynamic selectedTimeMinute = userBox.get("recentGymTimeMinute");
+    TimeOfDay selectedTime;
+    if (selectedTimeHour != null && selectedTimeMinute != null) {
+      selectedTime = TimeOfDay(hour: selectedTimeHour, minute: selectedTimeMinute);
+    } else {
+      selectedTime = TimeOfDay.now();
+    }
 
     return FlexusFloatingActionButton(
       onPressed: () {
@@ -242,6 +249,11 @@ class _GymPageState extends State<GymPage> {
                         SizedBox(height: AppSettings.screenHeight * 0.09),
                         FlexusButton(
                           function: () {
+                            userBox.put("recentGymName", selectedItem);
+                            userBox.put("recentGymTimeHour", selectedTime.hour);
+                            userBox.put("recentGymTimeMinute", selectedTime.minute);
+
+                            //SEND NOTIFICATION
                             Navigator.pop(context);
                           },
                           text: "Send Notification",
@@ -256,7 +268,6 @@ class _GymPageState extends State<GymPage> {
             );
           },
         );
-        gymBloc.add(GetGymOverviews());
       },
       icon: Icons.notification_add_outlined,
     );
