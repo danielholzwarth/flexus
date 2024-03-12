@@ -45,8 +45,8 @@ func (s service) getBestLifts() http.HandlerFunc {
 		userAccountIDValue := chi.URLParam(r, "userAccountID")
 		userAccountID, err := strconv.Atoi(userAccountIDValue)
 		if err != nil || userAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for userAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for userAccountID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 

@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"flexus/internal/types"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -57,8 +56,8 @@ func (s service) getUserAccountInformation() http.HandlerFunc {
 		userAccountIDValue := chi.URLParam(r, "userAccountID")
 		userAccountID, err := strconv.Atoi(userAccountIDValue)
 		if err != nil || userAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for userAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for userAccountID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
@@ -95,48 +94,48 @@ func (s service) patchUserAccount() http.HandlerFunc {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
 		if err := json.Unmarshal(body, &requestBody); err != nil {
 			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
 		if username, ok := requestBody["username"].(string); ok {
-			fmt.Println("Updating username:", username)
-
 			availability, err := s.userAccountStore.GetUsernameAvailability(username)
 			if err != nil {
-				http.Error(w, "Failed to create User", http.StatusInternalServerError)
+				http.Error(w, "Failed to get username availability", http.StatusInternalServerError)
+				println(err.Error())
 				return
 			}
 
 			if !availability {
 				http.Error(w, "Username is already assigned", http.StatusBadRequest)
+				println("Username is already assigned")
 				return
 			}
 
 			err = s.userAccountStore.PatchUserAccount("username", username, claims.UserAccountID)
 			if err != nil {
-				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch username", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}
 		}
 
 		if name, ok := requestBody["name"].(string); ok {
-			fmt.Println("Updating name:", name)
 			err := s.userAccountStore.PatchUserAccount("name", name, claims.UserAccountID)
 			if err != nil {
-				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch name", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}
 		}
 
 		if oldPassword, ok := requestBody["old_password"].(string); ok {
-			fmt.Println("Updating password")
 			err = s.userAccountStore.ValidatePasswordByID(claims.UserAccountID, oldPassword)
 			if err != nil {
 				http.Error(w, "Failed to validate password", http.StatusBadRequest)
@@ -162,11 +161,10 @@ func (s service) patchUserAccount() http.HandlerFunc {
 
 		if profilePicture, ok := requestBody["profile_picture"].(string); ok {
 			if profilePicture != "" {
-
 				imageBytes, err := base64.StdEncoding.DecodeString(profilePicture)
 				if err != nil {
 					http.Error(w, "Failed to decode profilePicture", http.StatusBadRequest)
-					fmt.Println("Failed to decode profilePicture:", err)
+					println(err.Error())
 					return
 				}
 
@@ -196,7 +194,6 @@ func (s service) deleteUserAccount() http.HandlerFunc {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
 			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
-			println("asd")
 			return
 		}
 
@@ -263,7 +260,7 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 
 		informations, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, params)
 		if err != nil {
-			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			http.Error(w, "Failed to get UserInformation", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}

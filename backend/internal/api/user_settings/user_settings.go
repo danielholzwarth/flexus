@@ -3,7 +3,6 @@ package user_settings
 import (
 	"encoding/json"
 	"flexus/internal/types"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -89,21 +88,18 @@ func (s service) patchUserSettings() http.HandlerFunc {
 		}
 
 		if fontSize, ok := requestBody["font_size"].(float64); ok {
-			fmt.Println("Updating fontsize:", fontSize)
-
 			err = s.userSettingsStore.PatchUserSettings("font_size", fontSize, claims.UserAccountID)
 			if err != nil {
-				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch fontsize", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}
 		}
 
 		if isDarkMode, ok := requestBody["is_dark_mode"].(bool); ok {
-			fmt.Println("Updating darkmode:", isDarkMode)
 			err := s.userSettingsStore.PatchUserSettings("is_dark_mode", isDarkMode, claims.UserAccountID)
 			if err != nil {
-				http.Error(w, "Failed to patch userAccount", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch darkmode", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}

@@ -54,6 +54,7 @@ func (s service) createReport() http.HandlerFunc {
 
 		if requestBody.ReportedID <= 0 {
 			http.Error(w, "ReportedID can not be null", http.StatusBadRequest)
+			println("ReportedID can not be null")
 			return
 		}
 
@@ -64,6 +65,7 @@ func (s service) createReport() http.HandlerFunc {
 		err := s.reportStore.CreateReport(requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 

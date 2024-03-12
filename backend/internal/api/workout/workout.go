@@ -3,7 +3,6 @@ package workout
 import (
 	"encoding/json"
 	"flexus/internal/types"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -79,26 +78,26 @@ func (s service) patchWorkout() http.HandlerFunc {
 		workoutIDValue := chi.URLParam(r, "workoutID")
 		workoutID, err := strconv.Atoi(workoutIDValue)
 		if err != nil || workoutID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for workoutID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
 		var requestBody map[string]interface{}
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
 		if err := json.Unmarshal(body, &requestBody); err != nil {
 			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
 		if isArchived, ok := requestBody["isArchived"].(bool); ok {
-			fmt.Println("Updating isArchived:", isArchived)
-
 			err = s.workoutStore.PatchWorkout(claims.UserAccountID, workoutID, "is_archived", isArchived)
 			if err != nil {
 				http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
@@ -123,8 +122,8 @@ func (s service) deleteWorkout() http.HandlerFunc {
 		workoutIDValue := chi.URLParam(r, "workoutID")
 		workoutID, err := strconv.Atoi(workoutIDValue)
 		if err != nil || workoutID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for workoutIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for workoutID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 

@@ -50,39 +50,46 @@ func (s service) createUserAccount() http.HandlerFunc {
 
 		if requestBody.Username == "" {
 			http.Error(w, "Username can not be empty", http.StatusBadRequest)
+			println("Username can not be empty")
 			return
 		}
 
 		if requestBody.Name == "" {
 			http.Error(w, "Name can not be empty", http.StatusBadRequest)
+			println("Name can not be empty")
 			return
 		}
 
 		if requestBody.Password == "" {
 			http.Error(w, "Password can not be empty", http.StatusBadRequest)
+			println("Password can not be empty")
 			return
 		}
 
 		availability, err := s.loginuserAccountStore.GetUsernameAvailability(requestBody.Username)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
 		if !availability {
 			http.Error(w, "Username is already assigned", http.StatusBadRequest)
+			println("Username is already assigned")
 			return
 		}
 
 		user, err := s.loginuserAccountStore.CreateUserAccount(requestBody)
 		if err != nil {
 			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 
 		jwt, err := middleware.CreateJWT(user.ID, user.Username)
 		if err != nil {
 			http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 		w.Header().Add("flexusjwt", jwt)
@@ -90,6 +97,7 @@ func (s service) createUserAccount() http.HandlerFunc {
 		response, err := json.Marshal(user)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
 			return
 		}
 

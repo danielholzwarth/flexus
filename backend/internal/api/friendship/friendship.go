@@ -3,7 +3,6 @@ package friendship
 import (
 	"encoding/json"
 	"flexus/internal/types"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -55,8 +54,8 @@ func (s service) createFriendship() http.HandlerFunc {
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
 		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
 		if err != nil || requestedUserAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for requestedUserAccountID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
@@ -87,8 +86,7 @@ func (s service) getFriendship() http.HandlerFunc {
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
 		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
 		if err != nil || requestedUserAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for requestedUserAccountID. Must be integer greater than 0.", http.StatusBadRequest)
 			println(err.Error())
 			return
 		}
@@ -124,8 +122,7 @@ func (s service) patchFriendship() http.HandlerFunc {
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
 		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
 		if err != nil || requestedUserAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for requestedUserAccountIDInt. Must be integer greater than 0.", http.StatusBadRequest)
 			println(err.Error())
 			return
 		}
@@ -146,8 +143,6 @@ func (s service) patchFriendship() http.HandlerFunc {
 		}
 
 		if isAccepted, ok := requestBody["isAccepted"].(bool); ok {
-			fmt.Println("Updating isAccepted:", isAccepted)
-
 			err := s.friendshipStore.PatchFriendship(claims.UserAccountID, requestedUserAccountID, "is_accepted", isAccepted)
 			if err != nil {
 				http.Error(w, "Failed to patch Friendship", http.StatusInternalServerError)
@@ -172,8 +167,7 @@ func (s service) deleteFriendship() http.HandlerFunc {
 		requestedUserAccountIDValue := chi.URLParam(r, "userAccountID")
 		requestedUserAccountID, err := strconv.Atoi(requestedUserAccountIDValue)
 		if err != nil || requestedUserAccountID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for requestedUserAccountIDInt. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for requestedUserAccountID. Must be integer greater than 0.", http.StatusBadRequest)
 			println(err.Error())
 			return
 		}

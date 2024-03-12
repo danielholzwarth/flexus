@@ -20,12 +20,14 @@ func ValidateJWT(next http.Handler) http.Handler {
 
 		if token == "" {
 			http.Error(w, "Token is empty", http.StatusBadRequest)
+			println("Token is empty")
 			return
 		}
 
 		claims, err := ValdiateToken(token)
 		if err != nil {
 			http.Error(w, "Resolving token failed", http.StatusBadRequest)
+			println(err.Error())
 			return
 		}
 
@@ -33,14 +35,14 @@ func ValidateJWT(next http.Handler) http.Handler {
 			newToken, err := RefreshJWT(claims)
 			if err != nil {
 				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
+				println(err.Error())
 				return
 			}
 			w.Header().Add("flexusjwt", newToken)
 		}
 
 		ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
-		println("useraccountID:", claims.UserAccountID)
-		println("username:", claims.Username)
+		println("Request of: useraccountID", claims.UserAccountID, "- username", claims.Username)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
@@ -48,7 +50,6 @@ func ValidateJWT(next http.Handler) http.Handler {
 
 func CreateJWT(userAccountID int, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
-	//expirationTime := time.Now().Add(time.Minute)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
@@ -62,6 +63,7 @@ func CreateJWT(userAccountID int, username string) (string, error) {
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
+		println(err.Error())
 		return "", err
 	}
 
@@ -70,13 +72,13 @@ func CreateJWT(userAccountID int, username string) (string, error) {
 
 func RefreshJWT(claims types.Claims) (string, error) {
 	expirationTime := time.Now().AddDate(0, 1, 0)
-	//expirationTime := time.Now().Add(time.Minute)
 
 	claims.ExpiresAt = expirationTime.Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
+		println(err.Error())
 		return "", err
 	}
 
@@ -93,8 +95,10 @@ func ValdiateToken(tokenString string) (types.Claims, error) {
 
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
+			println(err.Error())
 			return types.Claims{}, err
 		}
+		println(err.Error())
 		return types.Claims{}, err
 	}
 

@@ -57,11 +57,13 @@ func (s service) postGym() http.HandlerFunc {
 
 		if requestBody.Name == "" {
 			http.Error(w, "Gym Name can not be empty", http.StatusBadRequest)
+			println("Gym Name can not be empty")
 			return
 		}
 
 		if requestBody.DisplayName == "" {
 			http.Error(w, "Gym DisplayName can not be empty", http.StatusBadRequest)
+			println("Gym DisplayName can not be empty")
 			return
 		}
 
@@ -124,8 +126,7 @@ func (s service) deleteGym() http.HandlerFunc {
 		gymIDValue := chi.URLParam(r, "gymID")
 		gymID, err := strconv.Atoi(gymIDValue)
 		if err != nil || gymID <= 0 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("Wrong input for gymID. Must be integer greater than 0."))
+			http.Error(w, "Wrong input for gymID. Must be integer greater than 0.", http.StatusBadRequest)
 			println(err.Error())
 			return
 		}
