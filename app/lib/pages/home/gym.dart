@@ -153,8 +153,10 @@ class _GymPageState extends State<GymPage> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                 child: DropdownButton<String>(
+                                  alignment: Alignment.center,
+                                  borderRadius: BorderRadius.circular(20),
                                   isExpanded: true,
-                                  focusColor: AppSettings.error,
+                                  icon: Container(),
                                   underline: Container(),
                                   value: selectedItem,
                                   onChanged: (value) {
