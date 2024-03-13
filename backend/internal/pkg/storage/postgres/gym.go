@@ -22,7 +22,7 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
 	if !exists {
 		insertGymQuery := `
             INSERT INTO gym (name, street_name, house_number, zip_code, city_name, latitude, longitude)
-            VALUES ($1, $2, $3, $4)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING id;
         `
 

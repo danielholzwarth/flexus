@@ -26,33 +26,16 @@ class GymBloc extends Bloc<GymEvent, GymState> {
 
     final response = await _gymService.postGym(userBox.get("flexusjwt"), {
       "name": event.locationData['name'],
-      "streetName": event.locationData['streetName'],
-      "houseNumber": event.locationData['houseNumber'],
-      "zipCode": event.locationData['zipCode'],
-      "cityName": event.locationData['cityName'],
+      "streetName": event.locationData['address']['road'],
+      "houseNumber": event.locationData['address']['house_number'],
+      "zipCode": event.locationData['address']['postcode'],
+      "cityName": event.locationData['address']['city'] ?? event.locationData['address']['town'] ?? event.locationData['address']['village'],
       "latitude": double.parse(event.locationData['lat']),
       "longitude": double.parse(event.locationData['lon']),
     });
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
-
-        final gym = Gym(
-          id: jsonMap['id'],
-          name: jsonMap['name'],
-          streetName: jsonMap['streetName'],
-          zipCode: jsonMap['zipCode'],
-          houseNumber: jsonMap['houseNumber'],
-          cityName: jsonMap['cityName'],
-          latitude: jsonMap['latitude'],
-          longitude: jsonMap['longitude'],
-        );
-
-        emit(GymCreated(gym: gym));
-      } else {
-        emit(GymError(error: "No Settings found!"));
-      }
+      emit(GymCreated());
     } else {
       emit(GymError(error: response.error.toString()));
     }
