@@ -175,7 +175,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                     onPressed: () {
                                       userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gymOverview.gym.id));
                                     },
-                                    child: const Text('Delete Gym'),
+                                    child: const Text('Remove Gym'),
                                   );
                                 }
                               },

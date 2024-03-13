@@ -402,8 +402,9 @@ class CustomSearchDelegate extends SearchDelegate {
       IconButton(
         onPressed: () {
           isAddNew = !isAddNew;
+          query = '';
         },
-        icon: const Icon(Icons.add),
+        icon: Icon(Icons.add, color: isAddNew ? AppSettings.primary : null),
       )
     ];
   }
@@ -437,6 +438,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     itemBuilder: (context, index) {
                       return FlexusGymExpansionTile(
                         gym: state.gyms[index],
+                        query: query,
                       );
                     },
                     itemCount: state.gyms.length,
@@ -491,6 +493,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     itemBuilder: (context, index) {
                       return FlexusGymOSMExpansionTile(
                         locationData: searchResults[index],
+                        query: query,
                       );
                     },
                     itemCount: searchResults.length,
@@ -533,6 +536,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     itemBuilder: (context, index) {
                       return FlexusGymExpansionTile(
                         gym: state.gyms[index],
+                        query: query,
                       );
                     },
                     itemCount: state.gyms.length,
@@ -587,6 +591,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     itemBuilder: (context, index) {
                       return FlexusGymOSMExpansionTile(
                         locationData: searchResults[index],
+                        query: query,
                       );
                     },
                     itemCount: searchResults.length,

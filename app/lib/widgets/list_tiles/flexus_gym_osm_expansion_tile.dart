@@ -6,10 +6,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class FlexusGymOSMExpansionTile extends StatefulWidget {
   final Map<String, dynamic> locationData;
+  final String? query;
 
   const FlexusGymOSMExpansionTile({
     super.key,
     required this.locationData,
+    this.query,
   });
 
   @override
@@ -34,14 +36,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: AppSettings.fontSizeTitleSmall,
-              fontWeight: FontWeight.bold,
-              color: AppSettings.font,
-            ),
-          ),
+          highlightText(name, AppSettings.fontSizeTitleSmall),
           SizedBox(height: AppSettings.screenHeight * 0.01),
           Text(
             '$streetName $houseNumber',
@@ -97,7 +92,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
                     onPressed: () {
                       gymBloc.add(PostGym(locationData: widget.locationData));
                     },
-                    child: const Text('Add to Gyms'),
+                    child: const Text('Create Gym'),
                   );
                 }
               },
@@ -125,5 +120,60 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
   Future<void> openMaps(double latitude, double longitude) async {
     Uri uri = Uri.parse('https://www.google.com/maps?q=$latitude,$longitude');
     await launchUrl(uri);
+  }
+
+  Widget highlightText(String text, double fontSize) {
+    if (widget.query != null && widget.query != "") {
+      if (text.toLowerCase().contains(widget.query!.toLowerCase())) {
+        int startIndex = text.toLowerCase().indexOf(widget.query!.toLowerCase());
+        int endIndex = startIndex + widget.query!.length;
+
+        return RichText(
+          text: TextSpan(
+            text: startIndex > 0 ? text.substring(0, startIndex) : "",
+            style: TextStyle(
+              fontSize: fontSize,
+              color: Colors.grey,
+            ),
+            children: [
+              TextSpan(
+                text: text.substring(startIndex, endIndex),
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: AppSettings.font,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: endIndex < text.length ? text.substring(endIndex) : "",
+                style: TextStyle(
+                  fontSize: fontSize,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+      return RichText(
+        text: TextSpan(
+          text: text,
+          style: TextStyle(
+            fontSize: fontSize,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+    return RichText(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: AppSettings.font,
+        ),
+      ),
+    );
   }
 }
