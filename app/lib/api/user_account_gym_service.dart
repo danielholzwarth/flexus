@@ -10,6 +10,12 @@ abstract class UserAccountGymService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
+  @Get(path: '/')
+  Future<Response> getUserAccountGym(
+    @Header('flexusjwt') String flexusJWTString, {
+    @Query('gymID') int? gymID,
+  });
+
   @Delete(path: '/{gymID}')
   Future<Response> deleteUserAccountGym(
     @Header('flexusjwt') String flexusJWTString,

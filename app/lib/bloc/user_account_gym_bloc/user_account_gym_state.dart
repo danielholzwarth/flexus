@@ -9,6 +9,16 @@ class UserAccountGymCreating extends UserAccountGymState {}
 
 class UserAccountGymCreated extends UserAccountGymState {}
 
+class UserAccountGymLoading extends UserAccountGymState {}
+
+class UserAccountGymLoaded extends UserAccountGymState {
+  final bool isExisting;
+
+  UserAccountGymLoaded({
+    required this.isExisting,
+  });
+}
+
 class UserAccountGymDeleting extends UserAccountGymState {}
 
 class UserAccountGymDeleted extends UserAccountGymState {}

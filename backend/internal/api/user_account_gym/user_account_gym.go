@@ -12,6 +12,7 @@ import (
 
 type UserAccountGymStore interface {
 	PostUserAccountGym(userAccountID int, gymID int) error
+	GetUserAccountGym(userAccountID int, gymID int) (bool, error)
 	DeleteUserAccountGym(userAccountID int, gymID int) error
 }
 
@@ -27,8 +28,9 @@ func NewService(userAccountGymStore UserAccountGymStore) http.Handler {
 		userAccountGymStore: userAccountGymStore,
 	}
 
-	r.Post("/", s.postGym())
-	r.Delete("/{gymID}", s.deleteGym())
+	r.Post("/", s.postUserAccountGym())
+	r.Get("/", s.getUserAccountGym())
+	r.Delete("/{gymID}", s.deleteUserAccountGym())
 
 	return s
 }
@@ -37,7 +39,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) postGym() http.HandlerFunc {
+func (s service) postUserAccountGym() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -86,7 +88,43 @@ func (s service) postGym() http.HandlerFunc {
 	}
 }
 
-func (s service) deleteGym() http.HandlerFunc {
+func (s service) getUserAccountGym() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		gymIDValue := r.URL.Query().Get("gymID")
+		gymID, err := strconv.Atoi(gymIDValue)
+		if err != nil || gymID <= 0 {
+			http.Error(w, "Wrong input for gymID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		value, err := s.userAccountGymStore.GetUserAccountGym(claims.UserAccountID, gymID)
+		if err != nil {
+			http.Error(w, "Failed to delete Gym", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(value)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) deleteUserAccountGym() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {

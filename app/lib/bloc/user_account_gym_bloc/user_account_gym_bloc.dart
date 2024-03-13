@@ -12,6 +12,7 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
 
   UserAccountGymBloc() : super(UserAccountGymInitial()) {
     on<PostUserAccountGym>(_onPostUserAccountGym);
+    on<GetUserAccountGym>(_onGetUserAccountGym);
     on<DeleteUserAccountGym>(_onDeleteUserAccountGym);
   }
 
@@ -22,6 +23,28 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
 
     if (response.isSuccessful) {
       emit(UserAccountGymCreated());
+    } else {
+      emit(UserAccountGymError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetUserAccountGym(GetUserAccountGym event, Emitter<UserAccountGymState> emit) async {
+    emit(UserAccountGymLoading());
+
+    final response = await userAccountGymService.getUserAccountGym(userBox.get("flexusjwt"), gymID: event.gymID);
+
+    if (response.isSuccessful) {
+      if (response.bodyString != "null") {
+        if (response.bodyString == "true") {
+          emit(UserAccountGymLoaded(isExisting: true));
+        } else if (response.bodyString == "false") {
+          emit(UserAccountGymLoaded(isExisting: false));
+        } else {
+          emit(UserAccountGymError(error: "User Account Gym Forbidden Value"));
+        }
+      } else {
+        emit(UserAccountGymLoaded(isExisting: false));
+      }
     } else {
       emit(UserAccountGymError(error: response.error.toString()));
     }

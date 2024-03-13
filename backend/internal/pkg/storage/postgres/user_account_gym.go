@@ -36,6 +36,23 @@ func (db *DB) PostUserAccountGym(userAccountID int, gymID int) error {
 	}
 }
 
+func (db *DB) GetUserAccountGym(userAccountID int, gymID int) (bool, error) {
+	query := `
+		SELECT EXISTS (
+			SELECT 1
+			FROM user_account_gym
+			WHERE user_id = $1 AND gym_id = $2
+		);
+    `
+	var exists bool
+	err := db.pool.QueryRow(query, userAccountID, gymID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 func (db *DB) DeleteUserAccountGym(userAccountID int, gymID int) error {
 	query := `
 		DELETE 

@@ -38,6 +38,26 @@ final class _$UserAccountGymService extends UserAccountGymService {
   }
 
   @override
+  Future<Response<dynamic>> getUserAccountGym(
+    String flexusJWTString, {
+    int? gymID,
+  }) {
+    final Uri $url = Uri.parse('/user_account_gym/');
+    final Map<String, dynamic> $params = <String, dynamic>{'gymID': gymID};
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> deleteUserAccountGym(
     String flexusJWTString,
     int gymID,

@@ -11,6 +11,14 @@ class PostUserAccountGym extends UserAccountGymEvent {
   });
 }
 
+class GetUserAccountGym extends UserAccountGymEvent {
+  final int gymID;
+
+  GetUserAccountGym({
+    required this.gymID,
+  });
+}
+
 class DeleteUserAccountGym extends UserAccountGymEvent {
   final int gymID;
 

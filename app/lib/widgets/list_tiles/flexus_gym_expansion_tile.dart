@@ -20,10 +20,16 @@ class FlexusGymExpansionTile extends StatefulWidget {
 }
 
 class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
+  final UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
+
+  @override
+  void initState() {
+    userAccountGymBloc.add(GetUserAccountGym(gymID: widget.gym.id));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
-
     return ExpansionTile(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +66,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                     onPressed: null,
                     child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
                   );
-                } else if (state is UserAccountGymCreated) {
+                } else if (state is UserAccountGymCreated || state is UserAccountGymLoaded && state.isExisting) {
                   return ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(AppSettings.background),
