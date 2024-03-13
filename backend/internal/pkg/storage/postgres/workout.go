@@ -8,12 +8,12 @@ import (
 
 func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error) {
 	query := `
-		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, p.name as plan_name, s.name as split_name
+		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
 		FROM workout w
 		LEFT JOIN split s ON w.split_id = s.id
 		LEFT JOIN plan p ON s.plan_id = p.id
 		WHERE w.user_id = $1
-		ORDER BY w.starttime DESC;
+		ORDER BY w.is_pinned DESC, w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
@@ -34,6 +34,8 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
+			&workout.IsStared,
+			&workout.IsPinned,
 			&workoutOverview.PlanName,
 			&workoutOverview.SplitName,
 		)

@@ -10,6 +10,8 @@ type Workout struct {
 	Starttime     time.Time  `json:"starttime"`
 	Endtime       *time.Time `json:"endtime"`
 	IsArchived    bool       `json:"isArchived"`
+	IsStared      bool       `json:"isStared"`
+	IsPinned      bool       `json:"isPinned"`
 }
 
 type WorkoutOverview struct {

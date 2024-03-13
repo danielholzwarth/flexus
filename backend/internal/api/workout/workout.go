@@ -106,6 +106,24 @@ func (s service) patchWorkout() http.HandlerFunc {
 			}
 		}
 
+		if isStared, ok := requestBody["isStared"].(bool); ok {
+			err = s.workoutStore.PatchWorkout(claims.UserAccountID, workoutID, "is_stared", isStared)
+			if err != nil {
+				http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		if isPinned, ok := requestBody["isPinned"].(bool); ok {
+			err = s.workoutStore.PatchWorkout(claims.UserAccountID, workoutID, "is_pinned", isPinned)
+			if err != nil {
+				http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}

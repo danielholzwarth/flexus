@@ -3,7 +3,13 @@ part of 'workout_bloc.dart';
 @immutable
 abstract class WorkoutEvent {}
 
-class GetWorkout extends WorkoutEvent {}
+class GetWorkout extends WorkoutEvent {
+  final bool isArchive;
+
+  GetWorkout({
+    this.isArchive = false,
+  });
+}
 
 class GetSearchWorkout extends WorkoutEvent {
   final bool isArchive;

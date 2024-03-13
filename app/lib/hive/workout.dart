@@ -22,6 +22,12 @@ class Workout extends HiveObject {
   @HiveField(5)
   bool isArchived;
 
+  @HiveField(6)
+  bool isStared;
+
+  @HiveField(7)
+  bool isPinned;
+
   Workout({
     required this.id,
     required this.userAccountID,
@@ -29,5 +35,7 @@ class Workout extends HiveObject {
     required this.starttime,
     this.endtime,
     required this.isArchived,
+    required this.isStared,
+    required this.isPinned,
   });
 }

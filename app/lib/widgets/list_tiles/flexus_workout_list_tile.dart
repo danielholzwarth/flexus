@@ -27,6 +27,46 @@ class FlexusWorkoutListTile extends StatelessWidget {
     final workout = workoutOverview.workout;
 
     return Slidable(
+      startActionPane: ActionPane(
+        motion: const StretchMotion(),
+        extentRatio: 0.5,
+        children: [
+          SlidableAction(
+            backgroundColor: AppSettings.primary,
+            icon: Icons.push_pin,
+            label: workout.isPinned ? "Unpin" : "Pin",
+            foregroundColor: AppSettings.fontV1,
+            onPressed: workout.isPinned
+                ? (context) async {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: false));
+                    await Future.delayed(const Duration(milliseconds: 10));
+                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                  }
+                : (context) async {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: true));
+                    await Future.delayed(const Duration(milliseconds: 10));
+                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                  },
+          ),
+          SlidableAction(
+            backgroundColor: Colors.amber,
+            icon: Icons.star,
+            label: workout.isStared ? "Unstar" : "Star",
+            foregroundColor: AppSettings.fontV1,
+            onPressed: workout.isStared
+                ? (context) async {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: false));
+                    await Future.delayed(const Duration(milliseconds: 10));
+                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                  }
+                : (context) async {
+                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: true));
+                    await Future.delayed(const Duration(milliseconds: 10));
+                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                  },
+          ),
+        ],
+      ),
       endActionPane: ActionPane(
         motion: const StretchMotion(),
         extentRatio: 0.5,
@@ -148,20 +188,50 @@ class FlexusWorkoutListTile extends StatelessWidget {
                 ),
               ),
         //Get actual PRs
-        Visibility(
-          visible: workoutOverview.workout.id % 7 > 0,
-          child: Row(
-            children: [
-              Text(
-                (workoutOverview.workout.id % 7).toString(),
-                style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
+        Row(
+          children: [
+            Visibility(
+              visible: workoutOverview.workout.isPinned,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.push_pin,
+                    size: AppSettings.fontSize,
+                    color: AppSettings.primary,
+                  ),
+                  SizedBox(width: AppSettings.screenWidth * 0.02),
+                ],
               ),
-              Icon(
-                Icons.emoji_events,
-                size: AppSettings.fontSize,
-              )
-            ],
-          ),
+            ),
+            Visibility(
+              visible: workoutOverview.workout.isStared,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    size: AppSettings.fontSize,
+                    color: Colors.amber,
+                  ),
+                  SizedBox(width: AppSettings.screenWidth * 0.02),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: workoutOverview.workout.id % 7 != 0,
+              child: Row(
+                children: [
+                  Text(
+                    (workoutOverview.workout.id % 7).toString(),
+                    style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
+                  ),
+                  Icon(
+                    Icons.emoji_events,
+                    size: AppSettings.fontSize,
+                  )
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );

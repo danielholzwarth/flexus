@@ -40,6 +40,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
               starttime: DateTime.parse(json['workout']['starttime']),
               endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
               isArchived: json['workout']['isArchived'],
+              isStared: json['workout']['isStared'],
+              isPinned: json['workout']['isPinned'],
             ),
             planName: json['planName'],
             splitName: json['splitName'],
@@ -49,7 +51,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       userBox.put("workoutOverviews", workoutOverviews);
 
-      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == false).toList();
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
 
       emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
     } else {
@@ -95,6 +97,56 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           if (index != -1) {
             WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
             workoutOverview.workout.isArchived = event.value;
+            workoutOverviews[index] = workoutOverview;
+
+            userBox.put("workoutOverviews", workoutOverviews);
+          }
+        }
+
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+        break;
+
+      case "isStared":
+        bool isStared = event.value;
+        final response = await _workoutService.patchWorkout(
+          userBox.get("flexusjwt"),
+          event.workoutID,
+          {"isStared": isStared},
+        );
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
+
+        if (response.isSuccessful) {
+          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+          if (index != -1) {
+            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+            workoutOverview.workout.isStared = event.value;
+            workoutOverviews[index] = workoutOverview;
+
+            userBox.put("workoutOverviews", workoutOverviews);
+          }
+        }
+
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+        emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+        break;
+
+      case "isPinned":
+        bool isPinned = event.value;
+        final response = await _workoutService.patchWorkout(
+          userBox.get("flexusjwt"),
+          event.workoutID,
+          {"isPinned": isPinned},
+        );
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
+
+        if (response.isSuccessful) {
+          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+          if (index != -1) {
+            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+            workoutOverview.workout.isPinned = event.value;
             workoutOverviews[index] = workoutOverview;
 
             userBox.put("workoutOverviews", workoutOverviews);
