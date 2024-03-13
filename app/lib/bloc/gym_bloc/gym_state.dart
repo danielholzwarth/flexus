@@ -15,9 +15,15 @@ class GymCreated extends GymState {
   });
 }
 
-class GymDeleting extends GymState {}
+class GymsSearchLoading extends GymState {}
 
-class GymDeleted extends GymState {}
+class GymsSearchLoaded extends GymState {
+  final List<Gym> gyms;
+
+  GymsSearchLoaded({
+    required this.gyms,
+  });
+}
 
 class GymOverviewsLoading extends GymState {}
 

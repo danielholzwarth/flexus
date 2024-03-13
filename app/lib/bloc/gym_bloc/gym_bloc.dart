@@ -17,8 +17,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
 
   GymBloc() : super(GymInitial()) {
     on<PostGym>(_onPostGym);
+    on<GetGymsSearch>(_onGetGymsSearch);
     on<GetGymOverviews>(_onGetGymOverviews);
-    on<DeleteGym>(_onDeleteGym);
   }
 
   void _onPostGym(PostGym event, Emitter<GymState> emit) async {
@@ -26,7 +26,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
 
     final response = await _gymService.postGym(userBox.get("flexusjwt"), {
       "name": event.locationData['name'],
-      "displayName": event.locationData['display_name'],
+      "streetName": event.locationData['streetName'],
+      "houseNumber": event.locationData['houseNumber'],
+      "zipCode": event.locationData['zipCode'],
+      "cityName": event.locationData['cityName'],
       "latitude": double.parse(event.locationData['lat']),
       "longitude": double.parse(event.locationData['lon']),
     });
@@ -38,7 +41,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
         final gym = Gym(
           id: jsonMap['id'],
           name: jsonMap['name'],
-          displayName: jsonMap['displayName'],
+          streetName: jsonMap['streetName'],
+          zipCode: jsonMap['zipCode'],
+          houseNumber: jsonMap['houseNumber'],
+          cityName: jsonMap['cityName'],
           latitude: jsonMap['latitude'],
           longitude: jsonMap['longitude'],
         );
@@ -46,6 +52,39 @@ class GymBloc extends Bloc<GymEvent, GymState> {
         emit(GymCreated(gym: gym));
       } else {
         emit(GymError(error: "No Settings found!"));
+      }
+    } else {
+      emit(GymError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetGymsSearch(GetGymsSearch event, Emitter<GymState> emit) async {
+    emit(GymsSearchLoading());
+
+    final response = await _gymService.getGymsSearch(userBox.get("flexusjwt"), keyword: event.query);
+
+    if (response.isSuccessful) {
+      List<Gym> gyms = [];
+      if (response.bodyString != "null") {
+        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+
+        for (final gymData in jsonList) {
+          final Gym gym = Gym(
+            id: gymData['id'],
+            name: gymData['name'],
+            streetName: gymData['streetName'],
+            houseNumber: gymData['houseNumber'],
+            zipCode: gymData['zipCode'],
+            cityName: gymData['cityName'],
+            latitude: gymData['latitude'],
+            longitude: gymData['longitude'],
+          );
+          gyms.add(gym);
+        }
+
+        emit(GymsSearchLoaded(gyms: gyms));
+      } else {
+        emit(GymsSearchLoaded(gyms: gyms));
       }
     } else {
       emit(GymError(error: response.error.toString()));
@@ -80,7 +119,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
             gym: Gym(
               id: json['gym']['id'],
               name: json['gym']['name'],
-              displayName: json['gym']['displayName'],
+              streetName: json['gym']['streetName'],
+              zipCode: json['gym']['zipCode'],
+              houseNumber: json['gym']['houseNumber'],
+              cityName: json['gym']['cityName'],
               latitude: json['gym']['latitude'],
               longitude: json['gym']['longitude'],
             ),
@@ -93,25 +135,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       userBox.put("gymOverviews", gymOverviews);
 
       emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
-    } else {
-      emit(GymError(error: response.error.toString()));
-    }
-  }
-
-  void _onDeleteGym(DeleteGym event, Emitter<GymState> emit) async {
-    emit(GymDeleting());
-
-    final response = await _gymService.deleteGym(
-      userBox.get("flexusjwt"),
-      event.gymID,
-    );
-
-    if (response.isSuccessful) {
-      List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
-      gymOverviews.removeWhere((element) => element.gym.id == event.gymID);
-      userBox.put("gymOverviews", gymOverviews);
-
-      emit(GymDeleted());
     } else {
       emit(GymError(error: response.error.toString()));
     }

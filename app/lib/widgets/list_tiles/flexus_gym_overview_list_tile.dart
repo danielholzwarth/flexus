@@ -1,5 +1,5 @@
-import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
+import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
@@ -47,7 +47,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   void showPopUp() {
     userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
-    GymBloc gymBloc = GymBloc();
+    UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
 
     showModalBottomSheet(
       backgroundColor: AppSettings.background,
@@ -84,7 +84,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 ScrollController scrollController = ScrollController();
                                 return Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey.shade300, width: 2),
@@ -133,9 +133,9 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             BlocBuilder(
-                              bloc: gymBloc,
+                              bloc: userAccountGymBloc,
                               builder: (context, state) {
-                                if (state is GymDeleting) {
+                                if (state is UserAccountGymDeleting) {
                                   return ElevatedButton(
                                     style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(AppSettings.background),
@@ -147,7 +147,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                     onPressed: () {},
                                     child: Center(child: CircularProgressIndicator(color: AppSettings.error)),
                                   );
-                                } else if (state is GymDeleted) {
+                                } else if (state is UserAccountGymDeleted) {
                                   widget.func();
 
                                   return ElevatedButton(
@@ -158,7 +158,9 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
                                       fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gymOverview.gym.id));
+                                    },
                                     child: Icon(Icons.check, color: AppSettings.error, size: AppSettings.fontSize),
                                   );
                                 } else {
@@ -171,7 +173,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                                     ),
                                     onPressed: () {
-                                      gymBloc.add(DeleteGym(gymID: widget.gymOverview.gym.id));
+                                      userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gymOverview.gym.id));
                                     },
                                     child: const Text('Delete Gym'),
                                   );
@@ -210,10 +212,19 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     await launchUrl(uri);
   }
 
-  Text buildSubTitle() {
-    return Text(
-      widget.gymOverview.gym.displayName,
-      style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+  Widget buildSubTitle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${widget.gymOverview.gym.streetName} ${widget.gymOverview.gym.houseNumber}',
+          style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+        ),
+        Text(
+          '${widget.gymOverview.gym.zipCode} ${widget.gymOverview.gym.cityName}',
+          style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+        ),
+      ],
     );
   }
 

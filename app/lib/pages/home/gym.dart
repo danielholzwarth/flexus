@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
@@ -17,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:http/http.dart' as http;
 
 class GymPage extends StatefulWidget {
   const GymPage({super.key});
@@ -373,19 +370,7 @@ class _GymPageState extends State<GymPage> {
 class CustomSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
-  List<Map<String, dynamic>> searchResults = [];
-
-  Future<List<Map<String, dynamic>>> searchLocations(String query) async {
-    final response = await http.get(Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> results = json.decode(response.body);
-      final List<Map<String, dynamic>> firstTenResults = results.take(10).cast<Map<String, dynamic>>().toList();
-      return firstTenResults;
-    } else {
-      throw Exception('Failed to load search results');
-    }
-  }
+  GymBloc searchGymBloc = GymBloc();
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -395,6 +380,12 @@ class CustomSearchDelegate extends SearchDelegate {
           query = '';
         },
         icon: const Icon(Icons.clear),
+      ),
+      IconButton(
+        onPressed: () {
+          //LOAD FROM OSM
+        },
+        icon: const Icon(Icons.add),
       )
     ];
   }
@@ -411,28 +402,13 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder(
-      future: searchLocations(query),
-      builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (snapshot.hasError) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
-        } else {
-          final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+    searchGymBloc.add(GetGymsSearch(query: query));
 
-          if (searchResults.isNotEmpty) {
+    return BlocBuilder(
+      bloc: searchGymBloc,
+      builder: (context, state) {
+        if (state is GymsSearchLoaded) {
+          if (state.gyms.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
               body: FlexusScrollBar(
@@ -440,23 +416,27 @@ class CustomSearchDelegate extends SearchDelegate {
                 child: ListView.builder(
                   controller: scrollController,
                   itemBuilder: (context, index) {
-                    return FlexusGymExpansionTile(locationData: searchResults[index]);
+                    return FlexusGymExpansionTile(
+                      gym: state.gyms[index],
+                    );
                   },
-                  itemCount: searchResults.length,
+                  itemCount: state.gyms.length,
                 ),
               ),
             );
           } else {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: Center(
-                child: Text(
-                  'No results found',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
-                ),
+              body: const Center(
+                child: Text("No gyms found"),
               ),
             );
           }
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         }
       },
     );
@@ -464,28 +444,13 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder(
-      future: searchLocations(query),
-      builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (snapshot.hasError) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: AppSettings.fontSize),
-              ),
-            ),
-          );
-        } else {
-          final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+    searchGymBloc.add(GetGymsSearch(query: query));
 
-          if (searchResults.isNotEmpty) {
+    return BlocBuilder(
+      bloc: searchGymBloc,
+      builder: (context, state) {
+        if (state is GymsSearchLoaded) {
+          if (state.gyms.isNotEmpty) {
             return Scaffold(
               backgroundColor: AppSettings.background,
               body: FlexusScrollBar(
@@ -493,25 +458,181 @@ class CustomSearchDelegate extends SearchDelegate {
                 child: ListView.builder(
                   controller: scrollController,
                   itemBuilder: (context, index) {
-                    return FlexusGymExpansionTile(locationData: searchResults[index]);
+                    return FlexusGymExpansionTile(
+                      gym: state.gyms[index],
+                    );
                   },
-                  itemCount: searchResults.length,
+                  itemCount: state.gyms.length,
                 ),
               ),
             );
           } else {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: Center(
-                child: Text(
-                  'No results found',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
-                ),
+              body: const Center(
+                child: Text("No gyms found"),
               ),
             );
           }
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         }
       },
     );
   }
 }
+
+
+// class CustomSearchDelegate extends SearchDelegate {
+//   ScrollController scrollController = ScrollController();
+//   TextEditingController searchController = TextEditingController();
+//   List<Map<String, dynamic>> searchResults = [];
+
+//   Future<List<Map<String, dynamic>>> searchLocations(String query) async {
+//     final response = await http.get(Uri.parse('https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1'));
+
+//     if (response.statusCode == 200) {
+//       debugPrint(response.body);
+//       final List<dynamic> results = json.decode(response.body);
+//       final List<Map<String, dynamic>> firstTenResults = results.take(10).cast<Map<String, dynamic>>().toList();
+//       return firstTenResults;
+//     } else {
+//       throw Exception('Failed to load search results');
+//     }
+//   }
+
+//   @override
+//   List<Widget>? buildActions(BuildContext context) {
+//     return [
+//       IconButton(
+//         onPressed: () {
+//           query = '';
+//         },
+//         icon: const Icon(Icons.clear),
+//       ),
+//       IconButton(
+//         onPressed: () {},
+//         icon: const Icon(Icons.add),
+//       )
+//     ];
+//   }
+
+//   @override
+//   Widget? buildLeading(BuildContext context) {
+//     return IconButton(
+//       onPressed: () {
+//         close(context, null);
+//       },
+//       icon: const Icon(Icons.arrow_back),
+//     );
+//   }
+
+//   @override
+//   Widget buildResults(BuildContext context) {
+//     return FutureBuilder(
+//       future: searchLocations(query),
+//       builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Scaffold(
+//             backgroundColor: AppSettings.background,
+//             body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+//           );
+//         } else if (snapshot.hasError) {
+//           return Scaffold(
+//             backgroundColor: AppSettings.background,
+//             body: Center(
+//               child: Text(
+//                 'Error: ${snapshot.error}',
+//                 style: TextStyle(fontSize: AppSettings.fontSize),
+//               ),
+//             ),
+//           );
+//         } else {
+//           final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+
+//           if (searchResults.isNotEmpty) {
+//             return Scaffold(
+//               backgroundColor: AppSettings.background,
+//               body: FlexusScrollBar(
+//                 scrollController: scrollController,
+//                 child: ListView.builder(
+//                   controller: scrollController,
+//                   itemBuilder: (context, index) {
+//                     return FlexusGymExpansionTile(locationData: searchResults[index]);
+//                   },
+//                   itemCount: searchResults.length,
+//                 ),
+//               ),
+//             );
+//           } else {
+//             return Scaffold(
+//               backgroundColor: AppSettings.background,
+//               body: Center(
+//                 child: Text(
+//                   'No results found',
+//                   style: TextStyle(fontSize: AppSettings.fontSize),
+//                 ),
+//               ),
+//             );
+//           }
+//         }
+//       },
+//     );
+//   }
+
+//   @override
+//   Widget buildSuggestions(BuildContext context) {
+//     return FutureBuilder(
+//       future: searchLocations(query),
+//       builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return Scaffold(
+//             backgroundColor: AppSettings.background,
+//             body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+//           );
+//         } else if (snapshot.hasError) {
+//           return Scaffold(
+//             backgroundColor: AppSettings.background,
+//             body: Center(
+//               child: Text(
+//                 'Error: ${snapshot.error}',
+//                 style: TextStyle(fontSize: AppSettings.fontSize),
+//               ),
+//             ),
+//           );
+//         } else {
+//           final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+
+//           if (searchResults.isNotEmpty) {
+//             return Scaffold(
+//               backgroundColor: AppSettings.background,
+//               body: FlexusScrollBar(
+//                 scrollController: scrollController,
+//                 child: ListView.builder(
+//                   controller: scrollController,
+//                   itemBuilder: (context, index) {
+//                     return FlexusGymExpansionTile(locationData: searchResults[index]);
+//                   },
+//                   itemCount: searchResults.length,
+//                 ),
+//               ),
+//             );
+//           } else {
+//             return Scaffold(
+//               backgroundColor: AppSettings.background,
+//               body: Center(
+//                 child: Text(
+//                   'No results found',
+//                   style: TextStyle(fontSize: AppSettings.fontSize),
+//                 ),
+//               ),
+//             );
+//           }
+//         }
+//       },
+//     );
+//   }
+// }

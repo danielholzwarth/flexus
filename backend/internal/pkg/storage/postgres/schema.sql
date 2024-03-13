@@ -57,7 +57,10 @@ CREATE TABLE report (
 CREATE TABLE gym (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    display_name VARCHAR NOT NULL,
+    street_name VARCHAR NOT NULL,
+    house_number VARCHAR NOT NULL,
+    zip_code VARCHAR NOT NULL,
+    city_name VARCHAR NOT NULL,
     latitude DECIMAL NOT NULL,
     longitude DECIMAL NOT NULL
 );
@@ -191,11 +194,10 @@ INSERT INTO "user_account" ("username", "name", "password", "created_at", "level
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('blackpanther22', 'Brad', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2002-11-09', 24, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('pinkflamingo77', 'Pam', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2001-09-15', 16, null);
 
-Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Energym', 'Energym, Siemensstraße, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
-Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Powerhouse', 'Energym, Hier könnte deine Werbung stehen, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
-Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Mc Fit', 'Energym, Lalala, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
-Insert INTO "gym" ("name", "display_name", "latitude", "longitude") VALUES ('Jumpers', 'Jumpers, Irgendeine Straße, Leimengrube Siemensstraße, Möhrig, Öhringen, Verwaltungsgemeinschaft Öhringen, Hohenlohekreis, Baden-Württemberg, 74613, Deutschland', 43.6532, -79.3832);
-
+Insert INTO "gym" ("name", "street_name", "house_number", "zip_code", "city_name", "latitude", "longitude") VALUES ('Energym', 'Straßenname1', 'Hausnummer1', 'PLZ1', 'Stadtname1', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "street_name", "house_number", "zip_code", "city_name", "latitude", "longitude") VALUES ('Powerhouse', 'Straßenname2', 'Hausnummer2', 'PLZ2', 'Stadtname2', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "street_name", "house_number", "zip_code", "city_name", "latitude", "longitude") VALUES ('Mc Fit', 'Straßenname3', 'Hausnummer3', 'PLZ3', 'Stadtname3', 43.6532, -79.3832);
+Insert INTO "gym" ("name", "street_name", "house_number", "zip_code", "city_name", "latitude", "longitude") VALUES ('Jumpers', 'Straßenname4', 'Hausnummer4', 'PLZ4', 'Stadtname4', 43.6532, -79.3832);
 
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 1);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (1, 2);

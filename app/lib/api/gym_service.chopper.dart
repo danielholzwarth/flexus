@@ -38,8 +38,12 @@ final class _$GymService extends GymService {
   }
 
   @override
-  Future<Response<dynamic>> getGymOverviews(String flexusJWTString) {
+  Future<Response<dynamic>> getGymsSearch(
+    String flexusJWTString, {
+    String? keyword,
+  }) {
     final Uri $url = Uri.parse('/gyms/');
+    final Map<String, dynamic> $params = <String, dynamic>{'keyword': keyword};
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
@@ -47,22 +51,20 @@ final class _$GymService extends GymService {
       'GET',
       $url,
       client.baseUrl,
+      parameters: $params,
       headers: $headers,
     );
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
-  Future<Response<dynamic>> deleteGym(
-    String flexusJWTString,
-    int gymID,
-  ) {
-    final Uri $url = Uri.parse('/gyms/${gymID}');
+  Future<Response<dynamic>> getGymOverviews(String flexusJWTString) {
+    final Uri $url = Uri.parse('/gyms/overviews');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
     final Request $request = Request(
-      'DELETE',
+      'GET',
       $url,
       client.baseUrl,
       headers: $headers,

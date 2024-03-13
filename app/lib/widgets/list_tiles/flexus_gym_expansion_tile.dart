@@ -1,15 +1,16 @@
-import 'package:app/bloc/gym_bloc/gym_bloc.dart';
+import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
+import 'package:app/hive/gym.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FlexusGymExpansionTile extends StatefulWidget {
-  final Map<String, dynamic> locationData;
+  final Gym gym;
 
   const FlexusGymExpansionTile({
     super.key,
-    required this.locationData,
+    required this.gym,
   });
 
   @override
@@ -19,13 +20,13 @@ class FlexusGymExpansionTile extends StatefulWidget {
 class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
   @override
   Widget build(BuildContext context) {
-    final GymBloc gymBloc = GymBloc();
+    final UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
 
     return ExpansionTile(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.locationData['name'],
+          Text(widget.gym.name,
               style: TextStyle(
                 fontSize: AppSettings.fontSizeTitleSmall,
                 fontWeight: FontWeight.bold,
@@ -33,7 +34,11 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
               )),
           SizedBox(height: AppSettings.screenHeight * 0.01),
           Text(
-            '${widget.locationData['display_name']}',
+            '${widget.gym.streetName} ${widget.gym.houseNumber}',
+            style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
+          ),
+          Text(
+            '${widget.gym.zipCode} ${widget.gym.cityName}',
             style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
           ),
         ],
@@ -44,9 +49,9 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             BlocBuilder(
-              bloc: gymBloc,
+              bloc: userAccountGymBloc,
               builder: (context, state) {
-                if (state is GymCreating) {
+                if (state is UserAccountGymCreating || state is UserAccountGymDeleting) {
                   return ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(AppSettings.background),
@@ -58,7 +63,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                     onPressed: null,
                     child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
                   );
-                } else if (state is GymCreated) {
+                } else if (state is UserAccountGymCreated) {
                   return ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(AppSettings.background),
@@ -68,7 +73,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                     ),
                     onPressed: () {
-                      gymBloc.add(DeleteGym(gymID: state.gym.id));
+                      userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gym.id));
                     },
                     child: Icon(Icons.check, color: AppSettings.primary, size: AppSettings.fontSize),
                   );
@@ -82,7 +87,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
                     ),
                     onPressed: () {
-                      gymBloc.add(PostGym(locationData: widget.locationData));
+                      userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gym.id));
                     },
                     child: const Text('Add to Gyms'),
                   );
@@ -98,7 +103,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                 fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
               ),
               onPressed: () {
-                openMaps(double.parse(widget.locationData['lat']), double.parse(widget.locationData['lon']));
+                openMaps(widget.gym.latitude, widget.gym.longitude);
               },
               child: const Text('Open in Maps'),
             ),

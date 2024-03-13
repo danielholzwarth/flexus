@@ -1,27 +1,22 @@
 import 'package:chopper/chopper.dart';
 
-part 'gym_service.chopper.dart';
+part 'user_account_gym_service.chopper.dart';
 
-@ChopperApi(baseUrl: '/gyms')
-abstract class GymService extends ChopperService {
+@ChopperApi(baseUrl: '/user_account_gym')
+abstract class UserAccountGymService extends ChopperService {
   @Post(path: '/')
-  Future<Response> postGym(
+  Future<Response> postUserAccountGym(
     @Header('flexusjwt') String flexusJWTString,
-    @Body() Map<String, dynamic> gym,
+    @Body() Map<String, dynamic> body,
   );
 
-  @Get(path: '/')
-  Future<Response> getGymsSearch(
-    @Header('flexusjwt') String flexusJWTString, {
-    @Query('keyword') String? keyword,
-  });
-
-  @Get(path: '/overviews')
-  Future<Response> getGymOverviews(
+  @Delete(path: '/{gymID}')
+  Future<Response> deleteUserAccountGym(
     @Header('flexusjwt') String flexusJWTString,
+    @Path('gymID') int gymID,
   );
 
-  static GymService create() {
+  static UserAccountGymService create() {
     final client = ChopperClient(
         //For local device
         //baseUrl: Uri.parse('http://ipv4:8080'),
@@ -30,9 +25,9 @@ abstract class GymService extends ChopperService {
         //For Web
         //baseUrl: Uri.parse('http://localhost:8080'),
         services: [
-          _$GymService(),
+          _$UserAccountGymService(),
         ],
         converter: const JsonConverter());
-    return _$GymService(client);
+    return _$UserAccountGymService(client);
   }
 }
