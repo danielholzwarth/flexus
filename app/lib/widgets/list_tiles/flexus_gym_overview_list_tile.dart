@@ -3,6 +3,7 @@ import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,17 +81,29 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                           builder: (context, state) {
                             if (state is UserAccountGymOverviewsLoaded) {
                               if (state.userAccountGymOverviews.isNotEmpty) {
+                                ScrollController scrollController = ScrollController();
                                 return Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    child: ListView(
-                                      children: [
-                                        ...state.userAccountGymOverviews.map(
-                                          (userAccountGymOverview) => FlexusUserAccountGymListTile(
-                                            userAccountGymOverview: userAccountGymOverview,
-                                          ),
+                                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey.shade300, width: 2),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                      child: FlexusScrollBar(
+                                        scrollController: scrollController,
+                                        child: ListView(
+                                          controller: scrollController,
+                                          children: [
+                                            ...state.userAccountGymOverviews.map(
+                                              (userAccountGymOverview) => FlexusUserAccountGymListTile(
+                                                userAccountGymOverview: userAccountGymOverview,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 );
