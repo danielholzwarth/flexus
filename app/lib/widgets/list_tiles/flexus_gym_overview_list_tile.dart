@@ -5,8 +5,11 @@ import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FlexusGymOverviewListTile extends StatefulWidget {
@@ -25,36 +28,120 @@ class FlexusGymOverviewListTile extends StatefulWidget {
 
 class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   final UserAccountBloc userAccountBloc = UserAccountBloc();
+  final userBox = Hive.box("userBox");
+  bool refresh = false;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        showPopUp();
-      },
-      contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
-      tileColor: AppSettings.background,
-      leading: buildLeading(context),
-      title: Text(widget.gymOverview.gym.name),
-      trailing: GestureDetector(
-        child: Container(
-          child: buildTrailing(context),
-        ),
+    String name = userBox.get("customGymName${widget.gymOverview.gym.id}") ?? widget.gymOverview.gym.name;
+
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const StretchMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            backgroundColor: AppSettings.primary,
+            icon: Icons.edit,
+            label: "Edit",
+            foregroundColor: AppSettings.fontV1,
+            onPressed: (context) async {
+              await showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      TextEditingController textEditingController = TextEditingController();
+                      return AlertDialog(
+                        backgroundColor: AppSettings.background,
+                        surfaceTintColor: AppSettings.background,
+                        content: TextField(
+                          controller: textEditingController,
+                          autofocus: true,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            hintText: widget.gymOverview.gym.name,
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(color: AppSettings.font),
+                          ),
+                        ),
+                        actions: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                                  surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                                  overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
+                                  foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                                  fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                                  surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                                  overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                                  foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                                  fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                                ),
+                                onPressed: () {
+                                  if (textEditingController.text.isNotEmpty) {
+                                    userBox.put("customGymName${widget.gymOverview.gym.id}", textEditingController.text);
+                                  } else {
+                                    userBox.delete("customGymName${widget.gymOverview.gym.id}");
+                                  }
+
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Confirm'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+              setState(() {});
+            },
+          ),
+        ],
       ),
-      subtitle: buildSubTitle(),
+      child: ListTile(
+        onTap: () {
+          showPopUp(name);
+        },
+        contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+        tileColor: AppSettings.background,
+        leading: buildLeading(context),
+        title: Text(name),
+        trailing: GestureDetector(
+          child: Container(
+            child: buildTrailing(context),
+          ),
+        ),
+        subtitle: buildSubTitle(),
+      ),
     );
   }
 
-  void showPopUp() {
+  void showPopUp(String name) {
     userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
     UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
 
     showModalBottomSheet(
       backgroundColor: AppSettings.background,
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (BuildContext context, StateSetter setState) {
             return ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
@@ -69,10 +156,10 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                       children: [
                         Text(
                           widget.gymOverview.totalFriends > 0
-                              ? "${widget.gymOverview.gym.name} ${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends}"
-                              : widget.gymOverview.gym.name,
+                              ? "$name ${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends}"
+                              : name,
                           style: TextStyle(
-                            fontSize: AppSettings.fontSizeTitleSmall,
+                            fontSize: AppSettings.fontSizeTitle,
                             color: AppSettings.font,
                           ),
                         ),
