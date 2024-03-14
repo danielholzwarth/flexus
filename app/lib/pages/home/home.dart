@@ -9,6 +9,7 @@ import 'package:app/pages/sign_in/login.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/pages/workoutplan_creation/plan.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
@@ -252,133 +253,12 @@ class _HomePageState extends State<HomePage> {
         ),
         IconButton(
           onPressed: () async {
-            await showSearch(context: context, delegate: CustomSearchDelegate());
+            await showSearch(context: context, delegate: WorkoutsCustomSearchDelegate());
             workoutBloc.add(GetWorkout());
           },
           icon: const Icon(Icons.search),
         )
       ],
-    );
-  }
-}
-
-class CustomSearchDelegate extends SearchDelegate {
-  WorkoutBloc workoutBloc = WorkoutBloc();
-  ScrollController scrollController = ScrollController();
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-        onPressed: () {
-          query = '';
-        },
-        icon: const Icon(Icons.clear),
-      )
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, null);
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    workoutBloc.add(GetSearchWorkout(keyWord: query));
-
-    return BlocBuilder(
-      bloc: workoutBloc,
-      builder: (context, state) {
-        if (state is WorkoutSearching) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (state is WorkoutLoaded) {
-          if (state.workoutOverviews.isNotEmpty) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: FlexusScrollBar(
-                scrollController: scrollController,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                  },
-                  itemCount: state.workoutOverviews.length,
-                ),
-              ),
-            );
-          } else {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: const Center(
-                child: Text("No workouts found"),
-              ),
-            );
-          }
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: const Center(
-              child: Text("Error loading workouts"),
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    workoutBloc.add(GetSearchWorkout(keyWord: query));
-
-    return BlocBuilder(
-      bloc: workoutBloc,
-      builder: (context, state) {
-        if (state is WorkoutSearching) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (state is WorkoutLoaded) {
-          if (state.workoutOverviews.isNotEmpty) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: FlexusScrollBar(
-                scrollController: scrollController,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                  },
-                  itemCount: state.workoutOverviews.length,
-                ),
-              ),
-            );
-          } else {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: const Center(
-                child: Text("No workouts found"),
-              ),
-            );
-          }
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: const Center(
-              child: Text("Error loading workouts"),
-            ),
-          );
-        }
-      },
     );
   }
 }

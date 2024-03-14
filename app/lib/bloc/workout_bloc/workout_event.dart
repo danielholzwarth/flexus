@@ -12,7 +12,7 @@ class GetWorkout extends WorkoutEvent {
 }
 
 class GetSearchWorkout extends WorkoutEvent {
-  final bool isArchive;
+  final bool? isArchive;
   final String keyWord;
 
   GetSearchWorkout({

@@ -36,101 +36,109 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-          Visibility(
-            visible: widget.userID == userAccount.id,
-            child: PopupMenuButton<String>(
-              color: AppSettings.background,
-              icon: Icon(
-                Icons.menu,
-                color: AppSettings.font,
-                size: AppSettings.fontSizeTitle,
-              ),
-              itemBuilder: (BuildContext context) {
-                return ['Take new picture', 'Choose new picture', 'Delete picture'].map((String choice) {
-                  IconData icon;
-                  switch (choice) {
-                    case 'Take new picture':
-                      icon = Icons.camera_alt;
-                      break;
-                    case 'Choose new picture':
-                      icon = Icons.photo_library;
-                      break;
-                    case 'Delete picture':
-                      icon = Icons.delete;
-                      break;
-                    default:
-                      icon = Icons.error;
-                  }
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(choice),
-                        Icon(icon),
-                      ],
-                    ),
-                  );
-                }).toList();
-              },
-              onSelected: (String choice) {
-                switch (choice) {
-                  case "Take new picture":
-                    takeImage();
-                    break;
-                  case "Choose new picture":
-                    getImageFromGallery();
-                    break;
-                  case "Delete picture":
-                    deleteImage();
-                    break;
-                  default:
-                    debugPrint("not implemented yet");
-                }
-              },
-            ),
-          ),
+          buildMenu(userAccount),
         ],
       ),
-      body: BlocBuilder(
-        bloc: userAccountBloc,
-        builder: (context, state) {
-          if (state is UserAccountUpdating) {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          } else if (state is UserAccountLoaded) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Center(
-                child: Hero(
-                  tag: 'profile_picture',
-                  child: state.userAccount.profilePicture != null
-                      ? Image.memory(state.userAccount.profilePicture!)
-                      : Icon(
-                          Icons.hide_image_outlined,
-                          size: AppSettings.screenWidth * 0.7,
-                        ),
-                ),
+      body: buildPicture(),
+    );
+  }
+
+  BlocBuilder<UserAccountBloc, Object?> buildPicture() {
+    return BlocBuilder(
+      bloc: userAccountBloc,
+      builder: (context, state) {
+        if (state is UserAccountUpdating) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is UserAccountLoaded) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Center(
+              child: Hero(
+                tag: 'profile_picture',
+                child: state.userAccount.profilePicture != null
+                    ? Image.memory(state.userAccount.profilePicture!)
+                    : Icon(
+                        Icons.hide_image_outlined,
+                        size: AppSettings.screenWidth * 0.7,
+                      ),
+              ),
+            ),
+          );
+        } else {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Center(
+              child: Hero(
+                tag: 'profile_picture',
+                child: widget.profilePicture != null
+                    ? Image.memory(widget.profilePicture!)
+                    : Icon(
+                        Icons.hide_image_outlined,
+                        size: AppSettings.screenWidth * 0.7,
+                      ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Visibility buildMenu(UserAccount userAccount) {
+    return Visibility(
+      visible: widget.userID == userAccount.id,
+      child: PopupMenuButton<String>(
+        color: AppSettings.background,
+        icon: Icon(
+          Icons.menu,
+          color: AppSettings.font,
+          size: AppSettings.fontSizeTitle,
+        ),
+        itemBuilder: (BuildContext context) {
+          return ['Take new picture', 'Choose new picture', 'Delete picture'].map((String choice) {
+            IconData icon;
+            switch (choice) {
+              case 'Take new picture':
+                icon = Icons.camera_alt;
+                break;
+              case 'Choose new picture':
+                icon = Icons.photo_library;
+                break;
+              case 'Delete picture':
+                icon = Icons.delete;
+                break;
+              default:
+                icon = Icons.error;
+            }
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(choice),
+                  Icon(icon),
+                ],
               ),
             );
-          } else {
-            return GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Center(
-                child: Hero(
-                  tag: 'profile_picture',
-                  child: widget.profilePicture != null
-                      ? Image.memory(widget.profilePicture!)
-                      : Icon(
-                          Icons.hide_image_outlined,
-                          size: AppSettings.screenWidth * 0.7,
-                        ),
-                ),
-              ),
-            );
+          }).toList();
+        },
+        onSelected: (String choice) {
+          switch (choice) {
+            case "Take new picture":
+              takeImage();
+              break;
+            case "Choose new picture":
+              getImageFromGallery();
+              break;
+            case "Delete picture":
+              deleteImage();
+              break;
+            default:
+              debugPrint("not implemented yet");
           }
         },
       ),
