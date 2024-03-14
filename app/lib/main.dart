@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/best_lift.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/friendship.dart';
@@ -13,6 +15,7 @@ import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -21,6 +24,8 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   await initializeHive();
+
+  await getUserSettings();
 
   runApp(const MainApp());
 }
@@ -66,6 +71,42 @@ Future<void> initializeHive() async {
   } catch (e) {
     if (kDebugMode) {
       print('Error initializing Hive: $e');
+    }
+  }
+}
+
+Future<void> getUserSettings() async {
+  UserSettingsService userSettingsService = UserSettingsService.create();
+  final userBox = Hive.box('userBox');
+  final flexusjwt = userBox.get("flexusjwt");
+
+  if (flexusjwt != null) {
+    Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
+
+    if (response.isSuccessful) {
+      if (response.bodyString != "null") {
+        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+
+        final userSettings = UserSettings(
+          id: jsonMap['id'],
+          userAccountID: jsonMap['userAccountID'],
+          fontSize: double.parse(jsonMap['fontSize'].toString()),
+          isDarkMode: jsonMap['isDarkMode'],
+          languageID: jsonMap['languageID'],
+          isUnlisted: jsonMap['isUnlisted'],
+          isPullFromEveryone: jsonMap['isPullFromEveryone'],
+          pullUserListID: jsonMap['pullUserListID'],
+          isNotifyEveryone: jsonMap['isNotifyEveryone'],
+          notifyUserListID: jsonMap['notifyUserListID'],
+        );
+
+        userBox.put("userSettings", userSettings);
+        debugPrint("Settings found!");
+      } else {
+        debugPrint("No Settings found!");
+      }
+    } else {
+      debugPrint("Internal Server Error");
     }
   }
 }
