@@ -97,6 +97,9 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	whereConditions = append(whereConditions, " ua.id != $1")
 	conditionParams = append(conditionParams, userAccountID)
 
+	fromConditions = append(fromConditions, " LEFT JOIN user_settings us ON us.user_id = ua.id")
+	whereConditions = append(whereConditions, " us.is_unlisted = FALSE")
+
 	_, exists := params["gymID"]
 	if exists {
 		query += `, 
