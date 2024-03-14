@@ -105,6 +105,15 @@ func (s service) patchUserSettings() http.HandlerFunc {
 			}
 		}
 
+		if isQuickAccess, ok := requestBody["is_quick_access"].(bool); ok {
+			err := s.userSettingsStore.PatchUserSettings("is_quick_access", isQuickAccess, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch darkmode", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 	}

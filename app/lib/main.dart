@@ -67,7 +67,7 @@ Future<void> initializeHive() async {
     Hive.registerAdapter(GymAdapter());
     Hive.registerAdapter(UserAccountGymOverviewAdapter());
 
-    var userBox = await Hive.openBox('userBox');
+    await Hive.openBox('userBox');
   } catch (e) {
     if (kDebugMode) {
       print('Error initializing Hive: $e');
@@ -98,6 +98,7 @@ Future<void> getUserSettings() async {
           pullUserListID: jsonMap['pullUserListID'],
           isNotifyEveryone: jsonMap['isNotifyEveryone'],
           notifyUserListID: jsonMap['notifyUserListID'],
+          isQuickAccess: jsonMap['isQuickAccess'],
         );
 
         userBox.put("userSettings", userSettings);

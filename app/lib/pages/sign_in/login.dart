@@ -3,12 +3,15 @@
 import 'dart:convert';
 
 import 'package:app/api/login_user_account_service.dart';
+import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -69,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: AppSettings.backgroundV1,
       fontColor: AppSettings.fontV1,
       function: () async {
-        final response = await loginUserAccountService.getLogin({
+        Response<dynamic> response = await loginUserAccountService.getLogin({
           "username": usernameController.text,
           "password": passwordController.text,
         });
@@ -86,6 +89,8 @@ class _LoginPageState extends State<LoginPage> {
             level: jsonMap['level'],
           );
           userBox.put("userAccount", userAccount);
+
+          await getUserSettings();
 
           ScaffoldMessenger.of(context).clearSnackBars();
           Navigator.pushAndRemoveUntil(
@@ -136,5 +141,42 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ],
     );
+  }
+
+  Future<void> getUserSettings() async {
+    UserSettingsService userSettingsService = UserSettingsService.create();
+    final userBox = Hive.box('userBox');
+    final flexusjwt = userBox.get("flexusjwt");
+
+    if (flexusjwt != null) {
+      Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
+
+      if (response.isSuccessful) {
+        if (response.bodyString != "null") {
+          final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+
+          final userSettings = UserSettings(
+            id: jsonMap['id'],
+            userAccountID: jsonMap['userAccountID'],
+            fontSize: double.parse(jsonMap['fontSize'].toString()),
+            isDarkMode: jsonMap['isDarkMode'],
+            languageID: jsonMap['languageID'],
+            isUnlisted: jsonMap['isUnlisted'],
+            isPullFromEveryone: jsonMap['isPullFromEveryone'],
+            pullUserListID: jsonMap['pullUserListID'],
+            isNotifyEveryone: jsonMap['isNotifyEveryone'],
+            notifyUserListID: jsonMap['notifyUserListID'],
+            isQuickAccess: jsonMap['isQuickAccess'],
+          );
+
+          userBox.put("userSettings", userSettings);
+          debugPrint("Settings found!");
+        } else {
+          debugPrint("No Settings found!");
+        }
+      } else {
+        debugPrint("Internal Server Error");
+      }
+    }
   }
 }

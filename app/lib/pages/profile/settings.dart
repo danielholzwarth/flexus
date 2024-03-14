@@ -232,7 +232,7 @@ class _SettingsPageState extends State<SettingsPage> {
       child: FlexusSettingsListTile(
         title: "Quick Access",
         subtitle: "Display a Quick Access screen when you start the application.",
-        value: userSettings.isDarkMode,
+        value: userSettings.isQuickAccess,
         isBool: true,
         onChanged: (value) {
           settingsBloc.add(PatchSettings(name: "isQuickAccess", value: value));

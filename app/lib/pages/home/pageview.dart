@@ -31,7 +31,7 @@ class _PageViewPageState extends State<PageViewPage> {
   @override
   Widget build(BuildContext context) {
     UserSettings userSettings = userBox.get("userSettings");
-    bool isQuickAccess = userSettings.isDarkMode;
+    bool isQuickAccess = userSettings.isQuickAccess;
     if (isFirstTime && widget.isFirst && isQuickAccess) {
       isFirstTime = false;
       return buildQuickAccess(context);

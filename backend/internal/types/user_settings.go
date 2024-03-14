@@ -11,4 +11,5 @@ type UserSettings struct {
 	PullUserListID     *int    `json:"pullUserListID"`
 	IsNotifyEveryone   bool    `json:"isNotifyEveryone"`
 	NotifyUserListID   *int    `json:"notifyUserListID"`
+	IsQuickAccess      bool    `json:"isQuickAccess"`
 }

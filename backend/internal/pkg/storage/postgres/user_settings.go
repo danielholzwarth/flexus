@@ -8,10 +8,10 @@ import (
 
 func (db DB) CreateUserSettings(tx *sql.Tx, userAccountID int) error {
 	query := `
-        INSERT INTO user_settings (user_id, font_size, is_dark_mode, language_id, is_unlisted, is_pull_from_everyone, is_notify_everyone)
-        VALUES ($1, $2, $3, $4, $5, $6, $7);
+        INSERT INTO user_settings (user_id, font_size, is_dark_mode, language_id, is_unlisted, is_pull_from_everyone, is_notify_everyone, is_quick_access)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
     `
-	_, err := tx.Exec(query, userAccountID, 22.0, false, 1, false, true, true)
+	_, err := tx.Exec(query, userAccountID, 22.0, false, 1, false, true, true, false)
 	return err
 }
 
@@ -42,6 +42,7 @@ func (db DB) GetUserSettings(userAccountID int) (types.UserSettings, error) {
 			&settings.PullUserListID,
 			&settings.IsNotifyEveryone,
 			&settings.NotifyUserListID,
+			&settings.IsQuickAccess,
 		)
 		if err != nil {
 			return types.UserSettings{}, err

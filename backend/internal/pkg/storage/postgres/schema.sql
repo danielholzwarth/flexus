@@ -89,7 +89,8 @@ CREATE TABLE user_settings (
     is_pull_from_everyone BOOLEAN NOT NULL,
     pull_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
     is_notify_everyone BOOLEAN NOT NULL,
-    notify_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE
+    notify_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    is_quick_access BOOLEAN NOT NULL
 );
 
 CREATE TABLE plan (
@@ -223,7 +224,30 @@ Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (15, 2);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (16, 2);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (17, 2);
 
-Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null);
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (2, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (3, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (4, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (5, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (6, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (7, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (8, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (9, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (10, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (11, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (12, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (13, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (14, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (15, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (16, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (17, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (18, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (19, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (20, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (21, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (22, 15, 'false', 1, 'true', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (23, 15, 'false', 1, 'true', 'true', null, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (24, 15, 'false', 1, 'true', 'true', null, 'true', null, 'false');
 
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 2, true);
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 3, true);

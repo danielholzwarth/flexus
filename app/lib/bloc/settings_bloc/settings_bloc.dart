@@ -45,6 +45,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           pullUserListID: jsonMap['pullUserListID'],
           isNotifyEveryone: jsonMap['isNotifyEveryone'],
           notifyUserListID: jsonMap['notifyUserListID'],
+          isQuickAccess: jsonMap['isQuickAccess'],
         );
 
         userBox.put("userSettings", userSettings);
@@ -126,6 +127,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_notify_everyone": event.value});
         if (response.isSuccessful) {
           userSettings.isNotifyEveryone = event.value;
+          userBox.put("userSettings", userSettings);
+        }
+        break;
+
+      case "isQuickAccess":
+        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_quick_access": event.value});
+        if (response.isSuccessful) {
+          userSettings.isQuickAccess = event.value;
           userBox.put("userSettings", userSettings);
         }
         break;

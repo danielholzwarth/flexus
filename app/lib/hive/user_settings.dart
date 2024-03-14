@@ -34,6 +34,9 @@ class UserSettings extends HiveObject {
   @HiveField(9)
   int? notifyUserListID;
 
+  @HiveField(10)
+  bool isQuickAccess;
+
   UserSettings({
     required this.id,
     required this.userAccountID,
@@ -45,5 +48,6 @@ class UserSettings extends HiveObject {
     this.pullUserListID,
     required this.isNotifyEveryone,
     this.notifyUserListID,
+    required this.isQuickAccess,
   });
 }

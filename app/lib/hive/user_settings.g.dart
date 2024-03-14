@@ -27,13 +27,14 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
       pullUserListID: fields[7] as int?,
       isNotifyEveryone: fields[8] as bool,
       notifyUserListID: fields[9] as int?,
+      isQuickAccess: fields[10] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserSettings obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class UserSettingsAdapter extends TypeAdapter<UserSettings> {
       ..writeByte(8)
       ..write(obj.isNotifyEveryone)
       ..writeByte(9)
-      ..write(obj.notifyUserListID);
+      ..write(obj.notifyUserListID)
+      ..writeByte(10)
+      ..write(obj.isQuickAccess);
   }
 
   @override
