@@ -97,9 +97,6 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	whereConditions = append(whereConditions, " ua.id != $1")
 	conditionParams = append(conditionParams, userAccountID)
 
-	fromConditions = append(fromConditions, " LEFT JOIN user_settings us ON us.user_id = ua.id")
-	whereConditions = append(whereConditions, " us.is_unlisted = FALSE")
-
 	_, exists := params["gymID"]
 	if exists {
 		query += `, 
@@ -123,8 +120,8 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 		}
 	}
 
-	_, exists = params["isFriend"]
-	if exists {
+	_, existsFriend := params["isFriend"]
+	if existsFriend {
 		fromConditions = append(fromConditions, " LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id")
 		whereConditions = append(whereConditions, " f.is_accepted = $"+strconv.Itoa(conditionParamIndex))
 		conditionParams = append(conditionParams, params["isFriend"])
@@ -134,12 +131,17 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 		orderConditions = append(orderConditions, " f.created_at DESC")
 	}
 
-	_, exists = params["hasRequest"]
-	if exists {
+	_, existsRequest := params["hasRequest"]
+	if existsRequest {
 		fromConditions = append(fromConditions, " LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id")
 		whereConditions = append(whereConditions, " f.is_accepted != $"+strconv.Itoa(conditionParamIndex)+" AND ($1 = f.requestor_id OR $1 = f.requested_id)")
 		conditionParams = append(conditionParams, params["hasRequest"])
 		conditionParamIndex++
+	}
+
+	if !existsFriend && !existsRequest {
+		fromConditions = append(fromConditions, " LEFT JOIN user_settings us ON us.user_id = ua.id")
+		whereConditions = append(whereConditions, " us.is_unlisted = FALSE")
 	}
 
 	_, exists = params["keyword"]
