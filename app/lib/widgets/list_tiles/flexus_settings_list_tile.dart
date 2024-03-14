@@ -34,7 +34,7 @@ class FlexusSettingsListTile extends StatelessWidget {
       tileColor: AppSettings.background,
       title: Text(
         title,
-        style: TextStyle(fontSize: AppSettings.fontSize),
+        style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
       ),
       subtitle: subtitle != ""
           ? Text(subtitle,

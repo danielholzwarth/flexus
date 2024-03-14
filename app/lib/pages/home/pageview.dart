@@ -1,3 +1,4 @@
+import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
@@ -5,6 +6,7 @@ import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class PageViewPage extends StatefulWidget {
 }
 
 class _PageViewPageState extends State<PageViewPage> {
+  final userBox = Hive.box("userBox");
   bool isFirstTime = true;
 
   int currentPageIndex = 1;
@@ -27,7 +30,9 @@ class _PageViewPageState extends State<PageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstTime && widget.isFirst) {
+    UserSettings userSettings = userBox.get("userSettings");
+    bool isQuickAccess = userSettings.isDarkMode;
+    if (isFirstTime && widget.isFirst && isQuickAccess) {
       isFirstTime = false;
       return buildQuickAccess(context);
     } else {

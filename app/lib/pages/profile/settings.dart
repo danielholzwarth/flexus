@@ -58,6 +58,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildSection("Appearance"),
                   buildFontSize(userSettings, context),
                   buildDarkMode(userSettings),
+                  buildQuickAccess(userSettings),
+                  buildFeature(userSettings),
                   _buildSection("Privacy"),
                   buildIsListed(userSettings),
                   buildIsPullFromEveryone(userSettings),
@@ -207,6 +209,33 @@ class _SettingsPageState extends State<SettingsPage> {
         isBool: true,
         onChanged: (value) {
           settingsBloc.add(PatchSettings(name: "isUnlisted", value: !value));
+        },
+      ),
+    );
+  }
+
+  SliverToBoxAdapter buildFeature(UserSettings userSettings) {
+    return SliverToBoxAdapter(
+      child: FlexusSettingsListTile(
+        title: "Feature Creep",
+        subtitle: "Choose which functions of Flexus you want to use. Deactivate what disturbs you.",
+        value: null,
+        onChanged: (value) {
+          settingsBloc.add(PatchSettings(name: "featureCreep", value: value));
+        },
+      ),
+    );
+  }
+
+  SliverToBoxAdapter buildQuickAccess(UserSettings userSettings) {
+    return SliverToBoxAdapter(
+      child: FlexusSettingsListTile(
+        title: "Quick Access",
+        subtitle: "Display a Quick Access screen when you start the application.",
+        value: userSettings.isDarkMode,
+        isBool: true,
+        onChanged: (value) {
+          settingsBloc.add(PatchSettings(name: "isQuickAccess", value: value));
         },
       ),
     );

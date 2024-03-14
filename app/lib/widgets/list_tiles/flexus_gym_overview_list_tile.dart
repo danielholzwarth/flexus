@@ -46,69 +46,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
             label: "Edit",
             foregroundColor: AppSettings.fontV1,
             onPressed: (context) async {
-              await showCupertinoDialog(
-                context: context,
-                builder: (context) {
-                  return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      TextEditingController textEditingController = TextEditingController();
-                      return AlertDialog(
-                        backgroundColor: AppSettings.background,
-                        surfaceTintColor: AppSettings.background,
-                        content: TextField(
-                          controller: textEditingController,
-                          autofocus: true,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            hintText: widget.gymOverview.gym.name,
-                            border: InputBorder.none,
-                            hintStyle: TextStyle(color: AppSettings.font),
-                          ),
-                        ),
-                        actions: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                                  surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                                  overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
-                                  foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                                  fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                                  surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                                  overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                                  foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                                  fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
-                                ),
-                                onPressed: () {
-                                  if (textEditingController.text.isNotEmpty) {
-                                    userBox.put("customGymName${widget.gymOverview.gym.id}", textEditingController.text);
-                                  } else {
-                                    userBox.delete("customGymName${widget.gymOverview.gym.id}");
-                                  }
-
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Confirm'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              );
+              await showDialog(context);
               setState(() {});
             },
           ),
@@ -129,6 +67,72 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
         ),
         subtitle: buildSubTitle(),
       ),
+    );
+  }
+
+  Future<dynamic> showDialog(BuildContext context) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            TextEditingController textEditingController = TextEditingController();
+            return AlertDialog(
+              backgroundColor: AppSettings.background,
+              surfaceTintColor: AppSettings.background,
+              content: TextField(
+                controller: textEditingController,
+                autofocus: true,
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: widget.gymOverview.gym.name,
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: AppSettings.font),
+                ),
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                        surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                        overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
+                        foregroundColor: MaterialStateProperty.all(AppSettings.error),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                        surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                        overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                        foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                      ),
+                      onPressed: () {
+                        if (textEditingController.text.isNotEmpty) {
+                          userBox.put("customGymName${widget.gymOverview.gym.id}", textEditingController.text);
+                        } else {
+                          userBox.delete("customGymName${widget.gymOverview.gym.id}");
+                        }
+
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Confirm'),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
@@ -155,12 +159,20 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                     child: Column(
                       children: [
                         Text(
-                          widget.gymOverview.totalFriends > 0
-                              ? "$name ${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends}"
-                              : name,
+                          name,
                           style: TextStyle(
                             fontSize: AppSettings.fontSizeTitle,
                             color: AppSettings.font,
+                          ),
+                        ),
+                        Visibility(
+                          visible: widget.gymOverview.totalFriends > 0,
+                          child: Text(
+                            "${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends} friends active",
+                            style: TextStyle(
+                              fontSize: AppSettings.fontSize,
+                              color: AppSettings.font.withOpacity(0.5),
+                            ),
                           ),
                         ),
                         BlocBuilder(
@@ -171,7 +183,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 ScrollController scrollController = ScrollController();
                                 return Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey.shade300, width: 2),
