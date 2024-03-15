@@ -54,7 +54,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       side: BorderSide(
-                        color: AppSettings.primaryShade48,
+                        color: AppSettings.error.withOpacity(0.1),
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(20),

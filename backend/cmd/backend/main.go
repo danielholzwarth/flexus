@@ -19,6 +19,7 @@ import (
 	"flexus/internal/api/report"
 	"flexus/internal/api/user_account"
 	"flexus/internal/api/user_account_gym"
+	"flexus/internal/api/user_list"
 	"flexus/internal/api/user_settings"
 	"flexus/internal/api/workout"
 	"flexus/internal/pkg/storage/postgres"
@@ -87,6 +88,7 @@ func run() error {
 	r.Mount("/friendships", flexusMiddleware.ValidateJWT(friendship.NewService(db)))
 	r.Mount("/gyms", flexusMiddleware.ValidateJWT(gym.NewService(db)))
 	r.Mount("/user_account_gym", flexusMiddleware.ValidateJWT(user_account_gym.NewService(db)))
+	r.Mount("/user_lists", flexusMiddleware.ValidateJWT(user_list.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

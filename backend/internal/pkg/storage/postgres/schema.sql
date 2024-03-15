@@ -36,13 +36,6 @@ CREATE TABLE user_account (
     profile_picture BYTEA
 );
 
-CREATE TABLE user_list (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    list_id INTEGER NOT NULL,
-    creator_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    member_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 CREATE TABLE report (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     reporter_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -79,6 +72,17 @@ CREATE TABLE friendship (
     is_accepted BOOLEAN NOT NULL
 );
 
+CREATE TABLE user_account_user_list (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE user_list (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    list_id BIGINT NOT NULL REFERENCES user_account_user_list(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    member_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE user_settings (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -87,9 +91,9 @@ CREATE TABLE user_settings (
     language_id BIGINT NOT NULL REFERENCES language(id) ON DELETE SET DEFAULT ON UPDATE CASCADE,
     is_unlisted BOOLEAN NOT NULL,
     is_pull_from_everyone BOOLEAN NOT NULL,
-    pull_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    pull_user_list_id BIGINT REFERENCES user_account_user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
     is_notify_everyone BOOLEAN NOT NULL,
-    notify_user_list_id BIGINT REFERENCES user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    notify_user_list_id BIGINT REFERENCES user_account_user_list(id) ON DELETE SET NULL ON UPDATE CASCADE,
     is_quick_access BOOLEAN NOT NULL
 );
 
@@ -224,9 +228,16 @@ Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (15, 2);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (16, 2);
 Insert INTO "user_account_gym" ("user_id", "gym_id") VALUES (17, 2);
 
-Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (1, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
-Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (2, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
-Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (3, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
+Insert INTO "user_account_user_list" ("user_id") VALUES (1);
+Insert INTO "user_account_user_list" ("user_id") VALUES (2);
+Insert INTO "user_account_user_list" ("user_id") VALUES (3);
+
+Insert INTO "user_list" ("list_id", "member_id") VALUES (1, 1);
+Insert INTO "user_list" ("list_id", "member_id") VALUES (1, 2);
+
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (1, 15, 'false', 1, 'false', 'false', 1, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (2, 15, 'false', 1, 'false', 'false', 2, 'true', null, 'false');
+Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (3, 15, 'false', 1, 'false', 'true', null, 'false', 3, 'false');
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (4, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (5, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (6, 15, 'false', 1, 'false', 'true', null, 'true', null, 'false');

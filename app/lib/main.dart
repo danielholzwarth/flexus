@@ -9,6 +9,7 @@ import 'package:app/hive/gym.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_account_gym_overview.dart';
+import 'package:app/hive/user_list.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
@@ -66,6 +67,7 @@ Future<void> initializeHive() async {
     Hive.registerAdapter(FriendshipAdapter());
     Hive.registerAdapter(GymAdapter());
     Hive.registerAdapter(UserAccountGymOverviewAdapter());
+    Hive.registerAdapter(UserListAdapter());
 
     await Hive.openBox('userBox');
   } catch (e) {

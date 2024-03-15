@@ -68,23 +68,32 @@ class FlexusSettingsListTile extends StatelessWidget {
     }
 
     if (isDate) {
-      return Text(
-        DateFormat('dd.MM.yyyy').format(value),
-        style: TextStyle(fontSize: AppSettings.fontSize),
+      return Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Text(
+          DateFormat('dd.MM.yyyy').format(value),
+          style: TextStyle(fontSize: AppSettings.fontSize),
+        ),
       );
     }
 
     if (isObscure) {
-      return Text(
-        "****************",
-        style: TextStyle(fontSize: AppSettings.fontSize),
+      return Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Text(
+          "****************",
+          style: TextStyle(fontSize: AppSettings.fontSize),
+        ),
       );
     }
 
     if (isText) {
-      return Text(
-        value.toString(),
-        style: TextStyle(fontSize: AppSettings.fontSize),
+      return Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Text(
+          value.toString(),
+          style: TextStyle(fontSize: AppSettings.fontSize),
+        ),
       );
     }
 

@@ -108,7 +108,25 @@ func (s service) patchUserSettings() http.HandlerFunc {
 		if isQuickAccess, ok := requestBody["is_quick_access"].(bool); ok {
 			err := s.userSettingsStore.PatchUserSettings("is_quick_access", isQuickAccess, claims.UserAccountID)
 			if err != nil {
-				http.Error(w, "Failed to patch darkmode", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch quick access", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		if isPullFromEveryone, ok := requestBody["is_pull_from_everyone"].(bool); ok {
+			err := s.userSettingsStore.PatchUserSettings("is_pull_from_everyone", isPullFromEveryone, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch isPullFromEveryone", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		if isNotifyEveryone, ok := requestBody["is_notify_everyone"].(bool); ok {
+			err := s.userSettingsStore.PatchUserSettings("is_notify_everyone", isNotifyEveryone, claims.UserAccountID)
+			if err != nil {
+				http.Error(w, "Failed to patch isNotifyEveryone", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}

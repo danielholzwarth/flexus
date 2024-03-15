@@ -106,7 +106,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         }
         break;
 
-      //Status
       case "isUnlisted":
         final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_unlisted": event.value});
         if (response.isSuccessful) {

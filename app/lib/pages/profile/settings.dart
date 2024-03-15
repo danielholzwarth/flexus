@@ -1,14 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:app/api/user_account_service.dart';
+import 'package:app/api/user_list_service.dart';
 import 'package:app/bloc/settings_bloc/settings_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/user_list_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -150,10 +153,24 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverToBoxAdapter(
       child: Visibility(
         visible: !userSettings.isNotifyEveryone,
-        child: const FlexusSettingsListTile(
+        child: FlexusSettingsListTile(
           title: "Notify User List",
-          value: "not implemented yet",
+          value: userSettings.notifyUserListID != null ? "Dummy, empty? + 12" : "null",
           isText: true,
+          onPressed: () async {
+            if (userSettings.notifyUserListID != null) {
+              await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
+            } else {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Center(
+                    child: Text("Error loading user list! Please open settings again!"),
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -166,8 +183,41 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Who do you want to notify about your status?",
         value: userSettings.isNotifyEveryone,
         isBool: true,
-        onChanged: (value) {
-          settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
+        onChanged: (value) async {
+          if (userSettings.notifyUserListID == null) {
+            final UserListService userListService = UserListService.create();
+
+            Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "notify_user_list_id"});
+
+            if (response.isSuccessful) {
+              if (response.bodyString != "null") {
+                userSettings.notifyUserListID = int.parse(response.bodyString);
+                userBox.put("userSettings", userSettings);
+
+                settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
+              } else {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text("Error creating userlist. Was returned empty!"),
+                    ),
+                  ),
+                );
+              }
+            } else {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Center(
+                    child: Text('Error: ${response.error}'),
+                  ),
+                ),
+              );
+            }
+          } else {
+            settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
+          }
         },
       ),
     );
@@ -177,10 +227,24 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverToBoxAdapter(
       child: Visibility(
         visible: !userSettings.isPullFromEveryone,
-        child: const FlexusSettingsListTile(
+        child: FlexusSettingsListTile(
           title: "Pull User List",
-          value: "not implemented yet",
+          value: userSettings.pullUserListID != null ? "Dummy, dummy + 12" : "empty",
           isText: true,
+          onPressed: () async {
+            if (userSettings.pullUserListID != null) {
+              await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
+            } else {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Center(
+                    child: Text("Error loading user list! Please open settings again!"),
+                  ),
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -193,8 +257,41 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Who do you want to be notified by about the status?",
         value: userSettings.isPullFromEveryone,
         isBool: true,
-        onChanged: (value) {
-          settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
+        onChanged: (value) async {
+          if (userSettings.pullUserListID == null) {
+            final UserListService userListService = UserListService.create();
+
+            Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "pull_user_list_id"});
+
+            if (response.isSuccessful) {
+              if (response.bodyString != "null") {
+                userSettings.pullUserListID = int.parse(response.bodyString);
+                userBox.put("userSettings", userSettings);
+
+                settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
+              } else {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Center(
+                      child: Text("Error creating userlist. Was returned empty!"),
+                    ),
+                  ),
+                );
+              }
+            } else {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Center(
+                    child: Text('Error: ${response.error}'),
+                  ),
+                ),
+              );
+            }
+          } else {
+            settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
+          }
         },
       ),
     );
@@ -219,9 +316,17 @@ class _SettingsPageState extends State<SettingsPage> {
       child: FlexusSettingsListTile(
         title: "Feature Creep",
         subtitle: "Choose which functions of Flexus you want to use. Deactivate what disturbs you.",
-        value: null,
-        onChanged: (value) {
-          settingsBloc.add(PatchSettings(name: "featureCreep", value: value));
+        isText: true,
+        value: "",
+        onPressed: () {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(
+                child: Text("Not implemented yet :("),
+              ),
+            ),
+          );
         },
       ),
     );
