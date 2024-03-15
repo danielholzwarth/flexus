@@ -66,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   buildFontSize(userSettings, context),
                   buildDarkMode(userSettings),
                   buildQuickAccess(userSettings),
-                  buildFeatureCreep(userSettings),
+                  // buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),
                   buildIsListed(userSettings),
                   buildIsPullFromEveryone(userSettings),
@@ -370,26 +370,26 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SliverToBoxAdapter buildFeatureCreep(UserSettings userSettings) {
-    return SliverToBoxAdapter(
-      child: FlexusSettingsListTile(
-        title: "Feature Creep",
-        subtitle: "Choose which functions of Flexus you want to use. Deactivate what disturbs you.",
-        isText: true,
-        value: "",
-        onPressed: () {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: Text("Not implemented yet :("),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // SliverToBoxAdapter buildFeatureCreep(UserSettings userSettings) {
+  //   return SliverToBoxAdapter(
+  //     child: FlexusSettingsListTile(
+  //       title: "Feature Creep",
+  //       subtitle: "Choose which functions of Flexus you want to use. Deactivate what disturbs you.",
+  //       isText: true,
+  //       value: "",
+  //       onPressed: () {
+  //         ScaffoldMessenger.of(context).clearSnackBars();
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(
+  //             content: Center(
+  //               child: Text("Not implemented yet :("),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   SliverToBoxAdapter buildQuickAccess(UserSettings userSettings) {
     return SliverToBoxAdapter(

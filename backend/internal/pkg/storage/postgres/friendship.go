@@ -85,18 +85,53 @@ func (db *DB) PatchFriendship(requestorID int, requestedID int, columnName strin
 }
 
 func (db *DB) DeleteFriendship(requestorID int, requestedID int) error {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
 	query := `
 		DELETE 
 		FROM friendship
-		WHERE (requestor_id = $1 AND requested_id = $2)
-		OR (requestor_id = $2 AND requested_id = $1);
+		WHERE (requestor_id = $1 AND requested_id = $2) OR (requestor_id = $2 AND requested_id = $1);
 	`
 
-	_, err := db.pool.Exec(query, requestorID, requestedID)
+	_, err = tx.Exec(query, requestorID, requestedID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("friendship not found")
 		}
+		return err
+	}
+
+	query = `
+		DELETE 
+		FROM user_list
+		WHERE list_id IN (	
+			SELECT ul.list_id
+			FROM user_list ul
+			LEFT JOIN user_account_user_list uaus ON uaus.id = ul.list_id
+			WHERE (ul.member_id = $1 AND uaus.user_id = $2) OR (ul.member_id = $2 AND uaus.user_id = $1)
+		);
+	`
+
+	_, err = tx.Exec(query, requestorID, requestedID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil
+		}
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
 		return err
 	}
 
