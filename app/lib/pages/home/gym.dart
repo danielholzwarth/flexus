@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/gym_overview.dart';
@@ -98,7 +100,7 @@ class _GymPageState extends State<GymPage> {
   }
 
   FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
-    List<String> items = ["No Gym selected"];
+    Set<String> items = {"No Gym selected"};
     String selectedItem = "No Gym selected";
 
     dynamic selectedTimeHour = userBox.get("recentGymTimeHour");
@@ -113,13 +115,15 @@ class _GymPageState extends State<GymPage> {
     return FlexusFloatingActionButton(
       onPressed: () async {
         List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
-
         String recentName = userBox.get("recentGymName") ?? "";
+        bool areGymNamesUnique = true;
 
         for (var gymOverview in gymOverviews) {
           String itemName = userBox.get("customGymName${gymOverview.gym.id}") ?? gymOverview.gym.name;
 
-          items.add(itemName);
+          if (areGymNamesUnique) {
+            areGymNamesUnique = items.add(itemName);
+          }
 
           if (itemName == recentName) {
             selectedItem = itemName;
@@ -130,112 +134,27 @@ class _GymPageState extends State<GymPage> {
           userBox.delete("recentGymName");
         }
 
-        await showModalBottomSheet(
-          backgroundColor: AppSettings.background,
-          context: context,
-          builder: (BuildContext context) {
-            return StatefulBuilder(
-              builder: (context, setState) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(40.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Send Notification",
-                          style: TextStyle(
-                            fontSize: AppSettings.fontSizeTitleSmall,
-                            color: AppSettings.font,
-                          ),
-                        ),
-                        SizedBox(height: AppSettings.screenHeight * 0.06),
-                        Container(
-                          width: AppSettings.screenWidth * 0.7,
-                          height: AppSettings.screenHeight * 0.07,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppSettings.background,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                child: DropdownButton<String>(
-                                  alignment: Alignment.center,
-                                  borderRadius: BorderRadius.circular(20),
-                                  isExpanded: true,
-                                  icon: Container(),
-                                  underline: Container(),
-                                  value: selectedItem,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedItem = value!;
-                                    });
-                                  },
-                                  items: items.map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      alignment: Alignment.center,
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(
-                                          fontSize: AppSettings.fontSizeTitleSmall,
-                                          color: AppSettings.font,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
+        if (areGymNamesUnique) {
+          await showModalBottomSheet(
+            backgroundColor: AppSettings.background,
+            context: context,
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Send Notification",
+                            style: TextStyle(
+                              fontSize: AppSettings.fontSizeTitleSmall,
+                              color: AppSettings.font,
                             ),
                           ),
-                        ),
-                        SizedBox(height: AppSettings.screenHeight * 0.03),
-                        GestureDetector(
-                          onTap: () async {
-                            final TimeOfDay? pickedTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now(),
-                              initialEntryMode: TimePickerEntryMode.dial,
-                              barrierColor: AppSettings.background,
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: ThemeData(
-                                    colorScheme: ColorScheme.light(primary: AppSettings.primary),
-                                    dialogBackgroundColor: Colors.white,
-                                    timePickerTheme: TimePickerThemeData(
-                                      dayPeriodTextColor: AppSettings.background,
-                                      backgroundColor: AppSettings.primaryShade48,
-                                      dayPeriodColor: AppSettings.primary,
-                                    ),
-                                    textSelectionTheme: TextSelectionThemeData(
-                                      cursorColor: AppSettings.fontV1,
-                                      selectionColor: AppSettings.fontV1.withOpacity(0.3),
-                                    ),
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            );
-                            if (pickedTime != null) {
-                              setState(() {
-                                selectedTime = pickedTime;
-                              });
-                            }
-                          },
-                          child: Container(
+                          SizedBox(height: AppSettings.screenHeight * 0.06),
+                          Container(
                             width: AppSettings.screenWidth * 0.7,
                             height: AppSettings.screenHeight * 0.07,
                             decoration: BoxDecoration(
@@ -250,47 +169,143 @@ class _GymPageState extends State<GymPage> {
                               ],
                             ),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
                               decoration: BoxDecoration(
                                 color: AppSettings.background,
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Center(
-                                child: Text(
-                                  selectedTime.format(context),
-                                  style: TextStyle(
-                                    fontSize: AppSettings.fontSizeTitleSmall,
-                                    color: AppSettings.font,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    borderRadius: BorderRadius.circular(20),
+                                    isExpanded: true,
+                                    icon: Container(),
+                                    underline: Container(),
+                                    value: selectedItem,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedItem = value!;
+                                      });
+                                    },
+                                    items: items.map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        alignment: Alignment.center,
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                            fontSize: AppSettings.fontSizeTitleSmall,
+                                            color: AppSettings.font,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: AppSettings.screenHeight * 0.09),
-                        FlexusButton(
-                          function: () {
-                            userBox.put("recentGymName", selectedItem);
-                            userBox.put("recentGymTimeHour", selectedTime.hour);
-                            userBox.put("recentGymTimeMinute", selectedTime.minute);
+                          SizedBox(height: AppSettings.screenHeight * 0.03),
+                          GestureDetector(
+                            onTap: () async {
+                              final TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                                initialEntryMode: TimePickerEntryMode.dial,
+                                barrierColor: AppSettings.background,
+                                builder: (BuildContext context, Widget? child) {
+                                  return Theme(
+                                    data: ThemeData(
+                                      colorScheme: ColorScheme.light(primary: AppSettings.primary),
+                                      dialogBackgroundColor: Colors.white,
+                                      timePickerTheme: TimePickerThemeData(
+                                        dayPeriodTextColor: AppSettings.background,
+                                        backgroundColor: AppSettings.primaryShade48,
+                                        dayPeriodColor: AppSettings.primary,
+                                      ),
+                                      textSelectionTheme: TextSelectionThemeData(
+                                        cursorColor: AppSettings.fontV1,
+                                        selectionColor: AppSettings.fontV1.withOpacity(0.3),
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                              );
+                              if (pickedTime != null) {
+                                setState(() {
+                                  selectedTime = pickedTime;
+                                });
+                              }
+                            },
+                            child: Container(
+                              width: AppSettings.screenWidth * 0.7,
+                              height: AppSettings.screenHeight * 0.07,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                decoration: BoxDecoration(
+                                  color: AppSettings.background,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    selectedTime.format(context),
+                                    style: TextStyle(
+                                      fontSize: AppSettings.fontSizeTitleSmall,
+                                      color: AppSettings.font,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: AppSettings.screenHeight * 0.09),
+                          FlexusButton(
+                            function: () {
+                              userBox.put("recentGymName", selectedItem);
+                              userBox.put("recentGymTimeHour", selectedTime.hour);
+                              userBox.put("recentGymTimeMinute", selectedTime.minute);
 
-                            //SEND NOTIFICATION
-                            Navigator.pop(context);
-                          },
-                          text: "Send Notification",
-                          fontColor: AppSettings.fontV1,
-                          backgroundColor: AppSettings.primary,
-                        ),
-                      ],
+                              //SEND NOTIFICATION
+                              Navigator.pop(context);
+                            },
+                            text: "Send Notification",
+                            fontColor: AppSettings.fontV1,
+                            backgroundColor: AppSettings.primary,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        );
-        gymBloc.add(GetGymOverviews());
-        setState(() {});
+                  );
+                },
+              );
+            },
+          );
+          gymBloc.add(GetGymOverviews());
+          setState(() {});
+        } else {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Center(
+                child: Text("Gyms can not have the same name."),
+              ),
+            ),
+          );
+        }
       },
       icon: Icons.notification_add_outlined,
     );
