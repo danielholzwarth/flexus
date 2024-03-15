@@ -1,3 +1,4 @@
+import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 
 part 'login_user_account_service.chopper.dart';
@@ -22,12 +23,10 @@ abstract class LoginUserAccountService extends ChopperService {
 
   static LoginUserAccountService create() {
     final client = ChopperClient(
-        //For local device
-        //baseUrl: Uri.parse('http://ipv4:8080'),
-        //For virtual device
-        baseUrl: Uri.parse('http://10.0.2.2:8080'),
-        //For Web
-        //baseUrl: Uri.parse('http://localhost:8080'),
+        //For local device    ipv4:8080
+        //For virtual device  10.0.2.2:8080
+        //For Web             localhost:8080
+        baseUrl: AppSettings.ipv4 != "" ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),
         services: [
           _$LoginUserAccountService(),
         ],
