@@ -117,10 +117,12 @@ class _GymPageState extends State<GymPage> {
         String recentName = userBox.get("recentGymName") ?? "";
 
         for (var gymOverview in gymOverviews) {
-          items.add(gymOverview.gym.name);
+          String itemName = userBox.get("customGymName${gymOverview.gym.id}") ?? gymOverview.gym.name;
 
-          if (gymOverview.gym.name == recentName) {
-            selectedItem = recentName;
+          items.add(itemName);
+
+          if (itemName == recentName) {
+            selectedItem = itemName;
           }
         }
 

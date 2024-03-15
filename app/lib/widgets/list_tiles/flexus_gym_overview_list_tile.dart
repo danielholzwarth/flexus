@@ -116,9 +116,20 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
                       ),
                       onPressed: () {
+                        String recentName = userBox.get("recentGymName") ?? "";
+                        String customGymName = userBox.get("customGymName${widget.gymOverview.gym.id}") ?? "";
+
                         if (textEditingController.text.isNotEmpty) {
                           userBox.put("customGymName${widget.gymOverview.gym.id}", textEditingController.text);
+
+                          if (recentName == customGymName && recentName.isNotEmpty) {
+                            userBox.put("recentGymName", textEditingController.text);
+                          }
                         } else {
+                          if (recentName == customGymName && recentName.isNotEmpty) {
+                            userBox.put("recentGymName", widget.gymOverview.gym.name);
+                          }
+
                           userBox.delete("customGymName${widget.gymOverview.gym.id}");
                         }
 

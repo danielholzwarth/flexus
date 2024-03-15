@@ -191,7 +191,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               );
             } else {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+              return ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+                tileColor: AppSettings.background,
+                title: Text(
+                  "Notify User List",
+                  style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
+                ),
+                trailing: CircularProgressIndicator(color: AppSettings.primary),
+              );
             }
           },
         ),
@@ -283,7 +291,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               );
             } else {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+              return ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+                tileColor: AppSettings.background,
+                title: Text(
+                  "Pull User List",
+                  style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
+                ),
+                trailing: CircularProgressIndicator(color: AppSettings.primary),
+              );
             }
           },
         ),
