@@ -15,12 +15,12 @@ class UserListCreated extends UserListState {
   });
 }
 
-class UserListLoading extends UserListState {}
+class HasUserListLoading extends UserListState {}
 
-class UserListLoaded extends UserListState {
+class HasUserListLoaded extends UserListState {
   final bool isCreated;
 
-  UserListLoaded({
+  HasUserListLoaded({
     required this.isCreated,
   });
 }
@@ -32,6 +32,16 @@ class UserListUpdated extends UserListState {
 
   UserListUpdated({
     required this.isCreated,
+  });
+}
+
+class EntireUserListLoading extends UserListState {}
+
+class EntireUserListLoaded extends UserListState {
+  final List<int> userList;
+
+  EntireUserListLoaded({
+    required this.userList,
   });
 }
 

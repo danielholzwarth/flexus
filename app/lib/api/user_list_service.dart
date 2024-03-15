@@ -23,6 +23,12 @@ abstract class UserListService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
+  @Get(path: '/{listID}')
+  Future<Response> getEntireUserList(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('listID') int listID,
+  );
+
   static UserListService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080

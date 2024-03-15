@@ -76,4 +76,22 @@ final class _$UserListService extends UserListService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getEntireUserList(
+    String flexusJWTString,
+    int listID,
+  ) {
+    final Uri $url = Uri.parse('/user_lists/${listID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

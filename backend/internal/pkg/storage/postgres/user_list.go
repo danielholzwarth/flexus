@@ -114,3 +114,34 @@ func (db *DB) PatchUserList(userAccountID int, listID int, userID int) error {
 
 	return nil
 }
+
+func (db *DB) GetEntireUserList(userAccountID int, listID int) ([]int, error) {
+	query := `
+		SELECT ul.id
+		FROM user_list ul
+		LEFT JOIN user_account_user_list uaus ON ul.list_id = uaus.id
+		LEFT JOIN user_settings us ON us.user_id = uaus.user_id
+		WHERE uaus.user_id = $1 AND ul.list_id = $2; 
+	`
+
+	var ids []int
+	rows, err := db.pool.Query(query, userAccountID, listID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ids, nil
+}

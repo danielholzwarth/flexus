@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app/api/user_list_service.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     on<PostUserList>(_onPostUserList);
     on<GetHasUserList>(_onGetHasUserList);
     on<PatchUserList>(_onPatchUserList);
+    on<GetEntireUserList>(_onGetEntireUserList);
   }
 
   void _onPostUserList(PostUserList event, Emitter<UserListState> emit) async {
@@ -37,7 +40,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
   }
 
   void _onGetHasUserList(GetHasUserList event, Emitter<UserListState> emit) async {
-    emit(UserListLoading());
+    emit(HasUserListLoading());
 
     Response<dynamic> response = await userListService.getHasUserList(userBox.get("flexusjwt"), {
       "listID": event.listID,
@@ -46,7 +49,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
 
     if (response.isSuccessful) {
       if (response.bodyString != "null") {
-        emit(UserListLoaded(isCreated: bool.parse(response.bodyString)));
+        emit(HasUserListLoaded(isCreated: bool.parse(response.bodyString)));
       } else {
         emit(UserListError(error: "Error creating userlist. Was returned empty!"));
       }
@@ -67,6 +70,22 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       emit(UserListUpdated(isCreated: !event.isDeleting));
     } else {
       emit(UserListError(error: "Failed patching Userlist ${event.listID}"));
+    }
+  }
+
+  void _onGetEntireUserList(GetEntireUserList event, Emitter<UserListState> emit) async {
+    emit(EntireUserListLoading());
+
+    Response<dynamic> response = await userListService.getEntireUserList(userBox.get("flexusjwt"), event.listID);
+
+    List<int> userList = [];
+    if (response.isSuccessful) {
+      if (response.bodyString != "null") {
+        userList = List<int>.from(json.decode(response.bodyString));
+      }
+      emit(EntireUserListLoaded(userList: userList));
+    } else {
+      emit(UserListError(error: response.error.toString()));
     }
   }
 }

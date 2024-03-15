@@ -3,6 +3,7 @@
 import 'package:app/api/user_account_service.dart';
 import 'package:app/api/user_list_service.dart';
 import 'package:app/bloc/settings_bloc/settings_bloc.dart';
+import 'package:app/bloc/user_list_bloc/user_list_bloc.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/sign_in/startup.dart';
@@ -28,6 +29,9 @@ class _SettingsPageState extends State<SettingsPage> {
   final userBox = Hive.box('userBox');
   final ScrollController scrollController = ScrollController();
   final SettingsBloc settingsBloc = SettingsBloc();
+  UserListBloc pullUserListBloc = UserListBloc();
+  UserListBloc notifyUserListBloc = UserListBloc();
+
   final TextEditingController textEditingController = TextEditingController();
 
   @override
@@ -62,13 +66,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   buildFontSize(userSettings, context),
                   buildDarkMode(userSettings),
                   buildQuickAccess(userSettings),
-                  buildFeature(userSettings),
+                  buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),
                   buildIsListed(userSettings),
                   buildIsPullFromEveryone(userSettings),
                   buildPullUserList(userSettings),
                   buildNotifyEveryone(userSettings),
                   buildNotifyUserList(userSettings),
+                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.05)),
                   buildLogOut(context),
                   buildDeleteAccount(context),
                   SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),
@@ -150,25 +155,43 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   SliverToBoxAdapter buildNotifyUserList(UserSettings userSettings) {
+    if (userSettings.notifyUserListID != null) {
+      notifyUserListBloc.add(GetEntireUserList(listID: userSettings.notifyUserListID!));
+    }
+
     return SliverToBoxAdapter(
       child: Visibility(
         visible: !userSettings.isNotifyEveryone,
-        child: FlexusSettingsListTile(
-          title: "Notify User List",
-          value: userSettings.notifyUserListID != null ? "Dummy, empty? + 12" : "null",
-          isText: true,
-          onPressed: () async {
-            if (userSettings.notifyUserListID != null) {
-              await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
-            } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Center(
-                    child: Text("Error loading user list! Please open settings again!"),
-                  ),
-                ),
+        child: BlocBuilder(
+          bloc: notifyUserListBloc,
+          builder: (context, state) {
+            if (state is EntireUserListLoaded) {
+              return FlexusSettingsListTile(
+                title: "Notify User List",
+                value: state.userList.isNotEmpty
+                    ? state.userList.length > 1
+                        ? "${state.userList.length} Friends"
+                        : "${state.userList.length} Friend"
+                    : "empty",
+                isText: true,
+                onPressed: () async {
+                  if (userSettings.notifyUserListID != null) {
+                    await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
+                    setState(() {});
+                  } else {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text("Error loading user list! Please open settings again!"),
+                        ),
+                      ),
+                    );
+                  }
+                },
               );
+            } else {
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             }
           },
         ),
@@ -224,25 +247,43 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   SliverToBoxAdapter buildPullUserList(UserSettings userSettings) {
+    if (userSettings.pullUserListID != null) {
+      pullUserListBloc.add(GetEntireUserList(listID: userSettings.pullUserListID!));
+    }
+
     return SliverToBoxAdapter(
       child: Visibility(
         visible: !userSettings.isPullFromEveryone,
-        child: FlexusSettingsListTile(
-          title: "Pull User List",
-          value: userSettings.pullUserListID != null ? "Dummy, dummy + 12" : "empty",
-          isText: true,
-          onPressed: () async {
-            if (userSettings.pullUserListID != null) {
-              await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
-            } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Center(
-                    child: Text("Error loading user list! Please open settings again!"),
-                  ),
-                ),
+        child: BlocBuilder(
+          bloc: pullUserListBloc,
+          builder: (context, state) {
+            if (state is EntireUserListLoaded) {
+              return FlexusSettingsListTile(
+                title: "Pull User List",
+                value: state.userList.isNotEmpty
+                    ? state.userList.length > 1
+                        ? "${state.userList.length} Friends"
+                        : "${state.userList.length} Friend"
+                    : "empty",
+                isText: true,
+                onPressed: () async {
+                  if (userSettings.pullUserListID != null) {
+                    await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
+                    setState(() {});
+                  } else {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Center(
+                          child: Text("Error loading user list! Please open settings again!"),
+                        ),
+                      ),
+                    );
+                  }
+                },
               );
+            } else {
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             }
           },
         ),
@@ -269,6 +310,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 userBox.put("userSettings", userSettings);
 
                 settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
+
+                pullUserListBloc.add(GetEntireUserList(listID: int.parse(response.bodyString)));
               } else {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -311,7 +354,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SliverToBoxAdapter buildFeature(UserSettings userSettings) {
+  SliverToBoxAdapter buildFeatureCreep(UserSettings userSettings) {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Feature Creep",
@@ -625,7 +668,6 @@ class _SettingsPageState extends State<SettingsPage> {
           style: TextStyle(fontSize: AppSettings.fontSizeTitle, fontWeight: FontWeight.bold),
         ),
       ),
-      pinned: true,
       automaticallyImplyLeading: false,
       backgroundColor: AppSettings.background,
       elevation: 0,

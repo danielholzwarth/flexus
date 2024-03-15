@@ -32,3 +32,11 @@ class PatchUserList extends UserListEvent {
     required this.userID,
   });
 }
+
+class GetEntireUserList extends UserListEvent {
+  final int listID;
+
+  GetEntireUserList({
+    required this.listID,
+  });
+}

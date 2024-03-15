@@ -47,7 +47,7 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
     return BlocBuilder(
       bloc: userListBloc,
       builder: (context, state) {
-        if (state is UserListLoaded && state.isCreated || state is UserListUpdated && state.isCreated) {
+        if (state is HasUserListLoaded && state.isCreated || state is UserListUpdated && state.isCreated) {
           return IconButton(
             style: ButtonStyle(
               overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
@@ -70,7 +70,7 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
               size: AppSettings.fontSizeTitleSmall,
             ),
           );
-        } else if (state is UserListLoaded || state is UserListUpdated) {
+        } else if (state is HasUserListLoaded || state is UserListUpdated) {
           return IconButton(
             style: ButtonStyle(
               overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
