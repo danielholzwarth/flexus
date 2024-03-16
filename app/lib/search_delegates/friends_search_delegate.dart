@@ -67,6 +67,7 @@ class FriendsCustomSearchDelegate extends SearchDelegate {
                     return FlexusUserAccountListTile(
                       userAccount: state.userAccounts[index],
                       query: query,
+                      key: UniqueKey(),
                     );
                   },
                   itemCount: state.userAccounts.length,

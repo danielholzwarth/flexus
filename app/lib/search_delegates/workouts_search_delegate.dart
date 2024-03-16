@@ -67,7 +67,12 @@ class WorkoutsCustomSearchDelegate extends SearchDelegate {
                 child: ListView.builder(
                   controller: scrollController,
                   itemBuilder: (context, index) {
-                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
+                    return FlexusWorkoutListTile(
+                      workoutBloc: workoutBloc,
+                      workoutOverview: state.workoutOverviews[index],
+                      query: query,
+                      key: UniqueKey(),
+                    );
                   },
                   itemCount: state.workoutOverviews.length,
                 ),

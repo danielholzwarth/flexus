@@ -73,6 +73,7 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                         return FlexusGymExpansionTile(
                           gym: state.gyms[index],
                           query: query,
+                          key: UniqueKey(),
                         );
                       },
                       itemCount: state.gyms.length,

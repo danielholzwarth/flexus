@@ -66,6 +66,7 @@ class UserListCustomSearchDelegate extends SearchDelegate {
                       userAccount: state.userAccounts[index],
                       listID: listID,
                       query: query,
+                      key: UniqueKey(),
                     );
                   },
                   itemCount: state.userAccounts.length,
