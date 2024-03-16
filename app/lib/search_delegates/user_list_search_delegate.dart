@@ -39,60 +39,25 @@ class UserListCustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: query));
-
-    return BlocBuilder(
-      bloc: userAccountBloc,
-      builder: (context, state) {
-        if (state is UserAccountsLoaded) {
-          if (state.userAccounts.isNotEmpty) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: FlexusScrollBar(
-                scrollController: scrollController,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return FlexusUserListListTile(
-                      userAccount: state.userAccounts[index],
-                      listID: listID,
-                      query: query,
-                    );
-                  },
-                  itemCount: state.userAccounts.length,
-                ),
-              ),
-            );
-          } else {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: const Center(
-                child: Text("No users found"),
-              ),
-            );
-          }
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        }
-      },
-    );
+    return buildSearchResults();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    return buildSearchResults();
+  }
+
+  Scaffold buildSearchResults() {
     userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: query));
 
-    return BlocBuilder(
-      bloc: userAccountBloc,
-      builder: (context, state) {
-        if (state is UserAccountsLoaded) {
-          if (state.userAccounts.isNotEmpty) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: FlexusScrollBar(
+    return Scaffold(
+      backgroundColor: AppSettings.background,
+      body: BlocBuilder(
+        bloc: userAccountBloc,
+        builder: (context, state) {
+          if (state is UserAccountsLoaded) {
+            if (state.userAccounts.isNotEmpty) {
+              return FlexusScrollBar(
                 scrollController: scrollController,
                 child: ListView.builder(
                   controller: scrollController,
@@ -105,23 +70,15 @@ class UserListCustomSearchDelegate extends SearchDelegate {
                   },
                   itemCount: state.userAccounts.length,
                 ),
-              ),
-            );
+              );
+            } else {
+              return const Center(child: Text("No users found"));
+            }
           } else {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: const Center(
-                child: Text("No users found"),
-              ),
-            );
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        }
-      },
+        },
+      ),
     );
   }
 }

@@ -131,11 +131,9 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
             userAccounts.add(loadedUserAccount);
           }
         }
-
-        emit(UserAccountsLoaded(userAccounts: userAccounts));
-      } else {
-        emit(UserAccountsLoaded(userAccounts: userAccounts));
       }
+
+      emit(UserAccountsLoaded(userAccounts: userAccounts));
     } else {
       emit(UserAccountsError(error: response.error.toString()));
     }
@@ -170,11 +168,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
             userAccountGymOverviews.add(userAccountGymOverview);
           }
         }
-
-        emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
-      } else {
-        emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
       }
+      emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
     } else {
       emit(UserAccountsError(error: response.error.toString()));
     }

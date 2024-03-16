@@ -39,53 +39,15 @@ class WorkoutsCustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    workoutBloc.add(GetSearchWorkout(keyWord: query, isArchive: isArchived));
-
-    return BlocBuilder(
-      bloc: workoutBloc,
-      builder: (context, state) {
-        if (state is WorkoutSearching) {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-          );
-        } else if (state is WorkoutLoaded) {
-          if (state.workoutOverviews.isNotEmpty) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: FlexusScrollBar(
-                scrollController: scrollController,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return FlexusWorkoutListTile(workoutBloc: workoutBloc, workoutOverview: state.workoutOverviews[index], query: query);
-                  },
-                  itemCount: state.workoutOverviews.length,
-                ),
-              ),
-            );
-          } else {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: const Center(
-                child: Text("No workouts found"),
-              ),
-            );
-          }
-        } else {
-          return Scaffold(
-            backgroundColor: AppSettings.background,
-            body: const Center(
-              child: Text("Error loading workouts"),
-            ),
-          );
-        }
-      },
-    );
+    return buildSearchResults();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    return buildSearchResults();
+  }
+
+  BlocBuilder<WorkoutBloc, Object?> buildSearchResults() {
     workoutBloc.add(GetSearchWorkout(keyWord: query, isArchive: isArchived));
 
     return BlocBuilder(
