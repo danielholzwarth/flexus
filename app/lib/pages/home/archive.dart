@@ -58,6 +58,7 @@ class _ArchivePageState extends State<ArchivePage> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return FlexusWorkoutListTile(
+                    key: UniqueKey(),
                     workoutOverview: WorkoutOverview(
                       workout: Workout(
                         id: state.workoutOverviews[index].workout.id,

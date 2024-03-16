@@ -34,10 +34,10 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
     final response = await userAccountGymService.getUserAccountGym(userBox.get("flexusjwt"), gymID: event.gymID);
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        if (response.bodyString == "true") {
+      if (response.body != "null") {
+        if (response.body == "true") {
           emit(UserAccountGymLoaded(isExisting: true));
-        } else if (response.bodyString == "false") {
+        } else if (response.body == "false") {
           emit(UserAccountGymLoaded(isExisting: false));
         } else {
           emit(UserAccountGymError(error: "User Account Gym Forbidden Value"));

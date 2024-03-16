@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
-class FlexusWorkoutListTile extends StatelessWidget {
+class FlexusWorkoutListTile extends StatefulWidget {
   final WorkoutOverview workoutOverview;
   final WorkoutBloc workoutBloc;
   final String? query;
@@ -22,9 +22,14 @@ class FlexusWorkoutListTile extends StatelessWidget {
   });
 
   @override
+  State<FlexusWorkoutListTile> createState() => _FlexusWorkoutListTileState();
+}
+
+class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
+  @override
   Widget build(BuildContext context) {
     final userBox = Hive.box('userBox');
-    final workout = workoutOverview.workout;
+    final workout = widget.workoutOverview.workout;
 
     return Slidable(
       startActionPane: ActionPane(
@@ -38,14 +43,14 @@ class FlexusWorkoutListTile extends StatelessWidget {
             foregroundColor: AppSettings.fontV1,
             onPressed: workout.isPinned
                 ? (context) async {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: false));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: false));
                     await Future.delayed(const Duration(milliseconds: 10));
-                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
                   }
                 : (context) async {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: true));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: true));
                     await Future.delayed(const Duration(milliseconds: 10));
-                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
                   },
           ),
           SlidableAction(
@@ -55,14 +60,14 @@ class FlexusWorkoutListTile extends StatelessWidget {
             foregroundColor: AppSettings.fontV1,
             onPressed: workout.isStared
                 ? (context) async {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: false));
-                    await Future.delayed(const Duration(milliseconds: 10));
-                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: false));
+                    await Future.delayed(const Duration(milliseconds: 20));
+                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
                   }
                 : (context) async {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: true));
-                    await Future.delayed(const Duration(milliseconds: 10));
-                    workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: true));
+                    await Future.delayed(const Duration(milliseconds: 20));
+                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
                   },
           ),
         ],
@@ -78,10 +83,10 @@ class FlexusWorkoutListTile extends StatelessWidget {
             foregroundColor: AppSettings.fontV1,
             onPressed: workout.isArchived
                 ? (context) {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
                   }
                 : (context) {
-                    workoutBloc.add(PatchWorkout(workoutID: workout.id, name: "isArchived", value: true));
+                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, name: "isArchived", value: true));
                   },
           ),
           SlidableAction(
@@ -90,7 +95,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
             label: "Delete",
             foregroundColor: AppSettings.fontV1,
             onPressed: (context) {
-              workoutBloc.add(DeleteWorkout(workoutID: workout.id));
+              widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id));
             },
           ),
         ],
@@ -178,8 +183,8 @@ class FlexusWorkoutListTile extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        workoutOverview.splitName != null
-            ? highlightTitle(workoutOverview.splitName!)
+        widget.workoutOverview.splitName != null
+            ? highlightTitle(widget.workoutOverview.splitName!)
             : Text(
                 "Custom Workout",
                 style: TextStyle(
@@ -191,7 +196,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
         Row(
           children: [
             Visibility(
-              visible: workoutOverview.workout.isPinned,
+              visible: widget.workoutOverview.workout.isPinned,
               child: Row(
                 children: [
                   Icon(
@@ -204,7 +209,7 @@ class FlexusWorkoutListTile extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: workoutOverview.workout.isStared,
+              visible: widget.workoutOverview.workout.isStared,
               child: Row(
                 children: [
                   Icon(
@@ -217,11 +222,11 @@ class FlexusWorkoutListTile extends StatelessWidget {
               ),
             ),
             Visibility(
-              visible: workoutOverview.workout.id % 7 != 0,
+              visible: widget.workoutOverview.workout.id % 7 != 0,
               child: Row(
                 children: [
                   Text(
-                    (workoutOverview.workout.id % 7).toString(),
+                    (widget.workoutOverview.workout.id % 7).toString(),
                     style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
                   ),
                   Icon(
@@ -238,10 +243,10 @@ class FlexusWorkoutListTile extends StatelessWidget {
   }
 
   Widget highlightTitle(String splitName) {
-    if (query != null && query != "") {
-      if (splitName.toLowerCase().contains(query!.toLowerCase())) {
-        int startIndex = workoutOverview.splitName!.toLowerCase().indexOf(query!.toLowerCase());
-        int endIndex = startIndex + query!.length;
+    if (widget.query != null && widget.query != "") {
+      if (splitName.toLowerCase().contains(widget.query!.toLowerCase())) {
+        int startIndex = widget.workoutOverview.splitName!.toLowerCase().indexOf(widget.query!.toLowerCase());
+        int endIndex = startIndex + widget.query!.length;
 
         return RichText(
           text: TextSpan(

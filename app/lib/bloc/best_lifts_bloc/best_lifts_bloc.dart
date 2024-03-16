@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/best_lifts_service.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +22,8 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
 
     final response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);
     if (response.isSuccessful) {
-      if (response.body != "null" && response.bodyString.isNotEmpty) {
-        List<dynamic> jsonList = jsonDecode(response.bodyString);
+      if (response.body != "null" && response.body.isNotEmpty) {
+        List<dynamic> jsonList = response.body;
         bestLiftOverviews = jsonList.map((jsonMap) {
           return BestLiftOverview(
             exerciseName: jsonMap['exerciseName'],

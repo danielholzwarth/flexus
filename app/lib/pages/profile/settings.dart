@@ -221,8 +221,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "notify_user_list_id"});
 
             if (response.isSuccessful) {
-              if (response.bodyString != "null") {
-                userSettings.notifyUserListID = int.parse(response.bodyString);
+              if (response.body != "null") {
+                userSettings.notifyUserListID = response.body;
                 userBox.put("userSettings", userSettings);
 
                 settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
@@ -321,13 +321,13 @@ class _SettingsPageState extends State<SettingsPage> {
             Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "pull_user_list_id"});
 
             if (response.isSuccessful) {
-              if (response.bodyString != "null") {
-                userSettings.pullUserListID = int.parse(response.bodyString);
+              if (response.body != "null") {
+                userSettings.pullUserListID = response.body;
                 userBox.put("userSettings", userSettings);
 
                 settingsBloc.add(PatchSettings(name: "isPullFromEveryone", value: value));
 
-                pullUserListBloc.add(GetEntireUserList(listID: int.parse(response.bodyString)));
+                pullUserListBloc.add(GetEntireUserList(listID: response.body));
               } else {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(

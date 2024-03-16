@@ -29,8 +29,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
 
         final userAccount = UserAccount(
           id: jsonMap['userAccountID'],
@@ -114,8 +114,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
     if (response.isSuccessful) {
       List<UserAccount> userAccounts = [];
-      if (response.bodyString != "null") {
-        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final List<dynamic> userAccountsJson = response.body;
         final UserAccount userAccount = userBox.get("userAccount");
 
         for (final userData in userAccountsJson) {
@@ -151,8 +151,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
     if (response.isSuccessful) {
       List<UserAccountGymOverview> userAccountGymOverviews = [];
-      if (response.bodyString != "null") {
-        final List<dynamic> userAccountsJson = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final List<dynamic> userAccountsJson = response.body;
         final UserAccount userAccount = userBox.get("userAccount");
 
         for (final userData in userAccountsJson) {

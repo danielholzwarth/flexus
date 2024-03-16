@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/user_account_service.dart';
 import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/user_account.dart';
@@ -31,8 +29,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
 
         final userSettings = UserSettings(
           id: jsonMap['id'],

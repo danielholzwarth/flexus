@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/user_list_service.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,8 +27,8 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     );
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        emit(UserListCreated(listID: int.parse(response.bodyString)));
+      if (response.body != "null") {
+        emit(UserListCreated(listID: response.body));
       } else {
         emit(UserListError(error: "Error creating userlist. Was returned empty!"));
       }
@@ -48,8 +46,8 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     });
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        emit(HasUserListLoaded(isCreated: bool.parse(response.bodyString)));
+      if (response.body != "null") {
+        emit(HasUserListLoaded(isCreated: response.body));
       } else {
         emit(UserListError(error: "Error creating userlist. Was returned empty!"));
       }
@@ -80,8 +78,8 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
 
     List<int> userList = [];
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        userList = List<int>.from(json.decode(response.bodyString));
+      if (response.body != "null") {
+        userList = List<int>.from(response.body);
       }
       emit(EntireUserListLoaded(userList: userList));
     } else {

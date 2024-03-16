@@ -48,8 +48,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
 
     if (response.isSuccessful) {
       List<Gym> gyms = [];
-      if (response.bodyString != "null") {
-        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
 
         for (final gymData in jsonList) {
           final Gym gym = Gym(
@@ -81,8 +81,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     List<GymOverview> gymOverviews = [];
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
 
         gymOverviews = jsonList.map((json) {
           List<UserAccount> userAccounts = [];

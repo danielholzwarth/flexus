@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/api/user_settings_service.dart';
@@ -86,8 +85,8 @@ Future<void> getUserSettings() async {
     Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
 
         final userSettings = UserSettings(
           id: jsonMap['id'],

@@ -62,6 +62,7 @@ class _GymPageState extends State<GymPage> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return FlexusGymOverviewListTile(
+                    key: UniqueKey(),
                     gymOverview: state.gymOverviews[index],
                     func: () {
                       gymBloc.add(GetGymOverviews());

@@ -56,6 +56,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return FlexusUserAccountListTile(
+                    key: UniqueKey(),
                     userAccount: UserAccount(
                       id: state.userAccounts[index].id,
                       username: state.userAccounts[index].username,

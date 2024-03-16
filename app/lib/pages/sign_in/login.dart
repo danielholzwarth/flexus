@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-
 import 'package:app/api/login_user_account_service.dart';
 import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/user_account.dart';
@@ -80,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
           final jwt = response.headers["flexusjwt"];
           userBox.put("flexusjwt", jwt);
 
-          final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+          final Map<String, dynamic> jsonMap = response.body;
           final userAccount = UserAccount(
             id: jsonMap['id'],
             username: jsonMap['username'],
@@ -152,8 +150,8 @@ class _LoginPageState extends State<LoginPage> {
       Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
 
       if (response.isSuccessful) {
-        if (response.bodyString != "null") {
-          final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+        if (response.body != "null") {
+          final Map<String, dynamic> jsonMap = response.body;
 
           final userSettings = UserSettings(
             id: jsonMap['id'],

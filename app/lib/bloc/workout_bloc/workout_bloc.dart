@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/workout_service.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
@@ -29,8 +27,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final List<dynamic> jsonList = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
         workoutOverviews = jsonList.map((json) {
           return WorkoutOverview(
             workout: Workout(

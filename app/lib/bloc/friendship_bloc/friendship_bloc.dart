@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/friendship_service.dart';
 import 'package:app/hive/friendship.dart';
 import 'package:app/hive/user_account.dart';
@@ -50,8 +48,8 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
     response = await _friendshipService.getFriendship(userBox.get("flexusjwt"), event.requestedID);
 
     if (response.isSuccessful) {
-      if (response.bodyString != "null") {
-        final Map<String, dynamic> jsonMap = jsonDecode(response.bodyString);
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
 
         final friendship = Friendship(
           requestorID: jsonMap['requestorID'],
