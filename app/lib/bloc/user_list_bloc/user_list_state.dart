@@ -5,8 +5,6 @@ abstract class UserListState {}
 
 class UserListInitial extends UserListState {}
 
-class UserListCreating extends UserListState {}
-
 class UserListCreated extends UserListState {
   final int listID;
 
@@ -24,8 +22,6 @@ class HasUserListLoaded extends UserListState {
     required this.isCreated,
   });
 }
-
-class UserListUpdating extends UserListState {}
 
 class UserListUpdated extends UserListState {
   final bool isCreated;

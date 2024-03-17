@@ -32,56 +32,8 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
     final workout = widget.workoutOverview.workout;
 
     return Slidable(
-      startActionPane: ActionPane(
-        motion: const StretchMotion(),
-        extentRatio: 0.5,
-        children: [
-          SlidableAction(
-            backgroundColor: AppSettings.primary,
-            icon: Icons.push_pin,
-            label: workout.isPinned ? "Unpin" : "Pin",
-            foregroundColor: AppSettings.fontV1,
-            onPressed: (context) => widget.workoutBloc
-                .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: !workout.isPinned)),
-          ),
-          SlidableAction(
-            backgroundColor: Colors.amber,
-            icon: Icons.star,
-            label: workout.isStared ? "Unstar" : "Star",
-            foregroundColor: AppSettings.fontV1,
-            onPressed: (context) => widget.workoutBloc
-                .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: !workout.isStared)),
-          ),
-        ],
-      ),
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        extentRatio: 0.5,
-        children: [
-          SlidableAction(
-            backgroundColor: AppSettings.primary,
-            icon: workout.isArchived ? Icons.unarchive : Icons.archive,
-            label: workout.isArchived ? "Unarchive" : "Archive",
-            foregroundColor: AppSettings.fontV1,
-            onPressed: workout.isArchived
-                ? (context) {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: false));
-                  }
-                : (context) {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, name: "isArchived", value: true));
-                  },
-          ),
-          SlidableAction(
-            backgroundColor: AppSettings.error,
-            icon: Icons.delete,
-            label: "Delete",
-            foregroundColor: AppSettings.fontV1,
-            onPressed: (context) {
-              widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id));
-            },
-          ),
-        ],
-      ),
+      startActionPane: buildStartActionPane(workout),
+      endActionPane: buildEndActionPane(workout),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: AppSettings.background,
@@ -100,6 +52,57 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
         title: buildTitle(),
         subtitle: buildSubtitle(workout, userBox),
       ),
+    );
+  }
+
+  ActionPane buildEndActionPane(Workout workout) {
+    return ActionPane(
+      motion: const StretchMotion(),
+      extentRatio: 0.5,
+      children: [
+        SlidableAction(
+          backgroundColor: AppSettings.primary,
+          icon: workout.isArchived ? Icons.unarchive : Icons.archive,
+          label: workout.isArchived ? "Unarchive" : "Archive",
+          foregroundColor: AppSettings.fontV1,
+          onPressed: (context) =>
+              widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: !workout.isArchived)),
+        ),
+        SlidableAction(
+          backgroundColor: AppSettings.error,
+          icon: Icons.delete,
+          label: "Delete",
+          foregroundColor: AppSettings.fontV1,
+          onPressed: (context) {
+            widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id));
+          },
+        ),
+      ],
+    );
+  }
+
+  ActionPane buildStartActionPane(Workout workout) {
+    return ActionPane(
+      motion: const StretchMotion(),
+      extentRatio: 0.5,
+      children: [
+        SlidableAction(
+          backgroundColor: AppSettings.primary,
+          icon: Icons.push_pin,
+          label: workout.isPinned ? "Unpin" : "Pin",
+          foregroundColor: AppSettings.fontV1,
+          onPressed: (context) =>
+              widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: !workout.isPinned)),
+        ),
+        SlidableAction(
+          backgroundColor: Colors.amber,
+          icon: Icons.star,
+          label: workout.isStared ? "Unstar" : "Star",
+          foregroundColor: AppSettings.fontV1,
+          onPressed: (context) =>
+              widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: !workout.isStared)),
+        ),
+      ],
     );
   }
 

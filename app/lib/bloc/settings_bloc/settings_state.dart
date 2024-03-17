@@ -9,8 +9,6 @@ class SettingsLoading extends SettingsState {}
 
 class SettingsLoaded extends SettingsState {}
 
-class SettingsUpdating extends SettingsState {}
-
 class SettingsUpdated extends SettingsState {}
 
 class SettingsError extends SettingsState {

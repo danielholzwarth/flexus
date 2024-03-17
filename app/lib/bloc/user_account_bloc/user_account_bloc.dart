@@ -56,8 +56,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   }
 
   void _onPatchUserAccount(PatchUserAccount event, Emitter<UserAccountState> emit) async {
-    emit(UserAccountUpdating());
-
     UserAccount userAccount = userBox.get("userAccount");
 
     switch (event.name) {

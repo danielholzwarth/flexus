@@ -7,8 +7,6 @@ class UserAccountInitial extends UserAccountState {}
 
 class UserAccountLoading extends UserAccountState {}
 
-class UserAccountUpdating extends UserAccountState {}
-
 class UserAccountLoaded extends UserAccountState {
   final UserAccount userAccount;
 

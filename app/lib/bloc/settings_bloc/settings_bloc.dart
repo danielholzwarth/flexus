@@ -58,8 +58,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   void _onPatchSettings(PatchSettings event, Emitter<SettingsState> emit) async {
-    emit(SettingsUpdating());
-
     UserAccount userAccount = userBox.get("userAccount");
     UserSettings userSettings = userBox.get("userSettings");
 

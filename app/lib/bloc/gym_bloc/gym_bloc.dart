@@ -22,8 +22,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onPostGym(PostGym event, Emitter<GymState> emit) async {
-    emit(GymCreating());
-
     final response = await _gymService.postGym(userBox.get("flexusjwt"), {
       "name": event.locationData['name'],
       "streetName": event.locationData['address']['road'],

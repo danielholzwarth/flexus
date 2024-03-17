@@ -5,8 +5,6 @@ abstract class GymState {}
 
 class GymInitial extends GymState {}
 
-class GymCreating extends GymState {}
-
 class GymCreated extends GymState {}
 
 class GymsSearchLoading extends GymState {}

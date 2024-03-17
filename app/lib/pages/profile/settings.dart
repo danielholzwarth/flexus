@@ -47,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: BlocBuilder(
         bloc: settingsBloc,
         builder: (context, state) {
-          if (state is SettingsLoaded || state is SettingsUpdating) {
+          if (state is SettingsLoaded) {
             final UserSettings userSettings = userBox.get("userSettings");
             final UserAccount userAccount = userBox.get("userAccount");
             return FlexusScrollBar(

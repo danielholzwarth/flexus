@@ -19,8 +19,6 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
   }
 
   void _onPostUserList(PostUserList event, Emitter<UserListState> emit) async {
-    emit(UserListCreating());
-
     Response<dynamic> response = await userListService.postUserList(
       userBox.get("flexusjwt"),
       {"columnName": event.columnName},
@@ -57,8 +55,6 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
   }
 
   void _onPatchUserList(PatchUserList event, Emitter<UserListState> emit) async {
-    emit(UserListUpdating());
-
     final response = await userListService.patchUserList(userBox.get("flexusjwt"), {
       "listID": event.listID,
       "userID": event.userID,

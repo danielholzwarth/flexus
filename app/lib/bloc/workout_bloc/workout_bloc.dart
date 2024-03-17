@@ -78,8 +78,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   }
 
   void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {
-    emit(WorkoutUpdating());
-
     switch (event.name) {
       case "isArchived":
         bool isArchived = event.value;

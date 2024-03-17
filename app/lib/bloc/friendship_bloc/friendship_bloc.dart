@@ -21,8 +21,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   }
 
   void _onPostFriendship(PostFriendship event, Emitter<FriendshipState> emit) async {
-    emit(FriendshipCreating());
-
     Response<dynamic> response;
     response = await _friendshipService.postFriendship(userBox.get("flexusjwt"), event.requestedID);
 
@@ -67,8 +65,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   }
 
   void _onPatchFriendship(PatchFriendship event, Emitter<FriendshipState> emit) async {
-    emit(FriendshipPatching());
-
     switch (event.name) {
       case "isAccepted":
         final response = await _friendshipService.patchFriendship(userBox.get("flexusjwt"), event.requestedID, {"isAccepted": event.value});
@@ -93,8 +89,6 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   }
 
   void _onDeleteFriendship(DeleteFriendship event, Emitter<FriendshipState> emit) async {
-    emit(FriendshipDeleting());
-
     final response = await _friendshipService.deleteFriendship(userBox.get("flexusjwt"), event.requestedID);
 
     if (response.isSuccessful) {

@@ -56,19 +56,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
             BlocBuilder(
               bloc: gymBloc,
               builder: (context, state) {
-                if (state is GymCreating) {
-                  return ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                      overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                      foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
-                    ),
-                    onPressed: null,
-                    child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-                  );
-                } else if (state is GymCreated) {
+                if (state is GymCreated) {
                   return ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(AppSettings.background),

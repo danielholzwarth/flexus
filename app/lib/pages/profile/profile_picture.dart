@@ -47,9 +47,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
     return BlocBuilder(
       bloc: userAccountBloc,
       builder: (context, state) {
-        if (state is UserAccountUpdating) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-        } else if (state is UserAccountLoaded) {
+        if (state is UserAccountLoaded) {
           return GestureDetector(
             onTap: () {
               Navigator.pop(context);

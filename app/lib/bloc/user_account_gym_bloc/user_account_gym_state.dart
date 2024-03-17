@@ -5,8 +5,6 @@ abstract class UserAccountGymState {}
 
 class UserAccountGymInitial extends UserAccountGymState {}
 
-class UserAccountGymCreating extends UserAccountGymState {}
-
 class UserAccountGymCreated extends UserAccountGymState {}
 
 class UserAccountGymLoading extends UserAccountGymState {}
@@ -18,8 +16,6 @@ class UserAccountGymLoaded extends UserAccountGymState {
     required this.isExisting,
   });
 }
-
-class UserAccountGymDeleting extends UserAccountGymState {}
 
 class UserAccountGymDeleted extends UserAccountGymState {}
 

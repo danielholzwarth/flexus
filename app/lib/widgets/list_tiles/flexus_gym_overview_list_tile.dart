@@ -245,19 +245,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                             BlocBuilder(
                               bloc: userAccountGymBloc,
                               builder: (context, state) {
-                                if (state is UserAccountGymDeleting) {
-                                  return ElevatedButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                                      overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
-                                      foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
-                                    ),
-                                    onPressed: () {},
-                                    child: Center(child: CircularProgressIndicator(color: AppSettings.error)),
-                                  );
-                                } else if (state is UserAccountGymDeleted) {
+                                if (state is UserAccountGymDeleted) {
                                   widget.func();
 
                                   return ElevatedButton(

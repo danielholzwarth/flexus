@@ -17,8 +17,6 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
   }
 
   void _onPostUserAccountGym(PostUserAccountGym event, Emitter<UserAccountGymState> emit) async {
-    emit(UserAccountGymCreating());
-
     final response = await userAccountGymService.postUserAccountGym(userBox.get("flexusjwt"), {"gymID": event.gymID});
 
     if (response.isSuccessful) {
@@ -51,8 +49,6 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
   }
 
   void _onDeleteUserAccountGym(DeleteUserAccountGym event, Emitter<UserAccountGymState> emit) async {
-    emit(UserAccountGymDeleting());
-
     final response = await userAccountGymService.deleteUserAccountGym(userBox.get("flexusjwt"), event.gymID);
 
     if (response.isSuccessful) {
