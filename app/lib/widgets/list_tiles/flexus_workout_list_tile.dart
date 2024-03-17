@@ -41,34 +41,16 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
             icon: Icons.push_pin,
             label: workout.isPinned ? "Unpin" : "Pin",
             foregroundColor: AppSettings.fontV1,
-            onPressed: workout.isPinned
-                ? (context) async {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: false));
-                    await Future.delayed(const Duration(milliseconds: 10));
-                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
-                  }
-                : (context) async {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: true));
-                    await Future.delayed(const Duration(milliseconds: 10));
-                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
-                  },
+            onPressed: (context) => widget.workoutBloc
+                .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: !workout.isPinned)),
           ),
           SlidableAction(
             backgroundColor: Colors.amber,
             icon: Icons.star,
             label: workout.isStared ? "Unstar" : "Star",
             foregroundColor: AppSettings.fontV1,
-            onPressed: workout.isStared
-                ? (context) async {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: false));
-                    await Future.delayed(const Duration(milliseconds: 20));
-                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
-                  }
-                : (context) async {
-                    widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: true));
-                    await Future.delayed(const Duration(milliseconds: 20));
-                    widget.workoutBloc.add(GetWorkout(isArchive: workout.isArchived));
-                  },
+            onPressed: (context) => widget.workoutBloc
+                .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isStared", value: !workout.isStared)),
           ),
         ],
       ),

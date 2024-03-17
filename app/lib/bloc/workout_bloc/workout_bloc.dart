@@ -151,6 +151,16 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           }
         }
 
+        workoutOverviews.sort((a, b) {
+          if (a.workout.isPinned && !b.workout.isPinned) {
+            return -1;
+          } else if (!a.workout.isPinned && b.workout.isPinned) {
+            return 1;
+          } else {
+            return b.workout.starttime.compareTo(a.workout.starttime);
+          }
+        });
+
         workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
 
         emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
