@@ -21,18 +21,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   await initializeHive();
 
-  await getUserSettings();
-
   runApp(const MainApp());
 
   DependencyInjection.init();
+
+  if (AppSettings.hasConnection) await getUserSettings();
 }
 
 class MainApp extends StatelessWidget {
@@ -46,8 +45,6 @@ class MainApp extends StatelessWidget {
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
-      AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
-
       return const GetMaterialApp(
         home: PageViewPage(isFirst: true),
       );

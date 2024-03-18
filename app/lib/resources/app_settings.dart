@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 class AppSettings {
   static String ipv4 = "";
 
-  static bool hasConnection = true;
+  static bool hasConnection = false;
   static bool isTokenExpired = true;
 
   static var fontSize = 15.0;

@@ -7,6 +7,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
@@ -27,6 +28,13 @@ class _PageViewPageState extends State<PageViewPage> {
 
   int currentPageIndex = 1;
   PageController pageController = PageController(initialPage: 1);
+
+  @override
+  void initState() {
+    final flexusjwt = userBox.get("flexusjwt");
+    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

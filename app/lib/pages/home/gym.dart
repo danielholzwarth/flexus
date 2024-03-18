@@ -11,6 +11,7 @@ import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,27 +31,27 @@ class _GymPageState extends State<GymPage> {
   final GymBloc gymBloc = GymBloc();
 
   @override
-  void initState() {
-    gymBloc.add(GetGymOverviews());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      body: FlexusScrollBar(
-        scrollController: scrollController,
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            buildAppBar(context),
-            buildGyms(),
-          ],
+    if (AppSettings.hasConnection) {
+      gymBloc.add(GetGymOverviews());
+
+      return Scaffold(
+        backgroundColor: AppSettings.background,
+        body: FlexusScrollBar(
+          scrollController: scrollController,
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: <Widget>[
+              buildAppBar(context),
+              buildGyms(),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: buildFloatingActionButton(context),
-    );
+        floatingActionButton: buildFloatingActionButton(context),
+      );
+    } else {
+      return const FlexusNoConnectionScaffold();
+    }
   }
 
   Widget buildGyms() {
@@ -358,6 +359,7 @@ class _GymPageState extends State<GymPage> {
             icon: Icon(
               Icons.sync,
               size: AppSettings.fontSizeTitle,
+              color: AppSettings.error,
             ),
             onPressed: () {
               Navigator.pushReplacement(

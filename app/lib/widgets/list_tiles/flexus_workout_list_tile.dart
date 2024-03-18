@@ -65,8 +65,8 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
           icon: workout.isArchived ? Icons.unarchive : Icons.archive,
           label: workout.isArchived ? "Unarchive" : "Archive",
           foregroundColor: AppSettings.fontV1,
-          onPressed: (context) =>
-              widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: true, name: "isArchived", value: !workout.isArchived)),
+          onPressed: (context) => widget.workoutBloc
+              .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isArchived", value: !workout.isArchived)),
         ),
         SlidableAction(
           backgroundColor: AppSettings.error,

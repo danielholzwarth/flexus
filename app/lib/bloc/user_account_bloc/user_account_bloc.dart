@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app/api/user_account_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_account_gym_overview.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -25,33 +26,37 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountLoading());
 
-    Response<dynamic> response;
-    response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
+    if (AppSettings.hasConnection) {
+      Response<dynamic> response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        final Map<String, dynamic> jsonMap = response.body;
+      if (response.isSuccessful) {
+        if (response.body != "null") {
+          final Map<String, dynamic> jsonMap = response.body;
 
-        final userAccount = UserAccount(
-          id: jsonMap['userAccountID'],
-          username: jsonMap['username'],
-          name: jsonMap['name'],
-          createdAt: DateTime.parse(jsonMap['createdAt']),
-          level: jsonMap['level'],
-          profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
-        );
+          final userAccount = UserAccount(
+            id: jsonMap['userAccountID'],
+            username: jsonMap['username'],
+            name: jsonMap['name'],
+            createdAt: DateTime.parse(jsonMap['createdAt']),
+            level: jsonMap['level'],
+            profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
+          );
 
-        UserAccount storedUserAccount = userBox.get("userAccount");
-        if (event.userAccountID == storedUserAccount.id) {
-          userBox.put("userAccount", userAccount);
+          UserAccount storedUserAccount = userBox.get("userAccount");
+          if (event.userAccountID == storedUserAccount.id) {
+            userBox.put("userAccount", userAccount);
+          }
+
+          emit(UserAccountLoaded(userAccount: userAccount));
+        } else {
+          emit(UserAccountError(error: response.error.toString()));
         }
-
-        emit(UserAccountLoaded(userAccount: userAccount));
       } else {
         emit(UserAccountError(error: response.error.toString()));
       }
     } else {
-      emit(UserAccountError(error: response.error.toString()));
+      UserAccount storedUserAccount = userBox.get("userAccount");
+      emit(UserAccountLoaded(userAccount: storedUserAccount));
     }
   }
 
