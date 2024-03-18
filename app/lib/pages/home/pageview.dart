@@ -55,54 +55,58 @@ class _PageViewPageState extends State<PageViewPage> {
           GymPage(),
         ],
       ),
-      bottomNavigationBar: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
-        child: BottomAppBar(
-          color: AppSettings.primaryShade80,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.bar_chart_rounded,
-                  color: AppSettings.font,
-                  size: currentPageIndex == 0 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  setState(() {
-                    currentPageIndex = 0;
-                    pageController.jumpToPage(currentPageIndex);
-                  });
-                },
+      bottomNavigationBar: buildBottomNavigationBar(),
+    );
+  }
+
+  ClipRRect buildBottomNavigationBar() {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+      child: BottomAppBar(
+        color: AppSettings.primaryShade80,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.bar_chart_rounded,
+                color: AppSettings.font,
+                size: currentPageIndex == 0 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.fitness_center,
-                  color: AppSettings.font,
-                  size: currentPageIndex == 1 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  setState(() {
-                    currentPageIndex = 1;
-                    pageController.jumpToPage(currentPageIndex);
-                  });
-                },
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 0;
+                  pageController.jumpToPage(currentPageIndex);
+                });
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.fitness_center,
+                color: AppSettings.font,
+                size: currentPageIndex == 1 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
-              IconButton(
-                icon: Icon(
-                  Icons.people,
-                  color: AppSettings.font,
-                  size: currentPageIndex == 2 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
-                ),
-                onPressed: () {
-                  setState(() {
-                    currentPageIndex = 2;
-                    pageController.jumpToPage(currentPageIndex);
-                  });
-                },
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 1;
+                  pageController.jumpToPage(currentPageIndex);
+                });
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.people,
+                color: AppSettings.font,
+                size: currentPageIndex == 2 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
               ),
-            ],
-          ),
+              onPressed: () {
+                setState(() {
+                  currentPageIndex = 2;
+                  pageController.jumpToPage(currentPageIndex);
+                });
+              },
+            ),
+          ],
         ),
       ),
     );

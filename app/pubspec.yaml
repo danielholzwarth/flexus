@@ -41,6 +41,10 @@ dependencies:
   #Slidable
   flutter_slidable: ^3.0.1
 
+  #Check Internet Connection
+  get: ^4.6.6
+  connectivity_plus: ^5.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

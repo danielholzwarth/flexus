@@ -17,7 +17,6 @@ import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,9 +37,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController searchController = TextEditingController();
   final WorkoutBloc workoutBloc = WorkoutBloc();
   final UserAccountBloc userAccountBloc = UserAccountBloc();
-
   final userBox = Hive.box('userBox');
-  bool isTokenExpired = false;
 
   @override
   void initState() {
@@ -52,30 +49,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    isTokenExpired = JwtDecoder.isExpired(userBox.get("flexusjwt"));
-
-    if (widget.isStartup && !isTokenExpired) {
-      return Scaffold(
-        backgroundColor: AppSettings.primary,
-        body: const Center(),
-        floatingActionButton: buildFloatingActionButton(context),
-      );
-    } else {
-      return Scaffold(
-        backgroundColor: AppSettings.background,
-        body: FlexusScrollBar(
-          scrollController: scrollController,
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: <Widget>[
-              buildAppBar(context, userAccountBloc),
-              buildWorkouts(),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: AppSettings.background,
+      body: FlexusScrollBar(
+        scrollController: scrollController,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            buildAppBar(context, userAccountBloc),
+            buildWorkouts(),
+          ],
         ),
-        floatingActionButton: buildFloatingActionButton(context),
-      );
-    }
+      ),
+      floatingActionButton: buildFloatingActionButton(context),
+    );
   }
 
   Widget buildWorkouts() {
@@ -205,7 +192,7 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: [
         Visibility(
-          visible: isTokenExpired,
+          visible: AppSettings.isTokenExpired,
           child: IconButton(
             icon: Icon(
               Icons.sync,
@@ -220,6 +207,17 @@ class _HomePageState extends State<HomePage> {
                 ),
               );
             },
+          ),
+        ),
+        Visibility(
+          visible: !AppSettings.hasConnection,
+          child: IconButton(
+            icon: Icon(
+              Icons.wifi_off,
+              size: AppSettings.fontSizeTitle,
+              color: AppSettings.error,
+            ),
+            onPressed: () {},
           ),
         ),
         IconButton(

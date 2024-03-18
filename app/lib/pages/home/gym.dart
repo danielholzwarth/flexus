@@ -4,6 +4,7 @@ import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/pages/friends/add_friend.dart';
 import 'package:app/pages/profile/profile.dart';
+import 'package:app/pages/sign_in/login.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/gym_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
@@ -351,6 +352,35 @@ class _GymPageState extends State<GymPage> {
         ),
       ),
       actions: [
+        Visibility(
+          visible: AppSettings.isTokenExpired,
+          child: IconButton(
+            icon: Icon(
+              Icons.sync,
+              size: AppSettings.fontSizeTitle,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: const LoginPage(),
+                ),
+              );
+            },
+          ),
+        ),
+        Visibility(
+          visible: !AppSettings.hasConnection,
+          child: IconButton(
+            icon: Icon(
+              Icons.wifi_off,
+              size: AppSettings.fontSizeTitle,
+              color: AppSettings.error,
+            ),
+            onPressed: () {},
+          ),
+        ),
         IconButton(
           icon: Icon(
             Icons.people,

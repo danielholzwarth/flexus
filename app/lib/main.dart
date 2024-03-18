@@ -15,10 +15,13 @@ import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:chopper/chopper.dart';
+import 'package:app/resources/dependency_injection.dart';
+import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
@@ -28,6 +31,8 @@ Future<void> main() async {
   await getUserSettings();
 
   runApp(const MainApp());
+
+  DependencyInjection.init();
 }
 
 class MainApp extends StatelessWidget {
@@ -41,11 +46,13 @@ class MainApp extends StatelessWidget {
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
-      return const MaterialApp(
+      AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
+
+      return const GetMaterialApp(
         home: PageViewPage(isFirst: true),
       );
     } else {
-      return const MaterialApp(
+      return const GetMaterialApp(
         home: StartUpPage(),
       );
     }
@@ -82,7 +89,7 @@ Future<void> getUserSettings() async {
   final flexusjwt = userBox.get("flexusjwt");
 
   if (flexusjwt != null) {
-    Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
+    chopper.Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
       if (response.body != "null") {
