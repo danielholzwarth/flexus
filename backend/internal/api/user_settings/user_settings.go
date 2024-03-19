@@ -12,6 +12,7 @@ import (
 type UserSettingsStore interface {
 	GetUserSettings(userAccountID int) (types.UserSettings, error)
 	PatchUserSettings(columnName string, value any, userAccountID int) error
+	PatchEntireUserSettings(userAccountID int, userSettings types.UserSettings) error
 }
 
 type service struct {
@@ -28,6 +29,7 @@ func NewService(userSettingsStore UserSettingsStore) http.Handler {
 
 	r.Get("/", s.getUserSettings())
 	r.Patch("/", s.patchUserSettings())
+	r.Patch("/sync", s.patchEntireUserSettings())
 
 	return s
 }
@@ -130,6 +132,41 @@ func (s service) patchUserSettings() http.HandlerFunc {
 				println(err.Error())
 				return
 			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchEntireUserSettings() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody types.UserSettings
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if requestBody.FontSize <= 0 {
+			http.Error(w, "FontSize must be greater than 0", http.StatusBadRequest)
+			println("FontSize must be greater than 0")
+			return
+		}
+
+		err := s.userSettingsStore.PatchEntireUserSettings(claims.UserAccountID, requestBody)
+		if err != nil {
+			http.Error(w, "Patching entire userSettings failed", http.StatusInternalServerError)
+			println(err.Error())
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")

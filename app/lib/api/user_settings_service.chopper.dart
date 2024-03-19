@@ -51,4 +51,24 @@ final class _$UserSettingsService extends UserSettingsService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> patchEntireUserSettings(
+    String flexusJWTString,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/user_settings/sync');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'PATCH',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

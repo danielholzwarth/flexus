@@ -16,6 +16,12 @@ abstract class UserSettingsService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
+  @Patch(path: '/sync')
+  Future<Response> patchEntireUserSettings(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static UserSettingsService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080

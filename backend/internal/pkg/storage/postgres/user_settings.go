@@ -73,3 +73,30 @@ func (db *DB) PatchUserSettings(columnName string, value any, userAccountID int)
 
 	return nil
 }
+
+func (db *DB) PatchEntireUserSettings(userAccountID int, userSettings types.UserSettings) error {
+	query := `
+		UPDATE user_settings
+		SET font_size = $2, is_dark_mode = $3, is_unlisted = $4, is_pull_from_everyone = $5, is_notify_everyone = $6, is_quick_access = $7
+		WHERE user_id = $1;
+	`
+
+	_, err := db.pool.Exec(
+		query,
+		userAccountID,
+		userSettings.FontSize,
+		userSettings.IsDarkMode,
+		userSettings.IsUnlisted,
+		userSettings.IsPullFromEveryone,
+		userSettings.IsNotifyEveryone,
+		userSettings.IsQuickAccess,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("userSettings not found")
+		}
+		return err
+	}
+
+	return nil
+}

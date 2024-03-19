@@ -1,5 +1,7 @@
 import 'package:app/api/user_account_service.dart';
+import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_settings.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -56,23 +58,29 @@ class NetworkController extends GetxController {
   }
 
   void synchronizeData() {
-    // Sync Data
-    // userSettings
-    // workoutOverviews
     final userBox = Hive.box("userBox");
+
     UserAccountService userAccountService = UserAccountService.create();
-    // UserSettingsService userSettingsService = UserSettingsService.create();
-    // WorkoutService workoutService = WorkoutService.create();
-
     UserAccount userAccount = userBox.get("userAccount");
-
     userAccountService.patchEntireUserAccount(userBox.get("flexusjwt"), {
       "username": userAccount.username,
       "name": userAccount.name,
       "level": userAccount.level,
       "profilePicture": userAccount.profilePicture,
     });
-    // userSettingsService.patchEntireUserSettings(userBox.get("userSettings"));
+
+    UserSettingsService userSettingsService = UserSettingsService.create();
+    UserSettings userSettings = userBox.get("userSettings");
+    userSettingsService.patchEntireUserSettings(userBox.get("flexusjwt"), {
+      "fontSize": userSettings.fontSize,
+      "isDarkMode": userSettings.isDarkMode,
+      "isUnlisted": userSettings.isUnlisted,
+      "isPullFromEveryone": userSettings.isPullFromEveryone,
+      "isNotifyEveryone": userSettings.isNotifyEveryone,
+      "isQuickAccess": userSettings.isQuickAccess,
+    });
+
+    // WorkoutService workoutService = WorkoutService.create();
     // workoutService.patchEntireWorkouts(userBox.get("workoutOverviews"));
   }
 }
