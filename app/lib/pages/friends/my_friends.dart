@@ -4,6 +4,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/friends_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,19 +32,25 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      body: FlexusScrollBar(
-        scrollController: scrollController,
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            buildAppBar(context),
-            buildUserAccounts(),
-          ],
+    if (AppSettings.hasConnection) {
+      return Scaffold(
+        backgroundColor: AppSettings.background,
+        body: FlexusScrollBar(
+          scrollController: scrollController,
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              buildAppBar(context),
+              buildUserAccounts(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return const FlexusNoConnectionScaffold(
+        title: "My Friends",
+      );
+    }
   }
 
   Widget buildUserAccounts() {

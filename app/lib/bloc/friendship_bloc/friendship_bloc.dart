@@ -1,6 +1,7 @@
 import 'package:app/api/friendship_service.dart';
 import 'package:app/hive/friendship.dart';
 import 'package:app/hive/user_account.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -42,25 +43,28 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
   void _onGetFriendship(GetFriendship event, Emitter<FriendshipState> emit) async {
     emit(FriendshipLoading());
 
-    Response<dynamic> response;
-    response = await _friendshipService.getFriendship(userBox.get("flexusjwt"), event.requestedID);
+    if (AppSettings.hasConnection) {
+      final response = await _friendshipService.getFriendship(userBox.get("flexusjwt"), event.requestedID);
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        final Map<String, dynamic> jsonMap = response.body;
+      if (response.isSuccessful) {
+        if (response.body != "null") {
+          final Map<String, dynamic> jsonMap = response.body;
 
-        final friendship = Friendship(
-          requestorID: jsonMap['requestorID'],
-          requestedID: jsonMap['requestedID'],
-          isAccepted: jsonMap['isAccepted'],
-        );
+          final friendship = Friendship(
+            requestorID: jsonMap['requestorID'],
+            requestedID: jsonMap['requestedID'],
+            isAccepted: jsonMap['isAccepted'],
+          );
 
-        emit(FriendshipLoaded(friendship: friendship));
+          emit(FriendshipLoaded(friendship: friendship));
+        } else {
+          emit(FriendshipLoaded(friendship: null));
+        }
       } else {
-        emit(FriendshipLoaded(friendship: null));
+        emit(FriendshipError(error: response.error.toString()));
       }
     } else {
-      emit(FriendshipError(error: response.error.toString()));
+      emit(FriendshipLoaded(friendship: null));
     }
   }
 

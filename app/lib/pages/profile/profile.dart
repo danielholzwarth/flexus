@@ -120,20 +120,21 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is UserAccountLoaded) {
             return Stack(
               children: [
-                state.userAccount.level < 10
-                    ? SizedBox(
-                        child: Image(
-                          color: AppSettings.primaryShade80,
-                          fit: BoxFit.fill,
-                          image: const NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-                        ),
-                      )
-                    : const SizedBox(
-                        child: Image(
-                          fit: BoxFit.fill,
-                          image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-                        ),
-                      ),
+                //  Show correct background picture depending on level
+                //  state.userAccount.level < 10
+                //     ? SizedBox(
+                //         child: Image(
+                //           color: AppSettings.primaryShade80,
+                //           fit: BoxFit.fill,
+                //           image: const NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
+                //         ),
+                //       )
+                //     : const SizedBox(
+                //         child: Image(
+                //           fit: BoxFit.fill,
+                //           image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
+                //         ),
+                //       ),
                 Positioned(
                   left: AppSettings.screenWidth * 0.25,
                   top: AppSettings.screenWidth * 0.12,

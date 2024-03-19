@@ -67,7 +67,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutSearching());
 
     List<WorkoutOverview> workoutOverviews = [];
-    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews") ?? [];
+    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
 
     if (allWorkoutOvervies.isNotEmpty) {
       if (event.keyWord.isNotEmpty) {
@@ -93,29 +93,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isArchived": isArchived});
 
           if (response.isSuccessful) {
-            int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-            if (index != -1) {
-              WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-              workoutOverview.workout.isArchived = event.value;
-              workoutOverviews[index] = workoutOverview;
-
-              userBox.put("workoutOverviews", workoutOverviews);
-            }
+            workoutOverviews = archiveWorkout(event, workoutOverviews);
           }
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
         } else {
-          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-          if (index != -1) {
-            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-            workoutOverview.workout.isArchived = event.value;
-            workoutOverviews[index] = workoutOverview;
-
-            userBox.put("workoutOverviews", workoutOverviews);
-          }
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+          workoutOverviews = archiveWorkout(event, workoutOverviews);
         }
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
 
         emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
         break;
@@ -128,29 +111,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isStared": isStared});
 
           if (response.isSuccessful) {
-            int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-            if (index != -1) {
-              WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-              workoutOverview.workout.isStared = event.value;
-              workoutOverviews[index] = workoutOverview;
-
-              userBox.put("workoutOverviews", workoutOverviews);
-            }
+            workoutOverviews = starWorkout(event, workoutOverviews);
           }
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
         } else {
-          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-          if (index != -1) {
-            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-            workoutOverview.workout.isStared = event.value;
-            workoutOverviews[index] = workoutOverview;
-
-            userBox.put("workoutOverviews", workoutOverviews);
-          }
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+          workoutOverviews = starWorkout(event, workoutOverviews);
         }
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
         emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
         break;
 
@@ -162,49 +129,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isPinned": isPinned});
 
           if (response.isSuccessful) {
-            int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-            if (index != -1) {
-              WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-              workoutOverview.workout.isPinned = event.value;
-              workoutOverviews[index] = workoutOverview;
-
-              userBox.put("workoutOverviews", workoutOverviews);
-            }
+            workoutOverviews = pinWorkout(event, workoutOverviews);
           }
-
-          workoutOverviews.sort((a, b) {
-            if (a.workout.isPinned && !b.workout.isPinned) {
-              return -1;
-            } else if (!a.workout.isPinned && b.workout.isPinned) {
-              return 1;
-            } else {
-              return b.workout.starttime.compareTo(a.workout.starttime);
-            }
-          });
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
         } else {
-          int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
-          if (index != -1) {
-            WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
-            workoutOverview.workout.isPinned = event.value;
-            workoutOverviews[index] = workoutOverview;
-
-            userBox.put("workoutOverviews", workoutOverviews);
-          }
-
-          workoutOverviews.sort((a, b) {
-            if (a.workout.isPinned && !b.workout.isPinned) {
-              return -1;
-            } else if (!a.workout.isPinned && b.workout.isPinned) {
-              return 1;
-            } else {
-              return b.workout.starttime.compareTo(a.workout.starttime);
-            }
-          });
-
-          workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+          workoutOverviews = pinWorkout(event, workoutOverviews);
         }
+        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
 
         emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
         break;
@@ -213,6 +143,53 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         emit(WorkoutError(error: "Patch not implemented yet"));
         break;
     }
+  }
+
+  List<WorkoutOverview> archiveWorkout(PatchWorkout event, List<WorkoutOverview> workoutOverviews) {
+    int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+    if (index != -1) {
+      WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+      workoutOverview.workout.isArchived = event.value;
+      workoutOverviews[index] = workoutOverview;
+
+      userBox.put("workoutOverviews", workoutOverviews);
+    }
+    return workoutOverviews;
+  }
+
+  List<WorkoutOverview> starWorkout(PatchWorkout event, List<WorkoutOverview> workoutOverviews) {
+    int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+    if (index != -1) {
+      WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+      workoutOverview.workout.isStared = event.value;
+      workoutOverviews[index] = workoutOverview;
+
+      userBox.put("workoutOverviews", workoutOverviews);
+    }
+    return workoutOverviews;
+  }
+
+  List<WorkoutOverview> pinWorkout(PatchWorkout event, List<WorkoutOverview> workoutOverviews) {
+    int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
+    if (index != -1) {
+      WorkoutOverview workoutOverview = workoutOverviews.elementAt(index);
+      workoutOverview.workout.isPinned = event.value;
+      workoutOverviews[index] = workoutOverview;
+
+      userBox.put("workoutOverviews", workoutOverviews);
+    }
+
+    workoutOverviews.sort((a, b) {
+      if (a.workout.isPinned && !b.workout.isPinned) {
+        return -1;
+      } else if (!a.workout.isPinned && b.workout.isPinned) {
+        return 1;
+      } else {
+        return b.workout.starttime.compareTo(a.workout.starttime);
+      }
+    });
+
+    return workoutOverviews;
   }
 
   void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {

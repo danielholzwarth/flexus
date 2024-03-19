@@ -12,9 +12,10 @@ import 'package:app/search_delegates/user_list_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
-import 'package:chopper/chopper.dart';
+import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -48,7 +49,8 @@ class _SettingsPageState extends State<SettingsPage> {
         bloc: settingsBloc,
         builder: (context, state) {
           if (state is SettingsLoaded) {
-            final UserSettings userSettings = userBox.get("userSettings");
+            state.printInfo();
+
             final UserAccount userAccount = userBox.get("userAccount");
             return FlexusScrollBar(
               scrollController: scrollController,
@@ -63,16 +65,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   buildUsername(userAccount, context),
                   buildPassword(context),
                   _buildSection("Appearance"),
-                  buildFontSize(userSettings, context),
-                  buildDarkMode(userSettings),
-                  buildQuickAccess(userSettings),
+                  buildFontSize(state.userSettings, context),
+                  buildDarkMode(state.userSettings),
+                  buildQuickAccess(state.userSettings),
                   // buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),
-                  buildIsListed(userSettings),
-                  buildIsPullFromEveryone(userSettings),
-                  buildPullUserList(userSettings),
-                  buildNotifyEveryone(userSettings),
-                  buildNotifyUserList(userSettings),
+                  buildIsListed(state.userSettings),
+                  buildIsPullFromEveryone(state.userSettings),
+                  buildPullUserList(state.userSettings),
+                  buildNotifyEveryone(state.userSettings),
+                  buildNotifyUserList(state.userSettings),
                   SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.05)),
                   buildLogOut(context),
                   buildDeleteAccount(context),
@@ -81,6 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             );
           } else {
+            state.printInfo();
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
         },
@@ -218,7 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
           if (userSettings.notifyUserListID == null) {
             final UserListService userListService = UserListService.create();
 
-            Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "notify_user_list_id"});
+            chopper.Response response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "notify_user_list_id"});
 
             if (response.isSuccessful) {
               if (response.body != "null") {
@@ -318,7 +321,7 @@ class _SettingsPageState extends State<SettingsPage> {
           if (userSettings.pullUserListID == null) {
             final UserListService userListService = UserListService.create();
 
-            Response<dynamic> response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "pull_user_list_id"});
+            chopper.Response response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "pull_user_list_id"});
 
             if (response.isSuccessful) {
               if (response.body != "null") {

@@ -1,9 +1,12 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:flutter/material.dart';
 
 class FlexusNoConnectionScaffold extends StatelessWidget {
+  final String? title;
   const FlexusNoConnectionScaffold({
     super.key,
+    this.title,
   });
 
   @override
@@ -12,6 +15,17 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
         slivers: [
+          FlexusSliverAppBar(
+            title: title != null
+                ? Text(
+                    title!,
+                    style: TextStyle(
+                      color: AppSettings.font,
+                      fontSize: AppSettings.fontSizeTitle,
+                    ),
+                  )
+                : null,
+          ),
           SliverFillRemaining(
             child: Center(
               child: Column(

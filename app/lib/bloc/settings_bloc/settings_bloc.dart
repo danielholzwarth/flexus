@@ -25,35 +25,39 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   void _onGetSettings(GetSettings event, Emitter<SettingsState> emit) async {
     emit(SettingsLoading());
 
-    Response<dynamic> response;
-    response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
+    if (AppSettings.hasConnection) {
+      Response<dynamic> response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        final Map<String, dynamic> jsonMap = response.body;
+      if (response.isSuccessful) {
+        if (response.body != "null") {
+          final Map<String, dynamic> jsonMap = response.body;
 
-        final userSettings = UserSettings(
-          id: jsonMap['id'],
-          userAccountID: jsonMap['userAccountID'],
-          fontSize: double.parse(jsonMap['fontSize'].toString()),
-          isDarkMode: jsonMap['isDarkMode'],
-          languageID: jsonMap['languageID'],
-          isUnlisted: jsonMap['isUnlisted'],
-          isPullFromEveryone: jsonMap['isPullFromEveryone'],
-          pullUserListID: jsonMap['pullUserListID'],
-          isNotifyEveryone: jsonMap['isNotifyEveryone'],
-          notifyUserListID: jsonMap['notifyUserListID'],
-          isQuickAccess: jsonMap['isQuickAccess'],
-        );
+          final userSettings = UserSettings(
+            id: jsonMap['id'],
+            userAccountID: jsonMap['userAccountID'],
+            fontSize: double.parse(jsonMap['fontSize'].toString()),
+            isDarkMode: jsonMap['isDarkMode'],
+            languageID: jsonMap['languageID'],
+            isUnlisted: jsonMap['isUnlisted'],
+            isPullFromEveryone: jsonMap['isPullFromEveryone'],
+            pullUserListID: jsonMap['pullUserListID'],
+            isNotifyEveryone: jsonMap['isNotifyEveryone'],
+            notifyUserListID: jsonMap['notifyUserListID'],
+            isQuickAccess: jsonMap['isQuickAccess'],
+          );
 
-        userBox.put("userSettings", userSettings);
+          userBox.put("userSettings", userSettings);
 
-        emit(SettingsLoaded());
+          emit(SettingsLoaded(userSettings: userSettings));
+        } else {
+          emit(SettingsError(error: "No Settings found!"));
+        }
       } else {
-        emit(SettingsError(error: "No Settings found!"));
+        emit(SettingsError(error: response.error.toString()));
       }
     } else {
-      emit(SettingsError(error: response.error.toString()));
+      UserSettings userSettings = userBox.get("userSettings");
+      emit(SettingsLoaded(userSettings: userSettings));
     }
   }
 
@@ -135,9 +139,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       default:
-        emit(SettingsLoaded());
+        emit(SettingsLoaded(userSettings: userSettings));
     }
 
-    emit(SettingsLoaded());
+    emit(SettingsLoaded(userSettings: userSettings));
   }
 }
