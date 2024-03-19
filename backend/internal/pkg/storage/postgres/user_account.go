@@ -223,3 +223,21 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 
 	return informations, nil
 }
+
+func (db *DB) PatchEntireUserAccount(userAccountID int, userAccount types.UserAccount) error {
+	query := `
+			UPDATE user_account
+			SET name = $2, username = $3, level = $4, profile_picture = $5
+			WHERE id = $1;
+		`
+
+	_, err := db.pool.Exec(query, userAccountID, userAccount.Name, userAccount.Username, userAccount.Level, userAccount.ProfilePicture)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	return nil
+}

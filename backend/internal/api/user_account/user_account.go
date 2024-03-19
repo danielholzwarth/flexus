@@ -19,6 +19,7 @@ type UserAccountStore interface {
 	DeleteUserAccount(userAccountID int) error
 	ValidatePasswordByID(userAccountID int, password string) error
 	GetUserAccountInformations(userAccountID int, params map[string]any) ([]any, error)
+	PatchEntireUserAccount(userAccountID int, userAccount types.UserAccount) error
 }
 
 type service struct {
@@ -37,6 +38,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	r.Patch("/", s.patchUserAccount())
 	r.Delete("/", s.deleteUserAccount())
 	r.Get("/", s.getUserAccountInformations())
+	r.Patch("/sync", s.patchEntireUserAccount())
 
 	return s
 }
@@ -275,5 +277,52 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
+	}
+}
+
+func (s service) patchEntireUserAccount() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody types.UserAccount
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if requestBody.Name == "" {
+			http.Error(w, "Name can not be empty", http.StatusBadRequest)
+			println("Name can not be empty")
+			return
+		}
+
+		if requestBody.Username == "" {
+			http.Error(w, "Username can not be empty", http.StatusBadRequest)
+			println("Username can not be empty")
+			return
+		}
+
+		if requestBody.Level <= 0 {
+			http.Error(w, "Level must be greater than 0", http.StatusBadRequest)
+			println("Level must be greater than 0")
+			return
+		}
+
+		err := s.userAccountStore.PatchEntireUserAccount(claims.UserAccountID, requestBody)
+		if err != nil {
+			http.Error(w, "Patching entire userAccount failed", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 	}
 }

@@ -32,6 +32,12 @@ abstract class UserAccountService extends ChopperService {
     @Query('isWorkingOut') bool? isWorkingOut,
   });
 
+  @Patch(path: '/sync')
+  Future<Response> patchEntireUserAccount(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static UserAccountService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080
