@@ -68,19 +68,30 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     switch (event.name) {
       //My Account
       case "name":
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
+          if (response.isSuccessful) {
+            userAccount.name = event.value;
+            userBox.put("userAccount", userAccount);
+          }
+        } else {
           userAccount.name = event.value;
           userBox.put("userAccount", userAccount);
         }
         break;
 
       case "username":
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
+          if (response.isSuccessful) {
+            userAccount.username = event.value;
+            userBox.put("userAccount", userAccount);
+          }
+        } else {
           userAccount.username = event.value;
           userBox.put("userAccount", userAccount);
         }
+
         break;
 
       case "password":
@@ -89,53 +100,91 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       //Appearance
       case "fontSize":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"font_size": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"font_size": event.value});
+          if (response.isSuccessful) {
+            userSettings.fontSize = event.value;
+            userBox.put("userSettings", userSettings);
+            AppSettings.fontSize = event.value;
+          }
+        } else {
           userSettings.fontSize = event.value;
           userBox.put("userSettings", userSettings);
           AppSettings.fontSize = event.value;
         }
+
         break;
 
       case "isDarkMode":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_dark_mode": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_dark_mode": event.value});
+          if (response.isSuccessful) {
+            userSettings.isDarkMode = event.value;
+            userBox.put("userSettings", userSettings);
+            AppSettings.isDarkMode = event.value;
+          }
+        } else {
           userSettings.isDarkMode = event.value;
           userBox.put("userSettings", userSettings);
           AppSettings.isDarkMode = event.value;
         }
+
         break;
 
       case "isUnlisted":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_unlisted": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_unlisted": event.value});
+          if (response.isSuccessful) {
+            userSettings.isUnlisted = event.value;
+            userBox.put("userSettings", userSettings);
+          }
+        } else {
           userSettings.isUnlisted = event.value;
           userBox.put("userSettings", userSettings);
         }
+
         break;
 
       case "isPullFromEveryone":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_pull_from_everyone": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_pull_from_everyone": event.value});
+          if (response.isSuccessful) {
+            userSettings.isPullFromEveryone = event.value;
+            userBox.put("userSettings", userSettings);
+          }
+        } else {
           userSettings.isPullFromEveryone = event.value;
           userBox.put("userSettings", userSettings);
         }
+
         break;
 
       case "isNotifyEveryone":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_notify_everyone": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_notify_everyone": event.value});
+          if (response.isSuccessful) {
+            userSettings.isNotifyEveryone = event.value;
+            userBox.put("userSettings", userSettings);
+          }
+        } else {
           userSettings.isNotifyEveryone = event.value;
           userBox.put("userSettings", userSettings);
         }
+
         break;
 
       case "isQuickAccess":
-        final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_quick_access": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_quick_access": event.value});
+          if (response.isSuccessful) {
+            userSettings.isQuickAccess = event.value;
+            userBox.put("userSettings", userSettings);
+          }
+        } else {
           userSettings.isQuickAccess = event.value;
           userBox.put("userSettings", userSettings);
         }
+
         break;
 
       default:

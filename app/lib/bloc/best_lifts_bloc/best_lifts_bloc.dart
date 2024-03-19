@@ -42,7 +42,8 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
         emit(BestLiftsError(error: response.error.toString()));
       }
     } else {
-      bestLiftOverviews = userBox.get("bestLiftOverview").cast<BestLiftOverview>() ?? [];
+      bestLiftOverviews = userBox.get("bestLiftOverview") ?? [];
+      bestLiftOverviews = bestLiftOverviews.cast<BestLiftOverview>();
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
     }
   }

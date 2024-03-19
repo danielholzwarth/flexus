@@ -13,7 +13,7 @@ class StartWorkoutPage extends StatelessWidget {
       body: const Center(
         child: Column(
           children: [
-            Text("hello"),
+            Text("Not implemented yet"),
           ],
         ),
       ),

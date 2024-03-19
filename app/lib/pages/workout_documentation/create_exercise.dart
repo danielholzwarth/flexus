@@ -13,7 +13,7 @@ class CreateExercisePage extends StatelessWidget {
       body: const Center(
         child: Column(
           children: [
-            Text("hello"),
+            Text("Not implemented yet"),
           ],
         ),
       ),

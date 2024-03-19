@@ -314,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           type: PageTransitionType.rightToLeft,
                           child: const SettingsPage(),
                         ),
-                      );
+                      ).then((value) => setState(() {}));
                       break;
 
                     case "Leveling":

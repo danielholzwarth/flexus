@@ -57,7 +57,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         emit(WorkoutError(error: response.error.toString()));
       }
     } else {
-      workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+      workoutOverviews = userBox.get("workoutOverviews") ?? [];
+      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
       emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
     }
@@ -67,7 +68,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutSearching());
 
     List<WorkoutOverview> workoutOverviews = [];
-    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews") ?? [];
+    allWorkoutOvervies = allWorkoutOvervies.cast<WorkoutOverview>();
 
     if (allWorkoutOvervies.isNotEmpty) {
       if (event.keyWord.isNotEmpty) {
@@ -87,7 +89,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     switch (event.name) {
       case "isArchived":
         bool isArchived = event.value;
-        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+        workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isArchived": isArchived});
@@ -105,7 +108,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       case "isStared":
         bool isStared = event.value;
-        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+        workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isStared": isStared});
@@ -123,7 +127,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       case "isPinned":
         bool isPinned = event.value;
-        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+        workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
           final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isPinned": isPinned});
@@ -211,7 +216,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         emit(WorkoutError(error: response.error.toString()));
       }
     } else {
-      List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+      List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
       workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
 

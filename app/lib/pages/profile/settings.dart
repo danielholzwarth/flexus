@@ -15,7 +15,6 @@ import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -49,8 +48,6 @@ class _SettingsPageState extends State<SettingsPage> {
         bloc: settingsBloc,
         builder: (context, state) {
           if (state is SettingsLoaded) {
-            state.printInfo();
-
             final UserAccount userAccount = userBox.get("userAccount");
             return FlexusScrollBar(
               scrollController: scrollController,
@@ -83,7 +80,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             );
           } else {
-            state.printInfo();
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
         },
@@ -104,24 +100,33 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           onPressed: () async {
-            UserAccountService uas = UserAccountService.create();
-            final response = await uas.deleteUserAccount(userBox.get("flexusjwt"));
-            if (response.isSuccessful) {
-              userBox.clear();
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.fade,
-                  child: const StartUpPage(),
-                ),
-              );
+            if (AppSettings.hasConnection) {
+              UserAccountService uas = UserAccountService.create();
+              final response = await uas.deleteUserAccount(userBox.get("flexusjwt"));
+              if (response.isSuccessful) {
+                userBox.clear();
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const StartUpPage(),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Center(
+                      child: Text(response.error.toString()),
+                    ),
+                  ),
+                );
+              }
             } else {
               ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Center(
-                    child: Text(response.error.toString()),
-                  ),
+                const SnackBar(
+                  content: Text('This feature requires internet connection!'),
                 ),
               );
             }
@@ -178,16 +183,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     : "empty",
                 isText: true,
                 onPressed: () async {
-                  if (userSettings.notifyUserListID != null) {
-                    await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
-                    setState(() {});
+                  if (AppSettings.hasConnection) {
+                    if (userSettings.notifyUserListID != null) {
+                      await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
+                      setState(() {});
+                    } else {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text("Error loading user list! Please open settings again!"),
+                          ),
+                        ),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Center(
-                          child: Text("Error loading user list! Please open settings again!"),
-                        ),
+                        content: Text('This feature requires internet connection!'),
                       ),
                     );
                   }
@@ -278,16 +292,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     : "empty",
                 isText: true,
                 onPressed: () async {
-                  if (userSettings.pullUserListID != null) {
-                    await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
-                    setState(() {});
+                  if (AppSettings.hasConnection) {
+                    if (userSettings.pullUserListID != null) {
+                      await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
+                      setState(() {});
+                    } else {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Center(
+                            child: Text("Error loading user list! Please open settings again!"),
+                          ),
+                        ),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Center(
-                          child: Text("Error loading user list! Please open settings again!"),
-                        ),
+                        content: Text('This feature requires internet connection!'),
                       ),
                     );
                   }
@@ -477,96 +500,109 @@ class _SettingsPageState extends State<SettingsPage> {
         title: "Password",
         value: "password",
         isObscure: true,
-        onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            final TextEditingController oldPasswordController = TextEditingController();
-            final TextEditingController newPasswordController = TextEditingController();
-            final TextEditingController confirmNewPasswordController = TextEditingController();
+        onPressed: () {
+          if (AppSettings.hasConnection) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                final TextEditingController oldPasswordController = TextEditingController();
+                final TextEditingController newPasswordController = TextEditingController();
+                final TextEditingController confirmNewPasswordController = TextEditingController();
 
-            return AlertDialog(
-              backgroundColor: AppSettings.background,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      labelText: "Old Password",
-                      labelStyle: TextStyle(color: AppSettings.primary),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                    ),
-                    controller: oldPasswordController,
-                    obscureText: true,
-                  ),
-                  SizedBox(height: AppSettings.screenHeight * 0.02),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "New Password",
-                      labelStyle: TextStyle(color: AppSettings.primary),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                    ),
-                    controller: newPasswordController,
-                    obscureText: true,
-                  ),
-                  SizedBox(height: AppSettings.screenHeight * 0.02),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: "Confirm New Password",
-                      labelStyle: TextStyle(color: AppSettings.primary),
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                    ),
-                    controller: confirmNewPasswordController,
-                    obscureText: true,
-                    onEditingComplete: () {
-                      final newPassword = newPasswordController.text;
-                      final confirmedPassword = confirmNewPasswordController.text;
+                return AlertDialog(
+                  backgroundColor: AppSettings.background,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          labelText: "Old Password",
+                          labelStyle: TextStyle(color: AppSettings.primary),
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                        ),
+                        controller: oldPasswordController,
+                        obscureText: true,
+                      ),
+                      SizedBox(height: AppSettings.screenHeight * 0.02),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "New Password",
+                          labelStyle: TextStyle(color: AppSettings.primary),
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                        ),
+                        controller: newPasswordController,
+                        obscureText: true,
+                      ),
+                      SizedBox(height: AppSettings.screenHeight * 0.02),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "Confirm New Password",
+                          labelStyle: TextStyle(color: AppSettings.primary),
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
+                        ),
+                        controller: confirmNewPasswordController,
+                        obscureText: true,
+                        onEditingComplete: () {
+                          final newPassword = newPasswordController.text;
+                          final confirmedPassword = confirmNewPasswordController.text;
 
-                      if (newPassword != confirmedPassword) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Passwords do not match'),
-                          ),
-                        );
-                      } else if (newPassword.length > 128) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Password cannot be longer than 128 characters'),
-                          ),
-                        );
-                      } else if (newPassword.length < 8) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Password must be at least 8 characters long'),
-                          ),
-                        );
-                      } else {
-                        settingsBloc.add(
-                            PatchSettings(name: "password", value: newPasswordController.text.trim(), value2: oldPasswordController.text.trim()));
+                          if (newPassword != confirmedPassword) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Passwords do not match'),
+                              ),
+                            );
+                          } else if (newPassword.length > 128) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Password cannot be longer than 128 characters'),
+                              ),
+                            );
+                          } else if (newPassword.length < 8) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Password must be at least 8 characters long'),
+                              ),
+                            );
+                          } else {
+                            settingsBloc.add(
+                                PatchSettings(name: "password", value: newPasswordController.text.trim(), value2: oldPasswordController.text.trim()));
 
-                        Navigator.pop(context);
-                        oldPasswordController.clear();
-                        newPasswordController.clear();
-                        confirmNewPasswordController.clear();
-                      }
-                    },
-                    onTapOutside: (_) {
-                      oldPasswordController.clear();
-                      newPasswordController.clear();
-                      confirmNewPasswordController.clear();
-                    },
+                            Navigator.pop(context);
+                            oldPasswordController.clear();
+                            newPasswordController.clear();
+                            confirmNewPasswordController.clear();
+                          }
+                        },
+                        onTapOutside: (_) {
+                          oldPasswordController.clear();
+                          newPasswordController.clear();
+                          confirmNewPasswordController.clear();
+                        },
+                      ),
+                    ],
                   ),
-                ],
+                );
+              },
+            );
+          } else {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('This feature requires internet connection!'),
               ),
             );
-          },
-        ),
+          }
+        },
       ),
     );
   }

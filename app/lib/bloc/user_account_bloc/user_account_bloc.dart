@@ -65,16 +65,27 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
     switch (event.name) {
       case "username":
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
+          if (response.isSuccessful) {
+            userAccount.username = event.value;
+            userBox.put("userAccount", userAccount);
+          }
+        } else {
           userAccount.username = event.value;
           userBox.put("userAccount", userAccount);
         }
+
         break;
 
       case "name":
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
-        if (response.isSuccessful) {
+        if (AppSettings.hasConnection) {
+          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
+          if (response.isSuccessful) {
+            userAccount.name = event.value;
+            userBox.put("userAccount", userAccount);
+          }
+        } else {
           userAccount.name = event.value;
           userBox.put("userAccount", userAccount);
         }
@@ -82,21 +93,32 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
       case "password":
         await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+
         break;
 
       case "profilePicture":
-        Response<dynamic> response;
-
+        String profilePictureString = "";
         if (event.value != null) {
-          final profilePictureString = base64Encode(event.value);
-          response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": profilePictureString});
-        } else {
-          response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": ""});
+          profilePictureString = base64Encode(event.value);
         }
-        if (response.isSuccessful) {
+
+        if (AppSettings.hasConnection) {
+          Response<dynamic> response;
+
+          if (event.value != null) {
+            response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": profilePictureString});
+          } else {
+            response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": ""});
+          }
+          if (response.isSuccessful) {
+            userAccount.profilePicture = event.value;
+            userBox.put("userAccount", userAccount);
+          }
+        } else {
           userAccount.profilePicture = event.value;
           userBox.put("userAccount", userAccount);
         }
+
         break;
       default:
         emit(UserAccountsError(error: "Patch not implemented yet!"));
