@@ -14,6 +14,7 @@ type WorkoutStore interface {
 	GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error)
 	PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error
 	DeleteWorkout(userAccountID int, workoutID int) error
+	PatchEntireWorkouts(userAccountID int, workouts []types.Workout) error
 }
 
 type service struct {
@@ -31,6 +32,7 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 	r.Get("/", s.getWorkoutOverviews())
 	r.Patch("/{workoutID}", s.patchWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
+	r.Patch("/sync", s.patchEntireWorkouts())
 
 	return s
 }
@@ -148,6 +150,37 @@ func (s service) deleteWorkout() http.HandlerFunc {
 		err = s.workoutStore.DeleteWorkout(claims.UserAccountID, workoutID)
 		if err != nil {
 			http.Error(w, "Failed to get WorkoutOverview", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchEntireWorkouts() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody struct {
+			Workouts []types.Workout `json:"workouts"`
+		}
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		err := s.workoutStore.PatchEntireWorkouts(claims.UserAccountID, requestBody.Workouts)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}

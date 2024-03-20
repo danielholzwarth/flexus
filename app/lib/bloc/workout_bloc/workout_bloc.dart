@@ -200,12 +200,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutDeleting());
 
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+    workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
+
     if (AppSettings.hasConnection) {
       final response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
 
       if (response.isSuccessful) {
-        List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews");
-
         workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
 
         userBox.put("workoutOverviews", workoutOverviews);
@@ -216,9 +217,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         emit(WorkoutError(error: response.error.toString()));
       }
     } else {
-      List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
-      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
-
       workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
 
       userBox.put("workoutOverviews", workoutOverviews);

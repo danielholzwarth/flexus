@@ -38,4 +38,16 @@ class Workout extends HiveObject {
     required this.isStared,
     required this.isPinned,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userAccountID': userAccountID,
+      'starttime': starttime.toIso8601String(),
+      'endtime': endtime?.toIso8601String(),
+      'isArchived': isArchived,
+      'isStared': isStared,
+      'isPinned': isPinned,
+    };
+  }
 }

@@ -14,6 +14,7 @@ import 'package:app/pages/profile/settings.dart';
 import 'package:app/pages/workout_documentation/exercises.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -121,20 +122,21 @@ class _ProfilePageState extends State<ProfilePage> {
             return Stack(
               children: [
                 //  Show correct background picture depending on level
-                //  state.userAccount.level < 10
-                //     ? SizedBox(
-                //         child: Image(
-                //           color: AppSettings.primaryShade80,
-                //           fit: BoxFit.fill,
-                //           image: const NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-                //         ),
-                //       )
-                //     : const SizedBox(
-                //         child: Image(
-                //           fit: BoxFit.fill,
-                //           image: NetworkImage('https://cdn-icons-png.flaticon.com/512/3490/3490782.png'),
-                //         ),
-                //       ),
+                Positioned(
+                  left: AppSettings.screenWidth * 0.05,
+                  top: AppSettings.screenWidth * 0.1,
+                  child: state.userAccount.level < 10
+                      ? Container(
+                          width: AppSettings.screenWidth * 0.7,
+                          height: AppSettings.screenWidth * 0.7,
+                          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
+                        )
+                      : Container(
+                          width: AppSettings.screenWidth * 0.7,
+                          height: AppSettings.screenWidth * 0.7,
+                          decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+                        ),
+                ),
                 Positioned(
                   left: AppSettings.screenWidth * 0.25,
                   top: AppSettings.screenWidth * 0.12,

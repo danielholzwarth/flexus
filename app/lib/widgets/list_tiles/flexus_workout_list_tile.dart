@@ -74,7 +74,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
           label: "Delete",
           foregroundColor: AppSettings.fontV1,
           onPressed: (context) {
-            widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id));
+            widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id, isArchive: workout.isArchived));
           },
         ),
       ],

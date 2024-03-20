@@ -29,6 +29,12 @@ abstract class WorkoutService extends ChopperService {
     @Path('workoutID') int workoutID,
   );
 
+  @Patch(path: '/sync')
+  Future<Response> patchEntireWorkouts(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static WorkoutService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080

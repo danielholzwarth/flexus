@@ -1,7 +1,9 @@
 import 'package:app/api/user_account_service.dart';
 import 'package:app/api/user_settings_service.dart';
+import 'package:app/api/workout_service.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_settings.dart';
+import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +82,10 @@ class NetworkController extends GetxController {
       "isQuickAccess": userSettings.isQuickAccess,
     });
 
-    // WorkoutService workoutService = WorkoutService.create();
-    // workoutService.patchEntireWorkouts(userBox.get("workoutOverviews"));
+    WorkoutService workoutService = WorkoutService.create();
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+    workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
+    workoutService
+        .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
   }
 }
