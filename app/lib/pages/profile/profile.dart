@@ -13,6 +13,7 @@ import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
 import 'package:app/pages/workout_documentation/exercises.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,21 +122,10 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is UserAccountLoaded) {
             return Stack(
               children: [
-                //  Show correct background picture depending on level
                 Positioned(
                   left: AppSettings.screenWidth * 0.05,
                   top: AppSettings.screenWidth * 0.1,
-                  child: state.userAccount.level < 10
-                      ? Container(
-                          width: AppSettings.screenWidth * 0.7,
-                          height: AppSettings.screenWidth * 0.7,
-                          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
-                        )
-                      : Container(
-                          width: AppSettings.screenWidth * 0.7,
-                          height: AppSettings.screenWidth * 0.7,
-                          decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
-                        ),
+                  child: buildCorrectLevelImage(state.userAccount.level),
                 ),
                 Positioned(
                   left: AppSettings.screenWidth * 0.25,
@@ -184,6 +174,73 @@ class _ProfilePageState extends State<ProfilePage> {
         },
       ),
     );
+  }
+
+  Widget buildCorrectLevelImage(int level) {
+    switch (level) {
+      case < 5:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
+        );
+
+      case < 10:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.yellow)),
+        );
+
+      case < 20:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.orange)),
+        );
+
+      case < 30:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+        );
+
+      case < 40:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
+        );
+
+      case < 50:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
+        );
+
+      case < 100:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+        );
+
+      case >= 100:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+        );
+
+      default:
+        return Container(
+          width: AppSettings.screenWidth * 0.7,
+          height: AppSettings.screenWidth * 0.7,
+          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
+        );
+    }
   }
 
   Widget buildBestLift() {
