@@ -116,6 +116,8 @@ class _GymPageState extends State<GymPage> {
     return FlexusFloatingActionButton(
       onPressed: () async {
         List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
+        gymOverviews = gymOverviews.cast<GymOverview>();
+
         String recentName = userBox.get("recentGymName") ?? "";
         bool areGymNamesUnique = true;
 

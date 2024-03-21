@@ -21,39 +21,43 @@ class NetworkController extends GetxController {
 
   void _updateConnectionStatus(ConnectivityResult connectivityResult) {
     if (connectivityResult == ConnectivityResult.none) {
-      Get.rawSnackbar(
-        messageText: Text(
-          'Internet disconnected',
-          style: TextStyle(
-            color: AppSettings.fontV1,
-            fontSize: AppSettings.fontSize,
+      if (AppSettings.hasConnection == true) {
+        Get.rawSnackbar(
+          messageText: Text(
+            'Internet disconnected',
+            style: TextStyle(
+              color: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        isDismissible: false,
-        backgroundColor: AppSettings.error,
-        margin: EdgeInsets.zero,
-        snackStyle: SnackStyle.GROUNDED,
-      );
+          isDismissible: false,
+          backgroundColor: AppSettings.error,
+          margin: EdgeInsets.zero,
+          snackStyle: SnackStyle.GROUNDED,
+        );
+      }
 
       AppSettings.hasConnection = false;
     } else {
       synchronizeData();
 
-      Get.rawSnackbar(
-        messageText: Text(
-          'Internet reconnected',
-          style: TextStyle(
-            color: AppSettings.fontV1,
-            fontSize: AppSettings.fontSize,
+      if (AppSettings.hasConnection == false) {
+        Get.rawSnackbar(
+          messageText: Text(
+            'Internet reconnected',
+            style: TextStyle(
+              color: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        isDismissible: false,
-        backgroundColor: AppSettings.confirm,
-        margin: EdgeInsets.zero,
-        snackStyle: SnackStyle.GROUNDED,
-      );
+          isDismissible: false,
+          backgroundColor: AppSettings.confirm,
+          margin: EdgeInsets.zero,
+          snackStyle: SnackStyle.GROUNDED,
+        );
+      }
 
       AppSettings.hasConnection = true;
     }
@@ -83,7 +87,7 @@ class NetworkController extends GetxController {
     });
 
     WorkoutService workoutService = WorkoutService.create();
-    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+    List workoutOverviews = userBox.get("workoutOverviews") ?? [];
     workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
     workoutService
         .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
