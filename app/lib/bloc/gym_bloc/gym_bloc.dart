@@ -49,7 +49,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       bool exists = response.body;
       emit(GymLoaded(exists: exists));
     } else {
-      print(response.error.toString());
       emit(GymError(error: response.error.toString()));
     }
   }
