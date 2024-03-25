@@ -45,24 +45,126 @@ class GymsCustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults();
+    return buildSearchResults(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults();
+    return buildSearchResults(context);
   }
 
-  StatefulWidget buildSearchResults() {
+  Widget buildSearchResults(BuildContext context) {
     if (!isAddNew) {
       if (query != "") {
         searchGymBloc.add(GetGymsSearch(query: query));
 
-        return BlocBuilder(
-          bloc: searchGymBloc,
-          builder: (context, state) {
-            if (state is GymsSearchLoaded) {
-              if (state.gyms.isNotEmpty) {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: BlocBuilder(
+            bloc: searchGymBloc,
+            builder: (context, state) {
+              if (state is GymsSearchLoaded) {
+                if (state.gyms.isNotEmpty) {
+                  return Scaffold(
+                    backgroundColor: AppSettings.background,
+                    body: FlexusScrollBar(
+                      scrollController: scrollController,
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemBuilder: (context, index) {
+                          return FlexusGymExpansionTile(
+                            gym: state.gyms[index],
+                            query: query,
+                            key: UniqueKey(),
+                          );
+                        },
+                        itemCount: state.gyms.length,
+                      ),
+                    ),
+                  );
+                } else {
+                  return Scaffold(
+                    backgroundColor: AppSettings.background,
+                    body: const Center(
+                      child: Text("No gyms found"),
+                    ),
+                  );
+                }
+              } else {
+                return Scaffold(
+                  backgroundColor: AppSettings.background,
+                  body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+                );
+              }
+            },
+          ),
+        );
+      } else {
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Start searching in order to show results!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: AppSettings.fontSize,
+                        color: AppSettings.font,
+                      ),
+                    ),
+                    SizedBox(height: AppSettings.screenHeight * 0.05),
+                    Text(
+                      "If your gym does not yet exist, you can add it to the list of available gyms by clicking on the top right!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: AppSettings.fontSize,
+                        color: AppSettings.font,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    } else {
+      return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: FutureBuilder(
+          future: searchLocations(query),
+          builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Scaffold(
+                backgroundColor: AppSettings.background,
+                body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+              );
+            } else if (snapshot.hasError) {
+              return Scaffold(
+                backgroundColor: AppSettings.background,
+                body: Center(
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: TextStyle(fontSize: AppSettings.fontSize),
+                  ),
+                ),
+              );
+            } else {
+              final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
+
+              if (searchResults.isNotEmpty) {
                 return Scaffold(
                   backgroundColor: AppSettings.background,
                   body: FlexusScrollBar(
@@ -70,137 +172,50 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                     child: ListView.builder(
                       controller: scrollController,
                       itemBuilder: (context, index) {
-                        return FlexusGymExpansionTile(
-                          gym: state.gyms[index],
+                        return FlexusGymOSMExpansionTile(
+                          locationData: searchResults[index],
                           query: query,
-                          key: UniqueKey(),
                         );
                       },
-                      itemCount: state.gyms.length,
+                      itemCount: searchResults.length,
                     ),
                   ),
                 );
               } else {
                 return Scaffold(
                   backgroundColor: AppSettings.background,
-                  body: const Center(
-                    child: Text("No gyms found"),
+                  body: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(50.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "No results found",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: AppSettings.fontSize,
+                              color: AppSettings.font,
+                            ),
+                          ),
+                          SizedBox(height: AppSettings.screenHeight * 0.05),
+                          Text(
+                            "You can switch to the gym search by pressing the blue plus-sign at the top right.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: AppSettings.fontSize,
+                              color: AppSettings.font,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               }
-            } else {
-              return Scaffold(
-                backgroundColor: AppSettings.background,
-                body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-              );
             }
           },
-        );
-      } else {
-        return Scaffold(
-          backgroundColor: AppSettings.background,
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Start searching in order to show results!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: AppSettings.fontSize,
-                      color: AppSettings.font,
-                    ),
-                  ),
-                  SizedBox(height: AppSettings.screenHeight * 0.05),
-                  Text(
-                    "If your gym does not yet exist, you can add it to the list of available gyms by clicking on the top right!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: AppSettings.fontSize,
-                      color: AppSettings.font,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }
-    } else {
-      return FutureBuilder(
-        future: searchLocations(query),
-        builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-            );
-          } else if (snapshot.hasError) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: Center(
-                child: Text(
-                  'Error: ${snapshot.error}',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
-                ),
-              ),
-            );
-          } else {
-            final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
-
-            if (searchResults.isNotEmpty) {
-              return Scaffold(
-                backgroundColor: AppSettings.background,
-                body: FlexusScrollBar(
-                  scrollController: scrollController,
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemBuilder: (context, index) {
-                      return FlexusGymOSMExpansionTile(
-                        locationData: searchResults[index],
-                        query: query,
-                      );
-                    },
-                    itemCount: searchResults.length,
-                  ),
-                ),
-              );
-            } else {
-              return Scaffold(
-                backgroundColor: AppSettings.background,
-                body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "No results found",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: AppSettings.fontSize,
-                            color: AppSettings.font,
-                          ),
-                        ),
-                        SizedBox(height: AppSettings.screenHeight * 0.05),
-                        Text(
-                          "You can switch to the gym search by pressing the blue plus-sign at the top right.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: AppSettings.fontSize,
-                            color: AppSettings.font,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }
-          }
-        },
+        ),
       );
     }
   }

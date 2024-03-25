@@ -39,46 +39,51 @@ class UserListCustomSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults();
+    return buildSearchResults(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults();
+    return buildSearchResults(context);
   }
 
-  Scaffold buildSearchResults() {
+  Widget buildSearchResults(BuildContext context) {
     userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true, keyword: query));
 
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      body: BlocBuilder(
-        bloc: userAccountBloc,
-        builder: (context, state) {
-          if (state is UserAccountsLoaded) {
-            if (state.userAccounts.isNotEmpty) {
-              return FlexusScrollBar(
-                scrollController: scrollController,
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return FlexusUserListListTile(
-                      userAccount: state.userAccounts[index],
-                      listID: listID,
-                      query: query,
-                      key: UniqueKey(),
-                    );
-                  },
-                  itemCount: state.userAccounts.length,
-                ),
-              );
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        backgroundColor: AppSettings.background,
+        body: BlocBuilder(
+          bloc: userAccountBloc,
+          builder: (context, state) {
+            if (state is UserAccountsLoaded) {
+              if (state.userAccounts.isNotEmpty) {
+                return FlexusScrollBar(
+                  scrollController: scrollController,
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemBuilder: (context, index) {
+                      return FlexusUserListListTile(
+                        userAccount: state.userAccounts[index],
+                        listID: listID,
+                        query: query,
+                        key: UniqueKey(),
+                      );
+                    },
+                    itemCount: state.userAccounts.length,
+                  ),
+                );
+              } else {
+                return const Center(child: Text("No users found"));
+              }
             } else {
-              return const Center(child: Text("No users found"));
+              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
             }
-          } else {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          }
-        },
+          },
+        ),
       ),
     );
   }
