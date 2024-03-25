@@ -7,6 +7,16 @@ class GymInitial extends GymState {}
 
 class GymCreated extends GymState {}
 
+class GymLoading extends GymState {}
+
+class GymLoaded extends GymState {
+  final bool exists;
+
+  GymLoaded({
+    required this.exists,
+  });
+}
+
 class GymsSearchLoading extends GymState {}
 
 class GymsSearchLoaded extends GymState {

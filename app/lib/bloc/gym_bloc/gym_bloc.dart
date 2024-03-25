@@ -17,6 +17,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
 
   GymBloc() : super(GymInitial()) {
     on<PostGym>(_onPostGym);
+    on<GetGym>(_onGetGym);
     on<GetGymsSearch>(_onGetGymsSearch);
     on<GetGymOverviews>(_onGetGymOverviews);
   }
@@ -35,6 +36,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     if (response.isSuccessful) {
       emit(GymCreated());
     } else {
+      emit(GymError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetGym(GetGym event, Emitter<GymState> emit) async {
+    emit(GymLoading());
+
+    final response = await _gymService.getGym(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
+
+    if (response.isSuccessful) {
+      bool exists = response.body;
+      emit(GymLoaded(exists: exists));
+    } else {
+      print(response.error.toString());
       emit(GymError(error: response.error.toString()));
     }
   }

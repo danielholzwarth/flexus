@@ -5,16 +5,7 @@ import (
 )
 
 func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
-	existsQuery := `
-        SELECT EXISTS(
-			SELECT 1
-			FROM gym
-			WHERE name = $1 AND latitude = $2 AND longitude = $3
-		);
-    `
-
-	var exists bool
-	err := db.pool.QueryRow(existsQuery, gym.Name, gym.Latitude, gym.Longitude).Scan(&exists)
+	exists, err := db.GetGymExists(gym.Name, gym.Latitude, gym.Longitude)
 	if err != nil {
 		return err
 	}
@@ -33,6 +24,24 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
 	}
 
 	return nil
+}
+
+func (db *DB) GetGymExists(name string, lat float64, lon float64) (bool, error) {
+	query := `
+        SELECT EXISTS(
+			SELECT 1
+			FROM gym
+			WHERE name = $1 AND latitude = $2 AND longitude = $3
+		);
+    `
+
+	var exists bool
+	err := db.pool.QueryRow(query, name, lat, lon).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }
 
 func (db *DB) GetGymsSearch(keyword string) ([]types.Gym, error) {

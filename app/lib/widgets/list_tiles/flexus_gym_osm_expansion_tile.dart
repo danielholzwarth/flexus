@@ -32,6 +32,8 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
     final double latitude = double.parse(widget.locationData['lat']);
     final double longitude = double.parse(widget.locationData['lon']);
 
+    gymBloc.add(GetGym(name: name, lat: latitude, lon: longitude));
+
     return ExpansionTile(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +58,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
             BlocBuilder(
               bloc: gymBloc,
               builder: (context, state) {
-                if (state is GymCreated) {
+                if (state is GymCreated || state is GymLoaded && state.exists == true) {
                   return ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(AppSettings.background),

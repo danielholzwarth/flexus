@@ -11,6 +11,18 @@ class PostGym extends GymEvent {
   });
 }
 
+class GetGym extends GymEvent {
+  final String name;
+  final double lat;
+  final double lon;
+
+  GetGym({
+    required this.name,
+    required this.lat,
+    required this.lon,
+  });
+}
+
 class GetGymsSearch extends GymEvent {
   final String query;
 

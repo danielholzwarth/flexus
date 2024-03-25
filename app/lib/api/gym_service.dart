@@ -11,7 +11,15 @@ abstract class GymService extends ChopperService {
     @Body() Map<String, dynamic> gym,
   );
 
-  @Get(path: '/')
+  @Get(path: '/exists')
+  Future<Response> getGym(
+    @Header('flexusjwt') String flexusJWTString,
+    @Query('name') String name,
+    @Query('lat') double lat,
+    @Query('lon') double lon,
+  );
+
+  @Get(path: '/search')
   Future<Response> getGymsSearch(
     @Header('flexusjwt') String flexusJWTString, {
     @Query('keyword') String? keyword,
