@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,7 +122,13 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 const Text("Choose form a list the default exercises for each split."),
                 SizedBox(height: AppSettings.screenHeight * 0.02),
                 for (int index = 0; index < splitControllers.length; index++)
-                  Text("${splitControllers[index].text}: Choose from Exercises for each Split"),
+                  TextButton(
+                    onPressed: () async {
+                      List<String> checkedItems = await showSearch(context: context, delegate: ExerciseSearchDelegate());
+                      print(checkedItems.length);
+                    },
+                    child: Text(splitControllers[index].text),
+                  ),
               ],
             ),
           ),
@@ -175,45 +182,13 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           });
         },
         currentStep: currentStep,
-        onStepContinue: () {
-          switch (currentStep) {
-            case 1:
-              splitCount = int.tryParse(splitCountController.text) ?? 0;
-
-              splitControllers.clear();
-              for (int i = 0; i < splitCount; i++) {
-                splitControllers.add(TextEditingController());
-              }
-
-              break;
-          }
-
-          if (currentStep != 4) {
-            setState(() {
-              currentStep++;
-            });
-          } else {
-            //Store in db
-            //Show created
-            Navigator.pop(context);
-          }
-        },
-        onStepCancel: () {
-          if (currentStep != 0) {
-            setState(() {
-              currentStep--;
-            });
-          } else {
-            Navigator.pop(context);
-          }
-        },
         connectorColor: MaterialStatePropertyAll(AppSettings.primary),
         controlsBuilder: (context, details) {
           return Column(
             children: [
               SizedBox(height: AppSettings.screenHeight * 0.02),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -230,7 +205,6 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       style: TextStyle(color: AppSettings.font),
                     ),
                   ),
-                  SizedBox(width: AppSettings.screenWidth * 0.1),
                   TextButton(
                     onPressed: () {
                       switch (currentStep) {
@@ -257,7 +231,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     },
                     child: Text(
                       'CONTINUE',
-                      style: TextStyle(color: AppSettings.font),
+                      style: TextStyle(color: AppSettings.primary),
                     ),
                   ),
                 ],
