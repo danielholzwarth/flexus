@@ -5,6 +5,7 @@ class FlexusExerciseListTile extends StatefulWidget {
   final String? query;
   final String title;
   final String subtitle;
+  final bool value;
   final Function(bool)? onChanged;
 
   const FlexusExerciseListTile({
@@ -12,6 +13,7 @@ class FlexusExerciseListTile extends StatefulWidget {
     this.query,
     required this.title,
     this.subtitle = "",
+    required this.value,
     this.onChanged,
   });
 
@@ -20,10 +22,10 @@ class FlexusExerciseListTile extends StatefulWidget {
 }
 
 class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
-  bool isChecked = false;
-
   @override
   Widget build(BuildContext context) {
+    bool isChecked = widget.value;
+
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,

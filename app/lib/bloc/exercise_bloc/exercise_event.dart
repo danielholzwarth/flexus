@@ -12,3 +12,11 @@ class PostExercise extends ExerciseEvent {
 }
 
 class GetExercises extends ExerciseEvent {}
+
+class RefreshGetExercisesState extends ExerciseEvent {
+  final List<Exercise> exercises;
+
+  RefreshGetExercisesState({
+    required this.exercises,
+  });
+}

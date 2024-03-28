@@ -15,6 +15,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   ExerciseBloc() : super(ExerciseInitial()) {
     // on<PostExercise>(_onPostExercise);
     on<GetExercises>(_onGetExercises);
+    on<RefreshGetExercisesState>(_onRefreshGetExercisesState);
   }
 
   // void _onPostExercise(PostExercise event, Emitter<ExerciseState> emit) async {
@@ -59,5 +60,9 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     } else {
       emit(ExercisesLoaded(exercises: exercises));
     }
+  }
+
+  void _onRefreshGetExercisesState(RefreshGetExercisesState event, Emitter<ExerciseState> emit) async {
+    emit(ExercisesLoaded(exercises: event.exercises));
   }
 }

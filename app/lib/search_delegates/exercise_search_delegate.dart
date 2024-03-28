@@ -10,6 +10,7 @@ class ExerciseSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   ExerciseBloc exerciseBloc = ExerciseBloc();
   bool isLoaded = false;
+  List<Exercise> items = [];
   List<Exercise> checkedItems = [];
 
   @override
@@ -58,7 +59,11 @@ class ExerciseSearchDelegate extends SearchDelegate {
         bloc: exerciseBloc,
         builder: (context, state) {
           if (state is ExercisesLoaded) {
-            if (state.exercises.isNotEmpty) {
+            items = state.exercises;
+            List<Exercise> filteredExercises =
+                state.exercises.where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase())).toList();
+
+            if (filteredExercises.isNotEmpty) {
               return Scaffold(
                 backgroundColor: AppSettings.background,
                 body: FlexusScrollBar(
@@ -68,17 +73,25 @@ class ExerciseSearchDelegate extends SearchDelegate {
                     itemBuilder: (context, index) {
                       return FlexusExerciseListTile(
                         query: query,
-                        title: state.exercises[index].name,
+                        title: filteredExercises[index].name,
+                        value: checkedItems.contains(filteredExercises[index]) ? true : false,
+                        subtitle: filteredExercises[index].typeID == 1
+                            ? "Repetitions"
+                            : filteredExercises[index].typeID == 2
+                                ? "Duration"
+                                : "Other",
                         onChanged: (value) {
                           if (value) {
-                            checkedItems.add(state.exercises[index]);
+                            checkedItems.add(filteredExercises[index]);
                           } else {
-                            checkedItems.remove(state.exercises[index]);
+                            checkedItems.remove(filteredExercises[index]);
                           }
+
+                          exerciseBloc.add(RefreshGetExercisesState(exercises: items));
                         },
                       );
                     },
-                    itemCount: state.exercises.length,
+                    itemCount: filteredExercises.length,
                   ),
                 ),
               );
