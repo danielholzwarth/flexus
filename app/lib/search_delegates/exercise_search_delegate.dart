@@ -1,13 +1,16 @@
+import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
+import 'package:app/hive/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_exercise_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExerciseSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
-
-  List<String> items = ["Benchpress", "Butterfly", "Squats"];
-  List<String> checkedItems = [];
+  ExerciseBloc exerciseBloc = ExerciseBloc();
+  bool isLoaded = false;
+  List<Exercise> checkedItems = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -42,32 +45,58 @@ class ExerciseSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
+    if (!isLoaded) {
+      exerciseBloc.add(GetExercises());
+      isLoaded = true;
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Scaffold(
-        backgroundColor: AppSettings.background,
-        body: FlexusScrollBar(
-          scrollController: scrollController,
-          child: ListView.builder(
-            controller: scrollController,
-            itemBuilder: (context, index) {
-              return FlexusExerciseListTile(
-                query: query,
-                title: items[index],
-                onChanged: (value) {
-                  if (value) {
-                    checkedItems.add(items[index]);
-                  } else {
-                    checkedItems.remove(items[index]);
-                  }
-                },
+      child: BlocBuilder(
+        bloc: exerciseBloc,
+        builder: (context, state) {
+          if (state is ExercisesLoaded) {
+            if (state.exercises.isNotEmpty) {
+              return Scaffold(
+                backgroundColor: AppSettings.background,
+                body: FlexusScrollBar(
+                  scrollController: scrollController,
+                  child: ListView.builder(
+                    controller: scrollController,
+                    itemBuilder: (context, index) {
+                      return FlexusExerciseListTile(
+                        query: query,
+                        title: state.exercises[index].name,
+                        onChanged: (value) {
+                          if (value) {
+                            checkedItems.add(state.exercises[index]);
+                          } else {
+                            checkedItems.remove(state.exercises[index]);
+                          }
+                        },
+                      );
+                    },
+                    itemCount: state.exercises.length,
+                  ),
+                ),
               );
-            },
-            itemCount: items.length,
-          ),
-        ),
+            } else {
+              return Scaffold(
+                backgroundColor: AppSettings.background,
+                body: const Center(
+                  child: Text("No exercise found"),
+                ),
+              );
+            }
+          } else {
+            return Scaffold(
+              backgroundColor: AppSettings.background,
+              body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+            );
+          }
+        },
       ),
     );
   }

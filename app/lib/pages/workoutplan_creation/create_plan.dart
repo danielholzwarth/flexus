@@ -1,3 +1,4 @@
+import 'package:app/hive/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
@@ -124,7 +125,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 for (int index = 0; index < splitControllers.length; index++)
                   TextButton(
                     onPressed: () async {
-                      List<String> checkedItems = await showSearch(context: context, delegate: ExerciseSearchDelegate());
+                      List<Exercise> checkedItems = await showSearch(context: context, delegate: ExerciseSearchDelegate());
                       print(checkedItems.length);
                     },
                     child: Text(splitControllers[index].text),

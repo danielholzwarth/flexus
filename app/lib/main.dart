@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/api/user_settings_service.dart';
 import 'package:app/hive/best_lift.dart';
 import 'package:app/hive/best_lift_overview.dart';
+import 'package:app/hive/exercise.dart';
 import 'package:app/hive/friendship.dart';
 import 'package:app/hive/gym.dart';
 import 'package:app/hive/gym_overview.dart';
@@ -60,17 +61,18 @@ Future<void> initializeHive() async {
   await Hive.initFlutter();
 
   try {
-    Hive.registerAdapter(UserSettingsAdapter());
-    Hive.registerAdapter(UserAccountAdapter());
-    Hive.registerAdapter(WorkoutAdapter());
-    Hive.registerAdapter(WorkoutOverviewAdapter());
-    Hive.registerAdapter(BestLiftAdapter());
-    Hive.registerAdapter(BestLiftOverviewAdapter());
-    Hive.registerAdapter(GymOverviewAdapter());
-    Hive.registerAdapter(FriendshipAdapter());
-    Hive.registerAdapter(GymAdapter());
-    Hive.registerAdapter(UserAccountGymOverviewAdapter());
-    Hive.registerAdapter(UserListAdapter());
+    Hive.registerAdapter(UserAccountAdapter()); //0
+    Hive.registerAdapter(UserSettingsAdapter()); //1
+    Hive.registerAdapter(WorkoutAdapter()); //2
+    Hive.registerAdapter(WorkoutOverviewAdapter()); //3
+    Hive.registerAdapter(FriendshipAdapter()); //4
+    Hive.registerAdapter(BestLiftAdapter()); //5
+    Hive.registerAdapter(BestLiftOverviewAdapter()); //6
+    Hive.registerAdapter(GymAdapter()); //7
+    Hive.registerAdapter(GymOverviewAdapter()); //8
+    Hive.registerAdapter(UserAccountGymOverviewAdapter()); //9
+    Hive.registerAdapter(ExerciseAdapter()); //10
+    Hive.registerAdapter(UserListAdapter()); //11
 
     await Hive.openBox('userBox');
   } catch (e) {
