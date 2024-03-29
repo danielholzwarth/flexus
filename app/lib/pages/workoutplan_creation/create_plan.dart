@@ -18,11 +18,18 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
   final nameController = TextEditingController();
   final splitCountController = TextEditingController();
 
-  int splitCount = 2;
+  int splitCount = 0;
   List<TextEditingController> splitControllers = [];
 
+  //Get Exercises for each split
+  Map<String, List<Exercise>> exerciseList = {};
+
+  //Get Split Order
   List<String> defaultData = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  List<String> acceptedData = ["", "", "", "", "", "", ""];
+  List<String> weeklyAcceptedData = ["", "", "", "", "", "", ""];
+  int orderRestCount = 0;
+  List<String> orderAcceptedData = [];
+
   bool isWeeklyRepetetive = true;
 
   @override
@@ -118,17 +125,28 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         : StepState.complete,
             title: const Text("Exercises"),
             content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text("Choose form a list the default exercises for each split."),
+                const Text("Choose from a list the default exercises for each split."),
                 SizedBox(height: AppSettings.screenHeight * 0.02),
                 for (int index = 0; index < splitControllers.length; index++)
-                  TextButton(
-                    onPressed: () async {
-                      List<Exercise> checkedItems = await showSearch(context: context, delegate: ExerciseSearchDelegate());
-                      print(checkedItems.length);
-                    },
-                    child: Text(splitControllers[index].text),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseSearchDelegate());
+                          exerciseList[splitControllers[index].text] = splitExercises;
+                          setState(() {});
+                        },
+                        child: Text(
+                          splitControllers[index].text,
+                          style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
+                        ),
+                      ),
+                      buildExercises(index),
+                      SizedBox(height: AppSettings.screenHeight * 0.02),
+                    ],
                   ),
               ],
             ),
@@ -210,11 +228,13 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     onPressed: () {
                       switch (currentStep) {
                         case 1:
-                          splitCount = int.tryParse(splitCountController.text) ?? 0;
-
-                          splitControllers.clear();
-                          for (int i = 0; i < splitCount; i++) {
-                            splitControllers.add(TextEditingController());
+                          int newSplitCount = int.tryParse(splitCountController.text) ?? 0;
+                          if (splitCount != newSplitCount) {
+                            splitCount = newSplitCount;
+                            splitControllers.clear();
+                            for (int i = 0; i < splitCount; i++) {
+                              splitControllers.add(TextEditingController());
+                            }
                           }
 
                           break;
@@ -244,6 +264,20 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     );
   }
 
+  Widget buildExercises(int index) {
+    List<Exercise> exercises = exerciseList[splitControllers[index].text] ?? [];
+    if (exercises.isNotEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (int i = 0; i < exercises.length; i++) Text("${i + 1}. ${exercises[i].name}"),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   Widget buildType() {
     if (isWeeklyRepetetive) {
       return Column(
@@ -257,30 +291,31 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   for (int index = 0; index < splitControllers.length; index++)
-                    Draggable(
-                      data: splitControllers[index].text,
-                      feedback: Material(
-                        color: AppSettings.primaryShade48,
+                    if (splitControllers[index].text != "Rest")
+                      Draggable(
+                        data: splitControllers[index].text,
+                        feedback: Material(
+                          color: AppSettings.primaryShade48,
+                          child: Container(
+                            width: AppSettings.screenWidth * 0.3,
+                            padding: const EdgeInsets.all(8),
+                            child: Text(
+                              splitControllers[index].text,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                         child: Container(
                           width: AppSettings.screenWidth * 0.3,
+                          color: AppSettings.primaryShade48,
                           padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(bottom: 10),
                           child: Text(
                             splitControllers[index].text,
                             textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                      child: Container(
-                        width: AppSettings.screenWidth * 0.3,
-                        color: AppSettings.primaryShade48,
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          splitControllers[index].text,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
                   Draggable(
                     data: "Rest",
                     feedback: Material(
@@ -317,11 +352,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         return Container(
                           width: AppSettings.screenWidth * 0.3,
                           padding: const EdgeInsets.all(8),
-                          color: acceptedData[index].isNotEmpty ? AppSettings.confirm.withOpacity(0.5) : AppSettings.font.withOpacity(0.1),
+                          color: weeklyAcceptedData[index].isNotEmpty ? AppSettings.confirm.withOpacity(0.5) : AppSettings.font.withOpacity(0.1),
                           margin: const EdgeInsets.only(bottom: 10),
                           alignment: Alignment.center,
                           child: Text(
-                            acceptedData[index].isNotEmpty ? acceptedData[index] : defaultData[index],
+                            weeklyAcceptedData[index].isNotEmpty ? weeklyAcceptedData[index] : defaultData[index],
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
@@ -333,9 +368,9 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       onAcceptWithDetails: (value) {
                         setState(() {
                           if (value.data.toString() != "Rest") {
-                            acceptedData[index] = value.data.toString();
+                            weeklyAcceptedData[index] = value.data.toString();
                           } else {
-                            acceptedData[index] = "";
+                            weeklyAcceptedData[index] = "";
                           }
                         });
                       },
@@ -347,24 +382,40 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
         ],
       );
     } else {
+      int itemCount = splitCount + orderRestCount;
       return Column(
         children: [
           const Text("Drag the Splits into the correct order."),
+          SizedBox(height: AppSettings.screenHeight * 0.02),
           ReorderableListView(
+            primary: false,
+            shrinkWrap: true,
             children: List.generate(
-                6,
-                (index) => ListTile(
-                      key: Key('$index'),
-                      title: Text("$index Tile"),
-                      trailing: const Icon(Icons.drag_handle),
-                    )),
+              itemCount,
+              (index) => ListTile(
+                key: Key('$index'),
+                title: Text("${index + 1}. ${splitControllers[index].text}"),
+                trailing: const Icon(Icons.drag_handle),
+              ),
+            ),
             onReorder: (oldIndex, newIndex) {
               setState(() {
                 if (oldIndex < newIndex) {
                   newIndex--;
                 }
+                final TextEditingController item = splitControllers.removeAt(oldIndex);
+                splitControllers.insert(newIndex, item);
               });
             },
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                orderRestCount++;
+                splitControllers.add(TextEditingController(text: "Rest"));
+              });
+            },
+            icon: const Icon(Icons.add),
           )
         ],
       );
