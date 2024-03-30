@@ -170,7 +170,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       value: isWeeklyRepetetive,
                       onChanged: (value) {
                         setState(() {
-                          isWeeklyRepetetive = !isWeeklyRepetetive;
+                          isWeeklyRepetetive = value;
                         });
                       },
                       activeColor: AppSettings.primary,
@@ -267,11 +267,28 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
   Widget buildExercises(int index) {
     List<Exercise> exercises = exerciseList[splitControllers[index].text] ?? [];
     if (exercises.isNotEmpty) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (int i = 0; i < exercises.length; i++) Text("${i + 1}. ${exercises[i].name}"),
-        ],
+      return ReorderableListView(
+        primary: false,
+        shrinkWrap: true,
+        onReorder: (oldIndex, newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final Exercise item = exercises.removeAt(oldIndex);
+            exercises.insert(newIndex, item);
+          });
+        },
+        children: List.generate(
+          exercises.length,
+          (index) {
+            return ListTile(
+              key: Key('$index'),
+              title: Text("${index + 1}. ${exercises[index].name}"),
+              trailing: const Icon(Icons.drag_handle),
+            );
+          },
+        ),
       );
     } else {
       return Container();
@@ -282,8 +299,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     if (isWeeklyRepetetive) {
       return Column(
         children: [
-          const Text("Drag your Split into the corresponding weekday."),
-          SizedBox(height: AppSettings.screenHeight * 0.02),
+          const Text("Drag your Split into the corresponding weekday. The default-value is a Rest-Day."),
+          SizedBox(height: AppSettings.screenHeight * 0.04),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -385,8 +402,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
       int itemCount = splitCount + orderRestCount;
       return Column(
         children: [
-          const Text("Drag the Splits into the correct order."),
-          SizedBox(height: AppSettings.screenHeight * 0.02),
+          const Text("Drag the Splits into the correct order. If you need Rest-Days press on the plus icon below."),
+          SizedBox(height: AppSettings.screenHeight * 0.04),
           ReorderableListView(
             primary: false,
             shrinkWrap: true,
