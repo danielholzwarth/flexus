@@ -9,6 +9,16 @@ class PlanCreating extends PlanState {}
 
 class PlanCreated extends PlanState {}
 
+class PlansLoading extends PlanState {}
+
+class PlansLoaded extends PlanState {
+  final List<Plan> plans;
+
+  PlansLoaded({
+    required this.plans,
+  });
+}
+
 class PlanError extends PlanState {
   final String error;
 

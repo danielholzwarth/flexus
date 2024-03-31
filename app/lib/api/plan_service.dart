@@ -11,6 +11,11 @@ abstract class PlanService extends ChopperService {
     @Body() Map<String, dynamic> plan,
   );
 
+  @Get()
+  Future<Response> getPlans(
+    @Header('flexusjwt') String flexusJWTString,
+  );
+
   static PlanService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080

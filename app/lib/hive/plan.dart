@@ -17,45 +17,25 @@ class Plan extends HiveObject {
   String name;
 
   @HiveField(4)
-  DateTime startDate;
+  DateTime createdAt;
 
   @HiveField(5)
-  bool isWeekly;
+  bool isActive;
 
   @HiveField(6)
-  bool isMondayRest;
+  bool isWeekly;
 
   @HiveField(7)
-  bool isTuesdayRest;
-
-  @HiveField(8)
-  bool isWednesdayRest;
-
-  @HiveField(9)
-  bool isThursdayRest;
-
-  @HiveField(10)
-  bool isFridayRest;
-
-  @HiveField(11)
-  bool isSaturdayRest;
-
-  @HiveField(12)
-  bool isSundayRest;
+  List<bool>? restList;
 
   Plan({
     required this.id,
     required this.userID,
     required this.splitCount,
     required this.name,
-    required this.startDate,
+    required this.createdAt,
+    required this.isActive,
     required this.isWeekly,
-    required this.isMondayRest,
-    required this.isTuesdayRest,
-    required this.isWednesdayRest,
-    required this.isThursdayRest,
-    required this.isFridayRest,
-    required this.isSaturdayRest,
-    required this.isSundayRest,
+    this.restList,
   });
 }

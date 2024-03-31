@@ -21,22 +21,17 @@ class PlanAdapter extends TypeAdapter<Plan> {
       userID: fields[1] as int,
       splitCount: fields[2] as int,
       name: fields[3] as String,
-      startDate: fields[4] as DateTime,
-      isWeekly: fields[5] as bool,
-      isMondayRest: fields[6] as bool,
-      isTuesdayRest: fields[7] as bool,
-      isWednesdayRest: fields[8] as bool,
-      isThursdayRest: fields[9] as bool,
-      isFridayRest: fields[10] as bool,
-      isSaturdayRest: fields[11] as bool,
-      isSundayRest: fields[12] as bool,
+      createdAt: fields[4] as DateTime,
+      isActive: fields[5] as bool,
+      isWeekly: fields[6] as bool,
+      restList: (fields[7] as List?)?.cast<bool>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Plan obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -46,23 +41,13 @@ class PlanAdapter extends TypeAdapter<Plan> {
       ..writeByte(3)
       ..write(obj.name)
       ..writeByte(4)
-      ..write(obj.startDate)
+      ..write(obj.createdAt)
       ..writeByte(5)
-      ..write(obj.isWeekly)
+      ..write(obj.isActive)
       ..writeByte(6)
-      ..write(obj.isMondayRest)
+      ..write(obj.isWeekly)
       ..writeByte(7)
-      ..write(obj.isTuesdayRest)
-      ..writeByte(8)
-      ..write(obj.isWednesdayRest)
-      ..writeByte(9)
-      ..write(obj.isThursdayRest)
-      ..writeByte(10)
-      ..write(obj.isFridayRest)
-      ..writeByte(11)
-      ..write(obj.isSaturdayRest)
-      ..writeByte(12)
-      ..write(obj.isSundayRest);
+      ..write(obj.restList);
   }
 
   @override

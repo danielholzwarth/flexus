@@ -102,7 +102,8 @@ CREATE TABLE plan (
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     split_count INTEGER NOT NULL,
     name VARCHAR(20) NOT NULL,
-    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN NOT NULL,
     is_weekly BOOLEAN NOT NULL,
     is_monday_rest BOOLEAN NOT NULL,
     is_tuesday_rest BOOLEAN NOT NULL,
@@ -269,8 +270,8 @@ Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_acce
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 8, false);
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 9, 1, true);
 
-Insert INTO "plan" ("user_id", "split_count", "name", "start_date", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
-Insert INTO "plan" ("user_id", "split_count", "name", "start_date", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
+Insert INTO "plan" ("user_id", "split_count", "name", "created_at", "is_active", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
+Insert INTO "plan" ("user_id", "split_count", "name", "created_at", "is_active", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 4, 'Daniels 4er', now(), 'false', 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
 
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Push', 1);
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Pull', 2);

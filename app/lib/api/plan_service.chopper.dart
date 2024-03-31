@@ -36,4 +36,19 @@ final class _$PlanService extends PlanService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getPlans(String flexusJWTString) {
+    final Uri $url = Uri.parse('/plans');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

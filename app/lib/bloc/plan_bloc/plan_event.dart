@@ -3,6 +3,8 @@ part of 'plan_bloc.dart';
 @immutable
 abstract class PlanEvent {}
 
+class GetPlans extends PlanEvent {}
+
 class PostPlan extends PlanEvent {
   final int splitCount;
   final String planName;
