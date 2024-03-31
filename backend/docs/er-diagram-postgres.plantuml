@@ -48,7 +48,7 @@ entity plan {
     --
     user_account_id : number <<FK>>
     startdate : timestamp
-    part_count : number
+    split_count : number
     name : text
     is_weekly : boolean
     is_monday_blocked : boolean

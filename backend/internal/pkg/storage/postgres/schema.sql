@@ -100,17 +100,17 @@ CREATE TABLE user_settings (
 CREATE TABLE plan (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    part_count INTEGER NOT NULL,
+    split_count INTEGER NOT NULL,
     name VARCHAR(20) NOT NULL,
-    startdate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_weekly BOOLEAN NOT NULL,
-    is_monday_blocked BOOLEAN NOT NULL,
-    is_tuesday_blocked BOOLEAN NOT NULL,
-    is_wednesday_blocked BOOLEAN NOT NULL,
-    is_thursday_blocked BOOLEAN NOT NULL,
-    is_friday_blocked BOOLEAN NOT NULL,
-    is_saturday_blocked BOOLEAN NOT NULL,
-    is_sunday_blocked BOOLEAN NOT NULL
+    is_monday_rest BOOLEAN NOT NULL,
+    is_tuesday_rest BOOLEAN NOT NULL,
+    is_wednesday_rest BOOLEAN NOT NULL,
+    is_thursday_rest BOOLEAN NOT NULL,
+    is_friday_rest BOOLEAN NOT NULL,
+    is_saturday_rest BOOLEAN NOT NULL,
+    is_sunday_rest BOOLEAN NOT NULL
 );
 
 CREATE TABLE split (
@@ -269,8 +269,8 @@ Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_acce
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 1, 8, false);
 Insert INTO "friendship" ("created_at", "requestor_id", "requested_id", "is_accepted") VALUES (now(), 9, 1, true);
 
-Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
-Insert INTO "plan" ("user_id", "part_count", "name", "startdate", "is_weekly", "is_monday_blocked", "is_tuesday_blocked", "is_wednesday_blocked", "is_thursday_blocked", "is_friday_blocked", "is_saturday_blocked", "is_sunday_blocked") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
+Insert INTO "plan" ("user_id", "split_count", "name", "start_date", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 3, 'Daniels Plan', now(), 'false', 'true', 'false', 'false', 'false', 'false', 'false', 'false');
+Insert INTO "plan" ("user_id", "split_count", "name", "start_date", "is_weekly", "is_monday_rest", "is_tuesday_rest", "is_wednesday_rest", "is_thursday_rest", "is_friday_rest", "is_saturday_rest", "is_sunday_rest") VALUES (1, 4, 'Daniels 4er', now(), 'true', 'true', 'false', 'true', 'false', 'false', 'true', 'false');
 
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Push', 1);
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (1, 'Pull', 2);
