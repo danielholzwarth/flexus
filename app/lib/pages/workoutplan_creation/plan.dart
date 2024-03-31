@@ -1,9 +1,9 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PlanPage extends StatefulWidget {
@@ -18,7 +18,7 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   void initState() {
-    planBloc.add(GetPlans());
+    planBloc.add(GetActivePlan());
     super.initState();
   }
 
@@ -31,19 +31,17 @@ class _PlanPageState extends State<PlanPage> {
         child: BlocBuilder(
           bloc: planBloc,
           builder: (context, state) {
-            if (state is PlansLoaded) {
-              if (state.plans.isNotEmpty) {
-                final activePlan = state.plans.firstWhereOrNull((element) => element.isActive);
-                if (activePlan != null) {
-                  return Text(activePlan.name);
-                } else {
-                  return Text("No active plan found.");
-                }
+            if (state is PlanLoaded) {
+              if (state.plan != null) {
+                return Text("Plan: ${state.plan!.name}");
               } else {
-                return Text("You don't have a plan yet. Create your first workout plan now!");
+                return Text("You don't have an active plan right now.");
               }
             } else {
-              return Text("error");
+              return Scaffold(
+                backgroundColor: AppSettings.background,
+                body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+              );
             }
           },
         ),
@@ -58,7 +56,7 @@ class _PlanPageState extends State<PlanPage> {
         BlocBuilder(
           bloc: planBloc,
           builder: (context, state) {
-            if (state is PlansLoaded) {
+            if (state is PlanLoaded) {
               return PopupMenuButton<String>(
                 color: AppSettings.background,
                 icon: Icon(
@@ -67,20 +65,30 @@ class _PlanPageState extends State<PlanPage> {
                   size: AppSettings.fontSizeTitle,
                 ),
                 itemBuilder: (BuildContext context) {
-                  return ['Change plan', 'Create new plan'].map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(choice),
-                    );
-                  }).toList();
+                  if (state.plan != null) {
+                    return ['Change Plan', 'Create New Plan', 'Delete Plan'].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  } else {
+                    return ['Change Plan', 'Create New Plan'].map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  }
                 },
                 onSelected: (String choice) async {
                   switch (choice) {
-                    case "Change plan":
-                      //Plan Search Delegate
+                    case "Change Plan":
+                      await showSearch(context: context, delegate: PlanSearchDelegate());
+                      setState(() {});
                       break;
 
-                    case "Create new plan":
+                    case "Create New Plan":
                       Navigator.push(
                         context,
                         PageTransition(
@@ -88,6 +96,11 @@ class _PlanPageState extends State<PlanPage> {
                           child: const CreatePlanPage(),
                         ),
                       ).then((value) => setState(() {}));
+                      break;
+
+                    case "Delete Plan":
+                      planBloc.add(DeletePlan(planID: state.plan!.id));
+                      setState(() {});
                       break;
 
                     default:

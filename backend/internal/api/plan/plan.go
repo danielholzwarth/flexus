@@ -3,14 +3,19 @@ package plan
 import (
 	"encoding/json"
 	"flexus/internal/types"
+	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type PlanStore interface {
 	CreatePlan(createPlan types.CreatePlan) error
+	GetActivePlan(userID int) (types.Plan, error)
 	GetPlansByUserID(userID int) ([]types.Plan, error)
+	DeletePlan(userID int, planID int) error
+	PatchPlan(userID int, planID int, columnName string, value any) error
 }
 
 type service struct {
@@ -26,7 +31,10 @@ func NewService(planStore PlanStore) http.Handler {
 	}
 
 	r.Post("/", s.createPlan())
+	r.Get("/active", s.getActivePlan())
 	r.Get("/", s.getPlans())
+	r.Delete("/{planID}", s.deletePlan())
+	r.Patch("/{planID}", s.patchPlan())
 
 	return s
 }
@@ -66,6 +74,45 @@ func (s service) createPlan() http.HandlerFunc {
 	}
 }
 
+func (s service) getActivePlan() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		plan, err := s.planStore.GetActivePlan(claims.UserAccountID)
+		if err != nil {
+			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		if plan.ID != 0 {
+			response, err := json.Marshal(plan)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+
+		} else {
+			response, err := json.Marshal(nil)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
 func (s service) getPlans() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
@@ -91,5 +138,78 @@ func (s service) getPlans() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
+	}
+}
+
+func (s service) deletePlan() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		planIDValue := chi.URLParam(r, "planID")
+		planID, err := strconv.Atoi(planIDValue)
+		if err != nil || planID <= 0 {
+			http.Error(w, "Wrong input for planID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		err = s.planStore.DeletePlan(claims.UserAccountID, planID)
+		if err != nil {
+			http.Error(w, "Failed to create User", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchPlan() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		planIDValue := chi.URLParam(r, "planID")
+		planID, err := strconv.Atoi(planIDValue)
+		if err != nil || planID <= 0 {
+			http.Error(w, "Wrong input for planID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		var requestBody map[string]interface{}
+
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if isActive, ok := requestBody["isActive"].(bool); ok {
+			err := s.planStore.PatchPlan(claims.UserAccountID, planID, "is_active", isActive)
+			if err != nil {
+				http.Error(w, "Failed to patch name", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 	}
 }

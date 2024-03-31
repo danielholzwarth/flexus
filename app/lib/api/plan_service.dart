@@ -16,6 +16,24 @@ abstract class PlanService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Get(path: '/active')
+  Future<Response> getActivePlan(
+    @Header('flexusjwt') String flexusJWTString,
+  );
+
+  @Delete(path: '/{planID}')
+  Future<Response> deletePlan(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('planID') int planID,
+  );
+
+  @Patch(path: '/{planID}')
+  Future<Response> patchPlan(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('planID') int planID,
+    @Body() Map<String, dynamic> body,
+  );
+
   static PlanService create() {
     final client = ChopperClient(
         //For local device    ipv4:8080

@@ -13,7 +13,10 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
   PlanBloc() : super(PlanInitial()) {
     on<PostPlan>(_onPostPlan);
+    on<GetActivePlan>(_onGetActivePlan);
     on<GetPlans>(_onGetPlans);
+    on<PatchPlan>(_onPatchPlan);
+    on<DeletePlan>(_onDeletePlan);
   }
 
   void _onPostPlan(PostPlan event, Emitter<PlanState> emit) async {
@@ -28,6 +31,43 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     if (response.isSuccessful) {
       emit(PlanCreated());
+    } else {
+      emit(PlanError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetActivePlan(GetActivePlan event, Emitter<PlanState> emit) async {
+    emit(PlanLoading());
+
+    final response = await _planService.getActivePlan(userBox.get("flexusjwt"));
+
+    if (response.isSuccessful) {
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
+
+        final Plan plan = Plan(
+          id: jsonMap['id'],
+          userID: jsonMap['userAccountID'],
+          splitCount: jsonMap['splitCount'],
+          name: jsonMap['name'],
+          createdAt: DateTime.parse(jsonMap['createdAt']),
+          isActive: jsonMap['isActive'],
+          isWeekly: jsonMap['isWeekly'],
+          restList: [
+            jsonMap['isMondayRest'],
+            jsonMap['isTuesdayRest'],
+            jsonMap['isWednesdayRest'],
+            jsonMap['isThursdayRest'],
+            jsonMap['isFridayRest'],
+            jsonMap['isSaturdayRest'],
+            jsonMap['isSundayRest'],
+          ],
+        );
+
+        emit(PlanLoaded(plan: plan));
+      } else {
+        emit(PlanLoaded(plan: null));
+      }
     } else {
       emit(PlanError(error: response.error.toString()));
     }
@@ -69,6 +109,40 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
       } else {
         emit(PlansLoaded(plans: plans));
       }
+    } else {
+      emit(PlanError(error: response.error.toString()));
+    }
+  }
+
+  void _onPatchPlan(PatchPlan event, Emitter<PlanState> emit) async {
+    emit(PlanPatching());
+
+    switch (event.name) {
+      case "isActive":
+        final response = await _planService.patchPlan(
+          userBox.get("flexusjwt"),
+          event.planID,
+          {"isActive": event.value},
+        );
+        if (response.isSuccessful) {
+          emit(PlanPatched());
+        } else {
+          emit(PlanError(error: response.error.toString()));
+        }
+        break;
+
+      default:
+        emit(PlanError(error: "This patch is not implemented yet"));
+        break;
+    }
+  }
+
+  void _onDeletePlan(DeletePlan event, Emitter<PlanState> emit) async {
+    emit(PlanDeleting());
+
+    final response = await _planService.deletePlan(userBox.get("flexusjwt"), event.planID);
+    if (response.isSuccessful) {
+      emit(PlanLoaded(plan: null));
     } else {
       emit(PlanError(error: response.error.toString()));
     }

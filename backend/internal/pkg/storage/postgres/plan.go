@@ -1,6 +1,10 @@
 package postgres
 
-import "flexus/internal/types"
+import (
+	"database/sql"
+	"errors"
+	"flexus/internal/types"
+)
 
 func (db *DB) CreatePlan(createPlan types.CreatePlan) error {
 	tx, err := db.pool.Begin()
@@ -32,6 +36,40 @@ func (db *DB) CreatePlan(createPlan types.CreatePlan) error {
 	}
 
 	return nil
+}
+
+func (db *DB) GetActivePlan(userID int) (types.Plan, error) {
+	var plan types.Plan
+
+	query := `
+		SELECT * FROM plan
+		WHERE user_id = $1 AND is_active = TRUE;
+    `
+
+	err := db.pool.QueryRow(query, userID).Scan(
+		&plan.ID,
+		&plan.UserAccountID,
+		&plan.SplitCount,
+		&plan.Name,
+		&plan.CreatedAt,
+		&plan.IsActive,
+		&plan.IsWeekly,
+		&plan.IsMondayRest,
+		&plan.IsTuesdayRest,
+		&plan.IsWednesdayRest,
+		&plan.IsThursdayRest,
+		&plan.IsFridayRest,
+		&plan.IsSaturdayRest,
+		&plan.IsSundayRest,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return types.Plan{}, nil
+		}
+		return types.Plan{}, err
+	}
+
+	return plan, nil
 }
 
 func (db *DB) GetPlansByUserID(userID int) ([]types.Plan, error) {
@@ -75,4 +113,59 @@ func (db *DB) GetPlansByUserID(userID int) ([]types.Plan, error) {
 	}
 
 	return plans, nil
+}
+
+func (db *DB) DeletePlan(userID int, planID int) error {
+	query := `
+		DELETE
+		FROM plan
+		WHERE user_id = $1 AND id = $2;
+    `
+
+	_, err := db.pool.Exec(query, userID, planID)
+	return err
+}
+
+func (db *DB) PatchPlan(userID int, planID int, columnName string, value any) error {
+	var query string
+	var args []interface{}
+
+	if columnName == "is_active" {
+		query = `
+			UPDATE plan
+			SET is_active = false
+			WHERE user_id = $1 AND is_active = true;
+		`
+
+		_, err := db.pool.Exec(query, userID)
+		if err != nil {
+			return err
+		}
+	}
+
+	if value == nil {
+		query = `
+			UPDATE plan
+			SET ` + columnName + ` = NULL
+			WHERE id = $1 AND user_id = $2;
+		`
+		args = []interface{}{planID, userID}
+	} else {
+		query = `
+			UPDATE plan
+			SET ` + columnName + ` = $1
+			WHERE id = $2 AND user_id = $3;
+		`
+		args = []interface{}{value, planID, userID}
+	}
+
+	_, err := db.pool.Exec(query, args...)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("plan not found")
+		}
+		return err
+	}
+
+	return nil
 }
