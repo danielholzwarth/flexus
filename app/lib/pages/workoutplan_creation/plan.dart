@@ -35,7 +35,7 @@ class _PlanPageState extends State<PlanPage> {
               if (state.plan != null) {
                 return Text("Plan: ${state.plan!.name}");
               } else {
-                return Text("You don't have an active plan right now.");
+                return const Text("You don't have an active plan right now.");
               }
             } else {
               return Scaffold(
@@ -53,8 +53,13 @@ class _PlanPageState extends State<PlanPage> {
     return AppBar(
       backgroundColor: AppSettings.background,
       actions: [
-        BlocBuilder(
+        BlocConsumer(
           bloc: planBloc,
+          listener: (context, state) {
+            if (state is PlanDeleted || state is PlanPatched || state is PlanCreated) {
+              planBloc.add(GetActivePlan());
+            }
+          },
           builder: (context, state) {
             if (state is PlanLoaded) {
               return PopupMenuButton<String>(
@@ -84,8 +89,12 @@ class _PlanPageState extends State<PlanPage> {
                 onSelected: (String choice) async {
                   switch (choice) {
                     case "Change Plan":
-                      await showSearch(context: context, delegate: PlanSearchDelegate());
-                      setState(() {});
+                      int newPlanID = await showSearch(context: context, delegate: PlanSearchDelegate());
+                      planBloc.add(PatchPlan(
+                        planID: newPlanID,
+                        name: "isActive",
+                        value: true,
+                      ));
                       break;
 
                     case "Create New Plan":
@@ -95,12 +104,11 @@ class _PlanPageState extends State<PlanPage> {
                           type: PageTransitionType.rightToLeft,
                           child: const CreatePlanPage(),
                         ),
-                      ).then((value) => setState(() {}));
+                      ).then((value) => initState());
                       break;
 
                     case "Delete Plan":
                       planBloc.add(DeletePlan(planID: state.plan!.id));
-                      setState(() {});
                       break;
 
                     default:

@@ -74,12 +74,7 @@ class PlanSearchDelegate extends SearchDelegate {
                         title: filteredPlans[index].name,
                         subtitle: "Splits: ${filteredPlans[index].splitCount}",
                         onPressed: () {
-                          planBloc.add(PatchPlan(
-                            planID: filteredPlans[index].id,
-                            name: "isActive",
-                            value: true,
-                          ));
-                          Navigator.pop(context);
+                          close(context, filteredPlans[index].id);
                         },
                       );
                     },
