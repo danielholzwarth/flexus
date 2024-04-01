@@ -518,13 +518,15 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         );
                       },
                       onAcceptWithDetails: (value) {
-                        setState(() {
-                          if (value.data.toString() != "Rest") {
-                            weeklyAcceptedData[index] = value.data.toString();
-                          } else {
-                            weeklyAcceptedData[index] = "";
-                          }
-                        });
+                        setState(
+                          () {
+                            if (value.data.toString() != "Rest") {
+                              weeklyAcceptedData[index] = value.data.toString();
+                            } else {
+                              weeklyAcceptedData[index] = "";
+                            }
+                          },
+                        );
                       },
                     ),
                 ],
@@ -560,14 +562,29 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               });
             },
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                orderRestCount++;
-                splitControllers.add(TextEditingController(text: "Rest"));
-              });
-            },
-            icon: const Icon(Icons.add),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    orderRestCount = 0;
+                    splitControllers.removeWhere((element) => element.text == "Rest");
+                  });
+                },
+                icon: const Icon(Icons.remove),
+              ),
+              SizedBox(width: AppSettings.screenWidth * 0.1),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    orderRestCount++;
+                    splitControllers.add(TextEditingController(text: "Rest"));
+                  });
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
           )
         ],
       );
