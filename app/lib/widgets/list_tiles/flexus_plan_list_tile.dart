@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:flutter/widgets.dart';
 
 class FlexusPlanListTile extends StatefulWidget {
   final String? query;
   final String title;
-  final String subtitle;
+  final Widget subtitle;
   final Function()? onPressed;
 
   const FlexusPlanListTile({
     super.key,
     this.query,
     required this.title,
-    this.subtitle = "",
+    this.subtitle = const SizedBox(),
     this.onPressed,
   });
 
@@ -27,14 +28,7 @@ class FlexusPlanListTileState extends State<FlexusPlanListTile> {
       tileColor: AppSettings.background,
       title: highlightText(widget.title),
       onTap: widget.onPressed,
-      subtitle: widget.subtitle.isNotEmpty
-          ? Text(
-              widget.subtitle,
-              style: TextStyle(
-                fontSize: AppSettings.fontSizeDescription,
-              ),
-            )
-          : null,
+      subtitle: widget.subtitle,
     );
   }
 

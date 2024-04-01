@@ -38,6 +38,14 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
               ),
             )
           : null,
+      onTap: () {
+        setState(() {
+          isChecked = !isChecked;
+        });
+        if (widget.onChanged != null) {
+          widget.onChanged!(isChecked);
+        }
+      },
       trailing: Checkbox(
         activeColor: AppSettings.primary,
         onChanged: (value) {

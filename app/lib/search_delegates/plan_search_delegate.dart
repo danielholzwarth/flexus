@@ -5,6 +5,7 @@ import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_plan_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class PlanSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
@@ -72,7 +73,19 @@ class PlanSearchDelegate extends SearchDelegate {
                       return FlexusPlanListTile(
                         query: query,
                         title: filteredPlans[index].name,
-                        subtitle: "Splits: ${filteredPlans[index].splitCount}",
+                        subtitle: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Splits: ${filteredPlans[index].splitCount}",
+                              style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+                            ),
+                            Text(
+                              "Created at: ${DateFormat('dd.MM.yyyy').format(filteredPlans[index].createdAt)}",
+                              style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+                            )
+                          ],
+                        ),
                         onPressed: () {
                           close(context, filteredPlans[index].id);
                         },
