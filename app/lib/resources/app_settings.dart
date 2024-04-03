@@ -1,7 +1,8 @@
 import 'package:flutter/services.dart';
 
 class AppSettings {
-  static String ipv4 = "";
+  static String ipv4 = "213.109.162.134";
+  static bool useIPv4 = false;
 
   static bool hasConnection = true;
   static bool isTokenExpired = true;

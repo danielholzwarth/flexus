@@ -36,10 +36,7 @@ abstract class PlanService extends ChopperService {
 
   static PlanService create() {
     final client = ChopperClient(
-        //For local device    ipv4:8080
-        //For virtual device  10.0.2.2:8080
-        //For Web             localhost:8080
-        baseUrl: AppSettings.ipv4 != "" ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),
+        baseUrl: AppSettings.useIPv4 ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),
         services: [
           _$PlanService(),
         ],
