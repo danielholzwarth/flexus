@@ -89,12 +89,14 @@ class _PlanPageState extends State<PlanPage> {
                 onSelected: (String choice) async {
                   switch (choice) {
                     case "Change Plan":
-                      int newPlanID = await showSearch(context: context, delegate: PlanSearchDelegate());
-                      planBloc.add(PatchPlan(
-                        planID: newPlanID,
-                        name: "isActive",
-                        value: true,
-                      ));
+                      final newPlanID = await showSearch(context: context, delegate: PlanSearchDelegate());
+                      if (newPlanID != null) {
+                        planBloc.add(PatchPlan(
+                          planID: newPlanID,
+                          name: "isActive",
+                          value: true,
+                        ));
+                      }
                       break;
 
                     case "Create New Plan":
@@ -104,7 +106,7 @@ class _PlanPageState extends State<PlanPage> {
                           type: PageTransitionType.rightToLeft,
                           child: const CreatePlanPage(),
                         ),
-                      ).then((value) => initState());
+                      ).then((value) => planBloc.add(GetActivePlan()));
                       break;
 
                     case "Delete Plan":
