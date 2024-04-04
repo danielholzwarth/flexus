@@ -42,7 +42,7 @@ void onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
   });
-  Timer.periodic(const Duration(seconds: 10), (timer) async {
+  Timer.periodic(const Duration(seconds: 1), (timer) async {
     if (serviceInstance is AndroidServiceInstance) {
       if (await serviceInstance.isForegroundService()) {
         serviceInstance.setForegroundNotificationInfo(title: "title", content: "content");
@@ -53,7 +53,7 @@ void onStart(ServiceInstance serviceInstance) async {
     //Fetch from Backend
     //If new person in any gym update accordingly
 
-    debugPrint("background service running");
+    print("background service running");
     serviceInstance.invoke('update');
   });
 }

@@ -17,25 +17,15 @@ import 'package:app/hive/workout_overview.dart';
 import 'package:app/pages/sign_in/startup.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:app/resources/background_service.dart';
 import 'package:app/resources/dependency_injection.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   await initializeHive();
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await Permission.notification.isDenied.then((value) {
-    if (value) {
-      Permission.notification.request();
-    }
-  });
-  await initializeService();
 
   HttpOverrides.global = MyHttpOverrides();
 

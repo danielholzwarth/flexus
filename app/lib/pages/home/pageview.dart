@@ -1,3 +1,4 @@
+import 'package:app/bloc/init_bloc/initialization_bloc.dart';
 import 'package:app/hive/user_settings.dart';
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
@@ -6,9 +7,8 @@ import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
@@ -30,26 +30,39 @@ class _PageViewPageState extends State<PageViewPage> {
   int currentPageIndex = 1;
   PageController pageController = PageController(initialPage: 1);
 
+  InitializationBloc initializationBloc = InitializationBloc();
+
   @override
   void initState() {
-    final flexusjwt = userBox.get("flexusjwt");
-    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
-
-    FlutterBackgroundService().invoke('setAsBackground');
+    initializationBloc.add(InitializeApp());
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    UserSettings userSettings = userBox.get("userSettings");
-    bool isQuickAccess = userSettings.isQuickAccess;
-    if (isFirstTime && widget.isFirst && isQuickAccess) {
-      isFirstTime = false;
-      return buildQuickAccess(context);
-    } else {
-      return buildPages();
-    }
+    return BlocBuilder(
+      bloc: initializationBloc,
+      builder: (context, state) {
+        if (state is Initializing) {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is Initialized) {
+          UserSettings userSettings = userBox.get("userSettings");
+          bool isQuickAccess = userSettings.isQuickAccess;
+
+          if (isFirstTime && widget.isFirst && isQuickAccess) {
+            isFirstTime = false;
+            return buildQuickAccess(context);
+          } else {
+            return buildPages();
+          }
+        } else if (state is InitializingError) {
+          return Center(child: Text("Error: ${state.error}"));
+        } else {
+          return const Center(child: Text("Error: No valid state"));
+        }
+      },
+    );
   }
 
   Scaffold buildPages() {
