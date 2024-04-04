@@ -48,10 +48,12 @@ class MainApp extends StatelessWidget {
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {
       return const GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         home: PageViewPage(isFirst: true),
       );
     } else {
       return const GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         home: StartUpPage(),
       );
     }
