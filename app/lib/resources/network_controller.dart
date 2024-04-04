@@ -1,8 +1,6 @@
 import 'package:app/api/user_account_service.dart';
 import 'package:app/api/user_settings_service.dart';
 import 'package:app/api/workout_service.dart';
-import 'package:app/hive/user_account.dart';
-import 'package:app/hive/user_settings.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -67,29 +65,35 @@ class NetworkController extends GetxController {
     final userBox = Hive.box("userBox");
 
     UserAccountService userAccountService = UserAccountService.create();
-    UserAccount userAccount = userBox.get("userAccount");
-    userAccountService.patchEntireUserAccount(userBox.get("flexusjwt"), {
-      "username": userAccount.username,
-      "name": userAccount.name,
-      "level": userAccount.level,
-      "profilePicture": userAccount.profilePicture,
-    });
+    final userAccount = userBox.get("userAccount");
+    if (userAccount != null) {
+      userAccountService.patchEntireUserAccount(userBox.get("flexusjwt"), {
+        "username": userAccount.username,
+        "name": userAccount.name,
+        "level": userAccount.level,
+        "profilePicture": userAccount.profilePicture,
+      });
+    }
 
     UserSettingsService userSettingsService = UserSettingsService.create();
-    UserSettings userSettings = userBox.get("userSettings");
-    userSettingsService.patchEntireUserSettings(userBox.get("flexusjwt"), {
-      "fontSize": userSettings.fontSize,
-      "isDarkMode": userSettings.isDarkMode,
-      "isUnlisted": userSettings.isUnlisted,
-      "isPullFromEveryone": userSettings.isPullFromEveryone,
-      "isNotifyEveryone": userSettings.isNotifyEveryone,
-      "isQuickAccess": userSettings.isQuickAccess,
-    });
+    final userSettings = userBox.get("userSettings");
+    if (userSettings != null) {
+      userSettingsService.patchEntireUserSettings(userBox.get("flexusjwt"), {
+        "fontSize": userSettings.fontSize,
+        "isDarkMode": userSettings.isDarkMode,
+        "isUnlisted": userSettings.isUnlisted,
+        "isPullFromEveryone": userSettings.isPullFromEveryone,
+        "isNotifyEveryone": userSettings.isNotifyEveryone,
+        "isQuickAccess": userSettings.isQuickAccess,
+      });
+    }
 
     WorkoutService workoutService = WorkoutService.create();
-    List workoutOverviews = userBox.get("workoutOverviews") ?? [];
-    workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
-    workoutService
-        .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
+    dynamic workoutOverviews = userBox.get("workoutOverviews");
+    if (workoutOverviews != null) {
+      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
+      workoutService
+          .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
+    }
   }
 }

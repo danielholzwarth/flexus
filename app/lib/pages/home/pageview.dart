@@ -6,6 +6,7 @@ import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:hive/hive.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
@@ -33,6 +34,9 @@ class _PageViewPageState extends State<PageViewPage> {
   void initState() {
     final flexusjwt = userBox.get("flexusjwt");
     AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
+
+    FlutterBackgroundService().invoke('setAsBackground');
+
     super.initState();
   }
 
