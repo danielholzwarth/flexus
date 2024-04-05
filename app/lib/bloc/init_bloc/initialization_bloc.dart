@@ -1,4 +1,5 @@
 import 'package:app/resources/background_service.dart';
+import 'package:app/resources/local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +21,9 @@ class InitializationBloc extends Bloc<InitializationEvent, InitializationState> 
 
     try {
       WidgetsFlutterBinding.ensureInitialized();
+
+      LocalNotifications.init();
+
       await Permission.notification.isDenied.then((value) async {
         if (value) {
           PermissionStatus permissionStatus = await Permission.notification.request();

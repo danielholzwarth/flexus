@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:flutter/widgets.dart';
 
 class FlexusPlanListTile extends StatefulWidget {
   final String? query;
