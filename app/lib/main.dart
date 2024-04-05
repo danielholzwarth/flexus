@@ -64,21 +64,21 @@ Future<void> initializeHive() async {
   await Hive.initFlutter();
 
   try {
-    Hive.registerAdapter(UserAccountAdapter()); //0
-    Hive.registerAdapter(UserSettingsAdapter()); //1
-    Hive.registerAdapter(WorkoutAdapter()); //2
-    Hive.registerAdapter(WorkoutOverviewAdapter()); //3
-    Hive.registerAdapter(FriendshipAdapter()); //4
-    Hive.registerAdapter(BestLiftAdapter()); //5
-    Hive.registerAdapter(BestLiftOverviewAdapter()); //6
-    Hive.registerAdapter(GymAdapter()); //7
-    Hive.registerAdapter(GymOverviewAdapter()); //8
-    Hive.registerAdapter(UserAccountGymOverviewAdapter()); //9
-    Hive.registerAdapter(ExerciseAdapter()); //10
-    Hive.registerAdapter(UserListAdapter()); //11
-    Hive.registerAdapter(PlanAdapter()); //12
+    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(UserAccountAdapter()); //0
+    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(UserSettingsAdapter()); //1
+    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(WorkoutAdapter()); //2
+    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(WorkoutOverviewAdapter()); //3
+    if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(FriendshipAdapter()); //4
+    if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(BestLiftAdapter()); //5
+    if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(BestLiftOverviewAdapter()); //6
+    if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(GymAdapter()); //7
+    if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(GymOverviewAdapter()); //8
+    if (!Hive.isAdapterRegistered(9)) Hive.registerAdapter(UserAccountGymOverviewAdapter()); //9
+    if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(ExerciseAdapter()); //10
+    if (!Hive.isAdapterRegistered(11)) Hive.registerAdapter(UserListAdapter()); //11
+    if (!Hive.isAdapterRegistered(12)) Hive.registerAdapter(PlanAdapter()); //12
 
-    await Hive.openBox('userBox');
+    if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {
     if (kDebugMode) {
       print('Error initializing Hive: $e');

@@ -9,6 +9,7 @@ import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
@@ -36,6 +37,9 @@ class _PageViewPageState extends State<PageViewPage> {
   void initState() {
     initializationBloc.add(InitializeApp());
 
+    final flexusjwt = userBox.get("flexusjwt");
+    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
+
     super.initState();
   }
 
@@ -45,7 +49,10 @@ class _PageViewPageState extends State<PageViewPage> {
       bloc: initializationBloc,
       builder: (context, state) {
         if (state is Initializing) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          return Scaffold(
+            backgroundColor: AppSettings.primaryShade80,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
         } else if (state is Initialized) {
           UserSettings userSettings = userBox.get("userSettings");
           bool isQuickAccess = userSettings.isQuickAccess;
