@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:app/api/notification_service.dart';
+import 'package:app/hive/notification.dart' as noti;
 import 'package:app/resources/local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -44,7 +45,7 @@ void onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
   });
-  Timer.periodic(const Duration(seconds: 7), (timer) async {
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
     if (serviceInstance is AndroidServiceInstance) {
       if (await serviceInstance.isForegroundService()) {
         serviceInstance.setForegroundNotificationInfo(title: "Flexus", content: "Fetching content");
@@ -54,15 +55,34 @@ void onStart(ServiceInstance serviceInstance) async {
     NotificationService notificationService = NotificationService.create();
     final response = await notificationService.fetchData(
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyQWNjb3VudElEIjoxLCJ1c2VybmFtZSI6ImRob2x6d2FydGgiLCJleHAiOjE3MTQ5MTIwMDl9.KjGcIj67YF0Hn5VwUnmkb8-4Lqwyw_TG4Muzk_tdkUA");
+    List<noti.Notification> notifications = [];
+
     if (response.isSuccessful) {
-      if (response.body != null) {
-        LocalNotifications.showNotification(
-            title: "Someone is working out!", body: "Go join your buddy ${response.body.toString()}!", payload: "payload");
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
+        notifications = jsonList.map((json) {
+          return noti.Notification(
+            title: "Someone is working out!",
+            body: "Go join your buddy ${json['username']}!",
+            payload: "payload",
+          );
+        }).toList();
+
+        for (var notification in notifications) {
+          LocalNotifications.showNotification(
+            title: notification.title,
+            body: notification.body,
+            payload: notification.payload,
+          );
+          await Future.delayed(const Duration(seconds: 6));
+        }
+
+        debugPrint("Successful fetch - ${notifications.length} notifications");
       } else {
-        print("empty fetch");
+        debugPrint("Successful fetch - No update");
       }
     } else {
-      print("unsuccessful fetch");
+      debugPrint("Error: Unsuccessful fetch!");
     }
 
     serviceInstance.invoke('update');

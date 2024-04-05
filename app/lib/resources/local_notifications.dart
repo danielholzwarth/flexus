@@ -27,6 +27,7 @@ class LocalNotifications {
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
+      timeoutAfter: 5000,
     );
     const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
     await _flutterLocalNotificationsPlugin.show(Random().nextInt(1000), title, body, notificationDetails, payload: payload);

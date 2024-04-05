@@ -9,6 +9,7 @@ import (
 )
 
 type NotificationStore interface {
+	GetNewUsersWorkingOut(userAccountID int) ([]types.NotificationNewUserWorkingOut, error)
 }
 
 type service struct {
@@ -40,7 +41,14 @@ func (s service) fetchData() http.HandlerFunc {
 			return
 		}
 
-		response, err := json.Marshal(claims.UserAccountID)
+		users, err := s.notificationStore.GetNewUsersWorkingOut(claims.UserAccountID)
+		if err != nil {
+			http.Error(w, "Failed to get users", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(users)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
