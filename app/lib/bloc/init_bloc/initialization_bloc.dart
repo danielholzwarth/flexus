@@ -32,6 +32,14 @@ class InitializationBloc extends Bloc<InitializationEvent, InitializationState> 
 
             await initializeService();
           }
+        } else {
+          await FlutterBackgroundService().isRunning().then((value) async {
+            if (!value) {
+              FlutterBackgroundService().invoke('setAsForeground');
+
+              await initializeService();
+            }
+          });
         }
       });
 
