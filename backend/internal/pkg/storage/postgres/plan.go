@@ -126,46 +126,69 @@ func (db *DB) DeletePlan(userID int, planID int) error {
 	return err
 }
 
-func (db *DB) PatchPlan(userID int, planID int, columnName string, value any) error {
+func (db *DB) PatchPlan(userID int, planID int, columnName string, value interface{}) (types.Plan, error) {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return types.Plan{}, err
+	}
+	defer tx.Rollback()
+
 	var query string
 	var args []interface{}
 
 	if columnName == "is_active" {
-		query = `
-			UPDATE plan
-			SET is_active = false
-			WHERE user_id = $1 AND is_active = true;
-		`
-
-		_, err := db.pool.Exec(query, userID)
+		_, err := tx.Exec("UPDATE plan SET is_active = false WHERE user_id = $1 AND is_active = true", userID)
 		if err != nil {
-			return err
+			return types.Plan{}, err
 		}
 	}
 
 	if value == nil {
 		query = `
-			UPDATE plan
-			SET ` + columnName + ` = NULL
-			WHERE id = $1 AND user_id = $2;
-		`
+            UPDATE plan
+            SET ` + columnName + ` = NULL
+            WHERE id = $1 AND user_id = $2;
+        `
 		args = []interface{}{planID, userID}
 	} else {
 		query = `
-			UPDATE plan
-			SET ` + columnName + ` = $1
-			WHERE id = $2 AND user_id = $3;
-		`
+            UPDATE plan
+            SET ` + columnName + ` = $1
+            WHERE id = $2 AND user_id = $3;
+        `
 		args = []interface{}{value, planID, userID}
 	}
 
-	_, err := db.pool.Exec(query, args...)
+	_, err = tx.Exec(query, args...)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return errors.New("plan not found")
-		}
-		return err
+		return types.Plan{}, err
 	}
 
-	return nil
+	var updatedPlan types.Plan
+	err = tx.QueryRow("SELECT * FROM plan WHERE id = $1 AND user_id = $2", planID, userID).Scan(
+		&updatedPlan.ID,
+		&updatedPlan.UserAccountID,
+		&updatedPlan.SplitCount,
+		&updatedPlan.Name,
+		&updatedPlan.CreatedAt,
+		&updatedPlan.IsActive,
+		&updatedPlan.IsWeekly,
+		&updatedPlan.IsMondayRest,
+		&updatedPlan.IsTuesdayRest,
+		&updatedPlan.IsWednesdayRest,
+		&updatedPlan.IsThursdayRest,
+		&updatedPlan.IsFridayRest,
+		&updatedPlan.IsSaturdayRest,
+		&updatedPlan.IsSundayRest,
+	)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	return updatedPlan, nil
 }

@@ -124,10 +124,34 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
           event.planID,
           {"isActive": event.value},
         );
+
         if (response.isSuccessful) {
-          emit(PlanPatched());
-        } else {
-          emit(PlanError(error: response.error.toString()));
+          if (response.body != "null") {
+            final Map<String, dynamic> jsonMap = response.body;
+
+            final Plan plan = Plan(
+              id: jsonMap['id'],
+              userID: jsonMap['userAccountID'],
+              splitCount: jsonMap['splitCount'],
+              name: jsonMap['name'],
+              createdAt: DateTime.parse(jsonMap['createdAt']),
+              isActive: jsonMap['isActive'],
+              isWeekly: jsonMap['isWeekly'],
+              restList: [
+                jsonMap['isMondayRest'],
+                jsonMap['isTuesdayRest'],
+                jsonMap['isWednesdayRest'],
+                jsonMap['isThursdayRest'],
+                jsonMap['isFridayRest'],
+                jsonMap['isSaturdayRest'],
+                jsonMap['isSundayRest'],
+              ],
+            );
+
+            emit(PlanLoaded(plan: plan));
+          } else {
+            emit(PlanLoaded(plan: null));
+          }
         }
         break;
 

@@ -15,7 +15,7 @@ type PlanStore interface {
 	GetActivePlan(userID int) (types.Plan, error)
 	GetPlansByUserID(userID int) ([]types.Plan, error)
 	DeletePlan(userID int, planID int) error
-	PatchPlan(userID int, planID int, columnName string, value any) error
+	PatchPlan(userID int, planID int, columnName string, value any) (types.Plan, error)
 }
 
 type service struct {
@@ -201,12 +201,21 @@ func (s service) patchPlan() http.HandlerFunc {
 		}
 
 		if isActive, ok := requestBody["isActive"].(bool); ok {
-			err := s.planStore.PatchPlan(claims.UserAccountID, planID, "is_active", isActive)
+			plan, err := s.planStore.PatchPlan(claims.UserAccountID, planID, "is_active", isActive)
 			if err != nil {
-				http.Error(w, "Failed to patch name", http.StatusInternalServerError)
+				http.Error(w, "Failed to patch plan is active", http.StatusInternalServerError)
 				println(err.Error())
 				return
 			}
+
+			response, err := json.Marshal(plan)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+
 		}
 
 		w.Header().Set("Content-Type", "application/json")

@@ -31,8 +31,6 @@ class PlansLoaded extends PlanState {
 
 class PlanPatching extends PlanState {}
 
-class PlanPatched extends PlanState {}
-
 class PlanDeleting extends PlanState {}
 
 class PlanDeleted extends PlanState {}
