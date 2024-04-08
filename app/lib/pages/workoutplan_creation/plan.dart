@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
+import 'package:app/hive/exercise.dart';
 import 'package:app/hive/plan.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
@@ -32,9 +35,11 @@ class _PlanPageState extends State<PlanPage> {
           return Scaffold(
             backgroundColor: AppSettings.background,
             appBar: buildAppBar(state.plan),
-            body: Center(
-              child: Text(state.plan != null ? "Plan: ${state.plan!.name}" : "You don't have an active plan right now."),
-            ),
+            body: state.plan != null
+                ? buildPlanView(state.plan!)
+                : const Center(
+                    child: Text("You don't have an active plan right now."),
+                  ),
           );
         } else {
           return Scaffold(
@@ -43,6 +48,140 @@ class _PlanPageState extends State<PlanPage> {
           );
         }
       },
+    );
+  }
+
+  Widget buildPlanView(Plan plan) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Standard Details
+          buildGeneral(),
+          SizedBox(height: AppSettings.screenHeight * 0.05),
+          buildSplit(),
+          SizedBox(height: AppSettings.screenHeight * 0.05),
+          buildSplit(),
+          SizedBox(height: AppSettings.screenHeight * 0.05),
+          buildSplit(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildGeneral() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'General',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: AppSettings.fontSizeTitleSmall,
+                ),
+              ),
+            ],
+          ),
+        ),
+        DataTable(
+          dataRowMinHeight: AppSettings.screenHeight * 0.02,
+          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
+          headingRowHeight: AppSettings.screenHeight * 0.02,
+          columns: const [
+            DataColumn(label: Text('')),
+            DataColumn(label: Text('')),
+          ],
+          rows: [
+            DataRow(
+              cells: [
+                DataCell(const Text("Split"), onTap: () => debugPrint("asdad")),
+                const DataCell(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text("Push Pull Beine"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            DataRow(
+              cells: [
+                DataCell(const Text("Blocked days"), onTap: () => debugPrint("asdad")),
+                const DataCell(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text("Tuesday, Friday"),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget buildSplit() {
+    List<Exercise> exercises = [
+      Exercise(id: 1, name: "Benchpress", typeID: 1),
+      Exercise(id: 2, name: "Squats", typeID: 2),
+      Exercise(id: 3, name: "Deadlifts", typeID: 3),
+      Exercise(id: 4, name: "Pull-ups", typeID: 4),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                exercises[Random().nextInt(3)].name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: AppSettings.fontSizeTitleSmall,
+                ),
+              ),
+            ],
+          ),
+        ),
+        DataTable(
+          dataRowMinHeight: AppSettings.screenHeight * 0.02,
+          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
+          columns: const [
+            DataColumn(label: Text('Exercise')),
+            DataColumn(label: Text('Repetitions')),
+          ],
+          rows: exercises
+              .map<DataRow>((exercise) => DataRow(
+                    cells: [
+                      DataCell(Text("${exercise.id}. ${exercise.name}"), onTap: () => debugPrint("asdad")),
+                      const DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("50"),
+                            Text("60"),
+                            Text("70"),
+                            SizedBox(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ))
+              .toList(),
+        ),
+      ],
     );
   }
 
