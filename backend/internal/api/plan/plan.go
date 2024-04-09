@@ -16,6 +16,7 @@ type PlanStore interface {
 	GetPlansByUserID(userID int) ([]types.Plan, error)
 	DeletePlan(userID int, planID int) error
 	PatchPlan(userID int, planID int, columnName string, value any) (types.Plan, error)
+	GetPlanOverview(userID int) (types.PlanOverview, error)
 }
 
 type service struct {
@@ -35,6 +36,7 @@ func NewService(planStore PlanStore) http.Handler {
 	r.Get("/", s.getPlans())
 	r.Delete("/{planID}", s.deletePlan())
 	r.Patch("/{planID}", s.patchPlan())
+	r.Get("/overview", s.getPlanOverview())
 
 	return s
 }
@@ -216,6 +218,45 @@ func (s service) patchPlan() http.HandlerFunc {
 			}
 			w.Write(response)
 
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) getPlanOverview() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		planOverview, err := s.planStore.GetPlanOverview(claims.UserAccountID)
+		if err != nil {
+			http.Error(w, "Failed to get Plan Overview", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		if planOverview.Plan.ID != 0 {
+			response, err := json.Marshal(planOverview)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+
+		} else {
+			response, err := json.Marshal(nil)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
 		}
 
 		w.Header().Set("Content-Type", "application/json")

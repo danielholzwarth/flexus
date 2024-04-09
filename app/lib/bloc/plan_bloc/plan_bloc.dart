@@ -1,7 +1,12 @@
 import 'package:app/api/plan_service.dart';
+import 'package:app/hive/exercise.dart';
 import 'package:app/hive/plan.dart';
+import 'package:app/hive/plan_overview.dart';
+import 'package:app/hive/split.dart';
+import 'package:app/hive/split_overview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 part 'plan_event.dart';
@@ -17,6 +22,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     on<GetPlans>(_onGetPlans);
     on<PatchPlan>(_onPatchPlan);
     on<DeletePlan>(_onDeletePlan);
+    on<GetPlanOverview>(_onGetPlanOverview);
   }
 
   void _onPostPlan(PostPlan event, Emitter<PlanState> emit) async {
@@ -27,6 +33,8 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
       "name": event.planName,
       "isWeekly": event.isWeekly,
       "restList": event.isWeekly ? event.weeklyRestList : [false, false, false, false, false, false, false],
+      "splits": event.splits,
+      "exerciseIDs": event.exercises,
     });
 
     if (response.isSuccessful) {
@@ -167,6 +175,70 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     final response = await _planService.deletePlan(userBox.get("flexusjwt"), event.planID);
     if (response.isSuccessful) {
       emit(PlanLoaded(plan: null));
+    } else {
+      emit(PlanError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetPlanOverview(GetPlanOverview event, Emitter<PlanState> emit) async {
+    emit(PlanOverviewLoading());
+
+    final response = await _planService.getPlanOverview(userBox.get("flexusjwt"));
+    printInfo(info: response.bodyString);
+
+    if (response.isSuccessful) {
+      if (response.body != "null") {
+        final Map<String, dynamic> jsonMap = response.body;
+
+        final Plan plan = Plan(
+          id: jsonMap['plan']['id'],
+          userID: jsonMap['plan']['userAccountID'],
+          splitCount: jsonMap['plan']['splitCount'],
+          name: jsonMap['plan']['name'],
+          createdAt: DateTime.parse(jsonMap['plan']['createdAt']),
+          isActive: jsonMap['plan']['isActive'],
+          isWeekly: jsonMap['plan']['isWeekly'],
+          restList: [
+            jsonMap['plan']['isMondayRest'],
+            jsonMap['plan']['isTuesdayRest'],
+            jsonMap['plan']['isWednesdayRest'],
+            jsonMap['plan']['isThursdayRest'],
+            jsonMap['plan']['isFridayRest'],
+            jsonMap['plan']['isSaturdayRest'],
+            jsonMap['plan']['isSundayRest'],
+          ],
+        );
+
+        final List<dynamic> splitOverviewsJson = jsonMap['splitOverviews'];
+        final List<SplitOverview> splitOverviews = splitOverviewsJson.map((splitJson) {
+          return SplitOverview(
+            split: Split(
+              id: splitJson['split']['id'],
+              planID: splitJson['split']['planID'],
+              name: splitJson['split']['name'],
+              orderInPlan: splitJson['split']['orderInPlan'],
+            ),
+            exercises: splitJson['exercises'] != null
+                ? List<Exercise>.from(splitJson['exercises'].map((exerciseJson) {
+                    return Exercise(
+                      id: exerciseJson['id'],
+                      creatorID: exerciseJson['creatorID'],
+                      name: exerciseJson['name'],
+                      typeID: exerciseJson['typeID'],
+                    );
+                  }))
+                : [],
+            repetitions: [],
+            //splitJson['repetitions'] != null ? List<String>.from(splitJson['repetitions'].map((repetitionJson) => List<String>.from(repetitionJson))): [],
+          );
+        }).toList();
+
+        final PlanOverview planOverview = PlanOverview(plan: plan, splitOverviews: splitOverviews);
+
+        emit(PlanOverviewLoaded(planOverview: planOverview));
+      } else {
+        emit(PlanOverviewLoaded(planOverview: null));
+      }
     } else {
       emit(PlanError(error: response.error.toString()));
     }

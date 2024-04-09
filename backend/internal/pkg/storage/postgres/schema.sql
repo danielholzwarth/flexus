@@ -151,9 +151,7 @@ CREATE TABLE set (
     workout_id BIGINT NOT NULL REFERENCES workout(id) ON DELETE CASCADE ON UPDATE CASCADE,
     exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
     order_number INTEGER NOT NULL,
-    repetitions INTEGER,
-    weight DECIMAL,
-    duration DECIMAL
+    measurement VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE best_lifts (
@@ -286,6 +284,14 @@ Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
 
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 1);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 2);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (2, 2);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (2, 3);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 1);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 3);
+Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 4);
+
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (1, 1, 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (1, null, 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (1, 2, 3, '2024-01-09 08:15:00', '2024-01-09 09:20:00', 'false', 'false', 'false');
@@ -320,10 +326,10 @@ INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", 
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (14, 2, null, now(), null, 'false', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (17, 2, null, now(), null, 'false', 'false', 'false');
 
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (1, 1, 1, 3, 215.5, null);
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (4, 2, 1, null, null, 203.3);
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 3, 1, 8, 125.5, null);
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "weight", "duration") VALUES (7, 2, 2, null, null, 192.8);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (1, 1, 1, '3 x 215.5kg');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (4, 2, 1, '203.3s');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 3, 1, '8 x 125.5kg');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 2, 2, '192.8s');
 
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 2, 2);

@@ -35,6 +35,16 @@ class PlanDeleting extends PlanState {}
 
 class PlanDeleted extends PlanState {}
 
+class PlanOverviewLoading extends PlanState {}
+
+class PlanOverviewLoaded extends PlanState {
+  final PlanOverview? planOverview;
+
+  PlanOverviewLoaded({
+    required this.planOverview,
+  });
+}
+
 class PlanError extends PlanState {
   final String error;
 

@@ -9,6 +9,9 @@ import 'package:app/hive/gym.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/notification.dart';
 import 'package:app/hive/plan.dart';
+import 'package:app/hive/plan_overview.dart';
+import 'package:app/hive/split.dart';
+import 'package:app/hive/split_overview.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/hive/user_account_gym_overview.dart';
 import 'package:app/hive/user_list.dart';
@@ -65,20 +68,23 @@ Future<void> initializeHive() async {
   await Hive.initFlutter();
 
   try {
-    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(UserAccountAdapter()); //0
-    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(UserSettingsAdapter()); //1
-    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(WorkoutAdapter()); //2
-    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(WorkoutOverviewAdapter()); //3
-    if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(FriendshipAdapter()); //4
-    if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(BestLiftAdapter()); //5
-    if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(BestLiftOverviewAdapter()); //6
-    if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(GymAdapter()); //7
-    if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(GymOverviewAdapter()); //8
-    if (!Hive.isAdapterRegistered(9)) Hive.registerAdapter(UserAccountGymOverviewAdapter()); //9
-    if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(ExerciseAdapter()); //10
-    if (!Hive.isAdapterRegistered(11)) Hive.registerAdapter(UserListAdapter()); //11
-    if (!Hive.isAdapterRegistered(12)) Hive.registerAdapter(PlanAdapter()); //12
-    if (!Hive.isAdapterRegistered(13)) Hive.registerAdapter(NotificationAdapter()); //13
+    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(UserAccountAdapter());
+    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(UserSettingsAdapter());
+    if (!Hive.isAdapterRegistered(2)) Hive.registerAdapter(WorkoutAdapter());
+    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(WorkoutOverviewAdapter());
+    if (!Hive.isAdapterRegistered(4)) Hive.registerAdapter(FriendshipAdapter());
+    if (!Hive.isAdapterRegistered(5)) Hive.registerAdapter(BestLiftAdapter());
+    if (!Hive.isAdapterRegistered(6)) Hive.registerAdapter(BestLiftOverviewAdapter());
+    if (!Hive.isAdapterRegistered(7)) Hive.registerAdapter(GymAdapter());
+    if (!Hive.isAdapterRegistered(8)) Hive.registerAdapter(GymOverviewAdapter());
+    if (!Hive.isAdapterRegistered(9)) Hive.registerAdapter(UserAccountGymOverviewAdapter());
+    if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(ExerciseAdapter());
+    if (!Hive.isAdapterRegistered(11)) Hive.registerAdapter(UserListAdapter());
+    if (!Hive.isAdapterRegistered(12)) Hive.registerAdapter(PlanAdapter());
+    if (!Hive.isAdapterRegistered(13)) Hive.registerAdapter(NotificationAdapter());
+    if (!Hive.isAdapterRegistered(14)) Hive.registerAdapter(PlanOverviewAdapter());
+    if (!Hive.isAdapterRegistered(15)) Hive.registerAdapter(SplitAdapter());
+    if (!Hive.isAdapterRegistered(16)) Hive.registerAdapter(SplitOverviewAdapter());
 
     if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {

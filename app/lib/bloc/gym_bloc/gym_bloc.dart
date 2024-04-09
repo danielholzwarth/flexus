@@ -99,16 +99,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
         gymOverviews = jsonList.map((json) {
           List<UserAccount> userAccounts = [];
           if (json['currentUserAccounts'] != null) {
-            userAccounts = List<UserAccount>.from(json['currentUserAccounts'].map((accountJson) {
-              return UserAccount(
-                id: accountJson['userAccountID'],
-                username: accountJson['username'],
-                name: accountJson['name'],
-                createdAt: DateTime.parse(accountJson['createdAt']),
-                level: accountJson['level'],
-                profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
-              );
-            }));
+            userAccounts = List<UserAccount>.from(
+              json['currentUserAccounts'].map(
+                (accountJson) {
+                  return UserAccount(
+                    id: accountJson['userAccountID'],
+                    username: accountJson['username'],
+                    name: accountJson['name'],
+                    createdAt: DateTime.parse(accountJson['createdAt']),
+                    level: accountJson['level'],
+                    profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
+                  );
+                },
+              ),
+            );
           }
           return GymOverview(
             gym: Gym(

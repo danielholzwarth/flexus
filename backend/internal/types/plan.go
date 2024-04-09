@@ -1,6 +1,8 @@
 package types
 
-import "time"
+import (
+	"time"
+)
 
 type Plan struct {
 	ID              int       `json:"id"`
@@ -20,9 +22,16 @@ type Plan struct {
 }
 
 type CreatePlan struct {
-	UserAccountID int    `json:"userAccountID"`
-	SplitCount    int    `json:"splitCount"`
-	Name          string `json:"name"`
-	IsWeekly      bool   `json:"isWeekly"`
-	RestList      []bool `json:"restList"`
+	UserAccountID int      `json:"userAccountID"`
+	SplitCount    int      `json:"splitCount"`
+	Name          string   `json:"name"`
+	IsWeekly      bool     `json:"isWeekly"`
+	RestList      []bool   `json:"restList"`
+	Splits        []string `json:"splits"`
+	ExerciseIDs   [][]int  `json:"exerciseIDs"`
+}
+
+type PlanOverview struct {
+	Plan           Plan            `json:"plan"`
+	SplitOverviews []SplitOverview `json:"splitOverviews"`
 }

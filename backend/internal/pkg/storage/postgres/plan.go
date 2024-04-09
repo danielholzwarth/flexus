@@ -15,20 +15,56 @@ func (db *DB) CreatePlan(createPlan types.CreatePlan) error {
 	_, err = tx.Exec(`
 		UPDATE plan
 		SET is_active = false
-		WHERE user_id = $1 AND is_active = true
+		WHERE user_id = $1 AND is_active = true;
 	`, createPlan.UserAccountID)
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	_, err = tx.Exec(`
+	var planID int
+	err = tx.QueryRow(`
 		INSERT INTO plan (user_id, split_count, name, created_at, is_active, is_weekly, is_monday_rest, is_tuesday_rest, is_wednesday_rest, is_thursday_rest, is_friday_rest, is_saturday_rest, is_sunday_rest)
 		VALUES ($1, $2, $3, NOW(), true, $4, $5, $6, $7, $8, $9, $10, $11)
-	`, createPlan.UserAccountID, createPlan.SplitCount, createPlan.Name, createPlan.IsWeekly, createPlan.RestList[0], createPlan.RestList[1], createPlan.RestList[2], createPlan.RestList[3], createPlan.RestList[4], createPlan.RestList[5], createPlan.RestList[6])
+		RETURNING id;
+	`, createPlan.UserAccountID, createPlan.SplitCount, createPlan.Name, createPlan.IsWeekly, createPlan.RestList[0], createPlan.RestList[1], createPlan.RestList[2], createPlan.RestList[3], createPlan.RestList[4], createPlan.RestList[5], createPlan.RestList[6]).Scan(&planID)
 	if err != nil {
 		tx.Rollback()
 		return err
+	}
+
+	for i := 0; i < len(createPlan.Splits); i++ {
+		var splitID int
+		err := tx.QueryRow(`
+			INSERT INTO split (plan_id, name, order_in_plan)
+			VALUES ($1, $2, $3)
+			RETURNING id;
+		`, planID, createPlan.Splits[i], i+1).Scan(&splitID)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+
+		if createPlan.ExerciseIDs[i] != nil {
+			if len(createPlan.ExerciseIDs[i]) > 0 {
+				splitExerciseIDs := createPlan.ExerciseIDs[i]
+
+				for j := 0; j < len(splitExerciseIDs); j++ {
+					//-1 equals no pre-defined exercises in this split
+					if splitExerciseIDs[j] != -1 {
+						_, err = tx.Exec(`
+						INSERT INTO exercise_split (split_id, exercise_id)
+						VALUES ($1, $2);
+					`, splitID, splitExerciseIDs[j])
+						if err != nil {
+							tx.Rollback()
+							return err
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -191,4 +227,135 @@ func (db *DB) PatchPlan(userID int, planID int, columnName string, value interfa
 	}
 
 	return updatedPlan, nil
+}
+
+func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
+	var planOverview types.PlanOverview
+	var plan types.Plan
+
+	//Get Plan
+	plan, err := db.GetActivePlan(userID)
+	if err != nil {
+		return types.PlanOverview{}, nil
+	}
+	planOverview.Plan = plan
+
+	query := `
+		SELECT *
+		FROM split 
+		WHERE plan_id = $1;
+	`
+
+	rows, err := db.pool.Query(query, plan.ID)
+	if err != nil {
+		return types.PlanOverview{}, err
+	}
+	defer rows.Close()
+
+	var splitOverviews []types.SplitOverview
+	for rows.Next() {
+		var splitOverview types.SplitOverview
+		var split types.Split
+		var exercises []types.Exercise
+		var splitRepetitions []string
+
+		err := rows.Scan(
+			&split.ID,
+			&split.PlanID,
+			&split.Name,
+			&split.OrderInPlan,
+		)
+		if err != nil {
+			return types.PlanOverview{}, err
+		}
+		splitOverview.Split = split
+
+		exerciseQuery := `
+			SELECT *
+			FROM exercise
+			INNER JOIN exercise_split ON split_id = $1 AND exercise_id = exercise.id;
+		`
+
+		exerciseRows, err := db.pool.Query(exerciseQuery, split.ID)
+		if err != nil {
+			return types.PlanOverview{}, err
+		}
+		defer exerciseRows.Close()
+
+		//Need somehow 7 parameters but does not use it?!
+		var anything any
+		for exerciseRows.Next() {
+			var exercise types.Exercise
+			err := exerciseRows.Scan(
+				&exercise.ID,
+				&exercise.CreatorID,
+				&exercise.Name,
+				&exercise.TypeID,
+				&anything,
+				&anything,
+				&anything,
+			)
+			if err != nil {
+				return types.PlanOverview{}, err
+			}
+
+			exercises = append(exercises, exercise)
+		}
+
+		if err := exerciseRows.Err(); err != nil {
+			return types.PlanOverview{}, err
+		}
+
+		splitOverview.Exercises = append(splitOverview.Exercises, exercises...)
+
+		repetitionQuery := `
+			SELECT measurement
+			FROM set
+			INNER JOIN workout ON set.workout_id = workout.id
+			WHERE workout.user_id = $1
+			AND set.exercise_id = $2
+			AND workout.id = (
+				SELECT MAX(workout_id) 
+				FROM set
+				INNER JOIN workout ON set.workout_id = workout.id
+				WHERE workout.user_id = $1
+				AND set.exercise_id = $2
+			);
+		`
+		for i := 0; i < len(exercises); i++ {
+			measurementRows, err := db.pool.Query(repetitionQuery, userID, exercises[i].ID)
+			if err != nil {
+				return types.PlanOverview{}, err
+			}
+			defer measurementRows.Close()
+
+			found := measurementRows.Next()
+			if !found {
+				splitRepetitions = append(splitRepetitions, "none")
+			} else {
+				var measurement string
+				err := measurementRows.Scan(&measurement)
+				if err != nil {
+					return types.PlanOverview{}, err
+				}
+				splitRepetitions = append(splitRepetitions, measurement)
+			}
+
+			if err := measurementRows.Err(); err != nil {
+				return types.PlanOverview{}, err
+			}
+		}
+
+		splitOverview.Repetitions = append(splitOverview.Repetitions, splitRepetitions)
+
+		splitOverviews = append(splitOverviews, splitOverview)
+	}
+
+	if err := rows.Err(); err != nil {
+		return types.PlanOverview{}, err
+	}
+
+	planOverview.SplitOverviews = splitOverviews
+
+	return planOverview, nil
 }

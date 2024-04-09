@@ -34,6 +34,11 @@ abstract class PlanService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
+  @Get(path: '/overview')
+  Future<Response> getPlanOverview(
+    @Header('flexusjwt') String flexusJWTString,
+  );
+
   static PlanService create() {
     final client = ChopperClient(
         baseUrl: AppSettings.useIPv4 ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),

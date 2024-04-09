@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
-import 'package:app/hive/exercise.dart';
 import 'package:app/hive/plan.dart';
+import 'package:app/hive/split_overview.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
@@ -19,6 +17,7 @@ class PlanPage extends StatefulWidget {
 
 class _PlanPageState extends State<PlanPage> {
   PlanBloc planBloc = PlanBloc();
+  PlanBloc planOverviewBloc = PlanBloc();
 
   @override
   void initState() {
@@ -28,8 +27,13 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocConsumer(
       bloc: planBloc,
+      listener: (context, state) {
+        if (state is PlanLoaded && state.plan != null) {
+          planOverviewBloc.add(GetPlanOverview());
+        }
+      },
       builder: (context, state) {
         if (state is PlanLoaded) {
           return Scaffold(
@@ -52,20 +56,37 @@ class _PlanPageState extends State<PlanPage> {
   }
 
   Widget buildPlanView(Plan plan) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Standard Details
-          buildGeneral(),
-          SizedBox(height: AppSettings.screenHeight * 0.05),
-          buildSplit(),
-          SizedBox(height: AppSettings.screenHeight * 0.05),
-          buildSplit(),
-          SizedBox(height: AppSettings.screenHeight * 0.05),
-          buildSplit(),
-        ],
-      ),
+    return BlocBuilder(
+      bloc: planOverviewBloc,
+      builder: (context, state) {
+        if (state is PlanOverviewLoaded) {
+          if (state.planOverview != null) {
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildGeneral(),
+                  SizedBox(height: AppSettings.screenHeight * 0.05),
+                  for (int index = 0; index < state.planOverview!.splitOverviews.length; index++)
+                    Column(
+                      children: [
+                        buildSplit(state.planOverview!.splitOverviews[index]),
+                        SizedBox(height: AppSettings.screenHeight * 0.05),
+                      ],
+                    ),
+                ],
+              ),
+            );
+          } else {
+            return const Text("Error Loading Plan Details");
+          }
+        } else {
+          return Scaffold(
+            backgroundColor: AppSettings.background,
+            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+          );
+        }
+      },
     );
   }
 
@@ -129,14 +150,7 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildSplit() {
-    List<Exercise> exercises = [
-      Exercise(id: 1, name: "Benchpress", typeID: 1),
-      Exercise(id: 2, name: "Squats", typeID: 2),
-      Exercise(id: 3, name: "Deadlifts", typeID: 3),
-      Exercise(id: 4, name: "Pull-ups", typeID: 4),
-    ];
-
+  Widget buildSplit(SplitOverview splitOverview) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -146,7 +160,7 @@ class _PlanPageState extends State<PlanPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                exercises[Random().nextInt(3)].name,
+                splitOverview.split.name,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: AppSettings.fontSizeTitleSmall,
@@ -162,25 +176,29 @@ class _PlanPageState extends State<PlanPage> {
             DataColumn(label: Text('Exercise')),
             DataColumn(label: Text('Repetitions')),
           ],
-          rows: exercises
-              .map<DataRow>((exercise) => DataRow(
-                    cells: [
-                      DataCell(Text("${exercise.id}. ${exercise.name}"), onTap: () => debugPrint("asdad")),
-                      const DataCell(
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("50"),
-                            Text("60"),
-                            Text("70"),
-                            SizedBox(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ))
-              .toList(),
-        ),
+          rows: [
+            for (int index = 0; index < splitOverview.exercises.length; index++)
+              DataRow(
+                cells: [
+                  DataCell(Text("${index + 1}. ${splitOverview.exercises[index].name}"), onTap: () => debugPrint("asdad")),
+                  splitOverview.repetitions.isNotEmpty
+                      ? DataCell(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              for (int repetitionIndex = 0; repetitionIndex < splitOverview.repetitions[index].length; repetitionIndex++)
+                                Text(splitOverview.repetitions[index][repetitionIndex]),
+                              const SizedBox()
+                            ],
+                          ),
+                        )
+                      : const DataCell(
+                          Text("no data"),
+                        )
+                ],
+              ),
+          ],
+        )
       ],
     );
   }
