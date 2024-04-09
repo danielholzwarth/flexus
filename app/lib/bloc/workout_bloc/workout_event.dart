@@ -4,12 +4,14 @@ part of 'workout_bloc.dart';
 abstract class WorkoutEvent {}
 
 class PostWorkout extends WorkoutEvent {
-  final int gymID;
+  final int? gymID;
   final int? splitID;
+  final DateTime startTime;
 
   PostWorkout({
-    required this.gymID,
+    this.gymID,
     this.splitID,
+    required this.startTime,
   });
 }
 

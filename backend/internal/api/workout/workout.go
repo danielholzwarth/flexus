@@ -11,6 +11,7 @@ import (
 )
 
 type WorkoutStore interface {
+	PostWorkout(postWorkout types.PostWorkout) error
 	GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error)
 	PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error
 	DeleteWorkout(userAccountID int, workoutID int) error
@@ -29,6 +30,7 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 		workoutStore: workoutStore,
 	}
 
+	r.Post("/", s.createWorkout())
 	r.Get("/", s.getWorkoutOverviews())
 	r.Patch("/{workoutID}", s.patchWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
@@ -39,6 +41,42 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 
 func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
+}
+
+func (s service) createWorkout() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody types.PostWorkout
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		requestBody.UserAccountID = claims.UserAccountID
+
+		if requestBody.Starttime.IsZero() {
+			http.Error(w, "startTime is required", http.StatusBadRequest)
+			return
+		}
+
+		err := s.workoutStore.PostWorkout(requestBody)
+		if err != nil {
+			http.Error(w, "Failed to create Workout", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+	}
 }
 
 func (s service) getWorkoutOverviews() http.HandlerFunc {

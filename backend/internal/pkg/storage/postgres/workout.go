@@ -8,6 +8,61 @@ import (
 	"strings"
 )
 
+func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil || err != nil {
+			tx.Rollback()
+			if p != nil {
+				panic(p)
+			}
+		}
+	}()
+
+	query := `
+		SELECT id 
+		FROM workout 
+		WHERE user_id = $1 AND endtime IS NULL;
+	`
+
+	var existingWorkoutID int
+	err = tx.QueryRow(query, postWorkout.UserAccountID).Scan(&existingWorkoutID)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+
+	if existingWorkoutID != 0 {
+		_, err := tx.Exec("DELETE FROM workout WHERE id = $1", existingWorkoutID)
+		if err != nil {
+			return err
+		}
+	}
+
+	query = `
+		INSERT INTO workout (user_id, split_id, gym_id, starttime, is_archived, is_stared, is_pinned)
+		VALUES ($1, $2, $3, $4, FALSE, FALSE, FALSE);
+	`
+
+	_, err = tx.Exec(
+		query,
+		postWorkout.UserAccountID,
+		postWorkout.PlanID,
+		postWorkout.SplitID,
+		postWorkout.Starttime)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error) {
 	query := `
 		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name

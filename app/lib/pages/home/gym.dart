@@ -1,5 +1,6 @@
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
+import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/add_friend.dart';
@@ -15,6 +16,7 @@ import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -29,6 +31,7 @@ class _GymPageState extends State<GymPage> {
   final ScrollController scrollController = ScrollController();
   final userBox = Hive.box('userBox');
   final GymBloc gymBloc = GymBloc();
+  final WorkoutBloc workoutBloc = WorkoutBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +285,15 @@ class _GymPageState extends State<GymPage> {
                               userBox.put("recentGymTimeHour", selectedTime.hour);
                               userBox.put("recentGymTimeMinute", selectedTime.minute);
 
-                              //SEND NOTIFICATION
+                              DateTime startTime = DateTime.now().copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+
+                              GymOverview? pickedGymOverview = gymOverviews.firstWhereOrNull((element) => element.gym.name == selectedItem);
+                              if (pickedGymOverview != null) {
+                                workoutBloc.add(PostWorkout(gymID: pickedGymOverview.gym.id, startTime: startTime));
+                              } else {
+                                workoutBloc.add(PostWorkout(gymID: null, startTime: startTime));
+                              }
+
                               Navigator.pop(context);
                             },
                             text: "Send Notification",

@@ -5,6 +5,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 part 'workout_event.dart';
 part 'workout_state.dart';
@@ -24,9 +25,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onPostWorkout(PostWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutCreating());
 
+    final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
+    final String formattedStartTime = "${formatter.format(event.startTime)}Z";
+
     final response = await _workoutService.postWorkout(userBox.get("flexusjwt"), {
       "gymID": event.gymID,
       "splitID": event.splitID,
+      "starttime": formattedStartTime,
     });
 
     if (response.isSuccessful) {
