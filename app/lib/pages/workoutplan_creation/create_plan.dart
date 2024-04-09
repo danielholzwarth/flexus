@@ -209,27 +209,46 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
 
                   case 4:
                     List<bool> boolList = [];
-
-                    for (int i = 0; i < weeklyAcceptedData.length; i++) {
-                      boolList.add(weeklyAcceptedData[i].isEmpty);
-                    }
-
                     List<String> splitNames = [];
                     List<List<int>> exerciseIDs = [];
 
-                    for (int i = 0; i < splitControllers.length; i++) {
-                      splitNames.add(splitControllers[i].text);
-                      if (exerciseList[splitControllers[i].text] != null) {
-                        List<Exercise> splitExercises = exerciseList[splitControllers[i].text]!;
-                        List<int> splitExerciseIDs = [];
+                    if (isWeeklyRepetetive) {
+                      for (int i = 0; i < weeklyAcceptedData.length; i++) {
+                        boolList.add(weeklyAcceptedData[i].isEmpty);
+                      }
 
-                        for (int j = 0; j < splitExercises.length; j++) {
-                          splitExerciseIDs.add(splitExercises[j].id);
+                      for (int i = 0; i < weeklyAcceptedData.length; i++) {
+                        if (weeklyAcceptedData[i].isEmpty) {
+                          splitNames.add("Rest");
+                          exerciseIDs.add([-1]);
+                        } else {
+                          splitNames.add(weeklyAcceptedData[i]);
+                          List<Exercise> splitExercises =
+                              exerciseList[splitControllers.firstWhere((element) => element.text == weeklyAcceptedData[i]).text] ?? [];
+                          List<int> splitExerciseIDs = [];
+
+                          for (int j = 0; j < splitExercises.length; j++) {
+                            splitExerciseIDs.add(splitExercises[j].id);
+                          }
+
+                          exerciseIDs.add(splitExerciseIDs);
                         }
+                      }
+                    } else {
+                      for (int i = 0; i < splitControllers.length; i++) {
+                        splitNames.add(splitControllers[i].text);
+                        if (exerciseList[splitControllers[i].text] != null) {
+                          List<Exercise> splitExercises = exerciseList[splitControllers[i].text]!;
+                          List<int> splitExerciseIDs = [];
 
-                        exerciseIDs.add(splitExerciseIDs);
-                      } else {
-                        exerciseIDs.add([-1]);
+                          for (int j = 0; j < splitExercises.length; j++) {
+                            splitExerciseIDs.add(splitExercises[j].id);
+                          }
+
+                          exerciseIDs.add(splitExerciseIDs);
+                        } else {
+                          exerciseIDs.add([-1]);
+                        }
                       }
                     }
 

@@ -1,6 +1,6 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
 import 'package:app/hive/plan.dart';
-import 'package:app/hive/split_overview.dart';
+import 'package:app/hive/plan_overview.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
@@ -65,15 +65,9 @@ class _PlanPageState extends State<PlanPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  buildGeneral(),
+                  buildGeneral(state.planOverview!),
                   SizedBox(height: AppSettings.screenHeight * 0.05),
-                  for (int index = 0; index < state.planOverview!.splitOverviews.length; index++)
-                    Column(
-                      children: [
-                        buildSplit(state.planOverview!.splitOverviews[index]),
-                        SizedBox(height: AppSettings.screenHeight * 0.05),
-                      ],
-                    ),
+                  buildSplits(state.planOverview!),
                 ],
               ),
             );
@@ -90,7 +84,7 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildGeneral() {
+  Widget buildGeneral(PlanOverview planOverview) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -150,55 +144,77 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildSplit(SplitOverview splitOverview) {
+  Widget buildSplits(PlanOverview planOverview) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        for (int index = 0; index < planOverview.splitOverviews.length; index++)
+          Column(
             children: [
-              Text(
-                splitOverview.split.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: AppSettings.fontSizeTitleSmall,
-                ),
-              ),
-            ],
-          ),
-        ),
-        DataTable(
-          dataRowMinHeight: AppSettings.screenHeight * 0.02,
-          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
-          columns: const [
-            DataColumn(label: Text('Exercise')),
-            DataColumn(label: Text('Repetitions')),
-          ],
-          rows: [
-            for (int index = 0; index < splitOverview.exercises.length; index++)
-              DataRow(
-                cells: [
-                  DataCell(Text("${index + 1}. ${splitOverview.exercises[index].name}"), onTap: () => debugPrint("asdad")),
-                  splitOverview.repetitions.isNotEmpty
-                      ? DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              for (int repetitionIndex = 0; repetitionIndex < splitOverview.repetitions[index].length; repetitionIndex++)
-                                Text(splitOverview.repetitions[index][repetitionIndex]),
-                              const SizedBox()
-                            ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          planOverview.plan.isWeekly
+                              ? "${getWeekday(index)} - ${planOverview.splitOverviews[index].split.name}"
+                              : "${index + 1}. ${planOverview.splitOverviews[index].split.name}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: AppSettings.fontSizeTitleSmall,
                           ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  planOverview.splitOverviews[index].exercises.isNotEmpty
+                      ? DataTable(
+                          dataRowMinHeight: AppSettings.screenHeight * 0.02,
+                          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
+                          columns: const [
+                            DataColumn(label: Text('Exercise')),
+                            DataColumn(label: Text('Repetitions')),
+                          ],
+                          rows: [
+                            for (int index = 0; index < planOverview.splitOverviews[index].exercises.length; index++)
+                              DataRow(
+                                cells: [
+                                  DataCell(Text("${index + 1}. ${planOverview.splitOverviews[index].exercises[index].name}"),
+                                      onTap: () => debugPrint("asdad")),
+                                  planOverview.splitOverviews[index].repetitions.isNotEmpty
+                                      ? DataCell(
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              for (int repetitionIndex = 0;
+                                                  repetitionIndex < planOverview.splitOverviews[index].repetitions[index].length;
+                                                  repetitionIndex++)
+                                                Text(planOverview.splitOverviews[index].repetitions[index][repetitionIndex]),
+                                              const SizedBox()
+                                            ],
+                                          ),
+                                        )
+                                      : const DataCell(
+                                          Text("no data"),
+                                        )
+                                ],
+                              ),
+                          ],
                         )
-                      : const DataCell(
-                          Text("no data"),
-                        )
+                      : planOverview.splitOverviews[index].split.name != "Rest"
+                          ? Padding(
+                              padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05, top: AppSettings.screenHeight * 0.01),
+                              child: const Text("No default exercises selected"),
+                            )
+                          : SizedBox(height: AppSettings.screenHeight * 0.02),
                 ],
               ),
-          ],
-        )
+              SizedBox(height: AppSettings.screenHeight * 0.05),
+            ],
+          ),
       ],
     );
   }
@@ -270,4 +286,9 @@ class _PlanPageState extends State<PlanPage> {
       ],
     );
   }
+}
+
+String getWeekday(int index) {
+  final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  return weekdays[index % 7];
 }
