@@ -176,9 +176,30 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         ),
                       );
                     } else {
-                      setState(() {
-                        currentStep++;
-                      });
+                      Set<String> uniqueTexts = {};
+                      bool hasDuplicates = false;
+                      for (var controller in splitControllers) {
+                        if (!uniqueTexts.add(controller.text)) {
+                          hasDuplicates = true;
+                          break;
+                        }
+                      }
+
+                      if (hasDuplicates) {
+                        // Handle duplicate case
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Center(
+                              child: Text("Duplicate texts are not allowed."),
+                            ),
+                          ),
+                        );
+                      } else {
+                        setState(() {
+                          currentStep++;
+                        });
+                      }
                     }
 
                   case 3:
