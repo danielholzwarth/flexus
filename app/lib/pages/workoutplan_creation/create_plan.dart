@@ -1,5 +1,5 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
-import 'package:app/hive/exercise.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';

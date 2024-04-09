@@ -1,4 +1,4 @@
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/scan_qr.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';

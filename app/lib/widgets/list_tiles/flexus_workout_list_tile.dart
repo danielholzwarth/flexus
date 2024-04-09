@@ -1,6 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
-import 'package:app/hive/workout.dart';
-import 'package:app/hive/workout_overview.dart';
+import 'package:app/hive/workout/workout.dart';
+import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/workout_documentation/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';

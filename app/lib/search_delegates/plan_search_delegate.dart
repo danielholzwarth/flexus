@@ -1,5 +1,5 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
-import 'package:app/hive/plan.dart';
+import 'package:app/hive/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_plan_list_tile.dart';

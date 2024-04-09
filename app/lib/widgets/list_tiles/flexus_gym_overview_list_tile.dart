@@ -1,7 +1,7 @@
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
-import 'package:app/hive/gym_overview.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/gym/gym_overview.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';

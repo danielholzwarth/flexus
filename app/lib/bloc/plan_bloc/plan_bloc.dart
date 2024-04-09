@@ -1,9 +1,9 @@
 import 'package:app/api/plan/plan_service.dart';
-import 'package:app/hive/exercise.dart';
-import 'package:app/hive/plan.dart';
-import 'package:app/hive/plan_overview.dart';
-import 'package:app/hive/split.dart';
-import 'package:app/hive/split_overview.dart';
+import 'package:app/hive/exercise/exercise.dart';
+import 'package:app/hive/plan/plan.dart';
+import 'package:app/hive/plan/plan_overview.dart';
+import 'package:app/hive/split/split.dart';
+import 'package:app/hive/split/split_overview.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,5 +1,5 @@
 import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
-import 'package:app/hive/gym.dart';
+import 'package:app/hive/gym/gym.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

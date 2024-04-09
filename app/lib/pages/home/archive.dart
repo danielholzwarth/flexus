@@ -1,6 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
-import 'package:app/hive/workout.dart';
-import 'package:app/hive/workout_overview.dart';
+import 'package:app/hive/workout/workout.dart';
+import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';

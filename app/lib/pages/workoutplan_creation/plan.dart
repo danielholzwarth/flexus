@@ -1,6 +1,6 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
-import 'package:app/hive/plan.dart';
-import 'package:app/hive/plan_overview.dart';
+import 'package:app/hive/plan/plan.dart';
+import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';

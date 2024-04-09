@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:app/api/gym/gym_service.dart';
-import 'package:app/hive/gym.dart';
-import 'package:app/hive/gym_overview.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/gym/gym.dart';
+import 'package:app/hive/gym/gym_overview.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

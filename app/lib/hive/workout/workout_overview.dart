@@ -1,4 +1,4 @@
-import 'package:app/hive/workout.dart';
+import 'package:app/hive/workout/workout.dart';
 import 'package:hive/hive.dart';
 
 part 'workout_overview.g.dart';

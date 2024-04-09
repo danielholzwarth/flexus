@@ -1,7 +1,7 @@
 import 'package:app/api/user_account/user_account_service.dart';
 import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/api/workout/workout_service.dart';
-import 'package:app/hive/workout_overview.dart';
+import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';

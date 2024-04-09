@@ -1,8 +1,8 @@
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
-import 'package:app/hive/user_account.dart';
-import 'package:app/hive/workout.dart';
-import 'package:app/hive/workout_overview.dart';
+import 'package:app/hive/user_account/user_account.dart';
+import 'package:app/hive/workout/workout.dart';
+import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/home/archive.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/pages/sign_in/login.dart';

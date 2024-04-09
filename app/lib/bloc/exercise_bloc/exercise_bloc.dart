@@ -1,5 +1,5 @@
 import 'package:app/api/exercise/exercise_service.dart';
-import 'package:app/hive/exercise.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';

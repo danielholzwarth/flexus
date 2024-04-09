@@ -1,5 +1,5 @@
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
-import 'package:app/hive/exercise.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_exercise_list_tile.dart';

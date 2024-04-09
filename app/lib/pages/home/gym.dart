@@ -1,7 +1,7 @@
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
-import 'package:app/hive/gym_overview.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/gym/gym_overview.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/add_friend.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/pages/sign_in/login.dart';

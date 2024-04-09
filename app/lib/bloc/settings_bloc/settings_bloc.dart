@@ -1,7 +1,7 @@
 import 'package:app/api/user_account/user_account_service.dart';
 import 'package:app/api/user_settings/user_settings_service.dart';
-import 'package:app/hive/user_account.dart';
-import 'package:app/hive/user_settings.dart';
+import 'package:app/hive/user_account/user_account.dart';
+import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,5 +1,5 @@
-import 'package:app/hive/gym.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/gym/gym.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:hive/hive.dart';
 
 part 'gym_overview.g.dart';

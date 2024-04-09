@@ -2,8 +2,8 @@
 
 import 'package:app/api/login_user_account/login_user_account_service.dart';
 import 'package:app/api/user_settings/user_settings_service.dart';
-import 'package:app/hive/user_account.dart';
-import 'package:app/hive/user_settings.dart';
+import 'package:app/hive/user_account/user_account.dart';
+import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';

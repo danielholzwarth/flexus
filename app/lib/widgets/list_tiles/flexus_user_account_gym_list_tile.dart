@@ -1,4 +1,4 @@
-import 'package:app/hive/user_account_gym_overview.dart';
+import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter/material.dart';

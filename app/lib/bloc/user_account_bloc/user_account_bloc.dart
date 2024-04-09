@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:app/api/user_account/user_account_service.dart';
-import 'package:app/hive/user_account.dart';
-import 'package:app/hive/user_account_gym_overview.dart';
+import 'package:app/hive/user_account/user_account.dart';
+import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

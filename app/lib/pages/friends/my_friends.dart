@@ -1,5 +1,5 @@
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
-import 'package:app/hive/user_account.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/friends_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';

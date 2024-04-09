@@ -1,5 +1,5 @@
 import 'package:app/bloc/init_bloc/initialization_bloc.dart';
-import 'package:app/hive/user_settings.dart';
+import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
