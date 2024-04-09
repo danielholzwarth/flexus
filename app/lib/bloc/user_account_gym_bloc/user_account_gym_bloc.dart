@@ -1,4 +1,4 @@
-import 'package:app/api/user_account_gym_service.dart';
+import 'package:app/api/user_account_gym/user_account_gym_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

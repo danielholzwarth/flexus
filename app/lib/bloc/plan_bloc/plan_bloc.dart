@@ -1,4 +1,4 @@
-import 'package:app/api/plan_service.dart';
+import 'package:app/api/plan/plan_service.dart';
 import 'package:app/hive/exercise.dart';
 import 'package:app/hive/plan.dart';
 import 'package:app/hive/plan_overview.dart';

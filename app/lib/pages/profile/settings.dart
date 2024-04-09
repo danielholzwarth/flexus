@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/user_account_service.dart';
-import 'package:app/api/user_list_service.dart';
+import 'package:app/api/user_account/user_account_service.dart';
+import 'package:app/api/user_list/user_list_service.dart';
 import 'package:app/bloc/settings_bloc/settings_bloc.dart';
 import 'package:app/bloc/user_list_bloc/user_list_bloc.dart';
 import 'package:app/hive/user_account.dart';

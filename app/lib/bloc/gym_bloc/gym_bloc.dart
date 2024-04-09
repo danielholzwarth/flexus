@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/api/gym_service.dart';
+import 'package:app/api/gym/gym_service.dart';
 import 'package:app/hive/gym.dart';
 import 'package:app/hive/gym_overview.dart';
 import 'package:app/hive/user_account.dart';

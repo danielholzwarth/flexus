@@ -1,4 +1,4 @@
-import 'package:app/api/workout_service.dart';
+import 'package:app/api/workout/workout_service.dart';
 import 'package:app/hive/workout.dart';
 import 'package:app/hive/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
@@ -14,10 +14,28 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   final userBox = Hive.box('userBox');
 
   WorkoutBloc() : super(WorkoutInitial()) {
+    on<PostWorkout>(_onPostWorkout);
     on<GetWorkout>(_onGetWorkout);
     on<GetSearchWorkout>(_onGetSearchWorkout);
     on<PatchWorkout>(_onPatchWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
+  }
+
+  void _onPostWorkout(PostWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutCreating());
+
+    final response = await _workoutService.postWorkout(userBox.get("flexusjwt"), {
+      "gymID": event.gymID,
+      "splitID": event.splitID,
+    });
+
+    if (response.isSuccessful) {
+      emit(WorkoutCreated());
+    } else {
+      emit(WorkoutError(error: response.error.toString()));
+    }
+
+    emit(WorkoutCreated());
   }
 
   void _onGetWorkout(GetWorkout event, Emitter<WorkoutState> emit) async {

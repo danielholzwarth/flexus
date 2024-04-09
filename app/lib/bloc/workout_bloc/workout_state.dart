@@ -5,6 +5,10 @@ abstract class WorkoutState {}
 
 class WorkoutInitial extends WorkoutState {}
 
+class WorkoutCreating extends WorkoutState {}
+
+class WorkoutCreated extends WorkoutState {}
+
 class WorkoutLoading extends WorkoutState {}
 
 class WorkoutSearching extends WorkoutState {}

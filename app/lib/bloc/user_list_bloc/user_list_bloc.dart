@@ -1,4 +1,4 @@
-import 'package:app/api/user_list_service.dart';
+import 'package:app/api/user_list/user_list_service.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

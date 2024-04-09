@@ -5,6 +5,12 @@ part 'workout_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/workouts')
 abstract class WorkoutService extends ChopperService {
+  @Post()
+  Future<Response> postWorkout(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> workout,
+  );
+
   @Get(path: '/')
   Future<Response> getWorkoutOverviews(
     @Header('flexusjwt') String flexusJWTString,

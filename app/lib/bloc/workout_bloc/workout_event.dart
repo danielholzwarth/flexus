@@ -3,6 +3,16 @@ part of 'workout_bloc.dart';
 @immutable
 abstract class WorkoutEvent {}
 
+class PostWorkout extends WorkoutEvent {
+  final int gymID;
+  final int? splitID;
+
+  PostWorkout({
+    required this.gymID,
+    this.splitID,
+  });
+}
+
 class GetWorkout extends WorkoutEvent {
   final bool isArchive;
 

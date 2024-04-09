@@ -204,8 +204,8 @@ class _PlanPageState extends State<PlanPage> {
                       children: [
                         Text(
                           planOverview.plan.isWeekly
-                              ? "${getWeekday(index)} - ${planOverview.splitOverviews[index].split.name}"
-                              : "${index + 1}. ${planOverview.splitOverviews[index].split.name}",
+                              ? "${planOverview.splitOverviews[index].split.name} (${getWeekday(index)})"
+                              : "${planOverview.splitOverviews[index].split.name} (Day ${index + 1})",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: AppSettings.fontSizeTitleSmall,

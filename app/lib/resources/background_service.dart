@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:app/api/notification_service.dart';
+import 'package:app/api/notification/notification_service.dart';
 import 'package:app/hive/notification.dart' as noti;
 import 'package:app/resources/local_notifications.dart';
 import 'package:flutter/material.dart';

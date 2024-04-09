@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/login_user_account_service.dart';
+import 'package:app/api/login_user_account/login_user_account_service.dart';
 import 'package:app/pages/sign_in/register_name.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_bullet_point.dart';

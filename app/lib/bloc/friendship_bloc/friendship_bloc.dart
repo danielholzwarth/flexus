@@ -1,4 +1,4 @@
-import 'package:app/api/friendship_service.dart';
+import 'package:app/api/friendship/friendship_service.dart';
 import 'package:app/hive/friendship.dart';
 import 'package:app/hive/user_account.dart';
 import 'package:app/resources/app_settings.dart';

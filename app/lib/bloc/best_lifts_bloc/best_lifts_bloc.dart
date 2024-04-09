@@ -1,4 +1,4 @@
-import 'package:app/api/best_lifts_service.dart';
+import 'package:app/api/best_lifts/best_lifts_service.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app/api/user_settings_service.dart';
+import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/hive/best_lift.dart';
 import 'package:app/hive/best_lift_overview.dart';
 import 'package:app/hive/exercise.dart';

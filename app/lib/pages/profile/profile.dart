@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:app/api/report_service.dart';
-import 'package:app/api/user_account_service.dart';
+import 'package:app/api/report/report_service.dart';
+import 'package:app/api/user_account/user_account_service.dart';
 import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
 import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
