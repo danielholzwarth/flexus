@@ -62,13 +62,14 @@ class _GymPageState extends State<GymPage> {
       bloc: gymBloc,
       builder: (context, state) {
         if (state is GymOverviewsLoaded) {
-          if (state.gymOverviews.isNotEmpty) {
+          List<GymOverview> gymOverviews = state.gymOverviews;
+          if (gymOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   return FlexusGymOverviewListTile(
                     key: UniqueKey(),
-                    gymOverview: state.gymOverviews[index],
+                    gymOverview: gymOverviews[index],
                     func: () {
                       gymBloc.add(GetGymOverviews());
                     },

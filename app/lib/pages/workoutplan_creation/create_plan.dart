@@ -354,7 +354,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 buildExercises(index),
                 IconButton(
                   onPressed: () async {
-                    List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseSearchDelegate());
+                    List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
                     exerciseList[splitControllers[index].text] = splitExercises;
                     setState(() {});
                   },

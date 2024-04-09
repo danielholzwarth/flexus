@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class PlanSearchDelegate extends SearchDelegate {
+class PlanCustomSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   PlanBloc planBloc = PlanBloc();
   bool isLoaded = false;

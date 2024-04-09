@@ -41,8 +41,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGym(GetGym event, Emitter<GymState> emit) async {
-    emit(GymLoading());
-
     final response = await _gymService.getGym(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
 
     if (response.isSuccessful) {
@@ -54,8 +52,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGymsSearch(GetGymsSearch event, Emitter<GymState> emit) async {
-    emit(GymsSearchLoading());
-
     final response = await _gymService.getGymsSearch(userBox.get("flexusjwt"), keyword: event.query);
 
     if (response.isSuccessful) {
@@ -87,8 +83,6 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
-    emit(GymOverviewsLoading());
-
     final response = await _gymService.getGymOverviews(userBox.get("flexusjwt"));
     List<GymOverview> gymOverviews = [];
 

@@ -6,7 +6,7 @@ import 'package:app/widgets/list_tiles/flexus_exercise_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ExerciseSearchDelegate extends SearchDelegate {
+class ExerciseCustomSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   ExerciseBloc exerciseBloc = ExerciseBloc();
   bool isLoaded = false;

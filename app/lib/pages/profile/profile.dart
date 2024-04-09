@@ -11,8 +11,8 @@ import 'package:app/pages/friends/my_friends.dart';
 import 'package:app/pages/profile/leveling.dart';
 import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
-import 'package:app/pages/workout_documentation/exercises.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -269,15 +269,28 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           } else {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
-                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
-                _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
-              ],
-            );
+            UserAccount userAccount = userBox.get("userAccount");
+            if (userAccount.id == widget.userID) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
+                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
+                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
+                ],
+              );
+            } else {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildPedestal("", "None", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
+                  _buildPedestal("", "None", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
+                  _buildPedestal("", "None", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
+                ],
+              );
+            }
           }
         } else {
           return Center(child: CircularProgressIndicator(color: AppSettings.primary));
@@ -613,6 +626,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildPedestal(String text, String topText, double height, double screenwidth) {
+    UserAccount userAccount = userBox.get("userAccount");
     return Column(
       children: [
         Text(
@@ -628,15 +642,11 @@ class _ProfilePageState extends State<ProfilePage> {
           color: AppSettings.primaryShade80,
           child: Center(
             child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: const ExercisesPage(),
-                  ),
-                );
-              },
+              onPressed: userAccount.id == widget.userID
+                  ? () async {
+                      await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
+                    }
+                  : null,
               child: Text(
                 topText,
                 style: TextStyle(
