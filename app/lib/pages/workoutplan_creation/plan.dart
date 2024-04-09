@@ -6,6 +6,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PlanPage extends StatefulWidget {
@@ -85,6 +86,38 @@ class _PlanPageState extends State<PlanPage> {
   }
 
   Widget buildGeneral(PlanOverview planOverview) {
+    String combinedSplitName = "";
+    Set<String> encounteredNames = {};
+
+    for (var i = 0; i < planOverview.splitOverviews.length; i++) {
+      var splitName = planOverview.splitOverviews[i].split.name;
+
+      if (splitName != "Rest" && !encounteredNames.contains(splitName)) {
+        if (combinedSplitName.isNotEmpty) {
+          combinedSplitName += ", $splitName";
+        } else {
+          combinedSplitName += splitName;
+        }
+        encounteredNames.add(splitName);
+      }
+    }
+    combinedSplitName = combinedSplitName.trim();
+
+    String blockedDays = "none";
+
+    if (planOverview.plan.restList != null) {
+      blockedDays = "";
+      for (var i = 0; i < planOverview.plan.restList!.length; i++) {
+        if (planOverview.plan.restList![i]) {
+          if (blockedDays.isNotEmpty) {
+            blockedDays += ", ${getWeekday(i)}";
+          } else {
+            blockedDays += getWeekday(i);
+          }
+        }
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -115,12 +148,10 @@ class _PlanPageState extends State<PlanPage> {
             DataRow(
               cells: [
                 DataCell(const Text("Split"), onTap: () => debugPrint("asdad")),
-                const DataCell(
+                DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("Push Pull Beine"),
-                    ],
+                    children: [Text(combinedSplitName)],
                   ),
                 ),
               ],
@@ -128,16 +159,29 @@ class _PlanPageState extends State<PlanPage> {
             DataRow(
               cells: [
                 DataCell(const Text("Blocked days"), onTap: () => debugPrint("asdad")),
-                const DataCell(
+                DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text("Tuesday, Friday"),
+                      Text(blockedDays),
                     ],
                   ),
                 ),
               ],
-            )
+            ),
+            DataRow(
+              cells: [
+                DataCell(const Text("Created"), onTap: () => debugPrint("asdad")),
+                DataCell(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(DateFormat('dd.MM.yyyy').format(planOverview.plan.createdAt)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ],
