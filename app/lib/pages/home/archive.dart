@@ -63,6 +63,7 @@ class _ArchivePageState extends State<ArchivePage> {
                       workout: Workout(
                         id: state.workoutOverviews[index].workout.id,
                         userAccountID: state.workoutOverviews[index].workout.userAccountID,
+                        createdAt: state.workoutOverviews[index].workout.createdAt,
                         starttime: state.workoutOverviews[index].workout.starttime,
                         endtime: state.workoutOverviews[index].workout.endtime,
                         isArchived: state.workoutOverviews[index].workout.isArchived,

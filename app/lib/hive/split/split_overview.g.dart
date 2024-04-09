@@ -19,7 +19,7 @@ class SplitOverviewAdapter extends TypeAdapter<SplitOverview> {
     return SplitOverview(
       split: fields[0] as Split,
       exercises: (fields[1] as List).cast<Exercise>(),
-      repetitions: (fields[2] as List)
+      measurements: (fields[2] as List)
           .map((dynamic e) => (e as List).cast<String>())
           .toList(),
     );
@@ -34,7 +34,7 @@ class SplitOverviewAdapter extends TypeAdapter<SplitOverview> {
       ..writeByte(1)
       ..write(obj.exercises)
       ..writeByte(2)
-      ..write(obj.repetitions);
+      ..write(obj.measurements);
   }
 
   @override

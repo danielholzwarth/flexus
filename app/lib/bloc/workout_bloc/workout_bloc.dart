@@ -59,6 +59,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
                 id: json['workout']['id'],
                 userAccountID: json['workout']['userAccountID'],
                 splitID: json['workout']['splitID'],
+                createdAt: DateTime.parse(json['workout']['createdAt']),
                 starttime: DateTime.parse(json['workout']['starttime']),
                 endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
                 isArchived: json['workout']['isArchived'],

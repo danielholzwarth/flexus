@@ -7,6 +7,7 @@ type Workout struct {
 	UserAccountID int        `json:"userAccountID"`
 	PlanID        *int       `json:"planID"`
 	SplitID       *int       `json:"splitID"`
+	CreatedAt     time.Time  `json:"createdAt"`
 	Starttime     time.Time  `json:"starttime"`
 	Endtime       *time.Time `json:"endtime"`
 	IsArchived    bool       `json:"isArchived"`

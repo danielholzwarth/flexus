@@ -42,8 +42,8 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 	}
 
 	query = `
-		INSERT INTO workout (user_id, split_id, gym_id, starttime, is_archived, is_stared, is_pinned)
-		VALUES ($1, $2, $3, $4, FALSE, FALSE, FALSE);
+		INSERT INTO workout (user_id, split_id, gym_id, created_at, starttime, is_archived, is_stared, is_pinned)
+		VALUES ($1, $2, $3, NOW(), $4, FALSE, FALSE, FALSE);
 	`
 
 	_, err = tx.Exec(
@@ -65,7 +65,7 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 
 func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error) {
 	query := `
-		SELECT w.id, w.user_id, w.split_id, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
+		SELECT w.id, w.user_id, w.split_id, w.created_at, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
 		FROM workout w
 		LEFT JOIN split s ON w.split_id = s.id
 		LEFT JOIN plan p ON s.plan_id = p.id
@@ -88,6 +88,7 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 			&workout.ID,
 			&workout.UserAccountID,
 			&workout.SplitID,
+			&workout.CreatedAt,
 			&workout.Starttime,
 			&workout.Endtime,
 			&workout.IsArchived,
@@ -195,7 +196,7 @@ func (db DB) PatchEntireWorkouts(userAccountID int, workouts []types.Workout) er
 	//Insert all which got created
 	insertQuery := `
 		INSERT 
-		INTO workout user_id, starttime, endtime, is_archived, is_stared, is_pinned
+		INTO workout user_id, created_at, starttime, endtime, is_archived, is_stared, is_pinned
 		VALUES ($1, $2, $3, $4, $5, $6);
 	`
 
@@ -234,6 +235,7 @@ func (db DB) PatchEntireWorkouts(userAccountID int, workouts []types.Workout) er
 			_, err = tx.Exec(
 				insertQuery,
 				userAccountID,
+				workout.CreatedAt,
 				workout.Starttime,
 				workout.Endtime,
 				workout.IsArchived,

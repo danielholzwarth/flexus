@@ -257,7 +257,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		var splitOverview types.SplitOverview
 		var split types.Split
 		var exercises []types.Exercise
-		var splitRepetitions []string
+		var splitMeasurements []string
 
 		err := rows.Scan(
 			&split.ID,
@@ -308,7 +308,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 
 		splitOverview.Exercises = append(splitOverview.Exercises, exercises...)
 
-		repetitionQuery := `
+		measurementQuery := `
 			SELECT measurement
 			FROM set
 			INNER JOIN workout ON set.workout_id = workout.id
@@ -323,7 +323,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 			);
 		`
 		for i := 0; i < len(exercises); i++ {
-			measurementRows, err := db.pool.Query(repetitionQuery, userID, exercises[i].ID)
+			measurementRows, err := db.pool.Query(measurementQuery, userID, exercises[i].ID)
 			if err != nil {
 				return types.PlanOverview{}, err
 			}
@@ -331,14 +331,14 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 
 			found := measurementRows.Next()
 			if !found {
-				splitRepetitions = append(splitRepetitions, "none")
+				splitMeasurements = append(splitMeasurements, "none")
 			} else {
 				var measurement string
 				err := measurementRows.Scan(&measurement)
 				if err != nil {
 					return types.PlanOverview{}, err
 				}
-				splitRepetitions = append(splitRepetitions, measurement)
+				splitMeasurements = append(splitMeasurements, measurement)
 			}
 
 			if err := measurementRows.Err(); err != nil {
@@ -346,7 +346,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 			}
 		}
 
-		splitOverview.Repetitions = append(splitOverview.Repetitions, splitRepetitions)
+		splitOverview.Measurements = append(splitOverview.Measurements, splitMeasurements)
 
 		splitOverviews = append(splitOverviews, splitOverview)
 	}

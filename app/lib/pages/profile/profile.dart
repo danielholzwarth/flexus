@@ -287,20 +287,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String getCorrectPedestralText(BestLiftOverview bestLiftOverview) {
-    if (bestLiftOverview.duration != null) {
-      return "${bestLiftOverview.duration}s";
+    if (bestLiftOverview.measurement != null) {
+      return bestLiftOverview.measurement!;
+    } else {
+      return "error loading";
     }
-
-    String text = "";
-    if (bestLiftOverview.repetitions != null) {
-      text = text + bestLiftOverview.repetitions.toString();
-    }
-
-    if (bestLiftOverview.weight != null) {
-      text = "$text x ${bestLiftOverview.weight}kg";
-    }
-
-    return text;
   }
 
   AppBar buildAppBar(BuildContext context, UserAccount userAccount) {

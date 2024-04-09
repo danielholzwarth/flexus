@@ -220,7 +220,7 @@ class _PlanPageState extends State<PlanPage> {
                           dataRowMaxHeight: AppSettings.screenHeight * 0.05,
                           columns: const [
                             DataColumn(label: Text('Exercise')),
-                            DataColumn(label: Text('Repetitions')),
+                            DataColumn(label: Text('Measurements')),
                           ],
                           rows: [
                             for (int index = 0; index < planOverview.splitOverviews[index].exercises.length; index++)
@@ -228,15 +228,15 @@ class _PlanPageState extends State<PlanPage> {
                                 cells: [
                                   DataCell(Text("${index + 1}. ${planOverview.splitOverviews[index].exercises[index].name}"),
                                       onTap: () => debugPrint("asdad")),
-                                  planOverview.splitOverviews[index].repetitions.isNotEmpty
+                                  planOverview.splitOverviews[index].measurements.isNotEmpty
                                       ? DataCell(
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              for (int repetitionIndex = 0;
-                                                  repetitionIndex < planOverview.splitOverviews[index].repetitions[index].length;
-                                                  repetitionIndex++)
-                                                Text(planOverview.splitOverviews[index].repetitions[index][repetitionIndex]),
+                                              for (int measurementIndex = 0;
+                                                  measurementIndex < planOverview.splitOverviews[index].measurements[index].length;
+                                                  measurementIndex++)
+                                                Text(planOverview.splitOverviews[index].measurements[index][measurementIndex]),
                                               const SizedBox()
                                             ],
                                           ),

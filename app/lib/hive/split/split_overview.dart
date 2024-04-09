@@ -13,11 +13,11 @@ class SplitOverview extends HiveObject {
   List<Exercise> exercises;
 
   @HiveField(2)
-  List<List<String>> repetitions;
+  List<List<String>> measurements;
 
   SplitOverview({
     required this.split,
     required this.exercises,
-    required this.repetitions,
+    required this.measurements,
   });
 }

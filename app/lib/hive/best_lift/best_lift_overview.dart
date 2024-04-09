@@ -8,18 +8,10 @@ class BestLiftOverview extends HiveObject {
   String exerciseName;
 
   @HiveField(1)
-  int? repetitions;
-
-  @HiveField(2)
-  double? weight;
-
-  @HiveField(3)
-  double? duration;
+  String? measurement;
 
   BestLiftOverview({
     required this.exerciseName,
-    this.repetitions,
-    this.weight,
-    this.duration,
+    this.measurement,
   });
 }

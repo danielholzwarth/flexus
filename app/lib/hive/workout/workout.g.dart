@@ -20,18 +20,19 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       id: fields[0] as int,
       userAccountID: fields[1] as int,
       splitID: fields[2] as int?,
-      starttime: fields[3] as DateTime,
-      endtime: fields[4] as DateTime?,
-      isArchived: fields[5] as bool,
-      isStared: fields[6] as bool,
-      isPinned: fields[7] as bool,
+      createdAt: fields[3] as DateTime,
+      starttime: fields[4] as DateTime,
+      endtime: fields[5] as DateTime?,
+      isArchived: fields[6] as bool,
+      isStared: fields[7] as bool,
+      isPinned: fields[8] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Workout obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -39,14 +40,16 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
       ..writeByte(2)
       ..write(obj.splitID)
       ..writeByte(3)
-      ..write(obj.starttime)
+      ..write(obj.createdAt)
       ..writeByte(4)
-      ..write(obj.endtime)
+      ..write(obj.starttime)
       ..writeByte(5)
-      ..write(obj.isArchived)
+      ..write(obj.endtime)
       ..writeByte(6)
-      ..write(obj.isStared)
+      ..write(obj.isArchived)
       ..writeByte(7)
+      ..write(obj.isStared)
+      ..writeByte(8)
       ..write(obj.isPinned);
   }
 

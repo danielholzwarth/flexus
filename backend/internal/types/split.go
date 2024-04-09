@@ -10,5 +10,5 @@ type Split struct {
 type SplitOverview struct {
 	Split       Split      `json:"split"`
 	Exercises   []Exercise `json:"exercises"`
-	Repetitions [][]string `json:"repetitions"`
+	Measurements [][]string `json:"measurements"`
 }

@@ -14,24 +14,28 @@ class Workout extends HiveObject {
   int? splitID;
 
   @HiveField(3)
-  DateTime starttime;
+  DateTime createdAt;
 
   @HiveField(4)
-  DateTime? endtime;
+  DateTime starttime;
 
   @HiveField(5)
-  bool isArchived;
+  DateTime? endtime;
 
   @HiveField(6)
-  bool isStared;
+  bool isArchived;
 
   @HiveField(7)
+  bool isStared;
+
+  @HiveField(8)
   bool isPinned;
 
   Workout({
     required this.id,
     required this.userAccountID,
     this.splitID,
+    required this.createdAt,
     required this.starttime,
     this.endtime,
     required this.isArchived,

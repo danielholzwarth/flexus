@@ -18,24 +18,18 @@ class BestLiftOverviewAdapter extends TypeAdapter<BestLiftOverview> {
     };
     return BestLiftOverview(
       exerciseName: fields[0] as String,
-      repetitions: fields[1] as int?,
-      weight: fields[2] as double?,
-      duration: fields[3] as double?,
+      measurement: fields[1] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BestLiftOverview obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.exerciseName)
       ..writeByte(1)
-      ..write(obj.repetitions)
-      ..writeByte(2)
-      ..write(obj.weight)
-      ..writeByte(3)
-      ..write(obj.duration);
+      ..write(obj.measurement);
   }
 
   @override

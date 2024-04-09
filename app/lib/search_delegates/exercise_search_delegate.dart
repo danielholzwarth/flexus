@@ -76,7 +76,7 @@ class ExerciseSearchDelegate extends SearchDelegate {
                         title: filteredExercises[index].name,
                         value: checkedItems.contains(filteredExercises[index]) ? true : false,
                         subtitle: filteredExercises[index].typeID == 1
-                            ? "Repetitions"
+                            ? "Measurements"
                             : filteredExercises[index].typeID == 2
                                 ? "Duration"
                                 : "Other",

@@ -228,8 +228,8 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
                     );
                   }))
                 : [],
-            repetitions: [],
-            //splitJson['repetitions'] != null ? List<String>.from(splitJson['repetitions'].map((repetitionJson) => List<String>.from(repetitionJson))): [],
+            measurements: [],
+            //splitJson['measurements'] != null ? List<String>.from(splitJson['measurements'].map((measurementJson) => List<String>.from(measurementJson))): [],
           );
         }).toList();
 

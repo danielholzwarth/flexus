@@ -14,7 +14,7 @@ func (db *DB) GetNewUsersWorkingOut(userAccountID int) ([]types.NotificationNewU
         INNER JOIN workout as w ON u.id = w.user_id
         WHERE u.id != $1 
         AND f.is_accepted = TRUE 
-        AND w.starttime > NOW() - INTERVAL '30 seconds';
+        AND w.created_at > NOW() - INTERVAL '30 seconds' AND w.created_at < NOW();
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
