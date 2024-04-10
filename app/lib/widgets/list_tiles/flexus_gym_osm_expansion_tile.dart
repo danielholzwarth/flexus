@@ -38,7 +38,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          highlightText(name, AppSettings.fontSizeTitleSmall),
+          highlightText(name, AppSettings.fontSizeH4),
           SizedBox(height: AppSettings.screenHeight * 0.01),
           Text(
             '$streetName $houseNumber',

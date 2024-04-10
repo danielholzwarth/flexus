@@ -137,7 +137,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: Icon(Icons.adaptive.arrow_back),
-            iconSize: AppSettings.fontSizeTitle,
+            iconSize: AppSettings.fontSizeH3,
             alignment: Alignment.center,
           ),
         ),
@@ -148,7 +148,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
             style: TextStyle(
               color: AppSettings.font,
               decoration: TextDecoration.none,
-              fontSize: AppSettings.fontSizeTitle,
+              fontSize: AppSettings.fontSizeH3,
             ),
             textAlign: TextAlign.left,
           ),

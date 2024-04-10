@@ -67,7 +67,7 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
             icon: Icon(
               Icons.remove,
               color: AppSettings.error,
-              size: AppSettings.fontSizeTitleSmall,
+              size: AppSettings.fontSizeH4,
             ),
           );
         } else if (state is HasUserListLoaded || state is UserListUpdated) {
@@ -90,7 +90,7 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
             icon: Icon(
               Icons.add,
               color: AppSettings.primary,
-              size: AppSettings.fontSizeTitleSmall,
+              size: AppSettings.fontSizeH4,
             ),
           );
         } else {
@@ -113,14 +113,14 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
               );
             },
             child: CircleAvatar(
-              radius: AppSettings.fontSizeTitle,
+              radius: AppSettings.fontSizeH3,
               backgroundColor: AppSettings.primaryShade48,
               backgroundImage: MemoryImage(widget.userAccount.profilePicture!),
             ))
         : IconButton(
             icon: Icon(
               Icons.person,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
             ),
             onPressed: () {
               Navigator.push(

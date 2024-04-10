@@ -26,7 +26,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               icon: Icon(
                 Icons.bar_chart_rounded,
                 color: AppSettings.font,
-                size: pageIndex == 0 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: pageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 0) {
@@ -44,7 +44,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               icon: Icon(
                 Icons.fitness_center,
                 color: AppSettings.font,
-                size: pageIndex == 1 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: pageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 1) {
@@ -62,7 +62,7 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               icon: Icon(
                 Icons.people,
                 color: AppSettings.font,
-                size: pageIndex == 2 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: pageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 2) {

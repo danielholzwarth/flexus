@@ -101,13 +101,13 @@ class _AddFriendPageState extends State<AddFriendPage> {
       isPinned: true,
       title: Text(
         "Add Friend",
-        style: TextStyle(color: AppSettings.font, fontSize: AppSettings.fontSizeTitle),
+        style: TextStyle(color: AppSettings.font, fontSize: AppSettings.fontSizeH3),
       ),
       actions: [
         IconButton(
           icon: Icon(
             Icons.qr_code_scanner,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () {
             Navigator.push(
@@ -122,7 +122,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
         IconButton(
           icon: Icon(
             Icons.person_add,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () async {
             await showSearch(context: context, delegate: FriendsCustomSearchDelegate());

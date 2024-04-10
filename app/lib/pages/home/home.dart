@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                 return IconButton(
                   icon: Icon(
                     Icons.person,
-                    size: AppSettings.fontSizeTitle,
+                    size: AppSettings.fontSizeH3,
                   ),
                   onPressed: () {
                     Navigator.push(
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
           child: IconButton(
             icon: Icon(
               Icons.sync,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
             ),
             onPressed: () {
               Navigator.pushReplacement(
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
           child: IconButton(
             icon: Icon(
               Icons.wifi_off,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
               color: AppSettings.error,
             ),
             onPressed: () {},
@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           icon: Icon(
             Icons.archive,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () {
             Navigator.push(
@@ -239,7 +239,7 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           icon: Icon(
             Icons.menu_book,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () {
             Navigator.push(

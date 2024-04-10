@@ -156,7 +156,7 @@ class _GymPageState extends State<GymPage> {
                           Text(
                             "Send Notification",
                             style: TextStyle(
-                              fontSize: AppSettings.fontSizeTitleSmall,
+                              fontSize: AppSettings.fontSizeH4,
                               color: AppSettings.font,
                             ),
                           ),
@@ -202,7 +202,7 @@ class _GymPageState extends State<GymPage> {
                                         child: Text(
                                           value,
                                           style: TextStyle(
-                                            fontSize: AppSettings.fontSizeTitleSmall,
+                                            fontSize: AppSettings.fontSizeH4,
                                             color: AppSettings.font,
                                             fontWeight: FontWeight.normal,
                                           ),
@@ -271,7 +271,7 @@ class _GymPageState extends State<GymPage> {
                                   child: Text(
                                     selectedTime.format(context),
                                     style: TextStyle(
-                                      fontSize: AppSettings.fontSizeTitleSmall,
+                                      fontSize: AppSettings.fontSizeH4,
                                       color: AppSettings.font,
                                     ),
                                   ),
@@ -352,7 +352,7 @@ class _GymPageState extends State<GymPage> {
               : IconButton(
                   icon: Icon(
                     Icons.person,
-                    size: AppSettings.fontSizeTitle,
+                    size: AppSettings.fontSizeH3,
                   ),
                   onPressed: () {
                     Navigator.push(
@@ -372,7 +372,7 @@ class _GymPageState extends State<GymPage> {
           child: IconButton(
             icon: Icon(
               Icons.sync,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
               color: AppSettings.error,
             ),
             onPressed: () {
@@ -391,7 +391,7 @@ class _GymPageState extends State<GymPage> {
           child: IconButton(
             icon: Icon(
               Icons.wifi_off,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
               color: AppSettings.error,
             ),
             onPressed: () {},
@@ -400,7 +400,7 @@ class _GymPageState extends State<GymPage> {
         IconButton(
           icon: Icon(
             Icons.people,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () {
             Navigator.push(
@@ -417,7 +417,7 @@ class _GymPageState extends State<GymPage> {
         IconButton(
           icon: Icon(
             Icons.add_business,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () async {
             await showSearch(context: context, delegate: GymsCustomSearchDelegate());

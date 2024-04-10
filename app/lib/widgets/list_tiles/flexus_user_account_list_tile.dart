@@ -159,14 +159,14 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               );
             },
             child: CircleAvatar(
-              radius: AppSettings.fontSizeTitle,
+              radius: AppSettings.fontSizeH3,
               backgroundColor: AppSettings.primaryShade48,
               backgroundImage: MemoryImage(widget.userAccount.profilePicture!),
             ))
         : IconButton(
             icon: Icon(
               Icons.person,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
             ),
             onPressed: () {
               Navigator.push(

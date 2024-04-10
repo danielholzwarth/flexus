@@ -21,7 +21,7 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
                     title!,
                     style: TextStyle(
                       color: AppSettings.font,
-                      fontSize: AppSettings.fontSizeTitle,
+                      fontSize: AppSettings.fontSizeH3,
                     ),
                   )
                 : null,
@@ -33,7 +33,7 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.wifi_off,
-                    size: AppSettings.fontSizeTitle,
+                    size: AppSettings.fontSizeH3,
                     color: AppSettings.error,
                   ),
                   SizedBox(height: AppSettings.screenHeight * 0.02),

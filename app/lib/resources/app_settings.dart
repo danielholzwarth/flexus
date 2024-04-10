@@ -7,7 +7,6 @@ class AppSettings {
   static bool hasConnection = true;
   static bool isTokenExpired = true;
 
-  static var fontSize = 15.0;
   static var isDarkMode = false;
   static var language = "DE";
 
@@ -31,9 +30,12 @@ class AppSettings {
   static double elevation = 10.0;
 
   //Fontsize
-  static double fontSizeTitleSmall = fontSize + 4;
-  static double fontSizeTitle = fontSize + 8;
-  static double fontSizeMainTitle = fontSize + 24;
-  static double fontSizeDescription = fontSize - 3;
-  static double fontSizeSubDescription = fontSize - 6;
+  static double fontSize = 15.0;
+  static double fontSizeH1 = 40.0;
+  static double fontSizeH2 = 32.0;
+  static double fontSizeH3 = 24.0;
+  static double fontSizeH4 = 20.0;
+  static double fontSizeT2 = 12.0;
+  static double fontSizeT3 = 10.0;
+  static double fontSizeT4 = 8.0;
 }

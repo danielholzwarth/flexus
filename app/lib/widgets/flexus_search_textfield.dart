@@ -40,13 +40,13 @@ class FlexusSearchTextField extends StatelessWidget {
           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
           prefixIcon: Icon(
             Icons.search,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
             color: AppSettings.font,
           ),
           suffixIcon: IconButton(
             icon: Icon(
               Icons.close,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
               color: AppSettings.font,
             ),
             onPressed: suffixOnPressed,

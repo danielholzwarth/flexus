@@ -90,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   state.userAccount.name,
                   style: TextStyle(
                     color: AppSettings.font,
-                    fontSize: AppSettings.fontSizeTitle,
+                    fontSize: AppSettings.fontSizeH3,
                   ),
                 ),
                 Text(
@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     state.userAccount.level.toString(),
                     style: TextStyle(
                       color: AppSettings.primary,
-                      fontSize: AppSettings.fontSizeTitle,
+                      fontSize: AppSettings.fontSizeH3,
                     ),
                   ),
                 ),
@@ -320,7 +320,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 icon: Icon(
                   Icons.menu,
                   color: AppSettings.font,
-                  size: AppSettings.fontSizeTitle,
+                  size: AppSettings.fontSizeH3,
                 ),
                 itemBuilder: (BuildContext context) {
                   if (widget.userID != userAccount.id) {
@@ -427,7 +427,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   "What is the reason of your report?",
                                   style: TextStyle(
                                     color: AppSettings.font,
-                                    fontSize: AppSettings.fontSizeTitle,
+                                    fontSize: AppSettings.fontSizeH3,
                                   ),
                                 ),
                                 content: Column(

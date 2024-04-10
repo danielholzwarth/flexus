@@ -115,7 +115,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
             Text(
               "${DateFormat('hh:mm').format(workout.starttime)} - ",
               style: TextStyle(
-                fontSize: AppSettings.fontSizeDescription,
+                fontSize: AppSettings.fontSizeT2,
                 color: AppSettings.font,
               ),
             ),
@@ -123,14 +123,14 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                 ? Text(
                     "${DateFormat('hh:mm').format(workout.endtime!)} ",
                     style: TextStyle(
-                      fontSize: AppSettings.fontSizeDescription,
+                      fontSize: AppSettings.fontSizeT2,
                       color: AppSettings.font,
                     ),
                   )
                 : Text(
                     " still ongoing ...",
                     style: TextStyle(
-                      fontSize: AppSettings.fontSizeDescription,
+                      fontSize: AppSettings.fontSizeT2,
                       color: AppSettings.font,
                     ),
                   ),
@@ -138,7 +138,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                 ? Text(
                     "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
                     style: TextStyle(
-                      fontSize: AppSettings.fontSizeDescription,
+                      fontSize: AppSettings.fontSizeT2,
                       color: AppSettings.font,
                     ),
                   )
@@ -149,14 +149,14 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
             ? Text(
                 DateFormat('dd.MM.yyyy').format(workout.starttime),
                 style: TextStyle(
-                  fontSize: AppSettings.fontSizeDescription,
+                  fontSize: AppSettings.fontSizeT2,
                   color: AppSettings.font,
                 ),
               )
             : Text(
                 DateFormat('dd.MM.yyyy').format(workout.starttime),
                 style: TextStyle(
-                  fontSize: AppSettings.fontSizeDescription,
+                  fontSize: AppSettings.fontSizeT2,
                   color: AppSettings.font,
                 ),
               ),
@@ -275,12 +275,12 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
 
   CircleAvatar buildDate(Workout workout) {
     return CircleAvatar(
-      radius: AppSettings.fontSizeTitle,
+      radius: AppSettings.fontSizeH3,
       backgroundColor: AppSettings.primaryShade48,
       child: Text(
         _getWeekdayAbbreviation(workout.starttime.weekday),
         style: TextStyle(
-          fontSize: AppSettings.fontSizeTitleSmall,
+          fontSize: AppSettings.fontSizeH4,
           color: AppSettings.font,
         ),
       ),

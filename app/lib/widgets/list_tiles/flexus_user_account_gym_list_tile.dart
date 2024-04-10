@@ -51,7 +51,7 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
         Text(
           "Avg: ${userAccountGymOverview.averageWorkoutDuration!.inMinutes.toString()} min",
           style: TextStyle(
-            fontSize: AppSettings.fontSizeDescription,
+            fontSize: AppSettings.fontSizeT2,
             color: AppSettings.font,
           ),
         ),
@@ -62,13 +62,13 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
   Widget buildPicture(BuildContext context) {
     return userAccountGymOverview.profilePicture != null
         ? CircleAvatar(
-            radius: AppSettings.fontSizeTitle,
+            radius: AppSettings.fontSizeH3,
             backgroundColor: AppSettings.primaryShade48,
             backgroundImage: MemoryImage(userAccountGymOverview.profilePicture!),
           )
         : Icon(
             Icons.person,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           );
   }
 }

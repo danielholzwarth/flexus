@@ -4,7 +4,9 @@ import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
@@ -130,8 +132,9 @@ class _PlanPageState extends State<PlanPage> {
                 'General',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: AppSettings.fontSizeTitleSmall,
+                  fontSize: AppSettings.fontSizeH4,
                 ),
+                overflow: TextOverflow.clip,
               ),
             ],
           ),
@@ -151,7 +154,14 @@ class _PlanPageState extends State<PlanPage> {
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text(combinedSplitName)],
+                    children: [
+                      Flexible(
+                        child: Text(
+                          combinedSplitName,
+                          overflow: TextOverflow.clip,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -163,7 +173,7 @@ class _PlanPageState extends State<PlanPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(blockedDays),
+                      Flexible(child: Text(blockedDays)),
                     ],
                   ),
                 ),
@@ -208,7 +218,7 @@ class _PlanPageState extends State<PlanPage> {
                               : "${planOverview.splitOverviews[index].split.name} (Day ${index + 1})",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: AppSettings.fontSizeTitleSmall,
+                            fontSize: AppSettings.fontSizeH4,
                           ),
                         ),
                       ],
@@ -236,7 +246,8 @@ class _PlanPageState extends State<PlanPage> {
                                               for (int measurementIndex = 0;
                                                   measurementIndex < planOverview.splitOverviews[index].measurements[index].length;
                                                   measurementIndex++)
-                                                Text(planOverview.splitOverviews[index].measurements[index][measurementIndex]),
+                                                Text(planOverview.splitOverviews[index].measurements[index][measurementIndex],
+                                                    overflow: TextOverflow.clip),
                                               const SizedBox()
                                             ],
                                           ),
@@ -274,7 +285,7 @@ class _PlanPageState extends State<PlanPage> {
           icon: Icon(
             Icons.menu,
             color: AppSettings.font,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           itemBuilder: (BuildContext context) {
             if (plan != null) {

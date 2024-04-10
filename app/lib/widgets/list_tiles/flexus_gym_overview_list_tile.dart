@@ -172,7 +172,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         Text(
                           name,
                           style: TextStyle(
-                            fontSize: AppSettings.fontSizeTitle,
+                            fontSize: AppSettings.fontSizeH3,
                             color: AppSettings.font,
                           ),
                         ),
@@ -316,11 +316,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       children: [
         Text(
           '${widget.gymOverview.gym.streetName} ${widget.gymOverview.gym.houseNumber}',
-          style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+          style: TextStyle(fontSize: AppSettings.fontSizeT2),
         ),
         Text(
           '${widget.gymOverview.gym.zipCode} ${widget.gymOverview.gym.cityName}',
-          style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+          style: TextStyle(fontSize: AppSettings.fontSizeT2),
         ),
       ],
     );
@@ -392,7 +392,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                 Positioned(
                   right: 0,
                   child: CircleAvatar(
-                    radius: AppSettings.fontSizeTitle,
+                    radius: AppSettings.fontSizeH3,
                     backgroundColor: Colors.grey.shade100,
                     child: Text("+${userAccounts.length - 3}"),
                   ),
@@ -412,20 +412,20 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   Widget buildCorrectUserPicture(UserAccount userAccount, int element) {
     return userAccount.profilePicture != null
         ? CircleAvatar(
-            radius: AppSettings.fontSizeTitle,
+            radius: AppSettings.fontSizeH3,
             backgroundColor: AppSettings.primaryShade48,
             backgroundImage: MemoryImage(userAccount.profilePicture!),
           )
         : Container(
-            padding: EdgeInsets.all(AppSettings.fontSizeTitle / 2),
-            width: AppSettings.fontSizeTitle * 2,
+            padding: EdgeInsets.all(AppSettings.fontSizeH3 / 2),
+            width: AppSettings.fontSizeH3 * 2,
             decoration: BoxDecoration(
               color: getCorrectShade(element),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.person,
-              size: AppSettings.fontSizeTitle,
+              size: AppSettings.fontSizeH3,
             ),
           );
   }
@@ -442,12 +442,12 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   Widget buildLeading(BuildContext context) {
     return CircleAvatar(
-      radius: AppSettings.fontSizeTitle,
+      radius: AppSettings.fontSizeH3,
       backgroundColor: AppSettings.primaryShade48,
       child: Text(
         widget.gymOverview.gym.name.length > 2 ? widget.gymOverview.gym.name.substring(0, 2).toUpperCase() : widget.gymOverview.gym.name,
         style: TextStyle(
-          fontSize: AppSettings.fontSizeTitleSmall,
+          fontSize: AppSettings.fontSizeH4,
           color: AppSettings.font,
         ),
       ),

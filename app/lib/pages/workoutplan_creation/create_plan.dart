@@ -353,7 +353,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 Text(
                   splitControllers[index].text,
                   style: TextStyle(
-                    fontSize: AppSettings.fontSizeTitleSmall,
+                    fontSize: AppSettings.fontSizeH4,
                     color: AppSettings.font,
                   ),
                 ),
@@ -494,7 +494,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               ),
               trailing: Icon(
                 Icons.drag_handle,
-                size: AppSettings.fontSizeTitle,
+                size: AppSettings.fontSizeH3,
               ),
             );
           },

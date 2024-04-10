@@ -31,7 +31,7 @@ class FlexusButton extends StatelessWidget {
           text,
           style: TextStyle(
             color: fontColor ?? AppSettings.font,
-            fontSize: AppSettings.fontSizeTitleSmall,
+            fontSize: AppSettings.fontSizeH4,
           ),
         ),
       ),

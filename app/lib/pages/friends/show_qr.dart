@@ -62,7 +62,7 @@ class ShowQRPage extends StatelessWidget {
                 userAccount.name,
                 style: TextStyle(
                   color: AppSettings.font,
-                  fontSize: AppSettings.fontSizeTitle,
+                  fontSize: AppSettings.fontSizeH3,
                 ),
               ),
               Text(

@@ -108,13 +108,13 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       isPinned: true,
       title: Text(
         "My Friends",
-        style: TextStyle(color: AppSettings.font, fontSize: AppSettings.fontSizeTitle),
+        style: TextStyle(color: AppSettings.font, fontSize: AppSettings.fontSizeH3),
       ),
       actions: [
         IconButton(
           icon: Icon(
             Icons.search,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () async {
             await showSearch(context: context, delegate: FriendsCustomSearchDelegate(isFriend: true));

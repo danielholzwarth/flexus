@@ -111,13 +111,13 @@ class _ArchivePageState extends State<ArchivePage> {
     return FlexusSliverAppBar(
       title: Text(
         "Archive",
-        style: TextStyle(fontSize: AppSettings.fontSizeTitle, color: AppSettings.font),
+        style: TextStyle(fontSize: AppSettings.fontSizeH3, color: AppSettings.font),
       ),
       actions: [
         IconButton(
           icon: Icon(
             Icons.search,
-            size: AppSettings.fontSizeTitle,
+            size: AppSettings.fontSizeH3,
           ),
           onPressed: () async {
             await showSearch(context: context, delegate: WorkoutsCustomSearchDelegate(isArchived: true));

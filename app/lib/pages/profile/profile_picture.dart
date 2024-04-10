@@ -94,7 +94,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         icon: Icon(
           Icons.menu,
           color: AppSettings.font,
-          size: AppSettings.fontSizeTitle,
+          size: AppSettings.fontSizeH3,
         ),
         itemBuilder: (BuildContext context) {
           return ['Take new picture', 'Choose new picture', 'Delete picture'].map((String choice) {

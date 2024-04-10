@@ -720,7 +720,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(8.0),
         child: Text(
           title,
-          style: TextStyle(fontSize: AppSettings.fontSizeTitle, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: AppSettings.fontSizeH3, fontWeight: FontWeight.bold),
         ),
       ),
       automaticallyImplyLeading: false,

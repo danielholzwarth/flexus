@@ -55,7 +55,7 @@ class LevelingPage extends StatelessWidget {
             title,
             style: TextStyle(
               color: AppSettings.font,
-              fontSize: AppSettings.fontSizeTitle,
+              fontSize: AppSettings.fontSizeH3,
               fontWeight: FontWeight.w500,
             ),
           ),

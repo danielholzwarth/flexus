@@ -36,7 +36,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
           ? Text(
               widget.subtitle,
               style: TextStyle(
-                fontSize: AppSettings.fontSizeDescription,
+                fontSize: AppSettings.fontSizeT2,
               ),
             )
           : null,

@@ -78,11 +78,11 @@ class PlanCustomSearchDelegate extends SearchDelegate {
                           children: [
                             Text(
                               "Splits: ${filteredPlans[index].splitCount}",
-                              style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+                              style: TextStyle(fontSize: AppSettings.fontSizeT2),
                             ),
                             Text(
                               "Created at: ${DateFormat('dd.MM.yyyy').format(filteredPlans[index].createdAt)}",
-                              style: TextStyle(fontSize: AppSettings.fontSizeDescription),
+                              style: TextStyle(fontSize: AppSettings.fontSizeT2),
                             )
                           ],
                         ),

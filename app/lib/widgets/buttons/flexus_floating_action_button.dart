@@ -20,7 +20,7 @@ class FlexusFloatingActionButton extends StatelessWidget {
       shape: const CircleBorder(),
       child: Icon(
         icon,
-        size: AppSettings.fontSizeMainTitle,
+        size: AppSettings.fontSizeH1,
       ),
     );
   }

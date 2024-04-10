@@ -39,7 +39,7 @@ class FlexusSettingsListTile extends StatelessWidget {
       subtitle: subtitle != ""
           ? Text(subtitle,
               style: TextStyle(
-                fontSize: AppSettings.fontSizeDescription,
+                fontSize: AppSettings.fontSizeT2,
               ))
           : null,
       trailing: buildTrailing(),

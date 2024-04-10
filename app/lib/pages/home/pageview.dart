@@ -103,7 +103,7 @@ class _PageViewPageState extends State<PageViewPage> {
               icon: Icon(
                 Icons.bar_chart_rounded,
                 color: AppSettings.font,
-                size: currentPageIndex == 0 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: currentPageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -116,7 +116,7 @@ class _PageViewPageState extends State<PageViewPage> {
               icon: Icon(
                 Icons.fitness_center,
                 color: AppSettings.font,
-                size: currentPageIndex == 1 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: currentPageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -129,7 +129,7 @@ class _PageViewPageState extends State<PageViewPage> {
               icon: Icon(
                 Icons.people,
                 color: AppSettings.font,
-                size: currentPageIndex == 2 ? AppSettings.fontSizeMainTitle : AppSettings.fontSizeTitle,
+                size: currentPageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -187,7 +187,7 @@ class _PageViewPageState extends State<PageViewPage> {
             IconButton(
               icon: Icon(
                 Icons.close,
-                size: AppSettings.fontSizeMainTitle,
+                size: AppSettings.fontSizeH1,
               ),
               onPressed: () {
                 setState(() {});

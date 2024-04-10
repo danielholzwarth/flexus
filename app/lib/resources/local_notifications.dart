@@ -22,8 +22,8 @@ class LocalNotifications {
   static Future showNotification({required String title, required String body, required String payload}) async {
     const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
       'your channel id',
-      'your channel name',
-      channelDescription: 'your channel description',
+      'Load gym attendance',
+      channelDescription: 'Sends a notification whenever a friends starts working out',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
