@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:app/resources/app_settings.dart';
 
@@ -46,6 +48,10 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
           widget.onChanged!(isChecked);
         }
       },
+      leading: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: buildRandomImage(),
+      ),
       trailing: Checkbox(
         activeColor: AppSettings.primary,
         onChanged: (value) {
@@ -58,6 +64,19 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
         },
         value: isChecked,
       ),
+    );
+  }
+
+  Widget buildRandomImage() {
+    int randomNumber = Random().nextInt(4);
+    return Image.network(
+      randomNumber == 0
+          ? "https://cdn-icons-png.flaticon.com/128/7922/7922281.png"
+          : randomNumber == 1
+              ? "https://cdn-icons-png.flaticon.com/128/2112/2112238.png"
+              : randomNumber == 2
+                  ? "https://cdn-icons-png.flaticon.com/128/7922/7922186.png"
+                  : "https://cdn-icons-png.flaticon.com/128/2382/2382633.png",
     );
   }
 

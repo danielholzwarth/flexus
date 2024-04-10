@@ -340,6 +340,12 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
         children: [
           const Text("Choose from a list the default exercises for each split."),
           SizedBox(height: AppSettings.screenHeight * 0.02),
+          Container(
+            width: AppSettings.screenWidth * 0.8,
+            color: AppSettings.font.withOpacity(0.15),
+            height: 1,
+          ),
+          SizedBox(height: AppSettings.screenHeight * 0.03),
           for (int index = 0; index < splitControllers.length; index++)
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -352,19 +358,27 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                   ),
                 ),
                 buildExercises(index),
-                IconButton(
+                TextButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                      surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                      overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                      foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4))),
                   onPressed: () async {
                     List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
                     exerciseList[splitControllers[index].text] = splitExercises;
                     setState(() {});
                   },
-                  icon: Icon(
-                    Icons.add,
-                    color: AppSettings.primary,
-                    size: AppSettings.fontSize,
-                  ),
+                  child: const Text("Add default exercises"),
                 ),
-                SizedBox(height: AppSettings.screenHeight * 0.04),
+                SizedBox(height: AppSettings.screenHeight * 0.01),
+                Container(
+                  width: AppSettings.screenWidth * 0.8,
+                  color: AppSettings.font.withOpacity(0.15),
+                  height: 1,
+                ),
+                SizedBox(height: AppSettings.screenHeight * 0.03),
               ],
             ),
         ],
