@@ -1,6 +1,7 @@
 import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -36,13 +37,13 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
         children: [
           highlightText(widget.gym.name, AppSettings.fontSizeH4),
           SizedBox(height: AppSettings.screenHeight * 0.01),
-          Text(
-            '${widget.gym.streetName} ${widget.gym.houseNumber}',
-            style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
+          CustomDefaultTextStyle(
+            text: '${widget.gym.streetName} ${widget.gym.houseNumber}',
+            color: AppSettings.font.withOpacity(0.5),
           ),
-          Text(
-            '${widget.gym.zipCode} ${widget.gym.cityName}',
-            style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
+          CustomDefaultTextStyle(
+            text: '${widget.gym.zipCode} ${widget.gym.cityName}',
+            color: AppSettings.font.withOpacity(0.5),
           ),
         ],
       ),
@@ -80,7 +81,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                     onPressed: () {
                       userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gym.id));
                     },
-                    child: const Text('Add to Gyms'),
+                    child: const CustomDefaultTextStyle(text: 'Add to Gyms'),
                   );
                 }
               },
@@ -96,7 +97,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
               onPressed: () {
                 openMaps(widget.gym.latitude, widget.gym.longitude);
               },
-              child: const Text('Open in Maps'),
+              child: const CustomDefaultTextStyle(text: 'Open in Maps'),
             ),
           ],
         ),

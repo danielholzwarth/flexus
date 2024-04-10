@@ -2,6 +2,7 @@ import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_list_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -77,7 +78,7 @@ class UserListCustomSearchDelegate extends SearchDelegate {
                   ),
                 );
               } else {
-                return const Center(child: Text("No users found"));
+                return const Center(child: CustomDefaultTextStyle(text: "No users found"));
               }
             } else {
               return Center(child: CircularProgressIndicator(color: AppSettings.primary));

@@ -3,6 +3,7 @@ import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/workout_documentation/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
@@ -112,53 +113,35 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       children: [
         Row(
           children: [
-            Text(
-              "${DateFormat('hh:mm').format(workout.starttime)} - ",
-              style: TextStyle(
-                fontSize: AppSettings.fontSizeT2,
-                color: AppSettings.font,
-              ),
+            CustomDefaultTextStyle(
+              text: "${DateFormat('hh:mm').format(workout.starttime)} - ",
+              fontSize: AppSettings.fontSizeT2,
             ),
             workout.endtime != null
-                ? Text(
-                    "${DateFormat('hh:mm').format(workout.endtime!)} ",
-                    style: TextStyle(
-                      fontSize: AppSettings.fontSizeT2,
-                      color: AppSettings.font,
-                    ),
+                ? CustomDefaultTextStyle(
+                    text: "${DateFormat('hh:mm').format(workout.endtime!)} ",
+                    fontSize: AppSettings.fontSizeT2,
                   )
-                : Text(
-                    " still ongoing ...",
-                    style: TextStyle(
-                      fontSize: AppSettings.fontSizeT2,
-                      color: AppSettings.font,
-                    ),
+                : CustomDefaultTextStyle(
+                    text: " still ongoing ...",
+                    fontSize: AppSettings.fontSizeT2,
                   ),
             workout.endtime != null
-                ? Text(
-                    "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
-                    style: TextStyle(
-                      fontSize: AppSettings.fontSizeT2,
-                      color: AppSettings.font,
-                    ),
+                ? CustomDefaultTextStyle(
+                    text: "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
+                    fontSize: AppSettings.fontSizeT2,
                   )
                 : const SizedBox(),
           ],
         ),
         userBox.get("splits") != null
-            ? Text(
-                DateFormat('dd.MM.yyyy').format(workout.starttime),
-                style: TextStyle(
-                  fontSize: AppSettings.fontSizeT2,
-                  color: AppSettings.font,
-                ),
+            ? CustomDefaultTextStyle(
+                text: DateFormat('dd.MM.yyyy').format(workout.starttime),
+                fontSize: AppSettings.fontSizeT2,
               )
-            : Text(
-                DateFormat('dd.MM.yyyy').format(workout.starttime),
-                style: TextStyle(
-                  fontSize: AppSettings.fontSizeT2,
-                  color: AppSettings.font,
-                ),
+            : CustomDefaultTextStyle(
+                text: DateFormat('dd.MM.yyyy').format(workout.starttime),
+                fontSize: AppSettings.fontSizeT2,
               ),
       ],
     );
@@ -170,12 +153,8 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       children: [
         widget.workoutOverview.splitName != null
             ? highlightTitle(widget.workoutOverview.splitName!)
-            : Text(
-                "Custom Workout",
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: AppSettings.font,
-                ),
+            : const CustomDefaultTextStyle(
+                text: "Custom Workout",
               ),
         //Get actual PRs
         Row(
@@ -210,9 +189,8 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               visible: widget.workoutOverview.workout.id % 7 != 0,
               child: Row(
                 children: [
-                  Text(
-                    (widget.workoutOverview.workout.id % 7).toString(),
-                    style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font),
+                  CustomDefaultTextStyle(
+                    text: (widget.workoutOverview.workout.id % 7).toString(),
                   ),
                   Icon(
                     Icons.emoji_events,
@@ -277,12 +255,9 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
     return CircleAvatar(
       radius: AppSettings.fontSizeH3,
       backgroundColor: AppSettings.primaryShade48,
-      child: Text(
-        _getWeekdayAbbreviation(workout.starttime.weekday),
-        style: TextStyle(
-          fontSize: AppSettings.fontSizeH4,
-          color: AppSettings.font,
-        ),
+      child: CustomDefaultTextStyle(
+        text: _getWeekdayAbbreviation(workout.starttime.weekday),
+        fontSize: AppSettings.fontSizeH4,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/scan_qr.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -17,7 +18,7 @@ class ShowQRPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('QR Code'),
+        title: const CustomDefaultTextStyle(text: 'QR Code'),
         backgroundColor: AppSettings.background,
         actions: [
           IconButton(
@@ -58,19 +59,12 @@ class ShowQRPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
-                userAccount.name,
-                style: TextStyle(
-                  color: AppSettings.font,
-                  fontSize: AppSettings.fontSizeH3,
-                ),
+              CustomDefaultTextStyle(
+                text: userAccount.name,
+                fontSize: AppSettings.fontSizeH3,
               ),
-              Text(
-                "@${userAccount.username}",
-                style: TextStyle(
-                  color: AppSettings.font,
-                  fontSize: AppSettings.fontSize,
-                ),
+              CustomDefaultTextStyle(
+                text: "@${userAccount.username}",
               )
             ],
           ),

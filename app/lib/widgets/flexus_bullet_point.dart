@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class FlexusBulletPoint extends StatelessWidget {
@@ -23,13 +24,10 @@ class FlexusBulletPoint extends StatelessWidget {
             color: condition ? const Color.fromARGB(255, 23, 117, 26) : const Color.fromARGB(255, 128, 13, 5),
           ),
           SizedBox(width: AppSettings.screenWidth * 0.02),
-          Text(
-            text,
-            style: TextStyle(
-              color: condition ? AppSettings.confirm : AppSettings.error,
-              fontSize: AppSettings.fontSize,
-            ),
-          )
+          CustomDefaultTextStyle(
+            text: text,
+            color: condition ? AppSettings.confirm : AppSettings.error,
+          ),
         ],
       ),
     );

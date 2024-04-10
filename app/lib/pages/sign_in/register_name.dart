@@ -4,6 +4,7 @@ import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -64,7 +65,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Name must not be empty!'),
+                child: CustomDefaultTextStyle(text: 'Name must not be empty!'),
               ),
             ),
           );
@@ -73,7 +74,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Name must not be longer than 20 characters!'),
+                child: CustomDefaultTextStyle(text: 'Name must not be longer than 20 characters!'),
               ),
             ),
           );
@@ -97,13 +98,10 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
   SizedBox _buildDescription() {
     return SizedBox(
       width: AppSettings.screenWidth * 0.7,
-      child: Text(
-        "The name will be shown to your friendship.",
-        style: TextStyle(
-          color: AppSettings.font,
-          decoration: TextDecoration.none,
-          fontSize: AppSettings.fontSize,
-        ),
+      child: CustomDefaultTextStyle(
+        text: "The name will be shown to your friendship.",
+        decoration: TextDecoration.none,
+        fontSize: AppSettings.fontSize,
         textAlign: TextAlign.left,
       ),
     );
@@ -123,13 +121,10 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
         ),
         SizedBox(
           width: AppSettings.screenWidth * 0.7,
-          child: Text(
-            "Please enter your name.",
-            style: TextStyle(
-              color: AppSettings.font,
-              decoration: TextDecoration.none,
-              fontSize: AppSettings.fontSizeH3,
-            ),
+          child: CustomDefaultTextStyle(
+            text: "Please enter your name.",
+            decoration: TextDecoration.none,
+            fontSize: AppSettings.fontSizeH3,
             textAlign: TextAlign.left,
           ),
         ),

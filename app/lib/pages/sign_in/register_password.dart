@@ -10,6 +10,7 @@ import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -89,13 +90,10 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
         ),
         SizedBox(
           width: AppSettings.screenWidth * 0.7,
-          child: Text(
-            "Please enter your password.",
-            style: TextStyle(
-              color: AppSettings.font,
-              decoration: TextDecoration.none,
-              fontSize: AppSettings.fontSizeH3,
-            ),
+          child: CustomDefaultTextStyle(
+            text: "Please enter your password.",
+            decoration: TextDecoration.none,
+            fontSize: AppSettings.fontSizeH3,
             textAlign: TextAlign.left,
           ),
         ),
@@ -114,7 +112,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Password must be longer than 8 characters!'),
+                child: CustomDefaultTextStyle(text: 'Password must be longer than 8 characters!'),
               ),
             ),
           );
@@ -123,7 +121,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Passwords must be shorter or equal to 128 characters!'),
+                child: CustomDefaultTextStyle(text: 'Passwords must be shorter or equal to 128 characters!'),
               ),
             ),
           );
@@ -132,7 +130,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Passwords are not equal!'),
+                child: CustomDefaultTextStyle(text: 'Passwords are not equal!'),
               ),
             ),
           );
@@ -174,7 +172,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Center(
-                  child: Text("Statuscode ${response.statusCode}\nError: ${response.error}"),
+                  child: CustomDefaultTextStyle(text: "Statuscode ${response.statusCode}\nError: ${response.error}"),
                 ),
               ),
             );

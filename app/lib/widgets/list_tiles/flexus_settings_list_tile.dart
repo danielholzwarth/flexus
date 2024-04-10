@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -32,15 +33,12 @@ class FlexusSettingsListTile extends StatelessWidget {
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       onTap: onPressed,
       tileColor: AppSettings.background,
-      title: Text(
-        title,
-        style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
-      ),
+      title: CustomDefaultTextStyle(text: title, fontWeight: FontWeight.w500),
       subtitle: subtitle != ""
-          ? Text(subtitle,
-              style: TextStyle(
-                fontSize: AppSettings.fontSizeT2,
-              ))
+          ? CustomDefaultTextStyle(
+              text: subtitle,
+              fontSize: AppSettings.fontSizeT2,
+            )
           : null,
       trailing: buildTrailing(),
     );
@@ -70,19 +68,17 @@ class FlexusSettingsListTile extends StatelessWidget {
     if (isDate) {
       return Padding(
         padding: const EdgeInsets.only(right: 10),
-        child: Text(
-          DateFormat('dd.MM.yyyy').format(value),
-          style: TextStyle(fontSize: AppSettings.fontSize),
+        child: CustomDefaultTextStyle(
+          text: DateFormat('dd.MM.yyyy').format(value),
         ),
       );
     }
 
     if (isObscure) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Text(
-          "****************",
-          style: TextStyle(fontSize: AppSettings.fontSize),
+      return const Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: CustomDefaultTextStyle(
+          text: "****************",
         ),
       );
     }
@@ -90,9 +86,8 @@ class FlexusSettingsListTile extends StatelessWidget {
     if (isText) {
       return Padding(
         padding: const EdgeInsets.only(right: 10),
-        child: Text(
-          value.toString(),
-          style: TextStyle(fontSize: AppSettings.fontSize),
+        child: CustomDefaultTextStyle(
+          text: value.toString(),
         ),
       );
     }

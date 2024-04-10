@@ -1,5 +1,6 @@
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,13 +41,13 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
         children: [
           highlightText(name, AppSettings.fontSizeH4),
           SizedBox(height: AppSettings.screenHeight * 0.01),
-          Text(
-            '$streetName $houseNumber',
-            style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
+          CustomDefaultTextStyle(
+            text: '$streetName $houseNumber',
+            color: AppSettings.font.withOpacity(0.5),
           ),
-          Text(
-            '$zipCode $cityName',
-            style: TextStyle(fontSize: AppSettings.fontSize, color: AppSettings.font.withOpacity(0.5)),
+          CustomDefaultTextStyle(
+            text: '$zipCode $cityName',
+            color: AppSettings.font.withOpacity(0.5),
           ),
         ],
       ),
@@ -82,7 +83,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
                     onPressed: () {
                       gymBloc.add(PostGym(locationData: widget.locationData));
                     },
-                    child: const Text('Create Gym'),
+                    child: const CustomDefaultTextStyle(text: 'Create Gym'),
                   );
                 }
               },
@@ -98,7 +99,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
               onPressed: () {
                 openMaps(latitude, longitude);
               },
-              child: const Text('Open in Maps'),
+              child: const CustomDefaultTextStyle(text: 'Open in Maps'),
             ),
           ],
         ),

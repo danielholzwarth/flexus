@@ -6,6 +6,7 @@ import 'package:app/pages/home/statistics.dart';
 import 'package:app/pages/workout_documentation/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -64,9 +65,9 @@ class _PageViewPageState extends State<PageViewPage> {
             return buildPages();
           }
         } else if (state is InitializingError) {
-          return Center(child: Text("Error: ${state.error}"));
+          return Center(child: CustomDefaultTextStyle(text: "Error: ${state.error}"));
         } else {
-          return const Center(child: Text("Error: No valid state"));
+          return const Center(child: CustomDefaultTextStyle(text: "Error: No valid state"));
         }
       },
     );
@@ -175,7 +176,7 @@ class _PageViewPageState extends State<PageViewPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Center(
-                      child: Text("Not implemented yet :("),
+                      child: CustomDefaultTextStyle(text: "Not implemented yet :("),
                     ),
                   ),
                 );

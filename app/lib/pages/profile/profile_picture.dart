@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -117,7 +118,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(choice),
+                  CustomDefaultTextStyle(text: choice),
                   Icon(icon),
                 ],
               ),

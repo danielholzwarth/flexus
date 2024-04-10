@@ -6,6 +6,7 @@ import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -82,9 +83,8 @@ class _ArchivePageState extends State<ArchivePage> {
           } else {
             return SliverFillRemaining(
               child: Center(
-                child: Text(
-                  'No workouts found',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
+                child: CustomDefaultTextStyle(
+                  text: 'No workouts found',
                 ),
               ),
             );
@@ -92,9 +92,8 @@ class _ArchivePageState extends State<ArchivePage> {
         } else if (state is WorkoutError) {
           return SliverFillRemaining(
             child: Center(
-              child: Text(
-                'Error: ${state.error}',
-                style: TextStyle(fontSize: AppSettings.fontSize),
+              child: CustomDefaultTextStyle(
+                text: 'Error: ${state.error}',
               ),
             ),
           );
@@ -109,9 +108,9 @@ class _ArchivePageState extends State<ArchivePage> {
 
   FlexusSliverAppBar buildAppBar(BuildContext context) {
     return FlexusSliverAppBar(
-      title: Text(
-        "Archive",
-        style: TextStyle(fontSize: AppSettings.fontSizeH3, color: AppSettings.font),
+      title: CustomDefaultTextStyle(
+        text: "Archive",
+        fontSize: AppSettings.fontSizeH3,
       ),
       actions: [
         IconButton(

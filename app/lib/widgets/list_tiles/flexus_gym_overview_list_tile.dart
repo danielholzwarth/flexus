@@ -5,6 +5,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,7 +60,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: AppSettings.background,
         leading: buildLeading(context),
-        title: Text(name),
+        title: CustomDefaultTextStyle(text: name),
         trailing: GestureDetector(
           child: Container(
             child: buildTrailing(context),
@@ -105,7 +106,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text('Cancel'),
+                      child: const CustomDefaultTextStyle(text: 'Cancel'),
                     ),
                     ElevatedButton(
                       style: ButtonStyle(
@@ -135,7 +136,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
                         Navigator.pop(context);
                       },
-                      child: const Text('Confirm'),
+                      child: const CustomDefaultTextStyle(text: 'Confirm'),
                     ),
                   ],
                 ),
@@ -169,21 +170,16 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Column(
                       children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            fontSize: AppSettings.fontSizeH3,
-                            color: AppSettings.font,
-                          ),
+                        CustomDefaultTextStyle(
+                          text: name,
+                          fontSize: AppSettings.fontSizeH3,
                         ),
                         Visibility(
                           visible: widget.gymOverview.totalFriends > 0,
-                          child: Text(
-                            "${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends} friends active",
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSize,
-                              color: AppSettings.font.withOpacity(0.5),
-                            ),
+                          child: CustomDefaultTextStyle(
+                            text: "${widget.gymOverview.userAccounts.length}/${widget.gymOverview.totalFriends} friends active",
+                            fontSize: AppSettings.fontSize,
+                            color: AppSettings.font.withOpacity(0.5),
                           ),
                         ),
                         BlocBuilder(
@@ -218,20 +214,18 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                   ),
                                 );
                               } else {
-                                return Expanded(
+                                return const Expanded(
                                   child: Center(
-                                    child: Text(
-                                      'No users training right now',
-                                      style: TextStyle(fontSize: AppSettings.fontSize),
+                                    child: CustomDefaultTextStyle(
+                                      text: 'No users training right now',
                                     ),
                                   ),
                                 );
                               }
                             } else if (state is UserAccountsError) {
                               return Center(
-                                child: Text(
-                                  'Error: ${state.error}',
-                                  style: TextStyle(fontSize: AppSettings.fontSize),
+                                child: CustomDefaultTextStyle(
+                                  text: 'Error: ${state.error}',
                                 ),
                               );
                             } else {
@@ -273,7 +267,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                     onPressed: () {
                                       userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gymOverview.gym.id));
                                     },
-                                    child: const Text('Remove Gym'),
+                                    child: const CustomDefaultTextStyle(text: 'Remove Gym'),
                                   );
                                 }
                               },
@@ -289,7 +283,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                               onPressed: () {
                                 openMaps(widget.gymOverview.gym.latitude, widget.gymOverview.gym.longitude);
                               },
-                              child: const Text('Open in Maps'),
+                              child: const CustomDefaultTextStyle(text: 'Open in Maps'),
                             ),
                           ],
                         )
@@ -314,13 +308,13 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${widget.gymOverview.gym.streetName} ${widget.gymOverview.gym.houseNumber}',
-          style: TextStyle(fontSize: AppSettings.fontSizeT2),
+        CustomDefaultTextStyle(
+          text: '${widget.gymOverview.gym.streetName} ${widget.gymOverview.gym.houseNumber}',
+          fontSize: AppSettings.fontSizeT2,
         ),
-        Text(
-          '${widget.gymOverview.gym.zipCode} ${widget.gymOverview.gym.cityName}',
-          style: TextStyle(fontSize: AppSettings.fontSizeT2),
+        CustomDefaultTextStyle(
+          text: '${widget.gymOverview.gym.zipCode} ${widget.gymOverview.gym.cityName}',
+          fontSize: AppSettings.fontSizeT2,
         ),
       ],
     );
@@ -394,7 +388,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                   child: CircleAvatar(
                     radius: AppSettings.fontSizeH3,
                     backgroundColor: Colors.grey.shade100,
-                    child: Text("+${userAccounts.length - 3}"),
+                    child: CustomDefaultTextStyle(text: "+${userAccounts.length - 3}"),
                   ),
                 ),
               ],
@@ -402,7 +396,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
           );
 
         default:
-          return Text("error ${userAccounts.length}");
+          return CustomDefaultTextStyle(text: "error ${userAccounts.length}");
       }
     } else {
       return const SizedBox(width: 120);
@@ -444,12 +438,9 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     return CircleAvatar(
       radius: AppSettings.fontSizeH3,
       backgroundColor: AppSettings.primaryShade48,
-      child: Text(
-        widget.gymOverview.gym.name.length > 2 ? widget.gymOverview.gym.name.substring(0, 2).toUpperCase() : widget.gymOverview.gym.name,
-        style: TextStyle(
-          fontSize: AppSettings.fontSizeH4,
-          color: AppSettings.font,
-        ),
+      child: CustomDefaultTextStyle(
+        text: widget.gymOverview.gym.name.length > 2 ? widget.gymOverview.gym.name.substring(0, 2).toUpperCase() : widget.gymOverview.gym.name,
+        fontSize: AppSettings.fontSizeH4,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class FlexusButton extends StatelessWidget {
@@ -26,13 +27,11 @@ class FlexusButton extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(backgroundColor ?? AppSettings.background),
           elevation: MaterialStateProperty.all(AppSettings.elevation),
         ),
-        child: Text(
+        child: CustomDefaultTextStyle(
+          text: text,
           textAlign: TextAlign.center,
-          text,
-          style: TextStyle(
-            color: fontColor ?? AppSettings.font,
-            fontSize: AppSettings.fontSizeH4,
-          ),
+          color: fontColor ?? AppSettings.font,
+          fontSize: AppSettings.fontSizeH4,
         ),
       ),
     );

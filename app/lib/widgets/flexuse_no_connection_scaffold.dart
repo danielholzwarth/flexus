@@ -1,5 +1,6 @@
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class FlexusNoConnectionScaffold extends StatelessWidget {
@@ -17,12 +18,9 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
         slivers: [
           FlexusSliverAppBar(
             title: title != null
-                ? Text(
-                    title!,
-                    style: TextStyle(
-                      color: AppSettings.font,
-                      fontSize: AppSettings.fontSizeH3,
-                    ),
+                ? CustomDefaultTextStyle(
+                    text: title!,
+                    fontSize: AppSettings.fontSizeH3,
                   )
                 : null,
           ),
@@ -37,13 +35,10 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
                     color: AppSettings.error,
                   ),
                   SizedBox(height: AppSettings.screenHeight * 0.02),
-                  Text(
-                    "This feature requires Internet connection",
-                    style: TextStyle(
-                      color: AppSettings.error,
-                      fontSize: AppSettings.fontSize,
-                    ),
-                  )
+                  CustomDefaultTextStyle(
+                    text: "This feature requires Internet connection",
+                    color: AppSettings.error,
+                  ),
                 ],
               ),
             ),

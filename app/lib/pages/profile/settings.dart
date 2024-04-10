@@ -12,6 +12,7 @@ import 'package:app/search_delegates/user_list_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -55,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: scrollController,
                 slivers: <Widget>[
                   const FlexusSliverAppBar(
-                    title: Text("Settings"),
+                    title: CustomDefaultTextStyle(text: "Settings"),
                   ),
                   _buildSection("My Account"),
                   buildName(userAccount, context),
@@ -92,12 +93,9 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Center(
         child: TextButton(
           style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppSettings.background)),
-          child: Text(
-            "Delete Account",
-            style: TextStyle(
-              fontSize: AppSettings.fontSize,
-              color: AppSettings.error,
-            ),
+          child: CustomDefaultTextStyle(
+            text: "Delete Account",
+            color: AppSettings.error,
           ),
           onPressed: () async {
             if (AppSettings.hasConnection) {
@@ -117,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Center(
-                      child: Text(response.error.toString()),
+                      child: CustomDefaultTextStyle(text: response.error.toString()),
                     ),
                   ),
                 );
@@ -126,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('This feature requires internet connection!'),
+                  content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
                 ),
               );
             }
@@ -140,12 +138,9 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverToBoxAdapter(
       child: Center(
         child: TextButton(
-          child: Text(
-            "Log out",
-            style: TextStyle(
-              fontSize: AppSettings.fontSize,
-              color: AppSettings.error,
-            ),
+          child: CustomDefaultTextStyle(
+            text: "Log out",
+            color: AppSettings.error,
           ),
           onPressed: () {
             userBox.clear();
@@ -192,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Center(
-                            child: Text("Error loading user list! Please open settings again!"),
+                            child: CustomDefaultTextStyle(text: "Error loading user list! Please open settings again!"),
                           ),
                         ),
                       );
@@ -201,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('This feature requires internet connection!'),
+                        content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
                       ),
                     );
                   }
@@ -211,10 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
-                title: Text(
-                  "Notify User List",
-                  style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
-                ),
+                title: CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
                 trailing: CircularProgressIndicator(color: AppSettings.primary),
               );
             }
@@ -248,7 +240,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Center(
-                      child: Text("Error creating userlist. Was returned empty!"),
+                      child: CustomDefaultTextStyle(text: "Error creating userlist. Was returned empty!"),
                     ),
                   ),
                 );
@@ -258,7 +250,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Center(
-                    child: Text('Error: ${response.error}'),
+                    child: CustomDefaultTextStyle(text: 'Error: ${response.error}'),
                   ),
                 ),
               );
@@ -301,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Center(
-                            child: Text("Error loading user list! Please open settings again!"),
+                            child: CustomDefaultTextStyle(text: "Error loading user list! Please open settings again!"),
                           ),
                         ),
                       );
@@ -310,7 +302,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).clearSnackBars();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('This feature requires internet connection!'),
+                        content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
                       ),
                     );
                   }
@@ -320,10 +312,7 @@ class _SettingsPageState extends State<SettingsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
-                title: Text(
-                  "Pull User List",
-                  style: TextStyle(fontSize: AppSettings.fontSize, fontWeight: FontWeight.w500),
-                ),
+                title: CustomDefaultTextStyle(text: "Pull User List", fontWeight: FontWeight.w500),
                 trailing: CircularProgressIndicator(color: AppSettings.primary),
               );
             }
@@ -359,7 +348,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Center(
-                      child: Text("Error creating userlist. Was returned empty!"),
+                      child: CustomDefaultTextStyle(text: "Error creating userlist. Was returned empty!"),
                     ),
                   ),
                 );
@@ -369,7 +358,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Center(
-                    child: Text('Error: ${response.error}'),
+                    child: CustomDefaultTextStyle(text: 'Error: ${response.error}'),
                   ),
                 ),
               );
@@ -408,7 +397,8 @@ class _SettingsPageState extends State<SettingsPage> {
   //         ScaffoldMessenger.of(context).showSnackBar(
   //           const SnackBar(
   //             content: Center(
-  //               child: Text("Not implemented yet :("),
+  //               child:CustomDefaultTextStyle(
+  // text: "Not implemented yet :("),
   //             ),
   //           ),
   //         );
@@ -477,7 +467,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Center(
-                          child: Text('Invalid input for fontsize'),
+                          child: CustomDefaultTextStyle(text: 'Invalid input for fontsize'),
                         ),
                       ),
                     );
@@ -557,20 +547,20 @@ class _SettingsPageState extends State<SettingsPage> {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Passwords do not match'),
+                                content: CustomDefaultTextStyle(text: 'Passwords do not match'),
                               ),
                             );
                           } else if (newPassword.length > 128) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Password cannot be longer than 128 characters'),
+                                content: CustomDefaultTextStyle(text: 'Password cannot be longer than 128 characters'),
                               ),
                             );
                           } else if (newPassword.length < 8) {
                             ScaffoldMessenger.of(context).clearSnackBars();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Password must be at least 8 characters long'),
+                                content: CustomDefaultTextStyle(text: 'Password must be at least 8 characters long'),
                               ),
                             );
                           } else {
@@ -598,7 +588,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('This feature requires internet connection!'),
+                content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
               ),
             );
           }
@@ -635,7 +625,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Center(
-                          child: Text('Username can not be longer than 20 characters'),
+                          child: CustomDefaultTextStyle(text: 'Username can not be longer than 20 characters'),
                         ),
                       ),
                     );
@@ -644,7 +634,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Center(
-                          child: Text('Username must be at least 6 characters long'),
+                          child: CustomDefaultTextStyle(text: 'Username must be at least 6 characters long'),
                         ),
                       ),
                     );
@@ -693,7 +683,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Center(
-                          child: Text('Name can not be longer than 20 characters'),
+                          child: CustomDefaultTextStyle(text: 'Name can not be longer than 20 characters'),
                         ),
                       ),
                     );
@@ -718,9 +708,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverAppBar(
       title: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text(
-          title,
-          style: TextStyle(fontSize: AppSettings.fontSizeH3, fontWeight: FontWeight.bold),
+        child: CustomDefaultTextStyle(
+          text: title,
+          fontSize: AppSettings.fontSizeH3,
+          fontWeight: FontWeight.bold,
         ),
       ),
       automaticallyImplyLeading: false,

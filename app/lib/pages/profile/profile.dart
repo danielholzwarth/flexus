@@ -13,6 +13,7 @@ import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -86,19 +87,12 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is UserAccountLoaded) {
             return Column(
               children: [
-                Text(
-                  state.userAccount.name,
-                  style: TextStyle(
-                    color: AppSettings.font,
-                    fontSize: AppSettings.fontSizeH3,
-                  ),
+                CustomDefaultTextStyle(
+                  text: state.userAccount.name,
+                  fontSize: AppSettings.fontSizeH3,
                 ),
-                Text(
-                  "@${state.userAccount.username}",
-                  style: TextStyle(
-                    color: AppSettings.font,
-                    fontSize: AppSettings.fontSize,
-                  ),
+                CustomDefaultTextStyle(
+                  text: "@${state.userAccount.username}",
                 ),
               ],
             );
@@ -156,12 +150,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 Positioned(
                   left: AppSettings.screenWidth * 0.28,
                   top: AppSettings.screenWidth * 0.5,
-                  child: Text(
-                    state.userAccount.level.toString(),
-                    style: TextStyle(
-                      color: AppSettings.primary,
-                      fontSize: AppSettings.fontSizeH3,
-                    ),
+                  child: CustomDefaultTextStyle(
+                    text: state.userAccount.level.toString(),
+                    color: AppSettings.primary,
+                    fontSize: AppSettings.fontSizeH3,
                   ),
                 ),
               ],
@@ -329,7 +321,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         return ['Remove Friend', 'Friends', 'Report'].map((String choice) {
                           return PopupMenuItem<String>(
                             value: choice,
-                            child: Text(choice),
+                            child: CustomDefaultTextStyle(text: choice),
                           );
                         }).toList();
                       } else {
@@ -337,14 +329,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           return ['Friendrequest sent', 'Friends', 'Report'].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice),
+                              child: CustomDefaultTextStyle(text: choice),
                             );
                           }).toList();
                         } else {
                           return ['Accept friendrequest', 'Friends', 'Report'].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice),
+                              child: CustomDefaultTextStyle(text: choice),
                             );
                           }).toList();
                         }
@@ -353,7 +345,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       return ['Add Friend', 'Friends', 'Report'].map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
-                          child: Text(choice),
+                          child: CustomDefaultTextStyle(text: choice),
                         );
                       }).toList();
                     }
@@ -361,7 +353,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     return ['Settings', 'Friends', 'Leveling'].map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
-                        child: Text(choice),
+                        child: CustomDefaultTextStyle(text: choice),
                       );
                     }).toList();
                   }
@@ -423,12 +415,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             builder: (context, setState) {
                               return AlertDialog(
                                 backgroundColor: AppSettings.background,
-                                title: Text(
-                                  "What is the reason of your report?",
-                                  style: TextStyle(
-                                    color: AppSettings.font,
-                                    fontSize: AppSettings.fontSizeH3,
-                                  ),
+                                title: CustomDefaultTextStyle(
+                                  text: "What is the reason of your report?",
+                                  fontSize: AppSettings.fontSizeH3,
                                 ),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -436,12 +425,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Offensive profile picture",
-                                          style: TextStyle(
-                                            color: AppSettings.font,
-                                            fontSize: AppSettings.fontSize,
-                                          ),
+                                        const CustomDefaultTextStyle(
+                                          text: "Offensive profile picture",
                                         ),
                                         Checkbox(
                                           value: isProfilePictureChecked,
@@ -462,12 +447,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Offensive name",
-                                          style: TextStyle(
-                                            color: AppSettings.font,
-                                            fontSize: AppSettings.fontSize,
-                                          ),
+                                        CustomDefaultTextStyle(
+                                          text: "Offensive name",
                                         ),
                                         Checkbox(
                                           value: isNameChecked,
@@ -487,12 +468,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Offensive username",
-                                          style: TextStyle(
-                                            color: AppSettings.font,
-                                            fontSize: AppSettings.fontSize,
-                                          ),
+                                        CustomDefaultTextStyle(
+                                          text: "Offensive username",
                                         ),
                                         Checkbox(
                                           value: isUsernameChecked,
@@ -512,12 +489,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          "Other",
-                                          style: TextStyle(
-                                            color: AppSettings.font,
-                                            fontSize: AppSettings.fontSize,
-                                          ),
+                                        CustomDefaultTextStyle(
+                                          text: "Other",
                                         ),
                                         Checkbox(
                                           value: isOtherChecked,
@@ -559,12 +532,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       reportTextController.clear();
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text(
-                                      'Cancel',
-                                      style: TextStyle(
-                                        color: AppSettings.primary,
-                                        fontSize: AppSettings.fontSize,
-                                      ),
+                                    child: CustomDefaultTextStyle(
+                                      text: 'Cancel',
+                                      color: AppSettings.primary,
                                     ),
                                   ),
                                   TextButton(
@@ -588,7 +558,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Center(
-                                              child: Text(response.error.toString()),
+                                              child: CustomDefaultTextStyle(text: response.error.toString()),
                                             ),
                                           ),
                                         );
@@ -596,12 +566,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text(
-                                      'Report',
-                                      style: TextStyle(
-                                        color: AppSettings.primary,
-                                        fontSize: AppSettings.fontSize,
-                                      ),
+                                    child: CustomDefaultTextStyle(
+                                      text: 'Report',
+                                      color: AppSettings.primary,
                                     ),
                                   ),
                                 ],
@@ -629,12 +596,8 @@ class _ProfilePageState extends State<ProfilePage> {
     UserAccount userAccount = userBox.get("userAccount");
     return Column(
       children: [
-        Text(
-          text,
-          style: TextStyle(
-            color: AppSettings.font,
-            fontSize: AppSettings.fontSize,
-          ),
+        CustomDefaultTextStyle(
+          text: text,
         ),
         Container(
           width: screenwidth / 3.5,
@@ -647,12 +610,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
                     }
                   : null,
-              child: Text(
-                topText,
-                style: TextStyle(
-                  color: AppSettings.font,
-                  fontSize: AppSettings.fontSize,
-                ),
+              child: CustomDefaultTextStyle(
+                text: topText,
               ),
             ),
           ),

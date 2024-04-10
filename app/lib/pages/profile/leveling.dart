@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class LevelingPage extends StatelessWidget {
@@ -12,7 +13,7 @@ class LevelingPage extends StatelessWidget {
         backgroundColor: AppSettings.background,
         shadowColor: AppSettings.background,
         surfaceTintColor: AppSettings.background,
-        title: const Text('Leveling'),
+        title: const CustomDefaultTextStyle(text: 'Leveling'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -51,20 +52,13 @@ class LevelingPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: AppSettings.font,
-              fontSize: AppSettings.fontSizeH3,
-              fontWeight: FontWeight.w500,
-            ),
+          CustomDefaultTextStyle(
+            text: title,
+            fontSize: AppSettings.fontSizeH3,
+            fontWeight: FontWeight.w500,
           ),
-          Text(
-            description,
-            style: TextStyle(
-              color: AppSettings.font,
-              fontSize: AppSettings.fontSize,
-            ),
+          CustomDefaultTextStyle(
+            text: description,
           ),
         ],
       ),

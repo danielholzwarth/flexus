@@ -1,5 +1,6 @@
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -24,7 +25,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mobile Scanner'),
+        title: const CustomDefaultTextStyle(text: 'Mobile Scanner'),
         centerTitle: true,
         backgroundColor: AppSettings.background,
         actions: [

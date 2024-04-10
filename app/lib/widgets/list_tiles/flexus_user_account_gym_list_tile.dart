@@ -1,6 +1,7 @@
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
@@ -29,9 +30,9 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: AppSettings.background,
         leading: buildPicture(context),
-        title: Text(userAccountGymOverview.name),
+        title: CustomDefaultTextStyle(text: userAccountGymOverview.name),
         trailing: buildTrailing(context),
-        subtitle: Text("@${userAccountGymOverview.username}"),
+        subtitle: CustomDefaultTextStyle(text: "@${userAccountGymOverview.username}"),
       ),
     );
   }
@@ -41,19 +42,12 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text(
-          "Start: ${DateFormat('hh:mm').format(userAccountGymOverview.workoutStartTime)}",
-          style: TextStyle(
-            fontSize: AppSettings.fontSize,
-            color: AppSettings.font,
-          ),
+        CustomDefaultTextStyle(
+          text: "Start: ${DateFormat('hh:mm').format(userAccountGymOverview.workoutStartTime)}",
         ),
-        Text(
-          "Avg: ${userAccountGymOverview.averageWorkoutDuration!.inMinutes.toString()} min",
-          style: TextStyle(
-            fontSize: AppSettings.fontSizeT2,
-            color: AppSettings.font,
-          ),
+        CustomDefaultTextStyle(
+          text: "Avg: ${userAccountGymOverview.averageWorkoutDuration!.inMinutes.toString()} min",
+          fontSize: AppSettings.fontSizeT2,
         ),
       ],
     );

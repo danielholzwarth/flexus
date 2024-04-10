@@ -3,6 +3,7 @@ import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +40,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Plan'),
+        title: const CustomDefaultTextStyle(text: 'Create Plan'),
         centerTitle: true,
       ),
       body: BlocConsumer(
@@ -58,7 +59,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           } else if (state is PlanError) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: Text(state.error),
+              body: CustomDefaultTextStyle(text: state.error),
             );
           } else {
             return Stepper(
@@ -103,9 +104,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                   Navigator.pop(context);
                 }
               },
-              child: Text(
-                'CANCEL',
-                style: TextStyle(color: AppSettings.font),
+              child: const CustomDefaultTextStyle(
+                text: 'CANCEL',
               ),
             ),
             TextButton(
@@ -121,7 +121,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Center(
-                            child: Text("Plan Name can not be empty!"),
+                            child: CustomDefaultTextStyle(text: "Plan Name can not be empty!"),
                           ),
                         ),
                       );
@@ -157,7 +157,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Center(
-                            child: Text("Split Count must be greater than 0."),
+                            child: CustomDefaultTextStyle(text: "Split Count must be greater than 0."),
                           ),
                         ),
                       );
@@ -171,7 +171,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Center(
-                            child: Text("Each Split must have a Name."),
+                            child: CustomDefaultTextStyle(text: "Each Split must have a Name."),
                           ),
                         ),
                       );
@@ -191,7 +191,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Center(
-                              child: Text("Duplicate texts are not allowed."),
+                              child: CustomDefaultTextStyle(text: "Duplicate texts are not allowed."),
                             ),
                           ),
                         );
@@ -267,9 +267,9 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     break;
                 }
               },
-              child: Text(
-                'CONTINUE',
-                style: TextStyle(color: AppSettings.primary),
+              child: CustomDefaultTextStyle(
+                text: 'CONTINUE',
+                color: AppSettings.primary,
               ),
             ),
           ],
@@ -286,14 +286,14 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           : currentStep == 4
               ? StepState.editing
               : StepState.complete,
-      title: const Text("Type"),
+      title: const CustomDefaultTextStyle(text: "Type"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Decide whether your plan should\nbe weekly repetetive or not."),
+              const CustomDefaultTextStyle(text: "Decide whether your plan should\nbe weekly repetetive or not."),
               Switch(
                 value: isWeeklyRepetetive,
                 onChanged: (value) {
@@ -334,11 +334,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               : splitControllers.isEmpty
                   ? StepState.error
                   : StepState.complete,
-      title: const Text("Exercises"),
+      title: const CustomDefaultTextStyle(text: "Exercises"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("Choose from a list the default exercises for each split."),
+          const CustomDefaultTextStyle(text: "Choose from a list the default exercises for each split."),
           SizedBox(height: AppSettings.screenHeight * 0.02),
           Container(
             width: AppSettings.screenWidth * 0.8,
@@ -350,12 +350,9 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  splitControllers[index].text,
-                  style: TextStyle(
-                    fontSize: AppSettings.fontSizeH4,
-                    color: AppSettings.font,
-                  ),
+                CustomDefaultTextStyle(
+                  text: splitControllers[index].text,
+                  fontSize: AppSettings.fontSizeH4,
                 ),
                 buildExercises(index),
                 TextButton(
@@ -370,7 +367,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     exerciseList[splitControllers[index].text] = splitExercises;
                     setState(() {});
                   },
-                  child: const Text("Add default exercises"),
+                  child: const CustomDefaultTextStyle(text: "Add default exercises"),
                 ),
                 SizedBox(height: AppSettings.screenHeight * 0.01),
                 Container(
@@ -396,11 +393,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               : splitControllers.any((element) => element.text.isEmpty) || splitControllers.isEmpty
                   ? StepState.error
                   : StepState.complete,
-      title: const Text("Split Names"),
+      title: const CustomDefaultTextStyle(text: "Split Names"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Give your Splits a name. Choose names which describe your workout (e.g. Chest Bizeps)."),
+          const CustomDefaultTextStyle(text: "Give your Splits a name. Choose names which describe your workout (e.g. Chest Bizeps)."),
           for (int index = 0; index < splitControllers.length; index++)
             FlexusTextFormField(
               hintText: "Split ${index + 1}",
@@ -424,11 +421,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               : splitCountController.text.isNotEmpty
                   ? StepState.complete
                   : StepState.error,
-      title: const Text("Number of Splits"),
+      title: const CustomDefaultTextStyle(text: "Number of Splits"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("How many splits does your workout consist of?"),
+          const CustomDefaultTextStyle(text: "How many splits does your workout consist of?"),
           FlexusTextFormField(
             hintText: "Count",
             textController: splitCountController,
@@ -451,11 +448,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           : nameController.text.isNotEmpty
               ? StepState.complete
               : StepState.error,
-      title: const Text("Name"),
+      title: const CustomDefaultTextStyle(text: "Name"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Give your workout plan a name so you can remember it better."),
+          const CustomDefaultTextStyle(text: "Give your workout plan a name so you can remember it better."),
           FlexusTextFormField(
             hintText: "Name",
             textController: nameController,
@@ -488,9 +485,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           (index) {
             return ListTile(
               key: Key('$index'),
-              title: Text(
-                "${index + 1}. ${exercises[index].name}",
-                style: TextStyle(fontSize: AppSettings.fontSize),
+              title: CustomDefaultTextStyle(
+                text: "${index + 1}. ${exercises[index].name}",
               ),
               trailing: Icon(
                 Icons.drag_handle,
@@ -509,7 +505,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     if (isWeeklyRepetetive) {
       return Column(
         children: [
-          const Text("Drag your Split into the corresponding weekday. The default-value is a Rest-Day."),
+          const CustomDefaultTextStyle(text: "Drag your Split into the corresponding weekday. The default-value is a Rest-Day."),
           SizedBox(height: AppSettings.screenHeight * 0.04),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -526,8 +522,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                           child: Container(
                             width: AppSettings.screenWidth * 0.3,
                             padding: const EdgeInsets.all(8),
-                            child: Text(
-                              splitControllers[index].text,
+                            child: CustomDefaultTextStyle(
+                              text: splitControllers[index].text,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -537,8 +533,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                           color: AppSettings.primaryShade48,
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            splitControllers[index].text,
+                          child: CustomDefaultTextStyle(
+                            text: splitControllers[index].text,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -550,8 +546,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       child: Container(
                         width: AppSettings.screenWidth * 0.3,
                         padding: const EdgeInsets.all(8),
-                        child: const Text(
-                          "Rest",
+                        child: const CustomDefaultTextStyle(
+                          text: "Rest",
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -561,8 +557,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       color: AppSettings.primaryShade48,
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.only(bottom: 10),
-                      child: const Text(
-                        "Rest",
+                      child: const CustomDefaultTextStyle(
+                        text: "Rest",
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -582,13 +578,10 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                           color: weeklyAcceptedData[index].isNotEmpty ? AppSettings.confirm.withOpacity(0.5) : AppSettings.font.withOpacity(0.1),
                           margin: const EdgeInsets.only(bottom: 10),
                           alignment: Alignment.center,
-                          child: Text(
-                            weeklyAcceptedData[index].isNotEmpty ? weeklyAcceptedData[index] : defaultData[index],
+                          child: CustomDefaultTextStyle(
+                            text: weeklyAcceptedData[index].isNotEmpty ? weeklyAcceptedData[index] : defaultData[index],
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            fontWeight: FontWeight.bold,
                           ),
                         );
                       },
@@ -614,7 +607,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
       int itemCount = splitCount + orderRestCount;
       return Column(
         children: [
-          const Text("Drag the Splits into the correct order. If you need Rest-Days press on the plus icon below."),
+          const CustomDefaultTextStyle(text: "Drag the Splits into the correct order. If you need Rest-Days press on the plus icon below."),
           SizedBox(height: AppSettings.screenHeight * 0.04),
           ReorderableListView(
             primary: false,
@@ -623,7 +616,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               itemCount,
               (index) => ListTile(
                 key: Key('$index'),
-                title: Text("${index + 1}. ${splitControllers[index].text}"),
+                title: CustomDefaultTextStyle(text: "${index + 1}. ${splitControllers[index].text}"),
                 trailing: const Icon(Icons.drag_handle),
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/api/workout/workout_service.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,12 +22,9 @@ class NetworkController extends GetxController {
     if (connectivityResult == ConnectivityResult.none) {
       if (AppSettings.hasConnection == true) {
         Get.rawSnackbar(
-          messageText: Text(
-            'Internet disconnected',
-            style: TextStyle(
-              color: AppSettings.fontV1,
-              fontSize: AppSettings.fontSize,
-            ),
+          messageText: CustomDefaultTextStyle(
+            text: 'Internet disconnected',
+            color: AppSettings.fontV1,
             textAlign: TextAlign.center,
           ),
           isDismissible: false,
@@ -42,12 +40,9 @@ class NetworkController extends GetxController {
 
       if (AppSettings.hasConnection == false) {
         Get.rawSnackbar(
-          messageText: Text(
-            'Internet reconnected',
-            style: TextStyle(
-              color: AppSettings.fontV1,
-              fontSize: AppSettings.fontSize,
-            ),
+          messageText: CustomDefaultTextStyle(
+            text: 'Internet reconnected',
+            color: AppSettings.fontV1,
             textAlign: TextAlign.center,
           ),
           isDismissible: false,

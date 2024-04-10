@@ -3,6 +3,7 @@ import 'package:app/hive/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_plan_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -76,13 +77,13 @@ class PlanCustomSearchDelegate extends SearchDelegate {
                         subtitle: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Splits: ${filteredPlans[index].splitCount}",
-                              style: TextStyle(fontSize: AppSettings.fontSizeT2),
+                            CustomDefaultTextStyle(
+                              text: "Splits: ${filteredPlans[index].splitCount}",
+                              fontSize: AppSettings.fontSizeT2,
                             ),
-                            Text(
-                              "Created at: ${DateFormat('dd.MM.yyyy').format(filteredPlans[index].createdAt)}",
-                              style: TextStyle(fontSize: AppSettings.fontSizeT2),
+                            CustomDefaultTextStyle(
+                              text: "Created at: ${DateFormat('dd.MM.yyyy').format(filteredPlans[index].createdAt)}",
+                              fontSize: AppSettings.fontSizeT2,
                             )
                           ],
                         ),
@@ -99,7 +100,7 @@ class PlanCustomSearchDelegate extends SearchDelegate {
               return Scaffold(
                 backgroundColor: AppSettings.background,
                 body: const Center(
-                  child: Text("No plan found"),
+                  child: CustomDefaultTextStyle(text: "No plan found"),
                 ),
               );
             }

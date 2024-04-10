@@ -14,6 +14,7 @@ import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -81,9 +82,8 @@ class _GymPageState extends State<GymPage> {
           } else {
             return SliverFillRemaining(
               child: Center(
-                child: Text(
-                  'No gym found',
-                  style: TextStyle(fontSize: AppSettings.fontSize),
+                child: CustomDefaultTextStyle(
+                  text: 'No gym found',
                 ),
               ),
             );
@@ -91,9 +91,8 @@ class _GymPageState extends State<GymPage> {
         } else if (state is UserAccountsError) {
           return SliverFillRemaining(
             child: Center(
-              child: Text(
-                'Error: ${state.error}',
-                style: TextStyle(fontSize: AppSettings.fontSize),
+              child: CustomDefaultTextStyle(
+                text: 'Error: ${state.error}',
               ),
             ),
           );
@@ -153,12 +152,9 @@ class _GymPageState extends State<GymPage> {
                       padding: const EdgeInsets.all(40.0),
                       child: Column(
                         children: [
-                          Text(
-                            "Send Notification",
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSizeH4,
-                              color: AppSettings.font,
-                            ),
+                          CustomDefaultTextStyle(
+                            text: "Send Notification",
+                            fontSize: AppSettings.fontSizeH4,
                           ),
                           SizedBox(height: AppSettings.screenHeight * 0.06),
                           Container(
@@ -199,13 +195,9 @@ class _GymPageState extends State<GymPage> {
                                       return DropdownMenuItem<String>(
                                         alignment: Alignment.center,
                                         value: value,
-                                        child: Text(
-                                          value,
-                                          style: TextStyle(
-                                            fontSize: AppSettings.fontSizeH4,
-                                            color: AppSettings.font,
-                                            fontWeight: FontWeight.normal,
-                                          ),
+                                        child: CustomDefaultTextStyle(
+                                          text: value,
+                                          fontSize: AppSettings.fontSizeH4,
                                         ),
                                       );
                                     }).toList(),
@@ -268,12 +260,9 @@ class _GymPageState extends State<GymPage> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Center(
-                                  child: Text(
-                                    selectedTime.format(context),
-                                    style: TextStyle(
-                                      fontSize: AppSettings.fontSizeH4,
-                                      color: AppSettings.font,
-                                    ),
+                                  child: CustomDefaultTextStyle(
+                                    text: selectedTime.format(context),
+                                    fontSize: AppSettings.fontSizeH4,
                                   ),
                                 ),
                               ),
@@ -316,7 +305,7 @@ class _GymPageState extends State<GymPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text("Gyms can not have the same name."),
+                child: CustomDefaultTextStyle(text: "Gyms can not have the same name."),
               ),
             ),
           );

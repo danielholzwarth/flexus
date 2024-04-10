@@ -108,7 +108,8 @@
 //         return MaterialPageRoute(
 //           builder: (_) => const Scaffold(
 //             body: Center(
-//               child: Text('Route not found'),
+              // child:CustomDefaultTextStyle(
+                  // text: 'Route not found'),
 //             ),
 //           ),
 //         );

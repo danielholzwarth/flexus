@@ -1,3 +1,4 @@
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class CreateExercisePage extends StatelessWidget {
@@ -7,13 +8,13 @@ class CreateExercisePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CreateExercisePage'),
+        title: const CustomDefaultTextStyle(text: 'CreateExercisePage'),
         centerTitle: true,
       ),
       body: const Center(
         child: Column(
           children: [
-            Text("Not implemented yet"),
+            CustomDefaultTextStyle(text: "Not implemented yet"),
           ],
         ),
       ),

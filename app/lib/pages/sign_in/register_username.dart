@@ -7,6 +7,7 @@ import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -63,7 +64,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Username must be at least 6 characters long!'),
+                child: CustomDefaultTextStyle(text: 'Username must be at least 6 characters long!'),
               ),
             ),
           );
@@ -72,7 +73,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Center(
-                child: Text('Username must be shorter than 20 characters!'),
+                child: CustomDefaultTextStyle(text: 'Username must be shorter than 20 characters!'),
               ),
             ),
           );
@@ -85,7 +86,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Center(
-                    child: Text('Username is already assigned!'),
+                    child: CustomDefaultTextStyle(text: 'Username is already assigned!'),
                   ),
                 ),
               );
@@ -104,7 +105,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Center(
-                  child: Text("Statuscode ${response.statusCode}\nError: ${response.error}"),
+                  child: CustomDefaultTextStyle(text: "Statuscode ${response.statusCode}\nError: ${response.error}"),
                 ),
               ),
             );
@@ -117,13 +118,10 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
   SizedBox _buildDescription() {
     return SizedBox(
       width: AppSettings.screenWidth * 0.7,
-      child: Text(
-        "A username can only exist once. It is used to identify you.",
-        style: TextStyle(
-          color: AppSettings.font,
-          decoration: TextDecoration.none,
-          fontSize: AppSettings.fontSize,
-        ),
+      child: CustomDefaultTextStyle(
+        text: "A username can only exist once. It is used to identify you.",
+        decoration: TextDecoration.none,
+        fontSize: AppSettings.fontSize,
         textAlign: TextAlign.left,
       ),
     );
@@ -143,13 +141,10 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
         ),
         SizedBox(
           width: AppSettings.screenWidth * 0.7,
-          child: Text(
-            "Please enter your username.",
-            style: TextStyle(
-              color: AppSettings.font,
-              decoration: TextDecoration.none,
-              fontSize: AppSettings.fontSizeH3,
-            ),
+          child: CustomDefaultTextStyle(
+            text: "Please enter your username.",
+            decoration: TextDecoration.none,
+            fontSize: AppSettings.fontSizeH3,
             textAlign: TextAlign.left,
           ),
         ),

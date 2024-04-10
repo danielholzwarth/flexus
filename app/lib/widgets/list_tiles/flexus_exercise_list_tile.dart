@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:app/resources/app_settings.dart';
 
@@ -33,11 +34,9 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
       tileColor: AppSettings.background,
       title: highlightText(widget.title),
       subtitle: widget.subtitle.isNotEmpty
-          ? Text(
-              widget.subtitle,
-              style: TextStyle(
-                fontSize: AppSettings.fontSizeT2,
-              ),
+          ? CustomDefaultTextStyle(
+              text: widget.subtitle,
+              fontSize: AppSettings.fontSizeT2,
             )
           : null,
       onTap: () {

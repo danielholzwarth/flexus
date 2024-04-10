@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsPage extends StatefulWidget {
@@ -16,11 +17,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
       backgroundColor: AppSettings.background,
       appBar: AppBar(
         backgroundColor: AppSettings.background,
-        title: const Text('StatisticsPage'),
+        title: const CustomDefaultTextStyle(text: 'StatisticsPage'),
         centerTitle: true,
       ),
       body: const Center(
-        child: Text("Stats"),
+        child: CustomDefaultTextStyle(text: "Stats"),
       ),
     );
   }

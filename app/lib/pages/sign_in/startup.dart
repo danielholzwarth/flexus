@@ -3,6 +3,7 @@ import 'package:app/pages/sign_in/register_username.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -31,25 +32,21 @@ class _StartUpPageState extends State<StartUpPage> {
               color: AppSettings.background,
             ),
             SizedBox(height: AppSettings.screenHeight * 0.02),
-            Text(
-              "FLEXUS",
-              style: TextStyle(
-                color: AppSettings.fontV1,
-                decoration: TextDecoration.none,
-                fontSize: AppSettings.fontSizeH1,
-              ),
+            CustomDefaultTextStyle(
+              text: "FLEXUS",
+              color: AppSettings.fontV1,
+              decoration: TextDecoration.none,
+              fontSize: AppSettings.fontSizeH1,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: AppSettings.screenHeight * 0.27),
             SizedBox(
               width: AppSettings.screenWidth * 0.7,
-              child: Text(
-                "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
-                style: TextStyle(
-                  color: AppSettings.fontV1,
-                  decoration: TextDecoration.none,
-                  fontSize: AppSettings.fontSizeT2,
-                ),
+              child: CustomDefaultTextStyle(
+                text: "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
+                color: AppSettings.fontV1,
+                decoration: TextDecoration.none,
+                fontSize: AppSettings.fontSizeT2,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -114,12 +111,10 @@ class _StartUpPageState extends State<StartUpPage> {
           SizedBox(
             width: AppSettings.screenWidth * 0.02,
           ),
-          Text(
-            AppSettings.language,
-            style: TextStyle(
-              fontSize: AppSettings.fontSizeH4,
-              color: AppSettings.fontV1,
-            ),
+          CustomDefaultTextStyle(
+            text: AppSettings.language,
+            fontSize: AppSettings.fontSizeH4,
+            color: AppSettings.fontV1,
           ),
           SizedBox(
             width: AppSettings.screenWidth * 0.07,

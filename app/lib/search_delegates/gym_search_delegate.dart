@@ -5,6 +5,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_expansion_tile.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_osm_expansion_tile.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -88,7 +89,7 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                   return Scaffold(
                     backgroundColor: AppSettings.background,
                     body: const Center(
-                      child: Text("No gyms found"),
+                      child: CustomDefaultTextStyle(text: "No gyms found"),
                     ),
                   );
                 }
@@ -114,22 +115,14 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Start searching in order to show results!",
+                    const CustomDefaultTextStyle(
+                      text: "Start searching in order to show results!",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppSettings.fontSize,
-                        color: AppSettings.font,
-                      ),
                     ),
                     SizedBox(height: AppSettings.screenHeight * 0.05),
-                    Text(
-                      "If your gym does not yet exist, you can add it to the list of available gyms by clicking on the top right!",
+                    const CustomDefaultTextStyle(
+                      text: "If your gym does not yet exist, you can add it to the list of available gyms by clicking on the top right!",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppSettings.fontSize,
-                        color: AppSettings.font,
-                      ),
                     ),
                   ],
                 ),
@@ -155,9 +148,8 @@ class GymsCustomSearchDelegate extends SearchDelegate {
               return Scaffold(
                 backgroundColor: AppSettings.background,
                 body: Center(
-                  child: Text(
-                    'Error: ${snapshot.error}',
-                    style: TextStyle(fontSize: AppSettings.fontSize),
+                  child: CustomDefaultTextStyle(
+                    text: 'Error: ${snapshot.error}',
                   ),
                 ),
               );
@@ -190,22 +182,14 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "No results found",
+                          const CustomDefaultTextStyle(
+                            text: "No results found",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSize,
-                              color: AppSettings.font,
-                            ),
                           ),
                           SizedBox(height: AppSettings.screenHeight * 0.05),
-                          Text(
-                            "You can switch to the gym search by pressing the blue plus-sign at the top right.",
+                          const CustomDefaultTextStyle(
+                            text: "You can switch to the gym search by pressing the blue plus-sign at the top right.",
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: AppSettings.fontSize,
-                              color: AppSettings.font,
-                            ),
                           ),
                         ],
                       ),

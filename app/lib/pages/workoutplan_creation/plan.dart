@@ -4,9 +4,8 @@ import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/pages/workoutplan_creation/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
@@ -45,7 +44,7 @@ class _PlanPageState extends State<PlanPage> {
             body: state.plan != null
                 ? buildPlanView(state.plan!)
                 : const Center(
-                    child: Text("You don't have an active plan right now."),
+                    child: CustomDefaultTextStyle(text: "You don't have an active plan right now."),
                   ),
           );
         } else {
@@ -75,7 +74,7 @@ class _PlanPageState extends State<PlanPage> {
               ),
             );
           } else {
-            return const Text("Error Loading Plan Details");
+            return const CustomDefaultTextStyle(text: "Error Loading Plan Details");
           }
         } else {
           return Scaffold(
@@ -128,13 +127,10 @@ class _PlanPageState extends State<PlanPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'General',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: AppSettings.fontSizeH4,
-                ),
-                overflow: TextOverflow.clip,
+              CustomDefaultTextStyle(
+                text: 'General',
+                fontWeight: FontWeight.bold,
+                fontSize: AppSettings.fontSizeH4,
               ),
             ],
           ),
@@ -144,20 +140,20 @@ class _PlanPageState extends State<PlanPage> {
           dataRowMaxHeight: AppSettings.screenHeight * 0.05,
           headingRowHeight: AppSettings.screenHeight * 0.02,
           columns: const [
-            DataColumn(label: Text('')),
-            DataColumn(label: Text('')),
+            DataColumn(label: CustomDefaultTextStyle(text: '')),
+            DataColumn(label: CustomDefaultTextStyle(text: '')),
           ],
           rows: [
             DataRow(
               cells: [
-                DataCell(const Text("Split"), onTap: () => debugPrint("asdad")),
+                DataCell(const CustomDefaultTextStyle(text: "Split"), onTap: () => debugPrint("asdad")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Flexible(
-                        child: Text(
-                          combinedSplitName,
+                        child: CustomDefaultTextStyle(
+                          text: combinedSplitName,
                           overflow: TextOverflow.clip,
                         ),
                       ),
@@ -168,12 +164,12 @@ class _PlanPageState extends State<PlanPage> {
             ),
             DataRow(
               cells: [
-                DataCell(const Text("Blocked days"), onTap: () => debugPrint("asdad")),
+                DataCell(const CustomDefaultTextStyle(text: "Blocked days"), onTap: () => debugPrint("asdad")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Flexible(child: Text(blockedDays)),
+                      Flexible(child: CustomDefaultTextStyle(text: blockedDays)),
                     ],
                   ),
                 ),
@@ -181,12 +177,12 @@ class _PlanPageState extends State<PlanPage> {
             ),
             DataRow(
               cells: [
-                DataCell(const Text("Created"), onTap: () => debugPrint("asdad")),
+                DataCell(const CustomDefaultTextStyle(text: "Created"), onTap: () => debugPrint("asdad")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(DateFormat('dd.MM.yyyy').format(planOverview.plan.createdAt)),
+                      CustomDefaultTextStyle(text: DateFormat('dd.MM.yyyy').format(planOverview.plan.createdAt)),
                     ],
                   ),
                 ),
@@ -212,14 +208,12 @@ class _PlanPageState extends State<PlanPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          planOverview.plan.isWeekly
+                        CustomDefaultTextStyle(
+                          text: planOverview.plan.isWeekly
                               ? "${planOverview.splitOverviews[index].split.name} (${getWeekday(index)})"
                               : "${planOverview.splitOverviews[index].split.name} (Day ${index + 1})",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: AppSettings.fontSizeH4,
-                          ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppSettings.fontSizeH4,
                         ),
                       ],
                     ),
@@ -229,8 +223,8 @@ class _PlanPageState extends State<PlanPage> {
                           dataRowMinHeight: AppSettings.screenHeight * 0.02,
                           dataRowMaxHeight: AppSettings.screenHeight * 0.05,
                           columns: const [
-                            DataColumn(label: Text('Exercise')),
-                            DataColumn(label: Text('Measurements')),
+                            DataColumn(label: CustomDefaultTextStyle(text: 'Exercise')),
+                            DataColumn(label: CustomDefaultTextStyle(text: 'Measurements')),
                           ],
                           rows: [
                             for (int index = 0; index < planOverview.splitOverviews[index].exercises.length; index++)
@@ -246,14 +240,15 @@ class _PlanPageState extends State<PlanPage> {
                                               for (int measurementIndex = 0;
                                                   measurementIndex < planOverview.splitOverviews[index].measurements[index].length;
                                                   measurementIndex++)
-                                                Text(planOverview.splitOverviews[index].measurements[index][measurementIndex],
+                                                CustomDefaultTextStyle(
+                                                    text: planOverview.splitOverviews[index].measurements[index][measurementIndex],
                                                     overflow: TextOverflow.clip),
                                               const SizedBox()
                                             ],
                                           ),
                                         )
                                       : const DataCell(
-                                          Text("no data"),
+                                          CustomDefaultTextStyle(text: "no data"),
                                         )
                                 ],
                               ),
@@ -262,7 +257,7 @@ class _PlanPageState extends State<PlanPage> {
                       : planOverview.splitOverviews[index].split.name != "Rest"
                           ? Padding(
                               padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05, top: AppSettings.screenHeight * 0.01),
-                              child: const Text("No default exercises selected"),
+                              child: const CustomDefaultTextStyle(text: "No default exercises selected"),
                             )
                           : SizedBox(height: AppSettings.screenHeight * 0.02),
                 ],
@@ -277,7 +272,7 @@ class _PlanPageState extends State<PlanPage> {
   AppBar buildAppBar(Plan? plan) {
     return AppBar(
       backgroundColor: AppSettings.background,
-      title: Text(plan != null ? plan.name : ""),
+      title: CustomDefaultTextStyle(text: plan != null ? plan.name : ""),
       centerTitle: true,
       actions: [
         PopupMenuButton<String>(
@@ -292,14 +287,14 @@ class _PlanPageState extends State<PlanPage> {
               return ['Change Plan', 'Create New Plan', 'Delete Plan'].map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
-                  child: Text(choice),
+                  child: CustomDefaultTextStyle(text: choice),
                 );
               }).toList();
             } else {
               return ['Select Plan', 'Create New Plan'].map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
-                  child: Text(choice),
+                  child: CustomDefaultTextStyle(text: choice),
                 );
               }).toList();
             }

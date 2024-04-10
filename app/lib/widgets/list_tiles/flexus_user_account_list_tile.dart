@@ -2,6 +2,7 @@ import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
@@ -64,10 +65,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                 onPressed: () => {
                   friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
                 },
-                child: Text(
-                  "Remove",
-                  style: TextStyle(color: AppSettings.error),
-                ),
+                child: CustomDefaultTextStyle(text: "Remove", color: AppSettings.error),
               );
             } else {
               if (state.friendship!.requestedID == widget.userAccount.id) {
@@ -87,10 +85,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                   onPressed: () => {
                     friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
                   },
-                  child: Text(
-                    "Request sent",
-                    style: TextStyle(color: AppSettings.primary),
-                  ),
+                  child: CustomDefaultTextStyle(text: "Request sent", color: AppSettings.primary),
                 );
               } else {
                 return TextButton(
@@ -109,10 +104,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                   onPressed: () => {
                     friendshipBloc.add(PatchFriendship(requestedID: widget.userAccount.id, name: "isAccepted", value: true)),
                   },
-                  child: Text(
-                    "Accept Request",
-                    style: TextStyle(color: AppSettings.primary),
-                  ),
+                  child: CustomDefaultTextStyle(text: "Accept Request", color: AppSettings.primary),
                 );
               }
             }
@@ -133,10 +125,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               onPressed: () {
                 friendshipBloc.add(PostFriendship(requestedID: widget.userAccount.id));
               },
-              child: Text(
-                "Add",
-                style: TextStyle(color: AppSettings.primary),
-              ),
+              child: CustomDefaultTextStyle(text: "Add", color: AppSettings.primary),
             );
           }
         } else {
