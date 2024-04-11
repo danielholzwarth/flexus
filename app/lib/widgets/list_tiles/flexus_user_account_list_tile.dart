@@ -51,7 +51,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
             if (state.friendship!.isAccepted) {
               return TextButton(
                 style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                  overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       side: BorderSide(

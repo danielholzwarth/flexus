@@ -182,6 +182,12 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                             color: AppSettings.font.withOpacity(0.5),
                           ),
                         ),
+                        SizedBox(height: AppSettings.screenHeight * 0.01),
+                        Container(
+                          width: AppSettings.screenWidth * 0.8,
+                          color: AppSettings.font.withOpacity(0.15),
+                          height: 1,
+                        ),
                         BlocBuilder(
                           bloc: userAccountBloc,
                           builder: (context, state) {
@@ -190,25 +196,18 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 ScrollController scrollController = ScrollController();
                                 return Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey.shade300, width: 2),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                      child: FlexusScrollBar(
-                                        scrollController: scrollController,
-                                        child: ListView(
-                                          controller: scrollController,
-                                          children: [
-                                            ...state.userAccountGymOverviews.map(
-                                              (userAccountGymOverview) => FlexusUserAccountGymListTile(
-                                                userAccountGymOverview: userAccountGymOverview,
-                                              ),
+                                    padding: EdgeInsets.symmetric(horizontal: AppSettings.screenWidth * 0.05),
+                                    child: FlexusScrollBar(
+                                      scrollController: scrollController,
+                                      child: ListView(
+                                        controller: scrollController,
+                                        children: [
+                                          ...state.userAccountGymOverviews.map(
+                                            (userAccountGymOverview) => FlexusUserAccountGymListTile(
+                                              userAccountGymOverview: userAccountGymOverview,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -233,6 +232,12 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                             }
                           },
                         ),
+                        Container(
+                          width: AppSettings.screenWidth * 0.8,
+                          color: AppSettings.font.withOpacity(0.15),
+                          height: 1,
+                        ),
+                        SizedBox(height: AppSettings.screenHeight * 0.02),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -267,7 +272,10 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                     onPressed: () {
                                       userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gymOverview.gym.id));
                                     },
-                                    child: const CustomDefaultTextStyle(text: 'Remove Gym'),
+                                    child: CustomDefaultTextStyle(
+                                      text: 'Remove Gym',
+                                      color: AppSettings.error,
+                                    ),
                                   );
                                 }
                               },

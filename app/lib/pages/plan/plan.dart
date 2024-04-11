@@ -228,10 +228,10 @@ class _PlanPageState extends State<PlanPage> {
                             DataColumn(label: CustomDefaultTextStyle(text: 'Measurements')),
                           ],
                           rows: [
-                            for (int index = 0; index < planOverview.splitOverviews[index].exercises.length; index++)
+                            for (int exerciseIndex = 0; exerciseIndex < planOverview.splitOverviews[index].exercises.length; exerciseIndex++)
                               DataRow(
                                 cells: [
-                                  DataCell(Text("${index + 1}. ${planOverview.splitOverviews[index].exercises[index].name}"),
+                                  DataCell(Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),
                                       onTap: () => debugPrint("asdad")),
                                   planOverview.splitOverviews[index].measurements.isNotEmpty
                                       ? DataCell(
@@ -239,18 +239,16 @@ class _PlanPageState extends State<PlanPage> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               for (int measurementIndex = 0;
-                                                  measurementIndex < planOverview.splitOverviews[index].measurements[index].length;
+                                                  measurementIndex < planOverview.splitOverviews[index].measurements[exerciseIndex].length;
                                                   measurementIndex++)
                                                 CustomDefaultTextStyle(
-                                                    text: planOverview.splitOverviews[index].measurements[index][measurementIndex],
+                                                    text: planOverview.splitOverviews[index].measurements[exerciseIndex][measurementIndex],
                                                     overflow: TextOverflow.clip),
                                               const SizedBox()
                                             ],
                                           ),
                                         )
-                                      : const DataCell(
-                                          CustomDefaultTextStyle(text: "no data"),
-                                        )
+                                      : const DataCell(CustomDefaultTextStyle(text: "not implemented yet")),
                                 ],
                               ),
                           ],
