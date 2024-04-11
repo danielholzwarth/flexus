@@ -4,6 +4,7 @@ import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/pages/plan/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
+import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,8 +19,9 @@ class PlanPage extends StatefulWidget {
 }
 
 class _PlanPageState extends State<PlanPage> {
-  PlanBloc planBloc = PlanBloc();
-  PlanBloc planOverviewBloc = PlanBloc();
+  final ScrollController scrollController = ScrollController();
+  final PlanBloc planBloc = PlanBloc();
+  final PlanBloc planOverviewBloc = PlanBloc();
 
   @override
   void initState() {
@@ -63,14 +65,17 @@ class _PlanPageState extends State<PlanPage> {
       builder: (context, state) {
         if (state is PlanOverviewLoaded) {
           if (state.planOverview != null) {
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  buildGeneral(state.planOverview!),
-                  SizedBox(height: AppSettings.screenHeight * 0.05),
-                  buildSplits(state.planOverview!),
-                ],
+            return FlexusScrollBar(
+              scrollController: scrollController,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    buildGeneral(state.planOverview!),
+                    SizedBox(height: AppSettings.screenHeight * 0.05),
+                    buildSplits(state.planOverview!),
+                  ],
+                ),
               ),
             );
           } else {
