@@ -6,8 +6,8 @@ import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/home/archive.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/pages/sign_in/login.dart';
-import 'package:app/pages/workout_documentation/start_workout.dart';
-import 'package:app/pages/workoutplan_creation/plan.dart';
+import 'package:app/pages/workout/start_workout.dart';
+import 'package:app/pages/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } else {
-            return SliverFillRemaining(
+            return const SliverFillRemaining(
               child: Center(
                 child: CustomDefaultTextStyle(
                   text: 'No workouts found',

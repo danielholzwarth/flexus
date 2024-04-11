@@ -85,52 +85,25 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
         int startIndex = text.toLowerCase().indexOf(widget.query!.toLowerCase());
         int endIndex = startIndex + widget.query!.length;
 
-        return RichText(
-          text: TextSpan(
-            text: startIndex > 0 ? text.substring(0, startIndex) : "",
-            style: TextStyle(
-              fontSize: AppSettings.fontSize,
-              color: Colors.grey,
+        return Row(
+          children: [
+            CustomDefaultTextStyle(
+              text: startIndex > 0 ? text.substring(0, startIndex) : "",
+              color: AppSettings.font.withOpacity(0.5),
             ),
-            children: [
-              TextSpan(
-                text: text.substring(startIndex, endIndex),
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: AppSettings.font,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextSpan(
-                text: endIndex < text.length ? text.substring(endIndex) : "",
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
+            CustomDefaultTextStyle(text: text.substring(startIndex, endIndex)),
+            CustomDefaultTextStyle(
+              text: endIndex < text.length ? text.substring(endIndex) : "",
+              color: AppSettings.font.withOpacity(0.5),
+            ),
+          ],
         );
       }
-      return RichText(
-        text: TextSpan(
-          text: text,
-          style: TextStyle(
-            fontSize: AppSettings.fontSize,
-            color: Colors.grey,
-          ),
-        ),
+      return CustomDefaultTextStyle(
+        text: text,
+        color: AppSettings.font.withOpacity(0.5),
       );
     }
-    return RichText(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontSize: AppSettings.fontSize,
-          color: AppSettings.font,
-        ),
-      ),
-    );
+    return CustomDefaultTextStyle(text: text);
   }
 }

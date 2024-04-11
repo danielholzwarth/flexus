@@ -1,7 +1,7 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
-import 'package:app/pages/workoutplan_creation/create_plan.dart';
+import 'package:app/pages/plan/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -104,20 +104,7 @@ class _PlanPageState extends State<PlanPage> {
     }
     combinedSplitName = combinedSplitName.trim();
 
-    String blockedDays = "none";
-
-    if (planOverview.plan.restList != null) {
-      blockedDays = "";
-      for (var i = 0; i < planOverview.plan.restList!.length; i++) {
-        if (planOverview.plan.restList![i]) {
-          if (blockedDays.isNotEmpty) {
-            blockedDays += ", ${getWeekday(i)}";
-          } else {
-            blockedDays += getWeekday(i);
-          }
-        }
-      }
-    }
+    String blockedDays = getBlockedDays(planOverview);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,7 +117,7 @@ class _PlanPageState extends State<PlanPage> {
               CustomDefaultTextStyle(
                 text: 'General',
                 fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH4,
+                fontSize: AppSettings.fontSizeH3,
               ),
             ],
           ),
@@ -196,7 +183,21 @@ class _PlanPageState extends State<PlanPage> {
 
   Widget buildSplits(PlanOverview planOverview) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Padding(
+          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05, bottom: AppSettings.screenHeight * 0.01),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomDefaultTextStyle(
+                text: 'Splits',
+                fontWeight: FontWeight.bold,
+                fontSize: AppSettings.fontSizeH3,
+              ),
+            ],
+          ),
+        ),
         for (int index = 0; index < planOverview.splitOverviews.length; index++)
           Column(
             children: [
@@ -212,7 +213,7 @@ class _PlanPageState extends State<PlanPage> {
                           text: planOverview.plan.isWeekly
                               ? "${planOverview.splitOverviews[index].split.name} (${getWeekday(index)})"
                               : "${planOverview.splitOverviews[index].split.name} (Day ${index + 1})",
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           fontSize: AppSettings.fontSizeH4,
                         ),
                       ],
@@ -272,7 +273,10 @@ class _PlanPageState extends State<PlanPage> {
   AppBar buildAppBar(Plan? plan) {
     return AppBar(
       backgroundColor: AppSettings.background,
-      title: CustomDefaultTextStyle(text: plan != null ? plan.name : ""),
+      title: CustomDefaultTextStyle(
+        text: plan != null ? plan.name : "",
+        fontSize: AppSettings.fontSizeH3,
+      ),
       centerTitle: true,
       actions: [
         PopupMenuButton<String>(
@@ -335,6 +339,30 @@ class _PlanPageState extends State<PlanPage> {
         )
       ],
     );
+  }
+}
+
+String getBlockedDays(PlanOverview planOverview) {
+  if (planOverview.plan.restList != null) {
+    List<bool> restList = planOverview.plan.restList!;
+
+    if (restList.contains(true)) {
+      String blockedDays = "";
+      for (var i = 0; i < restList.length; i++) {
+        if (restList[i]) {
+          if (blockedDays.isNotEmpty) {
+            blockedDays += ", ${getWeekday(i)}";
+          } else {
+            blockedDays += getWeekday(i);
+          }
+        }
+      }
+      return blockedDays;
+    } else {
+      return "-";
+    }
+  } else {
+    return "-";
   }
 }
 

@@ -13,7 +13,10 @@ class LevelingPage extends StatelessWidget {
         backgroundColor: AppSettings.background,
         shadowColor: AppSettings.background,
         surfaceTintColor: AppSettings.background,
-        title: const CustomDefaultTextStyle(text: 'Leveling'),
+        title: CustomDefaultTextStyle(
+          text: 'Leveling',
+          fontSize: AppSettings.fontSizeH3,
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

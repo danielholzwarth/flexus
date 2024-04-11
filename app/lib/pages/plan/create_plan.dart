@@ -367,7 +367,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     exerciseList[splitControllers[index].text] = splitExercises;
                     setState(() {});
                   },
-                  child: const CustomDefaultTextStyle(text: "Add default exercises"),
+                  child: const Text("Add default exercises"),
                 ),
                 SizedBox(height: AppSettings.screenHeight * 0.01),
                 Container(

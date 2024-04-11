@@ -18,7 +18,10 @@ class ShowQRPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const CustomDefaultTextStyle(text: 'QR Code'),
+        title: CustomDefaultTextStyle(
+          text: 'QR Code',
+          fontSize: AppSettings.fontSizeH3,
+        ),
         backgroundColor: AppSettings.background,
         actions: [
           IconButton(

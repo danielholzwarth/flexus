@@ -55,28 +55,31 @@ class _SettingsPageState extends State<SettingsPage> {
               child: CustomScrollView(
                 controller: scrollController,
                 slivers: <Widget>[
-                  const FlexusSliverAppBar(
-                    title: CustomDefaultTextStyle(text: "Settings"),
+                  FlexusSliverAppBar(
+                    title: CustomDefaultTextStyle(
+                      text: "Settings",
+                      fontSize: AppSettings.fontSizeH3,
+                    ),
                   ),
                   _buildSection("My Account"),
                   buildName(userAccount, context),
                   buildUsername(userAccount, context),
                   buildPassword(context),
                   _buildSection("Appearance"),
-                  buildFontSize(state.userSettings, context),
-                  buildDarkMode(state.userSettings),
+                  // buildFontSize(state.userSettings, context),
+                  // buildDarkMode(state.userSettings),
                   buildQuickAccess(state.userSettings),
                   // buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),
                   buildIsListed(state.userSettings),
-                  buildIsPullFromEveryone(state.userSettings),
-                  buildPullUserList(state.userSettings),
-                  buildNotifyEveryone(state.userSettings),
-                  buildNotifyUserList(state.userSettings),
+                  // buildIsPullFromEveryone(state.userSettings),
+                  // buildPullUserList(state.userSettings),
+                  // buildNotifyEveryone(state.userSettings),
+                  // buildNotifyUserList(state.userSettings),
                   SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.05)),
                   buildLogOut(context),
                   buildDeleteAccount(context),
-                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.3)),
+                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.1)),
                 ],
               ),
             );
@@ -206,7 +209,7 @@ class _SettingsPageState extends State<SettingsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
-                title: CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
+                title: const CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
                 trailing: CircularProgressIndicator(color: AppSettings.primary),
               );
             }
@@ -312,7 +315,7 @@ class _SettingsPageState extends State<SettingsPage> {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
-                title: CustomDefaultTextStyle(text: "Pull User List", fontWeight: FontWeight.w500),
+                title: const CustomDefaultTextStyle(text: "Pull User List", fontWeight: FontWeight.w500),
                 trailing: CircularProgressIndicator(color: AppSettings.primary),
               );
             }

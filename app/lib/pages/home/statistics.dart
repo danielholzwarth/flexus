@@ -17,11 +17,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
       backgroundColor: AppSettings.background,
       appBar: AppBar(
         backgroundColor: AppSettings.background,
-        title: const CustomDefaultTextStyle(text: 'StatisticsPage'),
+        title: const CustomDefaultTextStyle(text: 'Statistics'),
         centerTitle: true,
       ),
       body: const Center(
-        child: CustomDefaultTextStyle(text: "Stats"),
+        child: CustomDefaultTextStyle(text: "Stats (not implemented yet)"),
       ),
     );
   }

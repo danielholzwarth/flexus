@@ -1,7 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
-import 'package:app/pages/workout_documentation/view_workout.dart';
+import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
@@ -211,43 +211,23 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
         int startIndex = widget.workoutOverview.splitName!.toLowerCase().indexOf(widget.query!.toLowerCase());
         int endIndex = startIndex + widget.query!.length;
 
-        return RichText(
-          text: TextSpan(
-            text: startIndex > 0 ? splitName.substring(0, startIndex) : "",
-            style: TextStyle(
-              fontSize: AppSettings.fontSize,
-              color: Colors.grey,
+        return Row(
+          children: [
+            CustomDefaultTextStyle(
+              text: startIndex > 0 ? splitName.substring(0, startIndex) : "",
+              color: AppSettings.font.withOpacity(0.5),
             ),
-            children: [
-              TextSpan(
-                text: splitName.substring(startIndex, endIndex),
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: AppSettings.font,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              TextSpan(
-                text: endIndex < splitName.length ? splitName.substring(endIndex) : "",
-                style: TextStyle(
-                  fontSize: AppSettings.fontSize,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
+            CustomDefaultTextStyle(text: splitName.substring(startIndex, endIndex)),
+            CustomDefaultTextStyle(
+              text: endIndex < splitName.length ? splitName.substring(endIndex) : "",
+              color: AppSettings.font.withOpacity(0.5),
+            ),
+          ],
         );
       }
     }
-    return RichText(
-      text: TextSpan(
-        text: splitName,
-        style: TextStyle(
-          fontSize: AppSettings.fontSize,
-          color: AppSettings.font,
-        ),
-      ),
+    return CustomDefaultTextStyle(
+      text: splitName,
     );
   }
 

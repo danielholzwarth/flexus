@@ -3,7 +3,7 @@ import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
-import 'package:app/pages/workout_documentation/start_workout.dart';
+import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';

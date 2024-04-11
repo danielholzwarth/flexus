@@ -25,7 +25,10 @@ class _ScanQRPageState extends State<ScanQRPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const CustomDefaultTextStyle(text: 'Mobile Scanner'),
+        title: CustomDefaultTextStyle(
+          text: 'Mobile Scanner',
+          fontSize: AppSettings.fontSizeH3,
+        ),
         centerTitle: true,
         backgroundColor: AppSettings.background,
         actions: [
