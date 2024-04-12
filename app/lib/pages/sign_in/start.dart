@@ -24,7 +24,7 @@ class _StartUpPageState extends State<StartUpPage> {
         child: Column(
           children: [
             SizedBox(height: AppSettings.screenHeight * 0.05),
-            _buildLanguageDetector(),
+            // _buildLanguageDetector(),
             SizedBox(height: AppSettings.screenHeight * 0.045),
             Icon(
               Icons.star,

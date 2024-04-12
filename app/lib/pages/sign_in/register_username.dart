@@ -8,7 +8,9 @@ import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:page_transition/page_transition.dart';
 
 class RegisterUsernamePage extends StatefulWidget {
@@ -60,38 +62,20 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
       fontColor: AppSettings.fontV1,
       function: () async {
         if (usernameController.text.length < 6) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: 'Username must be at least 6 characters long!'),
-              ),
-            ),
-          );
+          await FlexusGet.showGetSnackbar(message: "Username must be at least 6 characters long!");
         } else if (usernameController.text.length > 20) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: 'Username must be shorter than 20 characters!'),
-              ),
-            ),
-          );
+          await FlexusGet.showGetSnackbar(message: "Username must be shorter than 20 characters!");
         } else {
           final response = await loginUserAccountService.getUsernameAvailability(usernameController.text);
           if (response.statusCode == 200) {
             final bool availability = response.body;
             if (!availability) {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Center(
-                    child: CustomDefaultTextStyle(text: 'Username is already assigned!'),
-                  ),
-                ),
-              );
+              await FlexusGet.showGetSnackbar(message: "Username is already assigned!");
+              setState(() {});
             } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
+              if (!Get.isSnackbarOpen) {
+                Get.closeCurrentSnackbar();
+              }
               Navigator.push(
                 context,
                 PageTransition(
@@ -101,14 +85,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
               );
             }
           } else {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: CustomDefaultTextStyle(text: "Statuscode ${response.statusCode}\nError: ${response.error}"),
-                ),
-              ),
-            );
+            await FlexusGet.showGetSnackbar(message: "Statuscode ${response.statusCode}\nError: ${response.error}");
           }
         }
       },

@@ -4,6 +4,7 @@ import 'package:app/api/workout/workout_service.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,16 +22,9 @@ class NetworkController extends GetxController {
   void _updateConnectionStatus(ConnectivityResult connectivityResult) {
     if (connectivityResult == ConnectivityResult.none) {
       if (AppSettings.hasConnection == true) {
-        Get.rawSnackbar(
-          messageText: CustomDefaultTextStyle(
-            text: 'Internet disconnected',
-            color: AppSettings.fontV1,
-            textAlign: TextAlign.center,
-          ),
-          isDismissible: false,
+        FlexusGet.showGetSnackbar(
+          message: 'Internet disconnected!',
           backgroundColor: AppSettings.error,
-          margin: EdgeInsets.zero,
-          snackStyle: SnackStyle.GROUNDED,
         );
       }
 
@@ -39,16 +33,9 @@ class NetworkController extends GetxController {
       synchronizeData();
 
       if (AppSettings.hasConnection == false) {
-        Get.rawSnackbar(
-          messageText: CustomDefaultTextStyle(
-            text: 'Internet reconnected',
-            color: AppSettings.fontV1,
-            textAlign: TextAlign.center,
-          ),
-          isDismissible: false,
+        FlexusGet.showGetSnackbar(
+          message: 'Internet reconnected!',
           backgroundColor: AppSettings.confirm,
-          margin: EdgeInsets.zero,
-          snackStyle: SnackStyle.GROUNDED,
         );
       }
 

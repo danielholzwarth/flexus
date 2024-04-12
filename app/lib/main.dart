@@ -18,7 +18,7 @@ import 'package:app/hive/user_list/user_list.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
-import 'package:app/pages/sign_in/startup.dart';
+import 'package:app/pages/sign_in/start.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/resources/dependency_injection.dart';

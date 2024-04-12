@@ -6,7 +6,7 @@ import 'package:app/bloc/settings_bloc/settings_bloc.dart';
 import 'package:app/bloc/user_list_bloc/user_list_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
-import 'package:app/pages/sign_in/startup.dart';
+import 'package:app/pages/sign_in/start.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/user_list_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
@@ -45,8 +45,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
-      body: BlocBuilder(
+      body: BlocConsumer(
         bloc: settingsBloc,
+        listener: (context, state) {
+          if (state is SettingsLoaded) {
+            setState(() {});
+          }
+        },
         builder: (context, state) {
           if (state is SettingsLoaded) {
             final UserAccount userAccount = userBox.get("userAccount");
@@ -67,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   buildPassword(context),
                   _buildSection("Appearance"),
                   // buildFontSize(state.userSettings, context),
-                  // buildDarkMode(state.userSettings),
+                  buildDarkMode(state.userSettings),
                   buildQuickAccess(state.userSettings),
                   // buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),

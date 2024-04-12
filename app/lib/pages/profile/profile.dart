@@ -14,8 +14,10 @@ import 'package:app/pages/profile/settings.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -554,14 +556,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                         isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
                                         reportTextController.clear();
                                       } else {
-                                        ScaffoldMessenger.of(context).clearSnackBars();
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Center(
-                                              child: CustomDefaultTextStyle(text: response.error.toString()),
-                                            ),
-                                          ),
-                                        );
+                                        await FlexusGet.showGetSnackbar(message: response.error.toString());
+                                      }
+
+                                      if (!Get.isSnackbarOpen) {
+                                        Get.closeCurrentSnackbar();
                                       }
 
                                       Navigator.of(context).pop();

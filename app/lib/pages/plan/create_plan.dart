@@ -4,9 +4,11 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 class CreatePlanPage extends StatefulWidget {
   const CreatePlanPage({super.key});
@@ -40,7 +42,10 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const CustomDefaultTextStyle(text: 'Create Plan'),
+        title: CustomDefaultTextStyle(
+          text: 'Create Plan',
+          fontSize: AppSettings.fontSizeH3,
+        ),
         centerTitle: true,
       ),
       body: BlocConsumer(
@@ -109,22 +114,18 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 switch (currentStep) {
                   case 0:
                     if (nameController.text.isNotEmpty) {
+                      if (!Get.isSnackbarOpen) {
+                        Get.closeCurrentSnackbar();
+                      }
                       setState(() {
                         currentStep++;
                       });
                     } else {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: CustomDefaultTextStyle(text: "Plan Name can not be empty!"),
-                          ),
-                        ),
-                      );
+                      await FlexusGet.showGetSnackbar(message: "Plan Name can not be empty!");
                     }
                     break;
 
@@ -148,33 +149,22 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
 
                         isWeeklyRepetetive = false;
                       }
+                      if (!Get.isSnackbarOpen) {
+                        Get.closeCurrentSnackbar();
+                      }
 
                       setState(() {
                         currentStep++;
                       });
                     } else {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: CustomDefaultTextStyle(text: "Split Count must be greater than 0."),
-                          ),
-                        ),
-                      );
+                      await FlexusGet.showGetSnackbar(message: "Split Count must be greater than 0.");
                     }
 
                     break;
 
                   case 2:
                     if (splitControllers.any((element) => element.text.isEmpty)) {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: CustomDefaultTextStyle(text: "Each Split must have a Name."),
-                          ),
-                        ),
-                      );
+                      await FlexusGet.showGetSnackbar(message: "Each Split must have a Name.");
                     } else {
                       Set<String> uniqueTexts = {};
                       bool hasDuplicates = false;
@@ -186,16 +176,11 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       }
 
                       if (hasDuplicates) {
-                        // Handle duplicate case
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Center(
-                              child: CustomDefaultTextStyle(text: "Duplicate texts are not allowed."),
-                            ),
-                          ),
-                        );
+                        await FlexusGet.showGetSnackbar(message: "Duplicate texts are not allowed.");
                       } else {
+                        if (!Get.isSnackbarOpen) {
+                          Get.closeCurrentSnackbar();
+                        }
                         setState(() {
                           currentStep++;
                         });

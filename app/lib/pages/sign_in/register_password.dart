@@ -11,10 +11,12 @@ import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:get/get.dart' as get_x;
 
 class RegisterPasswordPage extends StatefulWidget {
   final String username;
@@ -108,32 +110,11 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       fontColor: AppSettings.fontV1,
       function: () async {
         if (passwordController.text.length < 8) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: 'Password must be longer than 8 characters!'),
-              ),
-            ),
-          );
+          await FlexusGet.showGetSnackbar(message: "Password must be longer than 8 characters!");
         } else if (passwordController.text.length > 128) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: 'Passwords must be shorter or equal to 128 characters!'),
-              ),
-            ),
-          );
+          await FlexusGet.showGetSnackbar(message: "Passwords must be shorter or equal to 128 characters!");
         } else if (passwordController.text != confirmPasswordController.text) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: 'Passwords are not equal!'),
-              ),
-            ),
-          );
+          await FlexusGet.showGetSnackbar(message: "Passwords are not equal!");
         } else {
           Response<dynamic> response = await loginUserAccountService.postUserAccount({
             "username": widget.username,
@@ -158,7 +139,10 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
             await getUserSettings();
 
-            ScaffoldMessenger.of(context).clearSnackBars();
+            if (!get_x.Get.isSnackbarOpen) {
+              get_x.Get.closeCurrentSnackbar();
+            }
+
             Navigator.pushAndRemoveUntil(
               context,
               PageTransition(
@@ -168,14 +152,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               (route) => false,
             );
           } else {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Center(
-                  child: CustomDefaultTextStyle(text: "Statuscode ${response.statusCode}\nError: ${response.error}"),
-                ),
-              ),
-            );
+            await FlexusGet.showGetSnackbar(message: "Statuscode ${response.statusCode}\nError: ${response.error}");
           }
         }
       },

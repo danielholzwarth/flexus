@@ -67,8 +67,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildWorkouts() {
-    return BlocBuilder(
+    return BlocConsumer(
       bloc: workoutBloc,
+      listener: (context, state) {
+        if (state is WorkoutLoaded) {
+          setState(() {});
+        }
+      },
       builder: (context, state) {
         if (state is WorkoutLoaded) {
           if (state.workoutOverviews.isNotEmpty) {

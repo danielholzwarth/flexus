@@ -15,6 +15,7 @@ import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -35,10 +36,16 @@ class _GymPageState extends State<GymPage> {
   final WorkoutBloc workoutBloc = WorkoutBloc();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     if (AppSettings.hasConnection) {
       gymBloc.add(GetGymOverviews());
+    }
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    if (AppSettings.hasConnection) {
       return Scaffold(
         backgroundColor: AppSettings.background,
         body: FlexusScrollBar(
@@ -80,7 +87,7 @@ class _GymPageState extends State<GymPage> {
               ),
             );
           } else {
-            return SliverFillRemaining(
+            return const SliverFillRemaining(
               child: Center(
                 child: CustomDefaultTextStyle(
                   text: 'No gym found',
@@ -301,14 +308,8 @@ class _GymPageState extends State<GymPage> {
           gymBloc.add(GetGymOverviews());
           setState(() {});
         } else {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Center(
-                child: CustomDefaultTextStyle(text: "Gyms can not have the same name."),
-              ),
-            ),
-          );
+          FlexusGet.showGetSnackbar(message: "Gyms can not have a duplicate name.");
+          setState(() {});
         }
       },
       icon: Icons.notification_add_outlined,
