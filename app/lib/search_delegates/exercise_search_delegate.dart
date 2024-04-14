@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExerciseCustomSearchDelegate extends SearchDelegate {
+  ExerciseCustomSearchDelegate({
+    this.isMultipleChoice = true,
+  });
+
+  bool isMultipleChoice;
   ScrollController scrollController = ScrollController();
   ExerciseBloc exerciseBloc = ExerciseBloc();
   bool isLoaded = false;
@@ -73,23 +78,38 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                     controller: scrollController,
                     itemBuilder: (context, index) {
                       return FlexusExerciseListTile(
+                        isMultipleChoice: isMultipleChoice,
                         query: query,
                         title: filteredExercises[index].name,
                         value: checkedItems.contains(filteredExercises[index]) ? true : false,
                         subtitle: filteredExercises[index].typeID == 1
-                            ? "Measurements"
+                            ? "Measurement"
                             : filteredExercises[index].typeID == 2
                                 ? "Duration"
                                 : "Other",
-                        onChanged: (value) {
-                          if (value) {
-                            checkedItems.add(filteredExercises[index]);
-                          } else {
-                            checkedItems.remove(filteredExercises[index]);
-                          }
+                        onTap: isMultipleChoice
+                            ? null
+                            : () {
+                                close(
+                                    context,
+                                    Exercise(
+                                      id: filteredExercises[index].id,
+                                      name: filteredExercises[index].name,
+                                      typeID: filteredExercises[index].typeID,
+                                      creatorID: filteredExercises[index].creatorID,
+                                    ));
+                              },
+                        onChanged: isMultipleChoice
+                            ? (value) {
+                                if (value) {
+                                  checkedItems.add(filteredExercises[index]);
+                                } else {
+                                  checkedItems.remove(filteredExercises[index]);
+                                }
 
-                          exerciseBloc.add(RefreshGetExercisesState(exercises: items));
-                        },
+                                exerciseBloc.add(RefreshGetExercisesState(exercises: items));
+                              }
+                            : null,
                       );
                     },
                     itemCount: filteredExercises.length,

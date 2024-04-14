@@ -9,7 +9,9 @@ class FlexusExerciseListTile extends StatefulWidget {
   final String title;
   final String subtitle;
   final bool value;
+  final Function()? onTap;
   final Function(bool)? onChanged;
+  final bool isMultipleChoice;
 
   const FlexusExerciseListTile({
     super.key,
@@ -17,7 +19,9 @@ class FlexusExerciseListTile extends StatefulWidget {
     required this.title,
     this.subtitle = "",
     required this.value,
+    this.onTap,
     this.onChanged,
+    this.isMultipleChoice = true,
   });
 
   @override
@@ -39,30 +43,33 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
               fontSize: AppSettings.fontSizeT2,
             )
           : null,
-      onTap: () {
-        setState(() {
-          isChecked = !isChecked;
-        });
-        if (widget.onChanged != null) {
-          widget.onChanged!(isChecked);
-        }
-      },
+      onTap: widget.onTap ??
+          () {
+            setState(() {
+              isChecked = !isChecked;
+            });
+            if (widget.onChanged != null) {
+              widget.onChanged!(isChecked);
+            }
+          },
       leading: Padding(
         padding: const EdgeInsets.all(6.0),
         child: buildRandomImage(),
       ),
-      trailing: Checkbox(
-        activeColor: AppSettings.primary,
-        onChanged: (value) {
-          if (widget.onChanged != null) {
-            widget.onChanged!(value!);
-          }
-          setState(() {
-            isChecked = value!;
-          });
-        },
-        value: isChecked,
-      ),
+      trailing: widget.isMultipleChoice
+          ? Checkbox(
+              activeColor: AppSettings.primary,
+              onChanged: (value) {
+                if (widget.onChanged != null) {
+                  widget.onChanged!(value!);
+                }
+                setState(() {
+                  isChecked = value!;
+                });
+              },
+              value: isChecked,
+            )
+          : null,
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:app/bloc/plan_bloc/plan_bloc.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/pages/plan/create_plan.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -68,6 +70,7 @@ class _PlanPageState extends State<PlanPage> {
             return FlexusScrollBar(
               scrollController: scrollController,
               child: SingleChildScrollView(
+                controller: scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -138,16 +141,13 @@ class _PlanPageState extends State<PlanPage> {
           rows: [
             DataRow(
               cells: [
-                DataCell(const CustomDefaultTextStyle(text: "Split"), onTap: () => debugPrint("asdad")),
+                const DataCell(CustomDefaultTextStyle(text: "Split")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Flexible(
-                        child: CustomDefaultTextStyle(
-                          text: combinedSplitName,
-                          overflow: TextOverflow.clip,
-                        ),
+                        child: CustomDefaultTextStyle(text: combinedSplitName),
                       ),
                     ],
                   ),
@@ -156,7 +156,7 @@ class _PlanPageState extends State<PlanPage> {
             ),
             DataRow(
               cells: [
-                DataCell(const CustomDefaultTextStyle(text: "Blocked days"), onTap: () => debugPrint("asdad")),
+                const DataCell(CustomDefaultTextStyle(text: "Blocked days")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -169,7 +169,7 @@ class _PlanPageState extends State<PlanPage> {
             ),
             DataRow(
               cells: [
-                DataCell(const CustomDefaultTextStyle(text: "Created"), onTap: () => debugPrint("asdad")),
+                const DataCell(CustomDefaultTextStyle(text: "Created")),
                 DataCell(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -235,9 +235,16 @@ class _PlanPageState extends State<PlanPage> {
                           rows: [
                             for (int exerciseIndex = 0; exerciseIndex < planOverview.splitOverviews[index].exercises.length; exerciseIndex++)
                               DataRow(
+                                onLongPress: () => print("ad"),
                                 cells: [
-                                  DataCell(Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),
-                                      onTap: () => debugPrint("asdad")),
+                                  DataCell(
+                                    Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),
+                                    onTap: () async {
+                                      Exercise pickedExercises =
+                                          await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
+                                      planBloc.add(PatchPlan(planID: planOverview.plan.id, name: "exercise", value: pickedExercises));
+                                    },
+                                  ),
                                   planOverview.splitOverviews[index].measurements.isNotEmpty
                                       ? DataCell(
                                           Row(
