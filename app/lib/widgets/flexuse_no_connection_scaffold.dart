@@ -1,5 +1,6 @@
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
@@ -29,10 +30,9 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.wifi_off,
-                    size: AppSettings.fontSizeH3,
-                    color: AppSettings.error,
+                  FlexusDefaultIcon(
+                    iconData: Icons.wifi_off,
+                    iconColor: AppSettings.error,
                   ),
                   SizedBox(height: AppSettings.screenHeight * 0.02),
                   CustomDefaultTextStyle(

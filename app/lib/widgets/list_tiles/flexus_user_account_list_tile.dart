@@ -2,6 +2,7 @@ import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -153,10 +154,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
               backgroundImage: MemoryImage(widget.userAccount.profilePicture!),
             ))
         : IconButton(
-            icon: Icon(
-              Icons.person,
-              size: AppSettings.fontSizeH3,
-            ),
+            icon: const FlexusDefaultIcon(iconData: Icons.person),
             onPressed: () {
               Navigator.push(
                 context,

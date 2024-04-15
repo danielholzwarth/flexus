@@ -6,6 +6,7 @@ import 'package:app/pages/home/statistics.dart';
 import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -102,10 +103,9 @@ class _PageViewPageState extends State<PageViewPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.bar_chart_rounded,
-                color: AppSettings.font,
-                size: currentPageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.bar_chart_rounded,
+                iconSize: currentPageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -115,10 +115,9 @@ class _PageViewPageState extends State<PageViewPage> {
               },
             ),
             IconButton(
-              icon: Icon(
-                Icons.fitness_center,
-                color: AppSettings.font,
-                size: currentPageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.fitness_center,
+                iconSize: currentPageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -128,10 +127,9 @@ class _PageViewPageState extends State<PageViewPage> {
               },
             ),
             IconButton(
-              icon: Icon(
-                Icons.people,
-                color: AppSettings.font,
-                size: currentPageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.people,
+                iconSize: currentPageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 setState(() {
@@ -180,9 +178,9 @@ class _PageViewPageState extends State<PageViewPage> {
             ),
             SizedBox(height: AppSettings.screenHeight * 0.1),
             IconButton(
-              icon: Icon(
-                Icons.close,
-                size: AppSettings.fontSizeH1,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.close,
+                iconSize: AppSettings.fontSizeH1,
               ),
               onPressed: () {
                 setState(() {});

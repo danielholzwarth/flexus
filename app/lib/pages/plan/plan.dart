@@ -7,6 +7,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -299,11 +300,7 @@ class _PlanPageState extends State<PlanPage> {
       actions: [
         PopupMenuButton<String>(
           color: AppSettings.background,
-          icon: Icon(
-            Icons.menu,
-            color: AppSettings.font,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.menu),
           itemBuilder: (BuildContext context) {
             if (plan != null) {
               return ['Change Plan', 'Create New Plan', 'Delete Plan'].map((String choice) {

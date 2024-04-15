@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,9 +59,9 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                 tag: 'profile_picture',
                 child: state.userAccount.profilePicture != null
                     ? Image.memory(state.userAccount.profilePicture!)
-                    : Icon(
-                        Icons.hide_image_outlined,
-                        size: AppSettings.screenWidth * 0.7,
+                    : FlexusDefaultIcon(
+                        iconData: Icons.hide_image_outlined,
+                        iconSize: AppSettings.screenWidth * 0.7,
                       ),
               ),
             ),
@@ -75,9 +76,9 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                 tag: 'profile_picture',
                 child: widget.profilePicture != null
                     ? Image.memory(widget.profilePicture!)
-                    : Icon(
-                        Icons.hide_image_outlined,
-                        size: AppSettings.screenWidth * 0.7,
+                    : FlexusDefaultIcon(
+                        iconData: Icons.hide_image_outlined,
+                        iconSize: AppSettings.screenWidth * 0.7,
                       ),
               ),
             ),
@@ -92,11 +93,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
       visible: widget.userID == userAccount.id,
       child: PopupMenuButton<String>(
         color: AppSettings.background,
-        icon: Icon(
-          Icons.menu,
-          color: AppSettings.font,
-          size: AppSettings.fontSizeH3,
-        ),
+        icon: const FlexusDefaultIcon(iconData: Icons.menu),
         itemBuilder: (BuildContext context) {
           return ['Take new picture', 'Choose new picture', 'Delete picture'].map((String choice) {
             IconData icon;
@@ -119,7 +116,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomDefaultTextStyle(text: choice),
-                  Icon(icon),
+                  FlexusDefaultIcon(iconData: icon),
                 ],
               ),
             );

@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:flutter/material.dart';
 
 class FlexusSearchTextField extends StatelessWidget {
@@ -38,17 +39,9 @@ class FlexusSearchTextField extends StatelessWidget {
           border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
           enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-          prefixIcon: Icon(
-            Icons.search,
-            size: AppSettings.fontSizeH3,
-            color: AppSettings.font,
-          ),
+          prefixIcon: const FlexusDefaultIcon(iconData: Icons.search),
           suffixIcon: IconButton(
-            icon: Icon(
-              Icons.close,
-              size: AppSettings.fontSizeH3,
-              color: AppSettings.font,
-            ),
+            icon: const FlexusDefaultIcon(iconData: Icons.close),
             onPressed: suffixOnPressed,
           ),
           hintText: hintText,

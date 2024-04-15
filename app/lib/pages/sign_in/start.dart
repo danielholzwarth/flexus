@@ -3,6 +3,7 @@ import 'package:app/pages/sign_in/register_username.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -26,10 +27,10 @@ class _StartUpPageState extends State<StartUpPage> {
             SizedBox(height: AppSettings.screenHeight * 0.05),
             // _buildLanguageDetector(),
             SizedBox(height: AppSettings.screenHeight * 0.045),
-            Icon(
-              Icons.star,
-              size: 100,
-              color: AppSettings.background,
+            FlexusDefaultIcon(
+              iconData: Icons.star,
+              iconSize: AppSettings.screenHeight * 0.17,
+              iconColor: AppSettings.background,
             ),
             SizedBox(height: AppSettings.screenHeight * 0.02),
             CustomDefaultTextStyle(
@@ -39,7 +40,7 @@ class _StartUpPageState extends State<StartUpPage> {
               fontSize: AppSettings.fontSizeH1,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.27),
+            SizedBox(height: AppSettings.screenHeight * 0.2),
             SizedBox(
               width: AppSettings.screenWidth * 0.7,
               child: CustomDefaultTextStyle(
@@ -103,10 +104,10 @@ class _StartUpPageState extends State<StartUpPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Icon(
-            Icons.language,
-            size: AppSettings.fontSizeH4,
-            color: AppSettings.fontV1,
+          FlexusDefaultIcon(
+            iconData: Icons.language,
+            iconSize: AppSettings.fontSizeH4,
+            iconColor: AppSettings.fontV1,
           ),
           SizedBox(
             width: AppSettings.screenWidth * 0.02,

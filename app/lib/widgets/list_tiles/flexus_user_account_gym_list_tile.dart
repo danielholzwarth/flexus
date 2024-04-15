@@ -1,6 +1,7 @@
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -60,9 +61,6 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
             backgroundColor: AppSettings.primaryShade48,
             backgroundImage: MemoryImage(userAccountGymOverview.profilePicture!),
           )
-        : Icon(
-            Icons.person,
-            size: AppSettings.fontSizeH3,
-          );
+        : const FlexusDefaultIcon(iconData: Icons.person);
   }
 }

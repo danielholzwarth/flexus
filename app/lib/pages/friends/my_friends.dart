@@ -6,6 +6,7 @@ import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,7 +80,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
               ),
             );
           } else {
-            return SliverFillRemaining(
+            return const SliverFillRemaining(
               child: Center(
                 child: CustomDefaultTextStyle(
                   text: 'No friends found',
@@ -111,10 +112,7 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
       ),
       actions: [
         IconButton(
-          icon: Icon(
-            Icons.search,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.search),
           onPressed: () async {
             await showSearch(context: context, delegate: FriendsCustomSearchDelegate(isFriend: true));
             userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true));

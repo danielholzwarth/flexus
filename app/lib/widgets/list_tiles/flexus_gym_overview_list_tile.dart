@@ -5,6 +5,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -258,7 +259,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                     onPressed: () {
                                       userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gymOverview.gym.id));
                                     },
-                                    child: Icon(Icons.check, color: AppSettings.error, size: AppSettings.fontSize),
+                                    child: FlexusDefaultIcon(
+                                      iconData: Icons.check,
+                                      iconColor: AppSettings.error,
+                                      iconSize: AppSettings.fontSize,
+                                    ),
                                   );
                                 } else {
                                   return ElevatedButton(
@@ -425,10 +430,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
               color: getCorrectShade(element),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.person,
-              size: AppSettings.fontSizeH3,
-            ),
+            child: const FlexusDefaultIcon(iconData: Icons.person),
           );
   }
 

@@ -1,5 +1,6 @@
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -39,9 +40,9 @@ class _ScanQRPageState extends State<ScanQRPage> {
               builder: (context, state, child) {
                 switch (state) {
                   case TorchState.off:
-                    return const Icon(Icons.flash_off, color: Colors.grey);
+                    return const FlexusDefaultIcon(iconData: Icons.flash_off, iconColor: Colors.grey);
                   case TorchState.on:
-                    return const Icon(Icons.flash_on, color: Colors.yellow);
+                    return const FlexusDefaultIcon(iconData: Icons.flash_on, iconColor: Colors.yellow);
                 }
               },
             ),
@@ -55,9 +56,9 @@ class _ScanQRPageState extends State<ScanQRPage> {
               builder: (context, state, child) {
                 switch (state) {
                   case CameraFacing.front:
-                    return const Icon(Icons.camera_front);
+                    return const FlexusDefaultIcon(iconData: Icons.camera_front);
                   case CameraFacing.back:
-                    return const Icon(Icons.camera_rear);
+                    return const FlexusDefaultIcon(iconData: Icons.camera_rear);
                 }
               },
             ),

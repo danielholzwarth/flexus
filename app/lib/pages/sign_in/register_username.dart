@@ -7,6 +7,7 @@ import 'package:app/widgets/flexus_bullet_point.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           width: AppSettings.screenWidth * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
-            icon: Icon(Icons.adaptive.arrow_back),
+            icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
             iconSize: AppSettings.fontSizeH3,
             alignment: Alignment.center,
           ),

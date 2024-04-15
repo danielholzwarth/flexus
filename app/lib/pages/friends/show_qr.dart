@@ -1,6 +1,7 @@
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/scan_qr.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -34,7 +35,7 @@ class ShowQRPage extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.camera),
+            icon: const FlexusDefaultIcon(iconData: Icons.camera),
           )
         ],
       ),

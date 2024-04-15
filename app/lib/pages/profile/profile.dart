@@ -13,6 +13,7 @@ import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -311,11 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
             if (state is FriendshipLoaded) {
               return PopupMenuButton<String>(
                 color: AppSettings.background,
-                icon: Icon(
-                  Icons.menu,
-                  color: AppSettings.font,
-                  size: AppSettings.fontSizeH3,
-                ),
+                icon: const FlexusDefaultIcon(iconData: Icons.menu),
                 itemBuilder: (BuildContext context) {
                   if (widget.userID != userAccount.id) {
                     if (state.friendship != null) {
@@ -449,7 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomDefaultTextStyle(
+                                        const CustomDefaultTextStyle(
                                           text: "Offensive name",
                                         ),
                                         Checkbox(
@@ -470,7 +467,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomDefaultTextStyle(
+                                        const CustomDefaultTextStyle(
                                           text: "Offensive username",
                                         ),
                                         Checkbox(
@@ -491,7 +488,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomDefaultTextStyle(
+                                        const CustomDefaultTextStyle(
                                           text: "Other",
                                         ),
                                         Checkbox(

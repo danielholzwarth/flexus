@@ -14,6 +14,7 @@ import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -340,10 +341,7 @@ class _GymPageState extends State<GymPage> {
                   ),
                 )
               : IconButton(
-                  icon: Icon(
-                    Icons.person,
-                    size: AppSettings.fontSizeH3,
-                  ),
+                  icon: const FlexusDefaultIcon(iconData: Icons.person),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -360,10 +358,9 @@ class _GymPageState extends State<GymPage> {
         Visibility(
           visible: AppSettings.isTokenExpired,
           child: IconButton(
-            icon: Icon(
-              Icons.sync,
-              size: AppSettings.fontSizeH3,
-              color: AppSettings.error,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.sync,
+              iconColor: AppSettings.error,
             ),
             onPressed: () {
               Navigator.pushReplacement(
@@ -379,19 +376,15 @@ class _GymPageState extends State<GymPage> {
         Visibility(
           visible: !AppSettings.hasConnection,
           child: IconButton(
-            icon: Icon(
-              Icons.wifi_off,
-              size: AppSettings.fontSizeH3,
-              color: AppSettings.error,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.wifi_off,
+              iconColor: AppSettings.error,
             ),
             onPressed: () {},
           ),
         ),
         IconButton(
-          icon: Icon(
-            Icons.people,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.people),
           onPressed: () {
             Navigator.push(
               context,
@@ -405,10 +398,7 @@ class _GymPageState extends State<GymPage> {
           },
         ),
         IconButton(
-          icon: Icon(
-            Icons.add_business,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.add_business),
           onPressed: () async {
             await showSearch(context: context, delegate: GymsCustomSearchDelegate());
             gymBloc.add(GetGymOverviews());

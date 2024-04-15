@@ -2,6 +2,7 @@ import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -23,10 +24,9 @@ class FlexusBottomNavigationBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.bar_chart_rounded,
-                color: AppSettings.font,
-                size: pageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.bar_chart_rounded,
+                iconSize: pageIndex == 0 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 0) {
@@ -41,10 +41,9 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(
-                Icons.fitness_center,
-                color: AppSettings.font,
-                size: pageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.fitness_center,
+                iconSize: pageIndex == 1 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 1) {
@@ -59,10 +58,9 @@ class FlexusBottomNavigationBar extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: Icon(
-                Icons.people,
-                color: AppSettings.font,
-                size: pageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
+              icon: FlexusDefaultIcon(
+                iconData: Icons.people,
+                iconSize: pageIndex == 2 ? AppSettings.fontSizeH1 : AppSettings.fontSizeH3,
               ),
               onPressed: () {
                 if (pageIndex != 2) {

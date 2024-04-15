@@ -6,6 +6,7 @@ import 'package:app/search_delegates/friends_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -101,10 +102,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
       title: CustomDefaultTextStyle(text: "Add Friend", fontSize: AppSettings.fontSizeH3),
       actions: [
         IconButton(
-          icon: Icon(
-            Icons.qr_code_scanner,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.qr_code_scanner),
           onPressed: () {
             Navigator.push(
               context,
@@ -116,10 +114,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
           },
         ),
         IconButton(
-          icon: Icon(
-            Icons.person_add,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.person_add),
           onPressed: () async {
             await showSearch(context: context, delegate: FriendsCustomSearchDelegate());
             userAccountBloc.add(GetUserAccountsFriendsSearch(hasRequest: true));

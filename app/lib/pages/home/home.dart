@@ -14,6 +14,7 @@ import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,10 +173,7 @@ class _HomePageState extends State<HomePage> {
                 );
               } else {
                 return IconButton(
-                  icon: Icon(
-                    Icons.person,
-                    size: AppSettings.fontSizeH3,
-                  ),
+                  icon: const FlexusDefaultIcon(iconData: Icons.person),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -199,10 +197,7 @@ class _HomePageState extends State<HomePage> {
         Visibility(
           visible: AppSettings.isTokenExpired,
           child: IconButton(
-            icon: Icon(
-              Icons.sync,
-              size: AppSettings.fontSizeH3,
-            ),
+            icon: const FlexusDefaultIcon(iconData: Icons.sync),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -217,19 +212,15 @@ class _HomePageState extends State<HomePage> {
         Visibility(
           visible: !AppSettings.hasConnection,
           child: IconButton(
-            icon: Icon(
-              Icons.wifi_off,
-              size: AppSettings.fontSizeH3,
-              color: AppSettings.error,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.wifi_off,
+              iconColor: AppSettings.error,
             ),
             onPressed: () {},
           ),
         ),
         IconButton(
-          icon: Icon(
-            Icons.archive,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.archive),
           onPressed: () {
             Navigator.push(
               context,
@@ -241,10 +232,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         IconButton(
-          icon: Icon(
-            Icons.menu_book,
-            size: AppSettings.fontSizeH3,
-          ),
+          icon: const FlexusDefaultIcon(iconData: Icons.menu_book),
           onPressed: () {
             Navigator.push(
               context,
@@ -260,7 +248,7 @@ class _HomePageState extends State<HomePage> {
             await showSearch(context: context, delegate: WorkoutsCustomSearchDelegate(isArchived: false));
             workoutBloc.add(GetWorkout());
           },
-          icon: const Icon(Icons.search),
+          icon: const FlexusDefaultIcon(iconData: Icons.search),
         )
       ],
     );

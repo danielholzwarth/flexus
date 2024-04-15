@@ -1,4 +1,5 @@
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +19,10 @@ class FlexusBulletPoint extends StatelessWidget {
       width: AppSettings.screenWidth * 0.7,
       child: Row(
         children: [
-          Icon(
-            condition ? Icons.circle : Icons.circle_outlined,
-            size: 14,
-            color: condition ? const Color.fromARGB(255, 23, 117, 26) : const Color.fromARGB(255, 128, 13, 5),
+          FlexusDefaultIcon(
+            iconData: condition ? Icons.circle : Icons.circle_outlined,
+            iconSize: AppSettings.fontSizeT3,
+            iconColor: condition ? const Color.fromARGB(255, 23, 117, 26) : const Color.fromARGB(255, 128, 13, 5),
           ),
           SizedBox(width: AppSettings.screenWidth * 0.02),
           CustomDefaultTextStyle(

@@ -433,6 +433,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Dark Mode",
+        subtitle: "This is still under development!",
         value: userSettings.isDarkMode,
         isBool: true,
         onChanged: (value) {

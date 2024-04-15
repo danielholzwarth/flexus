@@ -2,6 +2,7 @@ import 'package:app/bloc/user_list_bloc/user_list_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,10 +66,10 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
             onPressed: () => {
               userListBloc.add(PatchUserList(isDeleting: true, listID: widget.listID, userID: widget.userAccount.id)),
             },
-            icon: Icon(
-              Icons.remove,
-              color: AppSettings.error,
-              size: AppSettings.fontSizeH4,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.remove,
+              iconColor: AppSettings.error,
+              iconSize: AppSettings.fontSizeH4,
             ),
           );
         } else if (state is HasUserListLoaded || state is UserListUpdated) {
@@ -88,10 +89,10 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
             onPressed: () => {
               userListBloc.add(PatchUserList(isDeleting: false, listID: widget.listID, userID: widget.userAccount.id)),
             },
-            icon: Icon(
-              Icons.add,
-              color: AppSettings.primary,
-              size: AppSettings.fontSizeH4,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.add,
+              iconColor: AppSettings.primary,
+              iconSize: AppSettings.fontSizeH4,
             ),
           );
         } else {
@@ -119,9 +120,9 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
               backgroundImage: MemoryImage(widget.userAccount.profilePicture!),
             ))
         : IconButton(
-            icon: Icon(
-              Icons.person,
-              size: AppSettings.fontSizeH3,
+            icon: FlexusDefaultIcon(
+              iconData: Icons.person,
+              iconSize: AppSettings.fontSizeH3,
             ),
             onPressed: () {
               Navigator.push(

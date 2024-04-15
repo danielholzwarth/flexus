@@ -3,6 +3,7 @@ import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -163,10 +164,10 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               visible: widget.workoutOverview.workout.isPinned,
               child: Row(
                 children: [
-                  Icon(
-                    Icons.push_pin,
-                    size: AppSettings.fontSize,
-                    color: AppSettings.primary,
+                  FlexusDefaultIcon(
+                    iconData: Icons.push_pin,
+                    iconSize: AppSettings.fontSize,
+                    iconColor: AppSettings.primary,
                   ),
                   SizedBox(width: AppSettings.screenWidth * 0.02),
                 ],
@@ -176,10 +177,10 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               visible: widget.workoutOverview.workout.isStared,
               child: Row(
                 children: [
-                  Icon(
-                    Icons.star,
-                    size: AppSettings.fontSize,
-                    color: Colors.amber,
+                  FlexusDefaultIcon(
+                    iconData: Icons.star,
+                    iconSize: AppSettings.fontSize,
+                    iconColor: Colors.amber,
                   ),
                   SizedBox(width: AppSettings.screenWidth * 0.02),
                 ],
@@ -192,9 +193,9 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                   CustomDefaultTextStyle(
                     text: (widget.workoutOverview.workout.id % 7).toString(),
                   ),
-                  Icon(
-                    Icons.emoji_events,
-                    size: AppSettings.fontSize,
+                  FlexusDefaultIcon(
+                    iconData: Icons.emoji_events,
+                    iconSize: AppSettings.fontSize,
                   )
                 ],
               ),

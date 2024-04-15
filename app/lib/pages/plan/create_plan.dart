@@ -3,6 +3,7 @@ import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -473,10 +474,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               title: CustomDefaultTextStyle(
                 text: "${index + 1}. ${exercises[index].name}",
               ),
-              trailing: Icon(
-                Icons.drag_handle,
-                size: AppSettings.fontSizeH3,
-              ),
+              trailing: const FlexusDefaultIcon(iconData: Icons.drag_handle),
             );
           },
         ),
@@ -602,7 +600,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               (index) => ListTile(
                 key: Key('$index'),
                 title: CustomDefaultTextStyle(text: "${index + 1}. ${splitControllers[index].text}"),
-                trailing: const Icon(Icons.drag_handle),
+                trailing: const FlexusDefaultIcon(iconData: Icons.drag_handle),
               ),
             ),
             onReorder: (oldIndex, newIndex) {
@@ -625,7 +623,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     splitControllers.removeWhere((element) => element.text == "Rest");
                   });
                 },
-                icon: const Icon(Icons.remove),
+                icon: const FlexusDefaultIcon(iconData: Icons.remove),
               ),
               SizedBox(width: AppSettings.screenWidth * 0.1),
               IconButton(
@@ -635,7 +633,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     splitControllers.add(TextEditingController(text: "Rest"));
                   });
                 },
-                icon: const Icon(Icons.add),
+                icon: const FlexusDefaultIcon(iconData: Icons.add),
               ),
             ],
           )
