@@ -237,16 +237,34 @@ func (db *DB) PatchPlanExercise(userID int, planID int, splitID int, newExercise
 	defer tx.Rollback()
 
 	query := `
-		UPDATE exercise_split es
-		SET exercise_id = $1
-		FROM split s 
-		INNER JOIN plan p ON s.plan_id = p.id
-		WHERE es.split_id = $2 AND es.exercise_id = $3 AND p.user_id = $4;
+		SELECT EXISTS(
+			SELECT 1
+			FROM exercise_split es
+			INNER JOIN split s ON s.id = es.split_id
+			INNER JOIN plan p ON s.plan_id = p.id
+			WHERE es.split_id = $1 AND es.exercise_id = $2 AND p.user_id = $3
+		);
 	`
 
-	_, err = tx.Exec(query, newExerciseID, splitID, oldExerciseID, userID)
+	var exists bool
+	err = tx.QueryRow(query, splitID, newExerciseID, userID).Scan(&exists)
 	if err != nil {
 		return types.Plan{}, err
+	}
+
+	if !exists {
+		query = `
+			UPDATE exercise_split es
+			SET exercise_id = $1
+			FROM split s 
+			INNER JOIN plan p ON s.plan_id = p.id
+			WHERE es.split_id = $2 AND es.exercise_id = $3 AND p.user_id = $4;
+		`
+
+		_, err = tx.Exec(query, newExerciseID, splitID, oldExerciseID, userID)
+		if err != nil {
+			return types.Plan{}, err
+		}
 	}
 
 	var updatedPlan types.Plan
