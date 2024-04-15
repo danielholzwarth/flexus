@@ -29,11 +29,15 @@ class PatchPlan extends PlanEvent {
   final int planID;
   final String name;
   final dynamic value;
+  final dynamic value2;
+  final dynamic value3;
 
   PatchPlan({
     required this.planID,
     required this.name,
     required this.value,
+    this.value2,
+    this.value3,
   });
 }
 

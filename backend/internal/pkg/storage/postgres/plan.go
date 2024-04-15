@@ -229,6 +229,55 @@ func (db *DB) PatchPlan(userID int, planID int, columnName string, value interfa
 	return updatedPlan, nil
 }
 
+func (db *DB) PatchPlanExercise(userID int, planID int, splitID int, newExerciseID int, oldExerciseID int) (types.Plan, error) {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return types.Plan{}, err
+	}
+	defer tx.Rollback()
+
+	query := `
+		UPDATE exercise_split es
+		SET exercise_id = $1
+		FROM split s 
+		INNER JOIN plan p ON s.plan_id = p.id
+		WHERE es.split_id = $2 AND es.exercise_id = $3 AND p.user_id = $4;
+	`
+
+	_, err = tx.Exec(query, newExerciseID, splitID, oldExerciseID, userID)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	var updatedPlan types.Plan
+	err = tx.QueryRow("SELECT * FROM plan WHERE id = $1 AND user_id = $2;", planID, userID).Scan(
+		&updatedPlan.ID,
+		&updatedPlan.UserAccountID,
+		&updatedPlan.SplitCount,
+		&updatedPlan.Name,
+		&updatedPlan.CreatedAt,
+		&updatedPlan.IsActive,
+		&updatedPlan.IsWeekly,
+		&updatedPlan.IsMondayRest,
+		&updatedPlan.IsTuesdayRest,
+		&updatedPlan.IsWednesdayRest,
+		&updatedPlan.IsThursdayRest,
+		&updatedPlan.IsFridayRest,
+		&updatedPlan.IsSaturdayRest,
+		&updatedPlan.IsSundayRest,
+	)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	return updatedPlan, nil
+}
+
 func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 	var planOverview types.PlanOverview
 	var plan types.Plan

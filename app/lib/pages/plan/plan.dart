@@ -235,15 +235,23 @@ class _PlanPageState extends State<PlanPage> {
                           rows: [
                             for (int exerciseIndex = 0; exerciseIndex < planOverview.splitOverviews[index].exercises.length; exerciseIndex++)
                               DataRow(
-                                onLongPress: () => print("ad"),
+                                onLongPress: () async {
+                                  dynamic pickedExercise =
+                                      await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
+                                  if (pickedExercise != null) {
+                                    Exercise newExercise = pickedExercise;
+                                    planBloc.add(PatchPlan(
+                                      planID: planOverview.plan.id,
+                                      name: "exercise",
+                                      value: newExercise.id,
+                                      value2: planOverview.splitOverviews[index].exercises[exerciseIndex].id,
+                                      value3: planOverview.splitOverviews[index].split.id,
+                                    ));
+                                  }
+                                },
                                 cells: [
                                   DataCell(
                                     Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),
-                                    onTap: () async {
-                                      Exercise pickedExercises =
-                                          await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
-                                      planBloc.add(PatchPlan(planID: planOverview.plan.id, name: "exercise", value: pickedExercises));
-                                    },
                                   ),
                                   planOverview.splitOverviews[index].measurements.isNotEmpty
                                       ? DataCell(

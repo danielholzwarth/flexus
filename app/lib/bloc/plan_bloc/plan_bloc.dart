@@ -163,6 +163,46 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         }
         break;
 
+      case "exercise":
+        final response = await _planService.patchPlan(
+          userBox.get("flexusjwt"),
+          event.planID,
+          {
+            "newExerciseID": event.value,
+            "oldExerciseID": event.value2,
+            "splitID": event.value3,
+          },
+        );
+
+        if (response.isSuccessful) {
+          if (response.body != "null") {
+            final Map<String, dynamic> jsonMap = response.body;
+
+            final Plan plan = Plan(
+              id: jsonMap['id'],
+              userID: jsonMap['userAccountID'],
+              splitCount: jsonMap['splitCount'],
+              name: jsonMap['name'],
+              createdAt: DateTime.parse(jsonMap['createdAt']),
+              isActive: jsonMap['isActive'],
+              isWeekly: jsonMap['isWeekly'],
+              restList: [
+                jsonMap['isMondayRest'],
+                jsonMap['isTuesdayRest'],
+                jsonMap['isWednesdayRest'],
+                jsonMap['isThursdayRest'],
+                jsonMap['isFridayRest'],
+                jsonMap['isSaturdayRest'],
+                jsonMap['isSundayRest'],
+              ],
+            );
+
+            emit(PlanLoaded(plan: plan));
+          } else {
+            emit(PlanLoaded(plan: null));
+          }
+        }
+        break;
       default:
         emit(PlanError(error: "This patch is not implemented yet"));
         break;

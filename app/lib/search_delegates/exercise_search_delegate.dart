@@ -35,7 +35,11 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () {
-        close(context, checkedItems);
+        if (isMultipleChoice) {
+          close(context, checkedItems);
+        } else {
+          close(context, null);
+        }
       },
       icon: const Icon(Icons.arrow_back),
     );

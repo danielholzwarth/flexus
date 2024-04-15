@@ -17,6 +17,7 @@ type PlanStore interface {
 	DeletePlan(userID int, planID int) error
 	PatchPlan(userID int, planID int, columnName string, value any) (types.Plan, error)
 	GetPlanOverview(userID int) (types.PlanOverview, error)
+	PatchPlanExercise(userID int, planID int, splitID int, newExerciseID int, oldExerciseID int) (types.Plan, error)
 }
 
 type service struct {
@@ -217,11 +218,49 @@ func (s service) patchPlan() http.HandlerFunc {
 				return
 			}
 			w.Write(response)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+		}
 
+		if newExerciseIDFloat, ok := requestBody["newExerciseID"].(float64); ok {
+			newExerciseID := int(newExerciseIDFloat)
+
+			var splitID int
+			if splitIDFloat, ok := requestBody["splitID"].(float64); !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			} else {
+				splitID = int(splitIDFloat)
+			}
+
+			var oldExerciseID int
+			if oldExerciseIDFloat, ok := requestBody["oldExerciseID"].(float64); !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			} else {
+				oldExerciseID = int(oldExerciseIDFloat)
+			}
+
+			plan, err := s.planStore.PatchPlanExercise(claims.UserAccountID, planID, splitID, newExerciseID, oldExerciseID)
+			if err != nil {
+				http.Error(w, "Failed to patch plan is active", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+
+			response, err := json.Marshal(plan)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
 
