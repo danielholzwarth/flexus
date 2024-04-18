@@ -23,7 +23,7 @@ type WorkoutOverview struct {
 
 type PostWorkout struct {
 	UserAccountID int       `json:"userAccountID"`
-	PlanID        *int      `json:"planID"`
+	GymID         *int      `json:"gymID"`
 	SplitID       *int      `json:"splitID"`
 	Starttime     time.Time `json:"starttime"`
 }

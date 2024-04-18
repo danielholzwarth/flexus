@@ -25,11 +25,11 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 	query := `
 		SELECT id 
 		FROM workout 
-		WHERE user_id = $1 AND endtime IS NULL;
+		WHERE user_id = $1 AND gym_id = $2 AND endtime IS NULL;
 	`
 
 	var existingWorkoutID int
-	err = tx.QueryRow(query, postWorkout.UserAccountID).Scan(&existingWorkoutID)
+	err = tx.QueryRow(query, postWorkout.UserAccountID, postWorkout.GymID).Scan(&existingWorkoutID)
 	if err != nil && err != sql.ErrNoRows {
 		return err
 	}
@@ -49,8 +49,8 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 	_, err = tx.Exec(
 		query,
 		postWorkout.UserAccountID,
-		postWorkout.PlanID,
 		postWorkout.SplitID,
+		postWorkout.GymID,
 		postWorkout.Starttime)
 	if err != nil {
 		return err
