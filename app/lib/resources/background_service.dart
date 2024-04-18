@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
@@ -59,10 +60,10 @@ void onStart(ServiceInstance serviceInstance) async {
     if (response.isSuccessful) {
       if (response.body != "null") {
         final List<dynamic> jsonList = response.body;
-        notifications = jsonList.map((json) {
+        notifications = jsonList.where((json) => json['gymName'] != "null").map((json) {
           return noti.Notification(
-            title: "Someone is working out!",
-            body: "Go join your buddy ${json['username']}!",
+            title: "${json['username']} sent you a notification!",
+            body: "${json['username']} will be at ${json['gymName']} at ${DateFormat('hh:mm').format(DateTime.parse(json['startTime']))}!",
             payload: "payload",
           );
         }).toList();
