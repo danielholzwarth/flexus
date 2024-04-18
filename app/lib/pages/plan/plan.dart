@@ -40,6 +40,7 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return BlocConsumer(
       bloc: planBloc,
       listener: (context, state) {
@@ -53,7 +54,7 @@ class _PlanPageState extends State<PlanPage> {
             backgroundColor: AppSettings.background,
             appBar: buildAppBar(state.plan),
             body: state.plan != null
-                ? buildPlanView(state.plan!)
+                ? buildPlanView(state.plan!, deviceSize)
                 : const Center(
                     child: CustomDefaultTextStyle(text: "You don't have an active plan right now."),
                   ),
@@ -68,7 +69,7 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildPlanView(Plan plan) {
+  Widget buildPlanView(Plan plan,Size deviceSize) {
     return BlocBuilder(
       bloc: planOverviewBloc,
       builder: (context, state) {
@@ -81,9 +82,9 @@ class _PlanPageState extends State<PlanPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    buildGeneral(state.planOverview!),
-                    SizedBox(height: AppSettings.screenHeight * 0.05),
-                    buildSplits(state.planOverview!),
+                    buildGeneral(state.planOverview!, deviceSize),
+                    SizedBox(height: deviceSize.height * 0.05),
+                    buildSplits(state.planOverview!, deviceSize),
                   ],
                 ),
               ),
@@ -101,7 +102,7 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildGeneral(PlanOverview planOverview) {
+  Widget buildGeneral(PlanOverview planOverview, Size deviceSize) {
     String combinedSplitName = "";
     Set<String> encounteredNames = {};
 
@@ -125,7 +126,7 @@ class _PlanPageState extends State<PlanPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
+          padding: EdgeInsets.only(left: deviceSize.width * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -138,9 +139,9 @@ class _PlanPageState extends State<PlanPage> {
           ),
         ),
         DataTable(
-          dataRowMinHeight: AppSettings.screenHeight * 0.02,
-          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
-          headingRowHeight: AppSettings.screenHeight * 0.02,
+          dataRowMinHeight: deviceSize.height * 0.02,
+          dataRowMaxHeight: deviceSize.height * 0.05,
+          headingRowHeight: deviceSize.height * 0.02,
           columns: const [
             DataColumn(label: CustomDefaultTextStyle(text: '')),
             DataColumn(label: CustomDefaultTextStyle(text: '')),
@@ -193,12 +194,12 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildSplits(PlanOverview planOverview) {
+  Widget buildSplits(PlanOverview planOverview, Size deviceSize) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05, bottom: AppSettings.screenHeight * 0.01),
+          padding: EdgeInsets.only(left: deviceSize.width * 0.05, bottom: deviceSize.height * 0.01),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -217,7 +218,7 @@ class _PlanPageState extends State<PlanPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05),
+                    padding: EdgeInsets.only(left: deviceSize.width * 0.05),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -233,8 +234,8 @@ class _PlanPageState extends State<PlanPage> {
                   ),
                   planOverview.splitOverviews[index].exercises.isNotEmpty
                       ? DataTable(
-                          dataRowMinHeight: AppSettings.screenHeight * 0.02,
-                          dataRowMaxHeight: AppSettings.screenHeight * 0.05,
+                          dataRowMinHeight: deviceSize.height * 0.02,
+                          dataRowMaxHeight: deviceSize.height * 0.05,
                           columns: const [
                             DataColumn(label: CustomDefaultTextStyle(text: 'Exercise')),
                             DataColumn(label: CustomDefaultTextStyle(text: 'Measurements')),
@@ -282,13 +283,13 @@ class _PlanPageState extends State<PlanPage> {
                         )
                       : planOverview.splitOverviews[index].split.name != "Rest"
                           ? Padding(
-                              padding: EdgeInsets.only(left: AppSettings.screenWidth * 0.05, top: AppSettings.screenHeight * 0.01),
+                              padding: EdgeInsets.only(left: deviceSize.width * 0.05, top: deviceSize.height * 0.01),
                               child: const CustomDefaultTextStyle(text: "No default exercises selected"),
                             )
-                          : SizedBox(height: AppSettings.screenHeight * 0.02),
+                          : SizedBox(height: deviceSize.height * 0.02),
                 ],
               ),
-              SizedBox(height: AppSettings.screenHeight * 0.05),
+              SizedBox(height: deviceSize.height * 0.05),
             ],
           ),
       ],

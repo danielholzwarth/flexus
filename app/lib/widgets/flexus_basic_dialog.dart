@@ -20,6 +20,7 @@ class FlexusBasicDialog {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
+        Size deviceSize = MediaQuery.of(context).size;
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
@@ -45,7 +46,7 @@ class FlexusBasicDialog {
                         surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                         overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                         foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
                       ),
                       onPressed: () {
                         if (onPressedLeft != null) onPressedLeft();
@@ -60,7 +61,7 @@ class FlexusBasicDialog {
                         surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                         overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                         foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
                       ),
                       onPressed: () {
                         if (onPressedRight != null) onPressedRight();

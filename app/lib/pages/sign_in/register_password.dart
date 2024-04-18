@@ -47,6 +47,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -55,11 +56,11 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSettings.screenHeight * 0.15),
-            _buildTitleRow(context),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
+            SizedBox(height: deviceSize.height * 0.15),
+            _buildTitleRow(context, deviceSize),
+            SizedBox(height: deviceSize.height * 0.02),
             _buildBulletPoints(),
-            SizedBox(height: AppSettings.screenHeight * 0.07),
+            SizedBox(height: deviceSize.height * 0.07),
             FlexusTextField(
               hintText: "Password",
               textController: passwordController,
@@ -68,7 +69,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               },
               isObscure: true,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.03),
+            SizedBox(height: deviceSize.height * 0.03),
             FlexusTextField(
               hintText: "Confirm Password",
               textController: confirmPasswordController,
@@ -77,20 +78,20 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               },
               isObscure: true,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.235),
+            SizedBox(height: deviceSize.height * 0.235),
             _buildCreateAccountButton(context, loginUserAccountService),
-            SizedBox(height: AppSettings.screenHeight * 0.12),
+            SizedBox(height: deviceSize.height * 0.12),
           ],
         ),
       ),
     );
   }
 
-  Row _buildTitleRow(BuildContext context) {
+  Row _buildTitleRow(BuildContext context, Size deviceSize) {
     return Row(
       children: [
         SizedBox(
-          width: AppSettings.screenWidth * 0.15,
+          width: deviceSize.width * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/register_name"),
             icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
@@ -99,7 +100,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
           ),
         ),
         SizedBox(
-          width: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
           child: CustomDefaultTextStyle(
             text: "Please enter your password.",
             decoration: TextDecoration.none,

@@ -2,16 +2,13 @@ import 'package:flutter/services.dart';
 
 class AppSettings {
   static String ipv4 = "213.109.162.134";
-  static bool useIPv4 = false;
+  static bool useIPv4 = true;
 
   static bool hasConnection = true;
   static bool isTokenExpired = true;
 
   static var isDarkMode = false;
   static var language = "DE";
-
-  static double screenWidth = 0.0;
-  static double screenHeight = 0.0;
 
   //Colors
   static Color get primary => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF0074B6);

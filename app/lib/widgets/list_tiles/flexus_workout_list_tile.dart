@@ -30,6 +30,7 @@ class FlexusWorkoutListTile extends StatefulWidget {
 class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final userBox = Hive.box('userBox');
     final workout = widget.workoutOverview.workout;
 
@@ -51,7 +52,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
           );
         },
         leading: buildDate(workout),
-        title: buildTitle(),
+        title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),
       ),
     );
@@ -148,7 +149,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
     );
   }
 
-  Row buildTitle() {
+  Row buildTitle(Size deviceSize) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -169,7 +170,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                     iconSize: AppSettings.fontSize,
                     iconColor: AppSettings.primary,
                   ),
-                  SizedBox(width: AppSettings.screenWidth * 0.02),
+                  SizedBox(width: deviceSize.width * 0.02),
                 ],
               ),
             ),
@@ -182,7 +183,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                     iconSize: AppSettings.fontSize,
                     iconColor: Colors.amber,
                   ),
-                  SizedBox(width: AppSettings.screenWidth * 0.02),
+                  SizedBox(width: deviceSize.width * 0.02),
                 ],
               ),
             ),

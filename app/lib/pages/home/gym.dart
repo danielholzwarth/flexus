@@ -52,6 +52,7 @@ class _GymPageState extends State<GymPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     if (AppSettings.hasConnection) {
       return Scaffold(
         backgroundColor: AppSettings.background,
@@ -65,7 +66,7 @@ class _GymPageState extends State<GymPage> {
             ],
           ),
         ),
-        floatingActionButton: buildFloatingActionButton(context),
+        floatingActionButton: buildFloatingActionButton(context, deviceSize),
       );
     } else {
       return const FlexusNoConnectionScaffold();
@@ -117,7 +118,7 @@ class _GymPageState extends State<GymPage> {
     );
   }
 
-  FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
+  FlexusFloatingActionButton buildFloatingActionButton(BuildContext context, Size deviceSize) {
     Set<String> items = {"No Gym selected"};
     String selectedItem = "No Gym selected";
 
@@ -170,10 +171,10 @@ class _GymPageState extends State<GymPage> {
                             text: "Send Notification",
                             fontSize: AppSettings.fontSizeH4,
                           ),
-                          SizedBox(height: AppSettings.screenHeight * 0.06),
+                          SizedBox(height: deviceSize.height * 0.06),
                           Container(
-                            width: AppSettings.screenWidth * 0.7,
-                            height: AppSettings.screenHeight * 0.07,
+                            width: deviceSize.width * 0.7,
+                            height: deviceSize.height * 0.07,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
@@ -220,7 +221,7 @@ class _GymPageState extends State<GymPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: AppSettings.screenHeight * 0.03),
+                          SizedBox(height: deviceSize.height * 0.03),
                           GestureDetector(
                             onTap: () async {
                               final TimeOfDay? pickedTime = await showTimePicker(
@@ -254,8 +255,8 @@ class _GymPageState extends State<GymPage> {
                               }
                             },
                             child: Container(
-                              width: AppSettings.screenWidth * 0.7,
-                              height: AppSettings.screenHeight * 0.07,
+                              width: deviceSize.width * 0.7,
+                              height: deviceSize.height * 0.07,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
@@ -282,7 +283,7 @@ class _GymPageState extends State<GymPage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: AppSettings.screenHeight * 0.09),
+                          SizedBox(height: deviceSize.height * 0.09),
                           FlexusButton(
                             function: () {
                               userBox.put("recentGymName", selectedItem);

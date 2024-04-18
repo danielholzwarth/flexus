@@ -23,6 +23,7 @@ class FlexusGymOSMExpansionTile extends StatefulWidget {
 class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final GymBloc gymBloc = GymBloc();
 
     final String name = widget.locationData['name'] ?? "";
@@ -41,7 +42,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           highlightText(name, AppSettings.fontSizeH4),
-          SizedBox(height: AppSettings.screenHeight * 0.01),
+          SizedBox(height: deviceSize.height * 0.01),
           CustomDefaultTextStyle(
             text: '$streetName $houseNumber',
             color: AppSettings.font.withOpacity(0.5),
@@ -53,7 +54,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
         ],
       ),
       children: <Widget>[
-        SizedBox(height: AppSettings.screenHeight * 0.02),
+        SizedBox(height: deviceSize.height * 0.02),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -67,7 +68,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                     ),
                     onPressed: () {},
                     child: FlexusDefaultIcon(
@@ -83,7 +84,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                     ),
                     onPressed: () {
                       gymBloc.add(PostGym(locationData: widget.locationData));
@@ -99,7 +100,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
                 surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                 overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
               ),
               onPressed: () {
                 openMaps(latitude, longitude);
@@ -108,7 +109,7 @@ class _FlexusGymOSMExpansionTileState extends State<FlexusGymOSMExpansionTile> {
             ),
           ],
         ),
-        SizedBox(height: AppSettings.screenHeight * 0.01),
+        SizedBox(height: deviceSize.height * 0.01),
       ],
     );
   }

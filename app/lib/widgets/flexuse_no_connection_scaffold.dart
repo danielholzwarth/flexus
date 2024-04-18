@@ -13,6 +13,7 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: CustomScrollView(
@@ -34,7 +35,7 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
                     iconData: Icons.wifi_off,
                     iconColor: AppSettings.error,
                   ),
-                  SizedBox(height: AppSettings.screenHeight * 0.02),
+                  SizedBox(height: deviceSize.height * 0.02),
                   CustomDefaultTextStyle(
                     text: "This feature requires Internet connection",
                     color: AppSettings.error,

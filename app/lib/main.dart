@@ -45,9 +45,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppSettings.screenHeight = MediaQuery.of(context).size.height;
-    AppSettings.screenWidth = MediaQuery.of(context).size.width;
-
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {

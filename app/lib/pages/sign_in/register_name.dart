@@ -34,19 +34,20 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return FlexusGradientScaffold(
       topColor: AppSettings.background,
       bottomColor: AppSettings.primary,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSettings.screenHeight * 0.15),
-            _buildTitleRow(context),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
-            _buildDescription(),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
+            SizedBox(height: deviceSize.height * 0.15),
+            _buildTitleRow(context, deviceSize),
+            SizedBox(height: deviceSize.height * 0.02),
+            _buildDescription(deviceSize),
+            SizedBox(height: deviceSize.height * 0.02),
             _buildBulletPoints(),
-            SizedBox(height: AppSettings.screenHeight * 0.07),
+            SizedBox(height: deviceSize.height * 0.07),
             FlexusTextField(
               hintText: "Name",
               textController: nameController,
@@ -54,9 +55,9 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.345),
+            SizedBox(height: deviceSize.height * 0.345),
             _buildContinueButton(context),
-            SizedBox(height: AppSettings.screenHeight * 0.12),
+            SizedBox(height: deviceSize.height * 0.12),
           ],
         ),
       ),
@@ -92,9 +93,9 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     );
   }
 
-  SizedBox _buildDescription() {
+  SizedBox _buildDescription(Size deviceSize) {
     return SizedBox(
-      width: AppSettings.screenWidth * 0.7,
+      width: deviceSize.width * 0.7,
       child: CustomDefaultTextStyle(
         text: "The name will be shown to your friendship.",
         decoration: TextDecoration.none,
@@ -104,11 +105,11 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
     );
   }
 
-  Row _buildTitleRow(BuildContext context) {
+  Row _buildTitleRow(BuildContext context, Size deviceSize) {
     return Row(
       children: [
         SizedBox(
-          width: AppSettings.screenWidth * 0.15,
+          width: deviceSize.width * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/register_password"),
             icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
@@ -117,7 +118,7 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
           ),
         ),
         SizedBox(
-          width: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
           child: CustomDefaultTextStyle(
             text: "Please enter your name.",
             decoration: TextDecoration.none,

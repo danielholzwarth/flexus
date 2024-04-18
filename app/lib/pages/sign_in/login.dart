@@ -39,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -47,9 +48,9 @@ class _LoginPageState extends State<LoginPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSettings.screenHeight * 0.15),
-            _buildTitleRow(context),
-            SizedBox(height: AppSettings.screenHeight * 0.08),
+            SizedBox(height: deviceSize.height * 0.15),
+            _buildTitleRow(context, deviceSize),
+            SizedBox(height: deviceSize.height * 0.08),
             FlexusTextField(
               hintText: "Username",
               textController: usernameController,
@@ -57,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.03),
+            SizedBox(height: deviceSize.height * 0.03),
             FlexusTextField(
               hintText: "Password",
               textController: passwordController,
@@ -66,9 +67,9 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.32),
+            SizedBox(height: deviceSize.height * 0.32),
             _buildLoginButton(loginUserAccountService, context),
-            SizedBox(height: AppSettings.screenHeight * 0.12),
+            SizedBox(height: deviceSize.height * 0.12),
           ],
         ),
       ),
@@ -120,11 +121,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Row _buildTitleRow(BuildContext context) {
+  Row _buildTitleRow(BuildContext context, Size deviceSize) {
     return Row(
       children: [
         SizedBox(
-          width: AppSettings.screenWidth * 0.15,
+          width: deviceSize.width * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
@@ -133,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         SizedBox(
-          width: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
           child: CustomDefaultTextStyle(
             text: "Login with username and password",
             decoration: TextDecoration.none,

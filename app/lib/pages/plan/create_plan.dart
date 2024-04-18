@@ -51,6 +51,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: CustomDefaultTextStyle(
@@ -83,8 +84,8 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 buildNameStep(),
                 buildSplitNumberStep(),
                 buildSplitNamesStep(),
-                buildExercisesStep(context),
-                buildTypeStep(),
+                buildExercisesStep(context, deviceSize),
+                buildTypeStep(deviceSize),
               ],
               onStepTapped: (value) {
                 setState(() {
@@ -94,7 +95,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               currentStep: currentStep,
               connectorColor: MaterialStatePropertyAll(AppSettings.primary),
               controlsBuilder: (context, details) {
-                return buildControls(context);
+                return buildControls(context, deviceSize);
               },
             );
           }
@@ -103,10 +104,10 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     );
   }
 
-  Column buildControls(BuildContext context) {
+  Column buildControls(BuildContext context, Size deviceSize) {
     return Column(
       children: [
-        SizedBox(height: AppSettings.screenHeight * 0.02),
+        SizedBox(height: deviceSize.height * 0.02),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -274,7 +275,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     );
   }
 
-  Step buildTypeStep() {
+  Step buildTypeStep(Size deviceSize) {
     return Step(
       isActive: currentStep == 4,
       state: currentStep < 4
@@ -313,14 +314,14 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
               ),
             ],
           ),
-          SizedBox(height: AppSettings.screenHeight * 0.02),
-          buildType(),
+          SizedBox(height: deviceSize.height * 0.02),
+          buildType(deviceSize),
         ],
       ),
     );
   }
 
-  Step buildExercisesStep(BuildContext context) {
+  Step buildExercisesStep(BuildContext context, Size deviceSize) {
     return Step(
       isActive: currentStep == 3,
       state: currentStep < 3
@@ -335,13 +336,13 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const CustomDefaultTextStyle(text: "Choose from a list the default exercises for each split."),
-          SizedBox(height: AppSettings.screenHeight * 0.02),
+          SizedBox(height: deviceSize.height * 0.02),
           Container(
-            width: AppSettings.screenWidth * 0.8,
+            width: deviceSize.width * 0.8,
             color: AppSettings.font.withOpacity(0.15),
             height: 1,
           ),
-          SizedBox(height: AppSettings.screenHeight * 0.03),
+          SizedBox(height: deviceSize.height * 0.03),
           for (int index = 0; index < splitControllers.length; index++)
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -357,7 +358,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4))),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
                   onPressed: () async {
                     List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
                     exerciseList[splitControllers[index].text] = splitExercises;
@@ -365,13 +366,13 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                   },
                   child: const Text("Add default exercises"),
                 ),
-                SizedBox(height: AppSettings.screenHeight * 0.01),
+                SizedBox(height: deviceSize.height * 0.01),
                 Container(
-                  width: AppSettings.screenWidth * 0.8,
+                  width: deviceSize.width * 0.8,
                   color: AppSettings.font.withOpacity(0.15),
                   height: 1,
                 ),
-                SizedBox(height: AppSettings.screenHeight * 0.03),
+                SizedBox(height: deviceSize.height * 0.03),
               ],
             ),
         ],
@@ -494,12 +495,12 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
     }
   }
 
-  Widget buildType() {
+  Widget buildType(Size deviceSize) {
     if (isWeeklyRepetetive) {
       return Column(
         children: [
           const CustomDefaultTextStyle(text: "Drag your Split into the corresponding weekday. The default-value is a Rest-Day."),
-          SizedBox(height: AppSettings.screenHeight * 0.04),
+          SizedBox(height: deviceSize.height * 0.04),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -513,7 +514,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                         feedback: Material(
                           color: AppSettings.primaryShade48,
                           child: Container(
-                            width: AppSettings.screenWidth * 0.3,
+                            width: deviceSize.width * 0.3,
                             padding: const EdgeInsets.all(8),
                             child: CustomDefaultTextStyle(
                               text: splitControllers[index].text,
@@ -522,7 +523,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                           ),
                         ),
                         child: Container(
-                          width: AppSettings.screenWidth * 0.3,
+                          width: deviceSize.width * 0.3,
                           color: AppSettings.primaryShade48,
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.only(bottom: 10),
@@ -537,7 +538,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     feedback: Material(
                       color: AppSettings.primaryShade48,
                       child: Container(
-                        width: AppSettings.screenWidth * 0.3,
+                        width: deviceSize.width * 0.3,
                         padding: const EdgeInsets.all(8),
                         child: const CustomDefaultTextStyle(
                           text: "Rest",
@@ -546,7 +547,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       ),
                     ),
                     child: Container(
-                      width: AppSettings.screenWidth * 0.3,
+                      width: deviceSize.width * 0.3,
                       color: AppSettings.primaryShade48,
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.only(bottom: 10),
@@ -558,7 +559,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                   ),
                 ],
               ),
-              SizedBox(width: AppSettings.screenWidth * 0.1),
+              SizedBox(width: deviceSize.width * 0.1),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -566,7 +567,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     DragTarget(
                       builder: (context, candidateData, rejectedData) {
                         return Container(
-                          width: AppSettings.screenWidth * 0.3,
+                          width: deviceSize.width * 0.3,
                           padding: const EdgeInsets.all(8),
                           color: weeklyAcceptedData[index].isNotEmpty ? AppSettings.confirm.withOpacity(0.5) : AppSettings.font.withOpacity(0.1),
                           margin: const EdgeInsets.only(bottom: 10),
@@ -601,7 +602,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
       return Column(
         children: [
           const CustomDefaultTextStyle(text: "Drag the Splits into the correct order. If you need Rest-Days press on the plus icon below."),
-          SizedBox(height: AppSettings.screenHeight * 0.04),
+          SizedBox(height: deviceSize.height * 0.04),
           ReorderableListView(
             primary: false,
             shrinkWrap: true,
@@ -635,7 +636,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 },
                 icon: const FlexusDefaultIcon(iconData: Icons.remove),
               ),
-              SizedBox(width: AppSettings.screenWidth * 0.1),
+              SizedBox(width: deviceSize.width * 0.1),
               IconButton(
                 onPressed: () {
                   setState(() {

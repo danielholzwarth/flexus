@@ -52,7 +52,7 @@ class FlexusPlanListTileState extends State<FlexusPlanListTile> {
           ],
         );
       }
-       return CustomDefaultTextStyle(
+      return CustomDefaultTextStyle(
         text: text,
         color: AppSettings.font.withOpacity(0.5),
       );

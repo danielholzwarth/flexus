@@ -15,8 +15,9 @@ class FlexusBulletPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return SizedBox(
-      width: AppSettings.screenWidth * 0.7,
+      width: deviceSize.width * 0.7,
       child: Row(
         children: [
           FlexusDefaultIcon(
@@ -24,7 +25,7 @@ class FlexusBulletPoint extends StatelessWidget {
             iconSize: AppSettings.fontSizeT3,
             iconColor: condition ? const Color.fromARGB(255, 23, 117, 26) : const Color.fromARGB(255, 128, 13, 5),
           ),
-          SizedBox(width: AppSettings.screenWidth * 0.02),
+          SizedBox(width: deviceSize.width * 0.02),
           CustomDefaultTextStyle(
             text: text,
             color: condition ? AppSettings.confirm : AppSettings.error,

@@ -32,6 +32,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
@@ -41,11 +42,11 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
           buildMenu(userAccount),
         ],
       ),
-      body: buildPicture(),
+      body: buildPicture(deviceSize),
     );
   }
 
-  BlocBuilder<UserAccountBloc, Object?> buildPicture() {
+  BlocBuilder<UserAccountBloc, Object?> buildPicture(Size deviceSize) {
     return BlocBuilder(
       bloc: userAccountBloc,
       builder: (context, state) {
@@ -61,7 +62,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                     ? Image.memory(state.userAccount.profilePicture!)
                     : FlexusDefaultIcon(
                         iconData: Icons.hide_image_outlined,
-                        iconSize: AppSettings.screenWidth * 0.7,
+                        iconSize: deviceSize.width * 0.7,
                       ),
               ),
             ),
@@ -78,7 +79,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
                     ? Image.memory(widget.profilePicture!)
                     : FlexusDefaultIcon(
                         iconData: Icons.hide_image_outlined,
-                        iconSize: AppSettings.screenWidth * 0.7,
+                        iconSize: deviceSize.width * 0.7,
                       ),
               ),
             ),

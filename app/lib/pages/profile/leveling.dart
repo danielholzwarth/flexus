@@ -7,6 +7,7 @@ class LevelingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppSettings.background,
       appBar: AppBar(
@@ -23,25 +24,28 @@ class LevelingPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: AppSettings.screenHeight * 0.03),
+              SizedBox(height: deviceSize.height * 0.03),
               buildItem(
                 "What does it mean?",
                 "To track your consistency, you can refer to your player number on your profile page."
                     "The longer you engage in workouts, the higher your number will be.Your character will also get stronger themore you train",
+                deviceSize,
               ),
-              SizedBox(height: AppSettings.screenHeight * 0.05),
+              SizedBox(height: deviceSize.height * 0.05),
               buildItem(
                 "How do I level up?",
                 "For each workout you complete, your level increases by one point."
                     "However, you can increase your level only once per day, but feel free to track multiple workouts as they will still be reflected in your statistics.",
+                deviceSize,
               ),
-              SizedBox(height: AppSettings.screenHeight * 0.05),
+              SizedBox(height: deviceSize.height * 0.05),
               buildItem(
                 "Can I lose level?",
                 "Yes. As soon as you don’t work out for more than one week, you'll lose five points per week.\n"
                     "That means no workout for 3 weeks results in a loss of 15 levels.",
+                deviceSize,
               ),
-              SizedBox(height: AppSettings.screenHeight * 0.05),
+              SizedBox(height: deviceSize.height * 0.05),
             ],
           ),
         ),
@@ -49,9 +53,9 @@ class LevelingPage extends StatelessWidget {
     );
   }
 
-  SizedBox buildItem(String title, String description) {
+  SizedBox buildItem(String title, String description, Size deviceSize) {
     return SizedBox(
-      width: AppSettings.screenWidth * 0.8,
+      width: deviceSize.width * 0.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -64,6 +64,8 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
+
     return BlocBuilder(
       bloc: initializationBloc,
       builder: (context, state) {
@@ -75,7 +77,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
                 opacity: animation,
                 child: FlexusDefaultIcon(
                   iconData: Icons.star,
-                  iconSize: AppSettings.screenHeight * 0.17,
+                  iconSize: deviceSize.height * 0.17,
                   iconColor: AppSettings.background,
                 ),
               ),
@@ -87,7 +89,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
           if (isFirstTime && widget.isFirst && isQuickAccess) {
             isFirstTime = false;
-            return buildQuickAccess(context);
+            return buildQuickAccess(context, deviceSize);
           } else {
             return buildPages();
           }
@@ -169,7 +171,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
     );
   }
 
-  Scaffold buildQuickAccess(BuildContext context) {
+  Scaffold buildQuickAccess(BuildContext context, Size deviceSize) {
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -192,7 +194,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
               backgroundColor: AppSettings.background,
               fontColor: AppSettings.font,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.1),
+            SizedBox(height: deviceSize.height * 0.1),
             FlexusButton(
               text: "Send Notification",
               function: () async {
@@ -201,7 +203,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
               backgroundColor: AppSettings.backgroundV1,
               fontColor: AppSettings.fontV1,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.1),
+            SizedBox(height: deviceSize.height * 0.1),
             IconButton(
               icon: FlexusDefaultIcon(
                 iconData: Icons.close,

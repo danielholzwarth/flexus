@@ -66,6 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
@@ -75,12 +76,12 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Center(
           child: Column(
             children: [
-              buildPictures(context, userAccount),
-              SizedBox(height: AppSettings.screenHeight * 0.02),
+              buildPictures(context, userAccount, deviceSize),
+              SizedBox(height: deviceSize.height * 0.02),
               buildNames(userAccount),
-              SizedBox(height: AppSettings.screenHeight * 0.1),
-              buildBestLift(),
-              SizedBox(height: AppSettings.screenHeight * 0.2)
+              SizedBox(height: deviceSize.height * 0.1),
+              buildBestLift(deviceSize),
+              SizedBox(height: deviceSize.height * 0.2)
             ],
           ),
         ),
@@ -113,10 +114,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  SizedBox buildPictures(BuildContext context, UserAccount userAccount) {
+  SizedBox buildPictures(BuildContext context, UserAccount userAccount, Size deviceSize) {
     return SizedBox(
-      width: AppSettings.screenWidth * 0.8,
-      height: AppSettings.screenWidth * 0.8,
+      width: deviceSize.width * 0.8,
+      height: deviceSize.width * 0.8,
       child: BlocBuilder(
         bloc: userAccountBloc,
         builder: (context, state) {
@@ -124,13 +125,13 @@ class _ProfilePageState extends State<ProfilePage> {
             return Stack(
               children: [
                 Positioned(
-                  left: AppSettings.screenWidth * 0.05,
-                  top: AppSettings.screenWidth * 0.1,
-                  child: buildCorrectLevelImage(state.userAccount.level),
+                  left: deviceSize.width * 0.05,
+                  top: deviceSize.width * 0.1,
+                  child: buildCorrectLevelImage(state.userAccount.level, deviceSize),
                 ),
                 Positioned(
-                  left: AppSettings.screenWidth * 0.25,
-                  top: AppSettings.screenWidth * 0.12,
+                  left: deviceSize.width * 0.25,
+                  top: deviceSize.width * 0.12,
                   child: Hero(
                     tag: "profile_picture",
                     child: GestureDetector(
@@ -146,19 +147,19 @@ class _ProfilePageState extends State<ProfilePage> {
                       ).then((value) => userAccountBloc.add(GetUserAccount(userAccountID: widget.userID))),
                       child: state.userAccount.profilePicture != null
                           ? CircleAvatar(
-                              radius: AppSettings.screenWidth * 0.15,
+                              radius: deviceSize.width * 0.15,
                               backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                             )
                           : CircleAvatar(
-                              radius: AppSettings.screenWidth * 0.15,
+                              radius: deviceSize.width * 0.15,
                               backgroundColor: Colors.transparent,
                             ),
                     ),
                   ),
                 ),
                 Positioned(
-                  left: AppSettings.screenWidth * 0.28,
-                  top: AppSettings.screenWidth * 0.5,
+                  left: deviceSize.width * 0.28,
+                  top: deviceSize.width * 0.5,
                   child: CustomDefaultTextStyle(
                     text: state.userAccount.level.toString(),
                     color: AppSettings.primary,
@@ -175,74 +176,74 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildCorrectLevelImage(int level) {
+  Widget buildCorrectLevelImage(int level, Size deviceSize) {
     switch (level) {
       case < 5:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.green)),
         );
 
       case < 10:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.yellow)),
         );
 
       case < 20:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.orange)),
         );
 
       case < 30:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         );
 
       case < 40:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
         );
 
       case < 50:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
         );
 
       case < 100:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
         );
 
       case >= 100:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.black)),
         );
 
       default:
         return Container(
-          width: AppSettings.screenWidth * 0.7,
-          height: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
+          height: deviceSize.width * 0.7,
           decoration: BoxDecoration(border: Border.all(color: Colors.green)),
         );
     }
   }
 
-  Widget buildBestLift() {
+  Widget buildBestLift(Size deviceSize) {
     return BlocBuilder(
       bloc: bestLiftsBloc,
       builder: (context, state) {
@@ -255,18 +256,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildPedestal(
                     state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
                     state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here",
-                    AppSettings.screenHeight * 0.08,
-                    AppSettings.screenWidth),
+                    deviceSize.height * 0.08,
+                    deviceSize.width),
                 _buildPedestal(
                     state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
                     state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here",
-                    AppSettings.screenHeight * 0.1,
-                    AppSettings.screenWidth),
+                    deviceSize.height * 0.1,
+                    deviceSize.width),
                 _buildPedestal(
                     state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
                     state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here",
-                    AppSettings.screenHeight * 0.06,
-                    AppSettings.screenWidth),
+                    deviceSize.height * 0.06,
+                    deviceSize.width),
               ],
             );
           } else {
@@ -276,9 +277,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
-                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
-                  _buildPedestal("", "Tap here", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.08, deviceSize.width),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.1, deviceSize.width),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.06, deviceSize.width),
                 ],
               );
             } else {
@@ -286,9 +287,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildPedestal("", "None", AppSettings.screenHeight * 0.08, AppSettings.screenWidth),
-                  _buildPedestal("", "None", AppSettings.screenHeight * 0.1, AppSettings.screenWidth),
-                  _buildPedestal("", "None", AppSettings.screenHeight * 0.06, AppSettings.screenWidth),
+                  _buildPedestal("", "None", deviceSize.height * 0.08, deviceSize.width),
+                  _buildPedestal("", "None", deviceSize.height * 0.1, deviceSize.width),
+                  _buildPedestal("", "None", deviceSize.height * 0.06, deviceSize.width),
                 ],
               );
             }

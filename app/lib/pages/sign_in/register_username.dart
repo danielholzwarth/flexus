@@ -32,6 +32,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     final loginUserAccountService = LoginUserAccountService.create();
 
     return FlexusGradientScaffold(
@@ -40,13 +41,13 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSettings.screenHeight * 0.15),
-            _buildTitleRow(context),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
-            _buildDescription(),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
+            SizedBox(height: deviceSize.height * 0.15),
+            _buildTitleRow(context, deviceSize),
+            SizedBox(height: deviceSize.height * 0.02),
+            _buildDescription(deviceSize),
+            SizedBox(height: deviceSize.height * 0.02),
             _buildBulletPoints(),
-            SizedBox(height: AppSettings.screenHeight * 0.07),
+            SizedBox(height: deviceSize.height * 0.07),
             FlexusTextField(
               hintText: "Username",
               textController: usernameController,
@@ -54,7 +55,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
                 setState(() {});
               },
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.3),
+            SizedBox(height: deviceSize.height * 0.3),
             _buildContinueButton(context, loginUserAccountService),
           ],
         ),
@@ -99,9 +100,9 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     );
   }
 
-  SizedBox _buildDescription() {
+  SizedBox _buildDescription(Size deviceSize) {
     return SizedBox(
-      width: AppSettings.screenWidth * 0.7,
+      width: deviceSize.width * 0.7,
       child: CustomDefaultTextStyle(
         text: "A username can only exist once. It is used to identify you.",
         decoration: TextDecoration.none,
@@ -111,11 +112,11 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
     );
   }
 
-  Row _buildTitleRow(BuildContext context) {
+  Row _buildTitleRow(BuildContext context, Size deviceSize) {
     return Row(
       children: [
         SizedBox(
-          width: AppSettings.screenWidth * 0.15,
+          width: deviceSize.width * 0.15,
           child: IconButton(
             onPressed: () => Navigator.popAndPushNamed(context, "/"),
             icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
@@ -124,7 +125,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
           ),
         ),
         SizedBox(
-          width: AppSettings.screenWidth * 0.7,
+          width: deviceSize.width * 0.7,
           child: CustomDefaultTextStyle(
             text: "Please enter your username.",
             decoration: TextDecoration.none,

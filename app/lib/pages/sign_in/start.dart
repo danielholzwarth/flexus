@@ -18,21 +18,23 @@ class StartUpPage extends StatefulWidget {
 class _StartUpPageState extends State<StartUpPage> {
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
+
     return FlexusGradientScaffold(
       topColor: AppSettings.startUp,
       bottomColor: AppSettings.primary,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: AppSettings.screenHeight * 0.05),
+            SizedBox(height: deviceSize.height * 0.05),
             // _buildLanguageDetector(),
-            SizedBox(height: AppSettings.screenHeight * 0.045),
+            SizedBox(height: deviceSize.height * 0.045),
             FlexusDefaultIcon(
               iconData: Icons.star,
-              iconSize: AppSettings.screenHeight * 0.17,
+              iconSize: deviceSize.height * 0.17,
               iconColor: AppSettings.background,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.02),
+            SizedBox(height: deviceSize.height * 0.02),
             CustomDefaultTextStyle(
               text: "FLEXUS",
               color: AppSettings.fontV1,
@@ -40,9 +42,9 @@ class _StartUpPageState extends State<StartUpPage> {
               fontSize: AppSettings.fontSizeH1,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.2),
+            SizedBox(height: deviceSize.height * 0.2),
             SizedBox(
-              width: AppSettings.screenWidth * 0.7,
+              width: deviceSize.width * 0.7,
               child: CustomDefaultTextStyle(
                 text: "This is just a demo Application. If you tap Sign up I get the right of all of your data :P",
                 color: AppSettings.fontV1,
@@ -51,11 +53,11 @@ class _StartUpPageState extends State<StartUpPage> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: AppSettings.screenHeight * 0.07),
+            SizedBox(height: deviceSize.height * 0.07),
             _buildSignUpButton(context),
-            SizedBox(height: AppSettings.screenHeight * 0.03),
+            SizedBox(height: deviceSize.height * 0.03),
             _buildLoginButton(context),
-            SizedBox(height: AppSettings.screenHeight * 0.12),
+            SizedBox(height: deviceSize.height * 0.12),
           ],
         ),
       ),
@@ -94,34 +96,34 @@ class _StartUpPageState extends State<StartUpPage> {
     );
   }
 
-  GestureDetector _buildLanguageDetector() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          AppSettings.language == "DE" ? AppSettings.language = "ENG" : AppSettings.language = "DE";
-        });
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FlexusDefaultIcon(
-            iconData: Icons.language,
-            iconSize: AppSettings.fontSizeH4,
-            iconColor: AppSettings.fontV1,
-          ),
-          SizedBox(
-            width: AppSettings.screenWidth * 0.02,
-          ),
-          CustomDefaultTextStyle(
-            text: AppSettings.language,
-            fontSize: AppSettings.fontSizeH4,
-            color: AppSettings.fontV1,
-          ),
-          SizedBox(
-            width: AppSettings.screenWidth * 0.07,
-          ),
-        ],
-      ),
-    );
-  }
+  // GestureDetector _buildLanguageDetector() {
+  //   return GestureDetector(
+  //     onTap: () {
+  //       setState(() {
+  //         AppSettings.language == "DE" ? AppSettings.language = "ENG" : AppSettings.language = "DE";
+  //       });
+  //     },
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       children: [
+  //         FlexusDefaultIcon(
+  //           iconData: Icons.language,
+  //           iconSize: AppSettings.fontSizeH4,
+  //           iconColor: AppSettings.fontV1,
+  //         ),
+  //         SizedBox(
+  //           width: deviceSize.width * 0.02,
+  //         ),
+  //         CustomDefaultTextStyle(
+  //           text: AppSettings.language,
+  //           fontSize: AppSettings.fontSizeH4,
+  //           color: AppSettings.fontV1,
+  //         ),
+  //         SizedBox(
+  //           width: deviceSize.width * 0.07,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

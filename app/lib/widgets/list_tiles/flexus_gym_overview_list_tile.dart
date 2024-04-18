@@ -44,6 +44,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     String name = userBox.get("customGymName${widget.gymOverview.gym.id}") ?? widget.gymOverview.gym.name;
 
     return Slidable(
@@ -57,7 +58,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
             label: "Edit",
             foregroundColor: AppSettings.fontV1,
             onPressed: (context) async {
-              await showDialog(context);
+              await showDialog(context, deviceSize);
               setState(() {});
             },
           ),
@@ -65,7 +66,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       ),
       child: ListTile(
         onTap: () {
-          showPopUp(name);
+          showPopUp(name, deviceSize);
         },
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: AppSettings.background,
@@ -81,7 +82,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     );
   }
 
-  Future<dynamic> showDialog(BuildContext context) {
+  Future<dynamic> showDialog(BuildContext context, Size deviceSize) {
     return showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -110,7 +111,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                         overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                         foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
@@ -123,7 +124,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                         surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                         overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                         foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
+                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
                       ),
                       onPressed: () {
                         String recentName = userBox.get("recentGymName") ?? "";
@@ -157,7 +158,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     );
   }
 
-  void showPopUp(String name) {
+  void showPopUp(String name, Size deviceSize) {
     userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
     UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
 
@@ -191,9 +192,9 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                             color: AppSettings.font.withOpacity(0.5),
                           ),
                         ),
-                        SizedBox(height: AppSettings.screenHeight * 0.01),
+                        SizedBox(height: deviceSize.height * 0.01),
                         Container(
-                          width: AppSettings.screenWidth * 0.8,
+                          width: deviceSize.width * 0.8,
                           color: AppSettings.font.withOpacity(0.15),
                           height: 1,
                         ),
@@ -204,7 +205,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                               if (state.userAccountGymOverviews.isNotEmpty) {
                                 return Expanded(
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: AppSettings.screenWidth * 0.05),
+                                    padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
                                     child: FlexusScrollBar(
                                       scrollController: scrollController,
                                       child: ListView(
@@ -241,11 +242,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                           },
                         ),
                         Container(
-                          width: AppSettings.screenWidth * 0.8,
+                          width: deviceSize.width * 0.8,
                           color: AppSettings.font.withOpacity(0.15),
                           height: 1,
                         ),
-                        SizedBox(height: AppSettings.screenHeight * 0.02),
+                        SizedBox(height: deviceSize.height * 0.02),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -261,7 +262,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                                     ),
                                     onPressed: () {
                                       userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gymOverview.gym.id));
@@ -279,7 +280,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                       overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
                                       foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                                     ),
                                     onPressed: () {
                                       userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gymOverview.gym.id));
@@ -298,7 +299,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                                 overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                                fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                                fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                               ),
                               onPressed: () {
                                 openMaps(widget.gymOverview.gym.latitude, widget.gymOverview.gym.longitude);

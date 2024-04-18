@@ -56,6 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: BlocConsumer(
@@ -82,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildSection("My Account"),
                   buildName(userAccount, context),
                   buildUsername(userAccount, context),
-                  buildPassword(context),
+                  buildPassword(context, deviceSize),
                   _buildSection("Appearance"),
                   // buildFontSize(state.userSettings, context),
                   buildDarkMode(state.userSettings),
@@ -94,10 +95,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   // buildPullUserList(state.userSettings),
                   // buildNotifyEveryone(state.userSettings),
                   // buildNotifyUserList(state.userSettings),
-                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.05)),
+                  SliverToBoxAdapter(child: SizedBox(height: deviceSize.height * 0.05)),
                   buildLogOut(context),
                   buildDeleteAccount(context),
-                  SliverToBoxAdapter(child: SizedBox(height: AppSettings.screenHeight * 0.1)),
+                  SliverToBoxAdapter(child: SizedBox(height: deviceSize.height * 0.1)),
                 ],
               ),
             );
@@ -506,7 +507,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  SliverToBoxAdapter buildPassword(BuildContext context) {
+  SliverToBoxAdapter buildPassword(BuildContext context, Size deviceSize) {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Password",
@@ -534,7 +535,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         controller: oldPasswordController,
                         obscureText: true,
                       ),
-                      SizedBox(height: AppSettings.screenHeight * 0.02),
+                      SizedBox(height: deviceSize.height * 0.02),
                       TextFormField(
                         decoration: InputDecoration(
                           labelText: "New Password",
@@ -546,7 +547,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         controller: newPasswordController,
                         obscureText: true,
                       ),
-                      SizedBox(height: AppSettings.screenHeight * 0.02),
+                      SizedBox(height: deviceSize.height * 0.02),
                       TextFormField(
                         decoration: InputDecoration(
                           labelText: "Confirm New Password",

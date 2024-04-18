@@ -32,12 +32,13 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
 
   @override
   Widget build(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
     return ExpansionTile(
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           highlightText(widget.gym.name, AppSettings.fontSizeH4),
-          SizedBox(height: AppSettings.screenHeight * 0.01),
+          SizedBox(height: deviceSize.height * 0.01),
           CustomDefaultTextStyle(
             text: '${widget.gym.streetName} ${widget.gym.houseNumber}',
             color: AppSettings.font.withOpacity(0.5),
@@ -49,7 +50,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
         ],
       ),
       children: <Widget>[
-        SizedBox(height: AppSettings.screenHeight * 0.02),
+        SizedBox(height: deviceSize.height * 0.02),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -63,7 +64,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                     ),
                     onPressed: () {
                       userAccountGymBloc.add(DeleteUserAccountGym(gymID: widget.gym.id));
@@ -81,7 +82,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                       surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                       overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                      fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                      fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
                     ),
                     onPressed: () {
                       userAccountGymBloc.add(PostUserAccountGym(gymID: widget.gym.id));
@@ -97,7 +98,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
                 surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
                 overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
                 foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.4)),
+                fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4)),
               ),
               onPressed: () {
                 openMaps(widget.gym.latitude, widget.gym.longitude);
@@ -106,7 +107,7 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
             ),
           ],
         ),
-        SizedBox(height: AppSettings.screenHeight * 0.01),
+        SizedBox(height: deviceSize.height * 0.01),
       ],
     );
   }

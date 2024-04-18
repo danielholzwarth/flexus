@@ -65,6 +65,8 @@ class GymsCustomSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
+
     if (!isAddNew) {
       if (query != "") {
         searchGymBloc.add(GetGymsSearch(query: query));
@@ -129,7 +131,7 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                       text: "Start searching in order to show results!",
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: AppSettings.screenHeight * 0.05),
+                    SizedBox(height: deviceSize.height * 0.05),
                     const CustomDefaultTextStyle(
                       text: "If your gym does not yet exist, you can add it to the list of available gyms by clicking on the top right!",
                       textAlign: TextAlign.center,
@@ -196,7 +198,7 @@ class GymsCustomSearchDelegate extends SearchDelegate {
                             text: "No results found",
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: AppSettings.screenHeight * 0.05),
+                          SizedBox(height: deviceSize.height * 0.05),
                           const CustomDefaultTextStyle(
                             text: "You can switch to the gym search by pressing the blue plus-sign at the top right.",
                             textAlign: TextAlign.center,
