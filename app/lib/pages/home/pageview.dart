@@ -27,14 +27,30 @@ class PageViewPage extends StatefulWidget {
   State<PageViewPage> createState() => _PageViewPageState();
 }
 
-class _PageViewPageState extends State<PageViewPage> {
+class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMixin {
   final userBox = Hive.box("userBox");
   bool isFirstTime = true;
-
   int currentPageIndex = 1;
   PageController pageController = PageController(initialPage: 1);
 
   InitializationBloc initializationBloc = InitializationBloc();
+
+  late final AnimationController animationController = AnimationController(
+    duration: const Duration(milliseconds: 1500),
+    vsync: this,
+  )..repeat(reverse: true);
+
+  late final Animation<double> animation = CurvedAnimation(
+    reverseCurve: Curves.easeOut,
+    parent: animationController,
+    curve: Curves.easeOut,
+  );
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -53,8 +69,17 @@ class _PageViewPageState extends State<PageViewPage> {
       builder: (context, state) {
         if (state is Initializing) {
           return Scaffold(
-            backgroundColor: AppSettings.primaryShade80,
-            body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
+            backgroundColor: AppSettings.primary,
+            body: Center(
+              child: FadeTransition(
+                opacity: animation,
+                child: FlexusDefaultIcon(
+                  iconData: Icons.star,
+                  iconSize: AppSettings.screenHeight * 0.17,
+                  iconColor: AppSettings.background,
+                ),
+              ),
+            ),
           );
         } else if (state is Initialized) {
           UserSettings userSettings = userBox.get("userSettings");

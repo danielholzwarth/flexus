@@ -46,7 +46,7 @@ void onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
   });
-  Timer.periodic(const Duration(seconds: 5), (timer) async {
+  Timer.periodic(const Duration(seconds: 30), (timer) async {
     if (serviceInstance is AndroidServiceInstance) {
       if (await serviceInstance.isForegroundService()) {
         serviceInstance.setForegroundNotificationInfo(title: "Flexus", content: "Fetching content");
@@ -72,7 +72,7 @@ void onStart(ServiceInstance serviceInstance) async {
             payload: "payload",
           );
         }).toList();
-        
+
         debugPrint("Successful fetch - ${notifications.length} notifications");
 
         for (var notification in notifications) {
