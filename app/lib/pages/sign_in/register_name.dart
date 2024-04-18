@@ -27,6 +27,12 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
   final TextEditingController nameController = TextEditingController();
 
   @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FlexusGradientScaffold(
       topColor: AppSettings.background,

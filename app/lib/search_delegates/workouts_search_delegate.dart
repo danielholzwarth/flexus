@@ -18,6 +18,12 @@ class WorkoutsCustomSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(

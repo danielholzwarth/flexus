@@ -15,12 +15,13 @@ class FlexusBasicDialog {
     Color? surfaceTintColor,
     Color? hintColor,
   }) {
+    TextEditingController textEditingController = TextEditingController();
+
     return showCupertinoDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            TextEditingController textEditingController = TextEditingController();
             return AlertDialog(
               backgroundColor: backgroundColor ?? AppSettings.background,
               surfaceTintColor: surfaceTintColor ?? AppSettings.background,
@@ -46,7 +47,11 @@ class FlexusBasicDialog {
                         foregroundColor: MaterialStateProperty.all(AppSettings.error),
                         fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
                       ),
-                      onPressed: onPressedLeft ?? () => Navigator.pop(context),
+                      onPressed: () {
+                        if (onPressedLeft != null) onPressedLeft();
+                        textEditingController.dispose;
+                        Navigator.pop(context);
+                      },
                       child: CustomDefaultTextStyle(text: optionLeft ?? 'Cancel'),
                     ),
                     ElevatedButton(
@@ -57,7 +62,11 @@ class FlexusBasicDialog {
                         foregroundColor: MaterialStateProperty.all(AppSettings.primary),
                         fixedSize: MaterialStateProperty.all(Size.fromWidth(AppSettings.screenWidth * 0.25)),
                       ),
-                      onPressed: onPressedRight ?? () => Navigator.pop(context),
+                      onPressed: () {
+                        if (onPressedRight != null) onPressedRight();
+                        textEditingController.dispose;
+                        Navigator.pop(context);
+                      },
                       child: CustomDefaultTextStyle(text: optionRight ?? 'Confirm'),
                     ),
                   ],

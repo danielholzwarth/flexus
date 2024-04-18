@@ -47,12 +47,6 @@ void onStart(ServiceInstance serviceInstance) async {
     serviceInstance.stopSelf();
   });
   Timer.periodic(const Duration(seconds: 30), (timer) async {
-    if (serviceInstance is AndroidServiceInstance) {
-      if (await serviceInstance.isForegroundService()) {
-        serviceInstance.setForegroundNotificationInfo(title: "Flexus", content: "Fetching content");
-      }
-    }
-
     NotificationService notificationService = NotificationService.create();
 
     await initializeHive();

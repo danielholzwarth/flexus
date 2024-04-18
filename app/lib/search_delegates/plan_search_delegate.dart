@@ -16,6 +16,12 @@ class PlanCustomSearchDelegate extends SearchDelegate {
   List<Plan> items = [];
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(

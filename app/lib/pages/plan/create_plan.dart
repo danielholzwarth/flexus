@@ -40,6 +40,16 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
   bool isWeeklyRepetetive = false;
 
   @override
+  void dispose() {
+    nameController.dispose();
+    splitCountController.dispose();
+    for (var controller in splitControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

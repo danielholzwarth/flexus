@@ -32,6 +32,15 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   final UserAccountBloc userAccountBloc = UserAccountBloc();
   final userBox = Hive.box("userBox");
   bool refresh = false;
+  TextEditingController textEditingController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +87,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            TextEditingController textEditingController = TextEditingController();
             return AlertDialog(
               backgroundColor: AppSettings.background,
               surfaceTintColor: AppSettings.background,
@@ -194,7 +202,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                           builder: (context, state) {
                             if (state is UserAccountGymOverviewsLoaded) {
                               if (state.userAccountGymOverviews.isNotEmpty) {
-                                ScrollController scrollController = ScrollController();
                                 return Expanded(
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(horizontal: AppSettings.screenWidth * 0.05),

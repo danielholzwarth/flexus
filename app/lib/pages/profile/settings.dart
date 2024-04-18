@@ -34,11 +34,24 @@ class _SettingsPageState extends State<SettingsPage> {
   UserListBloc notifyUserListBloc = UserListBloc();
 
   final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmNewPasswordController = TextEditingController();
 
   @override
   void initState() {
     settingsBloc.add(GetSettings());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    textEditingController.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmNewPasswordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -504,10 +517,6 @@ class _SettingsPageState extends State<SettingsPage> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                final TextEditingController oldPasswordController = TextEditingController();
-                final TextEditingController newPasswordController = TextEditingController();
-                final TextEditingController confirmNewPasswordController = TextEditingController();
-
                 return AlertDialog(
                   backgroundColor: AppSettings.background,
                   content: Column(

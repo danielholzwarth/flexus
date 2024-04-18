@@ -39,6 +39,13 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
   final userBox = Hive.box('userBox');
 
   @override
+  void dispose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loginUserAccountService = LoginUserAccountService.create();
 

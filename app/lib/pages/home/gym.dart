@@ -45,6 +45,12 @@ class _GymPageState extends State<GymPage> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (AppSettings.hasConnection) {
       return Scaffold(

@@ -31,6 +31,13 @@ class _LoginPageState extends State<LoginPage> {
   final userBox = Hive.box('userBox');
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loginUserAccountService = LoginUserAccountService.create();
 

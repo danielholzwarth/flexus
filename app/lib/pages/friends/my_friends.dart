@@ -33,6 +33,13 @@ class _MyFriendsPageState extends State<MyFriendsPage> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (AppSettings.hasConnection) {
       return Scaffold(

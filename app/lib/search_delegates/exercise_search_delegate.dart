@@ -21,6 +21,12 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   List<Exercise> checkedItems = [];
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(

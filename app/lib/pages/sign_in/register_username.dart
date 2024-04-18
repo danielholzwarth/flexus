@@ -25,6 +25,12 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
   final TextEditingController usernameController = TextEditingController();
 
   @override
+  void dispose() {
+    usernameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loginUserAccountService = LoginUserAccountService.create();
 

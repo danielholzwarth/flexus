@@ -20,6 +20,12 @@ class FriendsCustomSearchDelegate extends SearchDelegate {
   UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(

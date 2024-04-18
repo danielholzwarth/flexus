@@ -34,6 +34,13 @@ class _ArchivePageState extends State<ArchivePage> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
