@@ -3,10 +3,12 @@ import 'dart:ui';
 
 import 'package:app/api/notification/notification_service.dart';
 import 'package:app/hive/notification/notification.dart' as noti;
+import 'package:app/main.dart';
 import 'package:app/resources/local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
@@ -33,7 +35,6 @@ Future<bool> onIosBackground(ServiceInstance serviceInstance) async {
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance serviceInstance) async {
-  DartPluginRegistrant.ensureInitialized();
   if (serviceInstance is AndroidServiceInstance) {
     serviceInstance.on('setAsForeground').listen((event) {
       serviceInstance.setAsForegroundService();
@@ -45,7 +46,7 @@ void onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
   });
-  Timer.periodic(const Duration(seconds: 30), (timer) async {
+  Timer.periodic(const Duration(seconds: 5), (timer) async {
     if (serviceInstance is AndroidServiceInstance) {
       if (await serviceInstance.isForegroundService()) {
         serviceInstance.setForegroundNotificationInfo(title: "Flexus", content: "Fetching content");
@@ -53,8 +54,12 @@ void onStart(ServiceInstance serviceInstance) async {
     }
 
     NotificationService notificationService = NotificationService.create();
-    final response = await notificationService.fetchData(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyQWNjb3VudElEIjoxLCJ1c2VybmFtZSI6ImRob2x6d2FydGgiLCJleHAiOjE3MTQ5MTIwMDl9.KjGcIj67YF0Hn5VwUnmkb8-4Lqwyw_TG4Muzk_tdkUA");
+
+    await initializeHive();
+    Box userBox = Hive.box("userBox");
+    String flexusJWT = userBox.get("flexusjwt");
+
+    final response = await notificationService.fetchData(flexusJWT);
     List<noti.Notification> notifications = [];
 
     if (response.isSuccessful) {
@@ -67,6 +72,8 @@ void onStart(ServiceInstance serviceInstance) async {
             payload: "payload",
           );
         }).toList();
+        
+        debugPrint("Successful fetch - ${notifications.length} notifications");
 
         for (var notification in notifications) {
           LocalNotifications.showNotification(
@@ -76,8 +83,6 @@ void onStart(ServiceInstance serviceInstance) async {
           );
           await Future.delayed(const Duration(seconds: 6));
         }
-
-        debugPrint("Successful fetch - ${notifications.length} notifications");
       } else {
         debugPrint("Successful fetch - No update");
       }
