@@ -335,7 +335,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   if (widget.userID != userAccount.id) {
                     if (state.friendship != null) {
                       if (state.friendship!.isAccepted) {
-                        return ['Remove Friend', 'Friends', 'Report'].map((String choice) {
+                        return ['Remove Friend', 'Report'].map((String choice) {
                           return PopupMenuItem<String>(
                             value: choice,
                             child: CustomDefaultTextStyle(text: choice),
@@ -343,14 +343,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         }).toList();
                       } else {
                         if (state.friendship!.requestorID == userAccount.id) {
-                          return ['Friendrequest sent', 'Friends', 'Report'].map((String choice) {
+                          return ['Friendrequest sent', 'Report'].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
                               child: CustomDefaultTextStyle(text: choice),
                             );
                           }).toList();
                         } else {
-                          return ['Accept friendrequest', 'Friends', 'Report'].map((String choice) {
+                          return ['Accept friendrequest', 'Report'].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
                               child: CustomDefaultTextStyle(text: choice),
@@ -359,7 +359,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         }
                       }
                     } else {
-                      return ['Add Friend', 'Friends', 'Report'].map((String choice) {
+                      return ['Add Friend', 'Report'].map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
                           child: CustomDefaultTextStyle(text: choice),
