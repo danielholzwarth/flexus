@@ -58,7 +58,7 @@ class FriendsCustomSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(keyword: query));
+    userAccountBloc.add(GetUserAccounts(keyword: query, isFriend: isFriend, hasRequest: hasRequest));
 
     return GestureDetector(
       onTap: () {

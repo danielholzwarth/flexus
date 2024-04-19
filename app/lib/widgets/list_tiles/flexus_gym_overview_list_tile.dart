@@ -159,7 +159,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
   }
 
   void showPopUp(String name, Size deviceSize) {
-    userAccountBloc.add(GetUserAccountsFriendsGym(isFriend: true, gymID: widget.gymOverview.gym.id, isWorkingOut: true));
+    userAccountBloc.add(GetUserAccountsGym(gymID: widget.gymOverview.gym.id, isWorkingOut: true));
     UserAccountGymBloc userAccountGymBloc = UserAccountGymBloc();
 
     showModalBottomSheet(

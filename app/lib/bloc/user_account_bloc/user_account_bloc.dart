@@ -19,8 +19,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   UserAccountBloc() : super(UserAccountInitial()) {
     on<GetUserAccount>(_onGetUserAccount);
     on<PatchUserAccount>(_onPatchUserAccount);
-    on<GetUserAccountsFriendsSearch>(_onGetUserAccountsFriendsSearch);
-    on<GetUserAccountsFriendsGym>(_onGetUserAccountsFriendsGym);
+    on<GetUserAccounts>(_onGetUserAccounts);
+    on<GetUserAccountsGym>(_onGetUserAccountsGym);
   }
 
   void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
@@ -127,12 +127,14 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountLoaded(userAccount: userAccount));
   }
 
-  void _onGetUserAccountsFriendsSearch(GetUserAccountsFriendsSearch event, Emitter<UserAccountState> emit) async {
+  void _onGetUserAccounts(GetUserAccounts event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),
       keyword: event.keyword,
+      isFriend: event.isFriend,
+      hasRequest: event.hasRequest,
     );
 
     if (response.isSuccessful) {
@@ -162,13 +164,12 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
   }
 
-  void _onGetUserAccountsFriendsGym(GetUserAccountsFriendsGym event, Emitter<UserAccountState> emit) async {
+  void _onGetUserAccountsGym(GetUserAccountsGym event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
-    Response<dynamic> response = await _userAccountService.getUserAccounts(
+    Response<dynamic> response = await _userAccountService.getUserAccountsGym(
       userBox.get("flexusjwt"),
-      isFriend: event.isFriend,
-      gymID: event.gymID,
+      event.gymID,
       isWorkingOut: event.isWorkingOut,
     );
 

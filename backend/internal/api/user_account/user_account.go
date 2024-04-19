@@ -18,7 +18,8 @@ type UserAccountStore interface {
 	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID int) error
 	ValidatePasswordByID(userAccountID int, password string) error
-	GetUserAccountInformations(userAccountID int, params map[string]any) ([]any, error)
+	GetUserAccountInformations(userAccountID int, keyword string, isFriend bool, hasRequest bool) ([]any, error)
+	GetUserAccountInformationsGym(userAccountID int, gymID int, isWorkingOut bool) ([]any, error)
 	PatchEntireUserAccount(userAccountID int, userAccount types.UserAccount) error
 }
 
@@ -38,6 +39,7 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 	r.Patch("/", s.patchUserAccount())
 	r.Delete("/", s.deleteUserAccount())
 	r.Get("/", s.getUserAccountInformations())
+	r.Get("/gym/{gymID}", s.getUserAccountInformationsGym())
 	r.Patch("/sync", s.patchEntireUserAccount())
 
 	return s
@@ -213,33 +215,80 @@ func (s service) deleteUserAccount() http.HandlerFunc {
 
 func (s service) getUserAccountInformations() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		println("not gym")
+
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
 			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
 			return
 		}
 
-		params := make(map[string]any)
 		query := r.URL.Query()
+
+		var isFriend bool
+		var hasRequest bool
+		var keyword string
 
 		if v := query.Get("isFriend"); v != "" {
 			b, err := strconv.ParseBool(v)
 			if err != nil {
 				println(err.Error())
 			} else {
-				params["isFriend"] = b
+				isFriend = b
 			}
 		}
 
-		params["keyword"] = query.Get("keyword")
-
-		if v := query.Get("gymID"); v != "" {
-			id, err := strconv.Atoi(v)
-			if err != nil || id <= 0 {
+		if v := query.Get("hasRequest"); v != "" {
+			b, err := strconv.ParseBool(v)
+			if err != nil {
 				println(err.Error())
 			} else {
-				params["gymID"] = id
+				hasRequest = b
 			}
+		}
+
+		keyword = query.Get("keyword")
+
+		informations, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, keyword, isFriend, hasRequest)
+		if err != nil {
+			http.Error(w, "Failed to get UserInformation", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(informations)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) getUserAccountInformationsGym() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		println("gym")
+
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		query := r.URL.Query()
+		var gymID int
+		var isWorkingOut bool
+
+		gymIDValue := chi.URLParam(r, "gymID")
+		gymID, err := strconv.Atoi(gymIDValue)
+		if err != nil || gymID <= 0 {
+			http.Error(w, "Wrong input for gymID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
 		}
 
 		if v := query.Get("isWorkingOut"); v != "" {
@@ -247,11 +296,11 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 			if err != nil {
 				println(err.Error())
 			} else {
-				params["isWorkingOut"] = b
+				isWorkingOut = b
 			}
 		}
 
-		informations, err := s.userAccountStore.GetUserAccountInformations(claims.UserAccountID, params)
+		informations, err := s.userAccountStore.GetUserAccountInformationsGym(claims.UserAccountID, gymID, isWorkingOut)
 		if err != nil {
 			http.Error(w, "Failed to get UserInformation", http.StatusInternalServerError)
 			println(err.Error())

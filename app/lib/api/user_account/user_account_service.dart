@@ -27,7 +27,13 @@ abstract class UserAccountService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString, {
     @Query('keyword') String? keyword,
     @Query('isFriend') bool? isFriend,
-    @Query('gymID') int? gymID,
+    @Query('hasRequest') bool? hasRequest,
+  });
+
+  @Get(path: '/gym/{gymID}')
+  Future<Response> getUserAccountsGym(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('gymID') int gymID, {
     @Query('isWorkingOut') bool? isWorkingOut,
   });
 

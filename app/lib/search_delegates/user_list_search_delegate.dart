@@ -56,7 +56,7 @@ class UserListCustomSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
-    userAccountBloc.add(GetUserAccountsFriendsSearch(isFriend: true));
+    userAccountBloc.add(GetUserAccounts(isFriend: true));
 
     return GestureDetector(
       onTap: () {

@@ -76,15 +76,36 @@ final class _$UserAccountService extends UserAccountService {
     String? keyword,
     bool? isFriend,
     bool? hasRequest,
-    int? gymID,
-    bool? isWorkingOut,
   }) {
     final Uri $url = Uri.parse('/user_accounts/');
     final Map<String, dynamic> $params = <String, dynamic>{
       'keyword': keyword,
       'isFriend': isFriend,
       'hasRequest': hasRequest,
-      'gymID': gymID,
+    };
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> getUserAccountsGym(
+    String flexusJWTString,
+    int gymID, {
+    String? keyword,
+    bool? isWorkingOut,
+  }) {
+    final Uri $url = Uri.parse('/user_accounts/gym/${gymID}');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'keyword': keyword,
       'isWorkingOut': isWorkingOut,
     };
     final Map<String, String> $headers = {

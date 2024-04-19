@@ -30,7 +30,7 @@ class _FriendsPageState extends State<FriendsPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccountsFriendsSearch());
+    userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
     super.initState();
   }
 
@@ -135,8 +135,8 @@ class _FriendsPageState extends State<FriendsPage> {
         IconButton(
           icon: const FlexusDefaultIcon(iconData: Icons.search),
           onPressed: () async {
-            await showSearch(context: context, delegate: FriendsCustomSearchDelegate(isFriend: true));
-            userAccountBloc.add(GetUserAccountsFriendsSearch());
+            await showSearch(context: context, delegate: FriendsCustomSearchDelegate(isFriend: false, hasRequest: false));
+            userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
           },
         ),
       ],

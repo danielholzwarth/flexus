@@ -23,24 +23,24 @@ class PatchUserAccount extends UserAccountEvent {
   });
 }
 
-class GetUserAccountsFriendsSearch extends UserAccountEvent {
+class GetUserAccounts extends UserAccountEvent {
   final bool? isFriend;
+  final bool? hasRequest;
   final String? keyword;
 
-  GetUserAccountsFriendsSearch({
+  GetUserAccounts({
     this.isFriend,
+    this.hasRequest,
     this.keyword,
   });
 }
 
-class GetUserAccountsFriendsGym extends UserAccountEvent {
-  final bool? isFriend;
-  final int? gymID;
+class GetUserAccountsGym extends UserAccountEvent {
+  final int gymID;
   final bool? isWorkingOut;
 
-  GetUserAccountsFriendsGym({
-    this.isFriend,
-    this.gymID,
+  GetUserAccountsGym({
+    required this.gymID,
     this.isWorkingOut,
   });
 }

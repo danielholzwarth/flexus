@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"flexus/internal/types"
-	"strconv"
 )
 
 func (db *DB) GetUserAccountInformation(userAccountID int) (types.UserAccountInformation, error) {
@@ -82,95 +81,110 @@ func (db *DB) DeleteUserAccount(userAccountID int) error {
 	return nil
 }
 
-func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]any) ([]any, error) {
-	conditionParamIndex := 2
+func (db *DB) GetUserAccountInformations(userAccountID int, keyword string, isFriend bool, hasRequest bool) ([]any, error) {
 	var conditionParams []any
-	var fromConditions []string
-	var whereConditions []string
-	var orderConditions []string
+	conditionParams = append(conditionParams, userAccountID)
+	conditionParams = append(conditionParams, keyword)
 
 	query := `
 		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
+		FROM user_account ua
 	`
-
-	fromConditions = append(fromConditions, " FROM user_account ua")
-	whereConditions = append(whereConditions, " ua.id != $1")
-	conditionParams = append(conditionParams, userAccountID)
-
-	_, exists := params["gymID"]
-	if exists {
-		query += `, 
-			(SELECT w.starttime 
-				FROM workout w 
-				WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime, 
-			(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
-				FROM workout w
-				WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
+	if isFriend && hasRequest {
+		// FRIENDS AND REQUESTS
+		query += `
+			LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+			INNER JOIN user_settings us ON us.user_id = ua.id
+			WHERE ua.id != $1
+				AND ((f.requestor_id = $1 AND f.requested_id = ua.id) OR (f.requested_id = $1 AND f.requestor_id = ua.id))
+				AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%')
+			ORDER BY f.is_accepted = FALSE DESC;
 		`
-
-		whereConditions = append(whereConditions, " w.gym_id = $"+strconv.Itoa(conditionParamIndex)+" AND w.starttime IS NOT NULL")
-		conditionParams = append(conditionParams, params["gymID"])
-		fromConditions = append(fromConditions, " LEFT JOIN workout w ON w.user_id = ua.id")
-		orderConditions = append(orderConditions, " starttime DESC")
-		conditionParamIndex++
-
-		_, exists = params["isWorkingOut"]
-		if exists {
-			whereConditions = append(whereConditions, " w.endtime IS NULL")
-		}
+	} else if isFriend {
+		// FRIENDS
+		query += `
+			LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+			INNER JOIN user_settings us ON us.user_id = ua.id
+			WHERE ua.id != $1
+				AND ((f.requestor_id = $1 AND f.requested_id = ua.id) OR (f.requested_id = $1 AND f.requestor_id = ua.id))
+				AND f.is_accepted = TRUE
+				AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%');
+		`
+	} else if hasRequest {
+		// REQUESTS
+		query += `
+			LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id
+			INNER JOIN user_settings us ON us.user_id = ua.id
+			WHERE ua.id != $1
+				AND ((f.requestor_id = $1 AND f.requested_id = ua.id) OR (f.requested_id = $1 AND f.requestor_id = ua.id))
+				AND f.is_accepted = FALSE
+				AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%')
+			ORDER BY f.is_accepted = FALSE DESC;
+		`
+	} else {
+		//ALL
+		query += `
+			INNER JOIN user_settings us ON us.user_id = ua.id
+			WHERE ua.id != $1
+				AND us.is_unlisted = FALSE
+				AND (LOWER(ua.username) LIKE '%' || LOWER($2) || '%' OR LOWER(ua.name) LIKE '%' || LOWER($2) || '%');
+		`
 	}
-
-	_, existsFriend := params["isFriend"]
-	if existsFriend {
-		fromConditions = append(fromConditions, " LEFT JOIN friendship f ON ua.id = f.requestor_id OR ua.id = f.requested_id")
-		whereConditions = append(whereConditions, " f.is_accepted = $"+strconv.Itoa(conditionParamIndex))
-		conditionParams = append(conditionParams, params["isFriend"])
-		conditionParamIndex++
-
-		whereConditions = append(whereConditions, " ($1 = f.requestor_id OR $1 = f.requested_id)")
-		orderConditions = append(orderConditions, " f.created_at DESC")
-	}
-
-	if !existsFriend {
-		fromConditions = append(fromConditions, " LEFT JOIN user_settings us ON us.user_id = ua.id")
-		whereConditions = append(whereConditions, " us.is_unlisted = FALSE")
-	}
-
-	_, exists = params["keyword"]
-	if exists {
-		whereConditions = append(whereConditions, " (LOWER(ua.username) LIKE '%' || LOWER($"+strconv.Itoa(conditionParamIndex)+") || '%' OR LOWER(ua.name) LIKE '%' || LOWER($"+strconv.Itoa(conditionParamIndex)+") || '%')")
-		conditionParams = append(conditionParams, params["keyword"])
-		conditionParamIndex++
-	}
-
-	for i := 0; i < len(fromConditions); i++ {
-		query += fromConditions[i]
-	}
-
-	for i := 0; i < len(whereConditions); i++ {
-		if i > 0 {
-			query += " AND"
-		} else {
-			query += " WHERE"
-		}
-		query += whereConditions[i]
-	}
-
-	for i := 0; i < len(orderConditions); i++ {
-		if i > 0 {
-			query += ","
-		} else {
-			query += " ORDER BY"
-		}
-		query += orderConditions[i]
-	}
-
-	query += ";"
-
-	//Execute Query
-	var informations []any
 
 	rows, err := db.pool.Query(query, conditionParams...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var informations []any
+
+	for rows.Next() {
+		var information types.UserAccountInformation
+
+		err := rows.Scan(
+			&information.UserAccountID,
+			&information.Username,
+			&information.Name,
+			&information.CreatedAt,
+			&information.Level,
+			&information.ProfilePicture,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		informations = append(informations, information)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return informations, nil
+}
+
+func (db *DB) GetUserAccountInformationsGym(userAccountID int, gymID int, isWorkingOut bool) ([]any, error) {
+	query := `
+		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture, 
+		(SELECT w.starttime 
+			FROM workout w 
+			WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime, 
+		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
+			FROM workout w
+			WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
+		FROM user_account ua
+		LEFT JOIN workout w ON w.user_id = ua.id
+		WHERE ua.id != $1 
+			AND w.gym_id = $2 
+			AND w.starttime IS NOT NULL
+			AND (CASE WHEN $3 = TRUE THEN w.endtime IS NULL END)
+		ORDER BY starttime DESC;
+	`
+
+	var informations []any
+
+	rows, err := db.pool.Query(query, userAccountID, gymID, isWorkingOut)
 	if err != nil {
 		return nil, err
 	}
@@ -179,33 +193,20 @@ func (db *DB) GetUserAccountInformations(userAccountID int, params map[string]an
 	for rows.Next() {
 		var information types.UserAccountInformation
 
-		if _, exists := params["gymID"]; exists {
-			err := rows.Scan(
-				&information.UserAccountID,
-				&information.Username,
-				&information.Name,
-				&information.CreatedAt,
-				&information.Level,
-				&information.ProfilePicture,
-				&information.WorkoutStartTime,
-				&information.AverageWorkoutDuration,
-			)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			err := rows.Scan(
-				&information.UserAccountID,
-				&information.Username,
-				&information.Name,
-				&information.CreatedAt,
-				&information.Level,
-				&information.ProfilePicture,
-			)
-			if err != nil {
-				return nil, err
-			}
+		err := rows.Scan(
+			&information.UserAccountID,
+			&information.Username,
+			&information.Name,
+			&information.CreatedAt,
+			&information.Level,
+			&information.ProfilePicture,
+			&information.WorkoutStartTime,
+			&information.AverageWorkoutDuration,
+		)
+		if err != nil {
+			return nil, err
 		}
+
 		informations = append(informations, information)
 	}
 
