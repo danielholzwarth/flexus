@@ -17,6 +17,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -150,9 +151,19 @@ class _ProfilePageState extends State<ProfilePage> {
                               radius: deviceSize.width * 0.15,
                               backgroundImage: MemoryImage(state.userAccount.profilePicture!),
                             )
-                          : CircleAvatar(
-                              radius: deviceSize.width * 0.15,
-                              backgroundColor: Colors.transparent,
+                          : Container(
+                              width: deviceSize.width * 0.3,
+                              height: deviceSize.width * 0.3,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 2, color: AppSettings.font.withOpacity(0.2)),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: Alignment.center,
+                              child: CustomDefaultTextStyle(
+                                text: "Add Picture",
+                                fontSize: AppSettings.fontSize,
+                                color: AppSettings.font.withOpacity(0.5),
+                              ),
                             ),
                     ),
                   ),
