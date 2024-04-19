@@ -7,7 +7,7 @@ import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift/best_lift_overview.dart';
 import 'package:app/hive/user_account/user_account.dart';
-import 'package:app/pages/friends/my_friends.dart';
+import 'package:app/pages/friends/friends.dart';
 import 'package:app/pages/profile/leveling.dart';
 import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
@@ -403,7 +403,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         context,
                         PageTransition(
                           type: PageTransitionType.fade,
-                          child: const MyFriendsPage(),
+                          child: const FriendsPage(),
                         ),
                       );
                       break;

@@ -231,15 +231,6 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 			}
 		}
 
-		if v := query.Get("hasRequest"); v != "" {
-			b, err := strconv.ParseBool(v)
-			if err != nil {
-				println(err.Error())
-			} else {
-				params["hasRequest"] = b
-			}
-		}
-
 		params["keyword"] = query.Get("keyword")
 
 		if v := query.Get("gymID"); v != "" {

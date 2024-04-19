@@ -3,7 +3,6 @@ import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/hive/user_account/user_account.dart';
-import 'package:app/pages/friends/add_friend.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/pages/sign_in/login.dart';
 import 'package:app/resources/app_settings.dart';
@@ -390,20 +389,20 @@ class _GymPageState extends State<GymPage> {
             onPressed: () {},
           ),
         ),
-        IconButton(
-          icon: const FlexusDefaultIcon(iconData: Icons.people),
-          onPressed: () {
-            Navigator.push(
-              context,
-              PageTransition(
-                type: PageTransitionType.fade,
-                child: const AddFriendPage(),
-              ),
-            ).then((value) {
-              gymBloc.add(GetGymOverviews());
-            });
-          },
-        ),
+        // IconButton(
+        //   icon: const FlexusDefaultIcon(iconData: Icons.people),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       PageTransition(
+        //         type: PageTransitionType.fade,
+        //         child: const AddFriendPage(),
+        //       ),
+        //     ).then((value) {
+        //       gymBloc.add(GetGymOverviews());
+        //     });
+        //   },
+        // ),
         IconButton(
           icon: const FlexusDefaultIcon(iconData: Icons.add_business),
           onPressed: () async {

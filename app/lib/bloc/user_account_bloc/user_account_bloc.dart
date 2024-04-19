@@ -132,8 +132,6 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
     Response<dynamic> response = await _userAccountService.getUserAccounts(
       userBox.get("flexusjwt"),
-      isFriend: event.isFriend,
-      hasRequest: event.hasRequest,
       keyword: event.keyword,
     );
 
