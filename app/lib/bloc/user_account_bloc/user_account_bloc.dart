@@ -177,22 +177,20 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       List<UserAccountGymOverview> userAccountGymOverviews = [];
       if (response.body != "null") {
         final List<dynamic> userAccountsJson = response.body;
-        final UserAccount userAccount = userBox.get("userAccount");
 
         for (final userData in userAccountsJson) {
-          if (userData['userAccountID'] != userAccount.id) {
-            final userAccountGymOverview = UserAccountGymOverview(
-              id: userData['userAccountID'],
-              username: userData['username'],
-              name: userData['name'],
-              profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
-              workoutStartTime: DateTime.parse(userData['workoutStartTime']),
-              averageWorkoutDuration: Duration(seconds: userData['averageWorkoutDuration'].toInt()),
-            );
-            userAccountGymOverviews.add(userAccountGymOverview);
-          }
+          final userAccountGymOverview = UserAccountGymOverview(
+            id: userData['userAccountID'],
+            username: userData['username'],
+            name: userData['name'],
+            profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
+            workoutStartTime: DateTime.parse(userData['workoutStartTime']),
+            averageWorkoutDuration: Duration(seconds: userData['averageWorkoutDuration'] != null ? userData['averageWorkoutDuration']?.toInt() : 0),
+          );
+          userAccountGymOverviews.add(userAccountGymOverview);
         }
       }
+
       emit(UserAccountGymOverviewsLoaded(userAccountGymOverviews: userAccountGymOverviews));
     } else {
       emit(UserAccountsError(error: response.error.toString()));

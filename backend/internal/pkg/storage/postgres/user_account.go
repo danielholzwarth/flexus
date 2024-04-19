@@ -166,25 +166,50 @@ func (db *DB) GetUserAccountInformations(userAccountID int, keyword string, isFr
 
 func (db *DB) GetUserAccountInformationsGym(userAccountID int, gymID int, isWorkingOut bool) ([]any, error) {
 	query := `
-		SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture, 
+		SELECT DISTINCT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture,
 		(SELECT w.starttime 
 			FROM workout w 
-			WHERE w.endtime IS NULL AND w.starttime IS NOT NULL AND w.user_id = ua.id) AS starttime, 
+			WHERE w.gym_id = $1 
+			AND w.endtime IS NULL 
+			AND w.starttime IS NOT NULL 
+			AND w.user_id = ua.id) AS starttime, 
 		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
 			FROM workout w
-			WHERE w.endtime IS NOT NULL AND w.starttime IS NOT NULL) AS avg_workout_duration
+			WHERE w.gym_id = $1 
+			AND w.endtime IS NOT NULL 
+			AND w.starttime IS NOT NULL) AS avg_workout_duration
 		FROM user_account ua
-		LEFT JOIN workout w ON w.user_id = ua.id
-		WHERE ua.id != $1 
-			AND w.gym_id = $2 
-			AND w.starttime IS NOT NULL
-			AND (CASE WHEN $3 = TRUE THEN w.endtime IS NULL END)
-		ORDER BY starttime DESC;
+		JOIN workout ON ua.id = workout.user_id
+		JOIN friendship ON friendship.requestor_id = ua.id OR friendship.requested_id = ua.id
+		WHERE workout.gym_id = $1
+		AND workout.endtime IS NULL 
+		AND (friendship.requestor_id = $2 OR friendship.requested_id = $2)
+		AND friendship.is_accepted = TRUE
+
+		UNION
+
+		SELECT DISTINCT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture,
+		(SELECT w.starttime 
+			 FROM workout w 
+			 WHERE w.gym_id = $1 
+			 AND w.endtime IS NULL 
+			 AND w.starttime IS NOT NULL 
+			 AND w.user_id = ua.id) AS starttime, 
+		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
+			 FROM workout w
+			 WHERE w.gym_id = $1 
+			 AND w.endtime IS NOT NULL 
+			 AND w.starttime IS NOT NULL) AS avg_workout_duration
+		FROM user_account ua
+		JOIN workout ON ua.id = workout.user_id
+		WHERE workout.gym_id = $1
+		AND workout.endtime IS NULL
+		AND ua.id = $2;
 	`
 
 	var informations []any
 
-	rows, err := db.pool.Query(query, userAccountID, gymID, isWorkingOut)
+	rows, err := db.pool.Query(query, gymID, userAccountID)
 	if err != nil {
 		return nil, err
 	}

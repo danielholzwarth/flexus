@@ -90,6 +90,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       if (response.body != "null") {
         final List<dynamic> jsonList = response.body;
 
+        print(response.body);
+
         gymOverviews = jsonList.map((json) {
           List<UserAccount> userAccounts = [];
           if (json['currentUserAccounts'] != null) {

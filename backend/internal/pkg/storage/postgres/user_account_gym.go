@@ -54,17 +54,46 @@ func (db *DB) GetUserAccountGym(userAccountID int, gymID int) (bool, error) {
 }
 
 func (db *DB) DeleteUserAccountGym(userAccountID int, gymID int) error {
-	query := `
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+
+	queryDelete := `
 		DELETE 
 		FROM user_account_gym
 		WHERE user_id = $1 AND gym_id = $2;
 	`
 
-	_, err := db.pool.Exec(query, userAccountID, gymID)
+	_, err = tx.Exec(queryDelete, userAccountID, gymID)
 	if err != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			return rollbackErr
+		}
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("relation not found")
 		}
+		return err
+	}
+
+	queryUpdateWorkout := `
+		UPDATE workout
+		SET endtime = NOW()
+		WHERE gym_id = $1 AND user_id = $2;
+	`
+
+	_, err = tx.Exec(queryUpdateWorkout, gymID, userAccountID)
+	if err != nil {
+		rollbackErr := tx.Rollback()
+		if rollbackErr != nil {
+			return rollbackErr
+		}
+		return err
+	}
+
+	err = tx.Commit()
+	if err != nil {
 		return err
 	}
 

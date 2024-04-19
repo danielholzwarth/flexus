@@ -101,15 +101,15 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 		var userAccountInformations []types.UserAccountInformation
 
 		userQuery := `
-            SELECT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
-            FROM user_account ua
-            INNER JOIN workout w ON ua.id = w.user_id
-            WHERE ua.id != $2 AND w.gym_id = $1 AND w.endtime IS NULL AND EXISTS (
-                SELECT 1 FROM friendship f WHERE (f.requestor_id = ua.id OR f.requested_id = ua.id) AND f.is_accepted = TRUE AND (
-                    f.requestor_id = $2 OR f.requested_id = $2
-                )
-            );
-        `
+			SELECT DISTINCT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture
+			FROM user_account ua
+			JOIN workout ON ua.id = workout.user_id
+			JOIN friendship ON friendship.requestor_id = ua.id OR friendship.requested_id = ua.id
+			WHERE workout.gym_id = $1
+			AND workout.endtime IS NULL 
+			AND (friendship.requestor_id = $2 OR friendship.requested_id = $2)
+			AND friendship.is_accepted = TRUE;
+		`
 
 		innerRows, err := db.pool.Query(userQuery, gym.ID, userAccountID)
 		if err != nil {
@@ -133,16 +133,21 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 
 		totalCountQuery := `
 			SELECT COUNT(*) 
-			FROM user_account ua
-			INNER JOIN friendship f ON f.requestor_id = ua.id OR f.requested_id = ua.id
-			INNER JOIN workout w ON ua.id = w.user_id
-			WHERE ua.id != $1 AND f.is_accepted = TRUE AND w.gym_id = $2;
+			FROM user_account_gym uag
+			JOIN user_account ON user_account.id = uag.user_id
+			JOIN friendship ON friendship.requestor_id = user_account.id OR friendship.requested_id = user_account.id
+			WHERE uag.user_id != $1 
+				AND uag.gym_id = $2
+				AND (friendship.requestor_id = $1 OR friendship.requested_id = $1)
+				AND friendship.is_accepted = TRUE;
 		`
 
 		err = db.pool.QueryRow(totalCountQuery, userAccountID, gym.ID).Scan(&gymOverview.TotalFriends)
 		if err != nil {
 			return nil, err
 		}
+
+		print(gymOverview.TotalFriends)
 
 		gymOverview.Gym = gym
 		gymOverview.CurrentUserAccounts = userAccountInformations
