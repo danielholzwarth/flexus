@@ -1,5 +1,4 @@
 import 'package:app/bloc/init_bloc/initialization_bloc.dart';
-import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/home/gym.dart';
 import 'package:app/pages/home/home.dart';
 import 'package:app/pages/home/statistics.dart';
@@ -84,15 +83,15 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
             ),
           );
         } else if (state is Initialized) {
-          UserSettings userSettings = userBox.get("userSettings");
-          bool isQuickAccess = userSettings.isQuickAccess;
+          // UserSettings userSettings = userBox.get("userSettings");
+          // bool isQuickAccess = userSettings.isQuickAccess;
 
-          if (isFirstTime && widget.isFirst && isQuickAccess) {
-            isFirstTime = false;
-            return buildQuickAccess(context, deviceSize);
-          } else {
-            return buildPages();
-          }
+          // if (isFirstTime && widget.isFirst && isQuickAccess) {
+          //   isFirstTime = false;
+          //   return buildQuickAccess(context, deviceSize);
+          // } else {
+          return buildPages();
+          // }
         } else if (state is InitializingError) {
           return Center(child: CustomDefaultTextStyle(text: "Error: ${state.error}"));
         } else {

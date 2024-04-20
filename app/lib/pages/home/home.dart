@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
-      icon: Icons.add,
+      icon: Icons.fitness_center,
     );
   }
 

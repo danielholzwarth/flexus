@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildSection("Appearance"),
                   // buildFontSize(state.userSettings, context),
                   buildDarkMode(state.userSettings),
-                  buildQuickAccess(state.userSettings),
+                  // buildQuickAccess(state.userSettings),
                   // buildFeatureCreep(userSettings),
                   _buildSection("Privacy"),
                   buildIsListed(state.userSettings),
