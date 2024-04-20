@@ -7,6 +7,8 @@ class AppSettings {
   static bool hasConnection = true;
   static bool isTokenExpired = true;
 
+  static Duration timeZoneOffset = const Duration();
+
   static var isDarkMode = false;
   static var language = "DE";
 

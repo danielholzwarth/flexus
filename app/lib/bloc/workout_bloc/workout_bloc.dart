@@ -26,7 +26,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutCreating());
 
     final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
-    final String formattedStartTime = "${formatter.format(event.startTime)}Z";
+    final String formattedStartTime = "${formatter.format(event.startTime.subtract(AppSettings.timeZoneOffset))}Z";
 
     final response = await _workoutService.postWorkout(userBox.get("flexusjwt"), {
       "gymID": event.gymID,
@@ -59,9 +59,9 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
                 id: json['workout']['id'],
                 userAccountID: json['workout']['userAccountID'],
                 splitID: json['workout']['splitID'],
-                createdAt: DateTime.parse(json['workout']['createdAt']),
-                starttime: DateTime.parse(json['workout']['starttime']),
-                endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']) : null,
+                createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
+                starttime: DateTime.parse(json['workout']['starttime']).add(AppSettings.timeZoneOffset),
+                endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']).add(AppSettings.timeZoneOffset) : null,
                 isArchived: json['workout']['isArchived'],
                 isStared: json['workout']['isStared'],
                 isPinned: json['workout']['isPinned'],

@@ -45,6 +45,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = DateTime.now();
+    AppSettings.timeZoneOffset = dateTime.timeZoneOffset;
+
     final userBox = Hive.box('userBox');
     final flexusjwt = userBox.get("flexusjwt");
     if (flexusjwt != null) {

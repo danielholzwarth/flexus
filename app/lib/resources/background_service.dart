@@ -57,13 +57,16 @@ void onStart(ServiceInstance serviceInstance) async {
     final response = await notificationService.fetchData(flexusJWT);
     List<noti.Notification> notifications = [];
 
+    Duration timeZoneOffset = DateTime.now().timeZoneOffset;
+
     if (response.isSuccessful) {
       if (response.body != "null") {
         final List<dynamic> jsonList = response.body;
         notifications = jsonList.where((json) => json['gymName'] != "null").map((json) {
           return noti.Notification(
             title: "${json['username']} sent you a notification!",
-            body: "${json['username']} will be at ${json['gymName']} at ${DateFormat('hh:mm').format(DateTime.parse(json['startTime']))}!",
+            body:
+                "${json['username']} will be at ${json['gymName']} at ${DateFormat('hh:mm').format(DateTime.parse(json['startTime']).add(timeZoneOffset))}!",
             payload: "payload",
           );
         }).toList();

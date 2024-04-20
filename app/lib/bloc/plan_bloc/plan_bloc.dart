@@ -4,6 +4,7 @@ import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/hive/split/split_overview.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,7 +59,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
           userID: jsonMap['userAccountID'],
           splitCount: jsonMap['splitCount'],
           name: jsonMap['name'],
-          createdAt: DateTime.parse(jsonMap['createdAt']),
+          createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
           isActive: jsonMap['isActive'],
           isWeekly: jsonMap['isWeekly'],
           restList: [
@@ -97,7 +98,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             userID: planData['userAccountID'],
             splitCount: planData['splitCount'],
             name: planData['name'],
-            createdAt: DateTime.parse(planData['createdAt']),
+            createdAt: DateTime.parse(planData['createdAt']).add(AppSettings.timeZoneOffset),
             isActive: planData['isActive'],
             isWeekly: planData['isWeekly'],
             restList: [
@@ -142,7 +143,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
               userID: jsonMap['userAccountID'],
               splitCount: jsonMap['splitCount'],
               name: jsonMap['name'],
-              createdAt: DateTime.parse(jsonMap['createdAt']),
+              createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
               isActive: jsonMap['isActive'],
               isWeekly: jsonMap['isWeekly'],
               restList: [
@@ -183,7 +184,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
               userID: jsonMap['userAccountID'],
               splitCount: jsonMap['splitCount'],
               name: jsonMap['name'],
-              createdAt: DateTime.parse(jsonMap['createdAt']),
+              createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
               isActive: jsonMap['isActive'],
               isWeekly: jsonMap['isWeekly'],
               restList: [
@@ -235,7 +236,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
           userID: jsonMap['plan']['userAccountID'],
           splitCount: jsonMap['plan']['splitCount'],
           name: jsonMap['plan']['name'],
-          createdAt: DateTime.parse(jsonMap['plan']['createdAt']),
+          createdAt: DateTime.parse(jsonMap['plan']['createdAt']).add(AppSettings.timeZoneOffset),
           isActive: jsonMap['plan']['isActive'],
           isWeekly: jsonMap['plan']['isWeekly'],
           restList: [

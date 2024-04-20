@@ -37,7 +37,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
             id: jsonMap['userAccountID'],
             username: jsonMap['username'],
             name: jsonMap['name'],
-            createdAt: DateTime.parse(jsonMap['createdAt']),
+            createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
             level: jsonMap['level'],
             profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
           );
@@ -149,7 +149,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
               id: userData['userAccountID'],
               username: userData['username'],
               name: userData['name'],
-              createdAt: DateTime.parse(userData['createdAt']),
+              createdAt: DateTime.parse(userData['createdAt']).add(AppSettings.timeZoneOffset),
               level: userData['level'],
               profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
             );
@@ -184,7 +184,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
             username: userData['username'],
             name: userData['name'],
             profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
-            workoutStartTime: DateTime.parse(userData['workoutStartTime']),
+            workoutStartTime: DateTime.parse(userData['workoutStartTime']).add(AppSettings.timeZoneOffset),
             averageWorkoutDuration: Duration(seconds: userData['averageWorkoutDuration'] != null ? userData['averageWorkoutDuration']?.toInt() : 0),
           );
           userAccountGymOverviews.add(userAccountGymOverview);
