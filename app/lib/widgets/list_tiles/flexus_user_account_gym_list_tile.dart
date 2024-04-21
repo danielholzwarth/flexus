@@ -44,7 +44,7 @@ class FlexusUserAccountGymListTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         CustomDefaultTextStyle(
-          text: "Start: ${DateFormat('hh:mm').format(userAccountGymOverview.workoutStartTime)}",
+          text: "Start: ${DateFormat('HH:mm').format(userAccountGymOverview.workoutStartTime)}",
         ),
         CustomDefaultTextStyle(
           text: "Avg: ${userAccountGymOverview.averageWorkoutDuration!.inMinutes.toString()} min",

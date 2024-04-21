@@ -116,16 +116,16 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
         Row(
           children: [
             CustomDefaultTextStyle(
-              text: "${DateFormat('hh:mm').format(workout.starttime)} - ",
+              text: "${DateFormat('HH:mm').format(workout.starttime)} ",
               fontSize: AppSettings.fontSizeT2,
             ),
             workout.endtime != null
                 ? CustomDefaultTextStyle(
-                    text: "${DateFormat('hh:mm').format(workout.endtime!)} ",
+                    text: "${DateFormat('HH:mm').format(workout.endtime!)} ",
                     fontSize: AppSettings.fontSizeT2,
                   )
                 : CustomDefaultTextStyle(
-                    text: " still ongoing ...",
+                    text: "(in progress)",
                     fontSize: AppSettings.fontSizeT2,
                   ),
             workout.endtime != null

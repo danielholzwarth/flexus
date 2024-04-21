@@ -66,7 +66,7 @@ void onStart(ServiceInstance serviceInstance) async {
           return noti.Notification(
             title: "${json['username']} sent you a notification!",
             body:
-                "${json['username']} will be at ${json['gymName']} at ${DateFormat('hh:mm').format(DateTime.parse(json['startTime']).add(timeZoneOffset))}!",
+                "${json['username']} will be at ${json['gymName']} at ${DateFormat('HH:mm').format(DateTime.parse(json['startTime']).add(timeZoneOffset))}!",
             payload: "payload",
           );
         }).toList();
