@@ -219,8 +219,8 @@ class _PlanPageState extends State<PlanPage> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: deviceSize.width * 0.05),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomDefaultTextStyle(
                           text: planOverview.plan.isWeekly
@@ -229,6 +229,32 @@ class _PlanPageState extends State<PlanPage> {
                           fontWeight: FontWeight.w600,
                           fontSize: AppSettings.fontSizeH4,
                         ),
+                        planOverview.splitOverviews[index].split.name != "Rest"
+                            ? Padding(
+                                padding: EdgeInsets.only(right: deviceSize.width * 0.05),
+                                child: IconButton(
+                                  onPressed: () async {
+                                    dynamic pickedExercises = await showSearch(
+                                        context: context,
+                                        delegate: ExerciseCustomSearchDelegate(oldCheckedItems: planOverview.splitOverviews[index].exercises));
+                                    if (pickedExercises != null) {
+                                      List<Exercise> newExercises = pickedExercises;
+                                      List<int> newExerciseIDs = [];
+                                      for (var i = 0; i < newExercises.length; i++) {
+                                        newExerciseIDs.add(newExercises[i].id);
+                                      }
+                                      planBloc.add(PatchPlan(
+                                        planID: planOverview.plan.id,
+                                        name: "exercises",
+                                        value: planOverview.splitOverviews[index].split.id,
+                                        value2: newExerciseIDs,
+                                      ));
+                                    }
+                                  },
+                                  icon: const FlexusDefaultIcon(iconData: Icons.edit),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
@@ -243,20 +269,6 @@ class _PlanPageState extends State<PlanPage> {
                           rows: [
                             for (int exerciseIndex = 0; exerciseIndex < planOverview.splitOverviews[index].exercises.length; exerciseIndex++)
                               DataRow(
-                                onLongPress: () async {
-                                  dynamic pickedExercise =
-                                      await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
-                                  if (pickedExercise != null) {
-                                    Exercise newExercise = pickedExercise;
-                                    planBloc.add(PatchPlan(
-                                      planID: planOverview.plan.id,
-                                      name: "exercise",
-                                      value: newExercise.id,
-                                      value2: planOverview.splitOverviews[index].exercises[exerciseIndex].id,
-                                      value3: planOverview.splitOverviews[index].split.id,
-                                    ));
-                                  }
-                                },
                                 cells: [
                                   DataCell(
                                     Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),

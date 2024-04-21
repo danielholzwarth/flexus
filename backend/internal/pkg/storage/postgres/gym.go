@@ -147,8 +147,6 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 			return nil, err
 		}
 
-		print(gymOverview.TotalFriends)
-
 		gymOverview.Gym = gym
 		gymOverview.CurrentUserAccounts = userAccountInformations
 

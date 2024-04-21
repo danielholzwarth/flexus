@@ -18,6 +18,7 @@ type PlanStore interface {
 	PatchPlan(userID int, planID int, columnName string, value any) (types.Plan, error)
 	GetPlanOverview(userID int) (types.PlanOverview, error)
 	PatchPlanExercise(userID int, planID int, splitID int, newExerciseID int, oldExerciseID int) (types.Plan, error)
+	PatchPlanExercises(userID int, planID int, splitID int, newExercises []int) (types.Plan, error)
 }
 
 type service struct {
@@ -242,6 +243,45 @@ func (s service) patchPlan() http.HandlerFunc {
 			}
 
 			plan, err := s.planStore.PatchPlanExercise(claims.UserAccountID, planID, splitID, newExerciseID, oldExerciseID)
+			if err != nil {
+				http.Error(w, "Failed to patch plan is active", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+
+			response, err := json.Marshal(plan)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+			w.Write(response)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+		}
+
+		if newExerciseIDsInterfaces, ok := requestBody["newExerciseIDs"].([]interface{}); ok {
+			var newExerciseIDs []int
+			for _, v := range newExerciseIDsInterfaces {
+				if f, ok := v.(float64); ok {
+					newExerciseIDs = append(newExerciseIDs, int(f))
+				} else {
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+			}
+
+			println("updating exercises")
+
+			var splitID int
+			if splitIDFloat, ok := requestBody["splitID"].(float64); !ok {
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			} else {
+				splitID = int(splitIDFloat)
+			}
+
+			plan, err := s.planStore.PatchPlanExercises(claims.UserAccountID, planID, splitID, newExerciseIDs)
 			if err != nil {
 				http.Error(w, "Failed to patch plan is active", http.StatusInternalServerError)
 				println(err.Error())

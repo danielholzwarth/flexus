@@ -621,7 +621,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: TextButton(
               onPressed: userAccount.id == widget.userID
                   ? () async {
-                      await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
+                      await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
                     }
                   : null,
               child: CustomDefaultTextStyle(

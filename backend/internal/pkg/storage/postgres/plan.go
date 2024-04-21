@@ -296,6 +296,83 @@ func (db *DB) PatchPlanExercise(userID int, planID int, splitID int, newExercise
 	return updatedPlan, nil
 }
 
+func (db *DB) PatchPlanExercises(userID int, planID int, splitID int, newExercises []int) (types.Plan, error) {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return types.Plan{}, err
+	}
+	defer tx.Rollback()
+
+	//Check for valid split
+	query := `
+		SELECT EXISTS(
+			SELECT 1
+			FROM split s
+			JOIN plan p ON s.plan_id = p.id
+			JOIN user_account ua ON ua.id = p.user_id
+			WHERE s.id = $1
+			AND p.id = $2
+			AND ua.id = $3
+		);
+	`
+
+	var exists bool
+	err = tx.QueryRow(query, splitID, planID, userID).Scan(&exists)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	//If null return error
+	if !exists {
+		return types.Plan{}, errors.New("split does not exist")
+	}
+
+	//Delete all splits
+	_, err = tx.Exec("DELETE FROM exercise_split WHERE split_id = $1;", splitID)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	//Create Splits
+	for i := 0; i < len(newExercises); i++ {
+		_, err = tx.Exec(`
+			INSERT INTO exercise_split (split_id, exercise_id)
+			VALUES ($1, $2);
+		`, splitID, newExercises[i])
+		if err != nil {
+			return types.Plan{}, err
+		}
+	}
+
+	var updatedPlan types.Plan
+	err = tx.QueryRow("SELECT * FROM plan WHERE id = $1 AND user_id = $2;", planID, userID).Scan(
+		&updatedPlan.ID,
+		&updatedPlan.UserAccountID,
+		&updatedPlan.SplitCount,
+		&updatedPlan.Name,
+		&updatedPlan.CreatedAt,
+		&updatedPlan.IsActive,
+		&updatedPlan.IsWeekly,
+		&updatedPlan.IsMondayRest,
+		&updatedPlan.IsTuesdayRest,
+		&updatedPlan.IsWednesdayRest,
+		&updatedPlan.IsThursdayRest,
+		&updatedPlan.IsFridayRest,
+		&updatedPlan.IsSaturdayRest,
+		&updatedPlan.IsSundayRest,
+	)
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return types.Plan{}, err
+	}
+
+	return updatedPlan, nil
+}
+
 func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 	var planOverview types.PlanOverview
 	var plan types.Plan
