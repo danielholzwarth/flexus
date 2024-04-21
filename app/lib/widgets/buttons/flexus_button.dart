@@ -7,6 +7,7 @@ class FlexusButton extends StatelessWidget {
   final Function() function;
   final Color? backgroundColor;
   final Color? fontColor;
+  final double? width;
 
   const FlexusButton({
     super.key,
@@ -14,19 +15,23 @@ class FlexusButton extends StatelessWidget {
     required this.function,
     this.backgroundColor,
     this.fontColor,
+    this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
     return SizedBox(
-      width: deviceSize.width * 0.7,
+      width: width ?? deviceSize.width * 0.7,
       height: deviceSize.height * 0.08,
       child: ElevatedButton(
         onPressed: () => function(),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(backgroundColor ?? AppSettings.background),
           elevation: MaterialStateProperty.all(AppSettings.elevation),
+          shadowColor: null,
+          overlayColor: null,
+          surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
         ),
         child: CustomDefaultTextStyle(
           text: text,

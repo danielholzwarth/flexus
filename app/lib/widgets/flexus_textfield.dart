@@ -11,6 +11,7 @@ class FlexusTextField extends StatelessWidget {
   final Color? fontColor;
   final Color? hintColor;
   final Color? borderColor;
+  final double? width;
 
   const FlexusTextField({
     super.key,
@@ -23,6 +24,7 @@ class FlexusTextField extends StatelessWidget {
     this.fontColor,
     this.hintColor,
     this.borderColor,
+    this.width,
   });
 
   @override
@@ -32,7 +34,7 @@ class FlexusTextField extends StatelessWidget {
       elevation: 10,
       borderRadius: BorderRadius.circular(50),
       child: SizedBox(
-        width: deviceSize.width * 0.7,
+        width: width ?? deviceSize.width * 0.7,
         height: deviceSize.height * 0.08,
         child: Center(
           child: TextField(

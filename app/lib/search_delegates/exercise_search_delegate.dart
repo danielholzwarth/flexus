@@ -1,5 +1,6 @@
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/hive/exercise/exercise.dart';
+import 'package:app/pages/workout/create_exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_exercise_list_tile.dart';
@@ -7,6 +8,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 
 class ExerciseCustomSearchDelegate extends SearchDelegate {
   ExerciseCustomSearchDelegate({
@@ -74,6 +76,8 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
+    Size deviceSize = MediaQuery.of(context).size;
+
     if (!isLoaded) {
       exerciseBloc.add(GetExercises());
       isLoaded = true;
@@ -95,56 +99,103 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
             if (filteredExercises.isNotEmpty) {
               return Scaffold(
                 backgroundColor: AppSettings.background,
-                body: FlexusScrollBar(
-                  scrollController: scrollController,
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemBuilder: (context, index) {
-                      return FlexusExerciseListTile(
-                        isMultipleChoice: isMultipleChoice,
-                        query: query,
-                        title: filteredExercises[index].name,
-                        value: checkedItems.any((element) => element.id == filteredExercises[index].id) ? true : false,
-                        subtitle: filteredExercises[index].typeID == 1
-                            ? "Measurement"
-                            : filteredExercises[index].typeID == 2
-                                ? "Duration"
-                                : "Other",
-                        onTap: isMultipleChoice
-                            ? null
-                            : () {
-                                close(
-                                  context,
-                                  Exercise(
-                                    id: filteredExercises[index].id,
-                                    name: filteredExercises[index].name,
-                                    typeID: filteredExercises[index].typeID,
-                                    creatorID: filteredExercises[index].creatorID,
-                                  ),
-                                );
-                              },
-                        onChanged: isMultipleChoice
-                            ? (value) {
-                                if (value) {
-                                  checkedItems.add(filteredExercises[index]);
-                                } else {
-                                  checkedItems.removeWhere((element) => element.id == filteredExercises[index].id);
-                                }
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: FlexusScrollBar(
+                        scrollController: scrollController,
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemBuilder: (context, index) {
+                            return FlexusExerciseListTile(
+                              isMultipleChoice: isMultipleChoice,
+                              query: query,
+                              title: filteredExercises[index].name,
+                              value: checkedItems.any((element) => element.id == filteredExercises[index].id) ? true : false,
+                              subtitle: filteredExercises[index].typeID == 1
+                                  ? "Measurement"
+                                  : filteredExercises[index].typeID == 2
+                                      ? "Duration"
+                                      : "Other",
+                              onTap: isMultipleChoice
+                                  ? null
+                                  : () {
+                                      close(
+                                        context,
+                                        Exercise(
+                                          id: filteredExercises[index].id,
+                                          name: filteredExercises[index].name,
+                                          typeID: filteredExercises[index].typeID,
+                                          creatorID: filteredExercises[index].creatorID,
+                                        ),
+                                      );
+                                    },
+                              onChanged: isMultipleChoice
+                                  ? (value) {
+                                      if (value) {
+                                        checkedItems.add(filteredExercises[index]);
+                                      } else {
+                                        checkedItems.removeWhere((element) => element.id == filteredExercises[index].id);
+                                      }
 
-                                exerciseBloc.add(RefreshGetExercisesState(exercises: items));
-                              }
-                            : null,
-                      );
-                    },
-                    itemCount: filteredExercises.length,
-                  ),
+                                      exerciseBloc.add(RefreshGetExercisesState(exercises: items));
+                                    }
+                                  : null,
+                            );
+                          },
+                          itemCount: filteredExercises.length,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                          surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                          overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                          foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                          fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.fade,
+                            child: const CreateExercisePage(),
+                          ),
+                        );
+                      },
+                      child: const Text("Create exercise"),
+                    ),
+                  ],
                 ),
               );
             } else {
               return Scaffold(
                 backgroundColor: AppSettings.background,
-                body: const Center(
-                  child: CustomDefaultTextStyle(text: "No exercise found"),
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const CustomDefaultTextStyle(text: "No exercise found"),
+                      TextButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(AppSettings.background),
+                            surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
+                            overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
+                            foregroundColor: MaterialStateProperty.all(AppSettings.primary),
+                            fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: const CreateExercisePage(),
+                            ),
+                          );
+                        },
+                        child: const Text("Create exercise"),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
