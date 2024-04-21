@@ -69,7 +69,7 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
-  Widget buildPlanView(Plan plan,Size deviceSize) {
+  Widget buildPlanView(Plan plan, Size deviceSize) {
     return BlocBuilder(
       bloc: planOverviewBloc,
       builder: (context, state) {

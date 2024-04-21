@@ -284,6 +284,13 @@ Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpre
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 2);
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Squats', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Bench Press', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Pull-Ups', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Shoulder Press', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Barbell Rows', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Leg Press', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Lat Pulldowns', 1);
 
 Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 1);
 Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 2);

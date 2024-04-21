@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ExerciseCustomSearchDelegate extends SearchDelegate {
   ExerciseCustomSearchDelegate({
     this.isMultipleChoice = true,
+    this.oldCheckedItems = const [],
   });
 
   bool isMultipleChoice;
@@ -19,6 +20,7 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   bool isLoaded = false;
   List<Exercise> items = [];
   List<Exercise> checkedItems = [];
+  List<Exercise> oldCheckedItems;
 
   @override
   void dispose() {
@@ -34,7 +36,16 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
           query = '';
         },
         icon: const FlexusDefaultIcon(iconData: Icons.clear),
-      )
+      ),
+      isMultipleChoice
+          ? TextButton(
+              onPressed: () => close(context, checkedItems),
+              child: CustomDefaultTextStyle(
+                text: "Save",
+                color: AppSettings.primary,
+              ),
+            )
+          : Container(),
     ];
   }
 
@@ -43,7 +54,7 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
     return IconButton(
       onPressed: () {
         if (isMultipleChoice) {
-          close(context, checkedItems);
+          close(context, oldCheckedItems);
         } else {
           close(context, null);
         }
@@ -66,6 +77,7 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
     if (!isLoaded) {
       exerciseBloc.add(GetExercises());
       isLoaded = true;
+      checkedItems.addAll(oldCheckedItems);
     }
 
     return GestureDetector(
@@ -92,7 +104,7 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                         isMultipleChoice: isMultipleChoice,
                         query: query,
                         title: filteredExercises[index].name,
-                        value: checkedItems.contains(filteredExercises[index]) ? true : false,
+                        value: checkedItems.any((element) => element.id == filteredExercises[index].id) ? true : false,
                         subtitle: filteredExercises[index].typeID == 1
                             ? "Measurement"
                             : filteredExercises[index].typeID == 2
@@ -102,20 +114,21 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                             ? null
                             : () {
                                 close(
-                                    context,
-                                    Exercise(
-                                      id: filteredExercises[index].id,
-                                      name: filteredExercises[index].name,
-                                      typeID: filteredExercises[index].typeID,
-                                      creatorID: filteredExercises[index].creatorID,
-                                    ));
+                                  context,
+                                  Exercise(
+                                    id: filteredExercises[index].id,
+                                    name: filteredExercises[index].name,
+                                    typeID: filteredExercises[index].typeID,
+                                    creatorID: filteredExercises[index].creatorID,
+                                  ),
+                                );
                               },
                         onChanged: isMultipleChoice
                             ? (value) {
                                 if (value) {
                                   checkedItems.add(filteredExercises[index]);
                                 } else {
-                                  checkedItems.remove(filteredExercises[index]);
+                                  checkedItems.removeWhere((element) => element.id == filteredExercises[index].id);
                                 }
 
                                 exerciseBloc.add(RefreshGetExercisesState(exercises: items));

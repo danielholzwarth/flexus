@@ -360,9 +360,14 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       foregroundColor: MaterialStateProperty.all(AppSettings.primary),
                       fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
                   onPressed: () async {
-                    List<Exercise> splitExercises = await showSearch(context: context, delegate: ExerciseCustomSearchDelegate());
-                    exerciseList[splitControllers[index].text] = splitExercises;
-                    setState(() {});
+                    dynamic splitExercises = await showSearch(
+                      context: context,
+                      delegate: ExerciseCustomSearchDelegate(oldCheckedItems: exerciseList[splitControllers[index].text] ?? []),
+                    );
+                    if (splitExercises != null) {
+                      exerciseList[splitControllers[index].text] = splitExercises;
+                      setState(() {});
+                    }
                   },
                   child: const Text("Add default exercises"),
                 ),
