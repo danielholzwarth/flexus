@@ -124,10 +124,15 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                     text: "${DateFormat('HH:mm').format(workout.endtime!)} ",
                     fontSize: AppSettings.fontSizeT2,
                   )
-                : CustomDefaultTextStyle(
-                    text: "(in progress)",
-                    fontSize: AppSettings.fontSizeT2,
-                  ),
+                : workout.starttime.isBefore(DateTime.now())
+                    ? CustomDefaultTextStyle(
+                        text: "(in progress)",
+                        fontSize: AppSettings.fontSizeT2,
+                      )
+                    : CustomDefaultTextStyle(
+                        text: "(in planning)",
+                        fontSize: AppSettings.fontSizeT2,
+                      ),
             workout.endtime != null
                 ? CustomDefaultTextStyle(
                     text: "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
