@@ -128,6 +128,7 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                                   : filteredExercises[index].typeID == 2
                                       ? "Duration"
                                       : "Other",
+                              exerciseID: filteredExercises[index].id,
                               onTap: isMultipleChoice
                                   ? null
                                   : () {
