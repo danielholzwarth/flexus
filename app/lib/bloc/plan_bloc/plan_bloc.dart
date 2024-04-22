@@ -7,7 +7,6 @@ import 'package:app/hive/split/split_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 part 'plan_event.dart';
