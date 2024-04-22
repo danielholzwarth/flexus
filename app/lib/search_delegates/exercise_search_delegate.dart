@@ -33,12 +33,25 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      IconButton(
-        onPressed: () {
-          query = '';
-        },
-        icon: const FlexusDefaultIcon(iconData: Icons.clear),
-      ),
+      query != ""
+          ? IconButton(
+              onPressed: () {
+                query = '';
+              },
+              icon: const FlexusDefaultIcon(iconData: Icons.clear),
+            )
+          : IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const CreateExercisePage(),
+                  ),
+                );
+              },
+              icon: const FlexusDefaultIcon(iconData: Icons.add),
+            ),
       isMultipleChoice
           ? TextButton(
               onPressed: () => close(context, checkedItems),
@@ -76,8 +89,6 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
-    Size deviceSize = MediaQuery.of(context).size;
-
     if (!isLoaded) {
       exerciseBloc.add(GetExercises());
       isLoaded = true;
@@ -153,53 +164,17 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                         ),
                       ),
                     ),
-                    TextButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                          surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                          overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                          foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                          fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: const CreateExercisePage(),
-                          ),
-                        );
-                      },
-                      child: const Text("Create exercise"),
-                    ),
                   ],
                 ),
               );
             } else {
               return Scaffold(
                 backgroundColor: AppSettings.background,
-                body: Center(
+                body: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const CustomDefaultTextStyle(text: "No exercise found"),
-                      TextButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                            surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                            overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                            foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                            fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.4))),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              child: const CreateExercisePage(),
-                            ),
-                          );
-                        },
-                        child: const Text("Create exercise"),
-                      ),
+                      CustomDefaultTextStyle(text: "No exercise found"),
                     ],
                   ),
                 ),

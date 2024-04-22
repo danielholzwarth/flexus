@@ -206,7 +206,6 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         break;
 
       case "exercises":
-        print("object");
         final response = await _planService.patchPlan(
           userBox.get("flexusjwt"),
           event.planID,
@@ -265,7 +264,6 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     emit(PlanOverviewLoading());
 
     final response = await _planService.getPlanOverview(userBox.get("flexusjwt"));
-    printInfo(info: response.bodyString);
 
     if (response.isSuccessful) {
       if (response.body != "null") {

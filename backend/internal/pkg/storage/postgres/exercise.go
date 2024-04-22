@@ -44,7 +44,8 @@ func (db *DB) GetExercises(userAccountID int) ([]types.Exercise, error) {
 	query := `
         SELECT id, creator_id, name, type_id
         FROM exercise
-		WHERE creator_id IS NULL OR creator_id = $1;
+		WHERE creator_id IS NULL OR creator_id = $1
+		ORDER BY name ASC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
