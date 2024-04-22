@@ -32,6 +32,7 @@ class _ExerciseExplanationPageState extends State<ExerciseExplanationPage> {
     return Scaffold(
       backgroundColor: AppSettings.background,
       appBar: AppBar(
+        backgroundColor: AppSettings.background,
         title: CustomDefaultTextStyle(
           text: "Benchpress (Demo)",
           fontSize: AppSettings.fontSizeH3,

@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/pages/workout/exercise_explanation.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -9,24 +8,20 @@ import 'package:page_transition/page_transition.dart';
 
 class FlexusExerciseListTile extends StatefulWidget {
   final String? query;
-  final String title;
-  final String subtitle;
+  final Exercise exercise;
   final bool value;
   final Function()? onTap;
   final Function(bool)? onChanged;
   final bool isMultipleChoice;
-  final int exerciseID;
 
   const FlexusExerciseListTile({
     super.key,
     this.query,
-    required this.title,
-    this.subtitle = "",
+    required this.exercise,
     required this.value,
     this.onTap,
     this.onChanged,
     this.isMultipleChoice = true,
-    required this.exerciseID,
   });
 
   @override
@@ -41,13 +36,16 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
       tileColor: AppSettings.background,
-      title: highlightText(widget.title),
-      subtitle: widget.subtitle.isNotEmpty
+      title: highlightText(widget.exercise.name),
+      subtitle: widget.exercise.typeID == 1
           ? CustomDefaultTextStyle(
-              text: widget.subtitle,
+              text: "Repetition",
               fontSize: AppSettings.fontSizeT2,
             )
-          : null,
+          : CustomDefaultTextStyle(
+              text: "Duration",
+              fontSize: AppSettings.fontSizeT2,
+            ),
       onTap: widget.onTap ??
           (widget.isMultipleChoice
               ? () {
@@ -55,7 +53,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: ExerciseExplanationPage(name: widget.title, exerciseID: widget.exerciseID),
+                      child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
                     ),
                   );
                 }
@@ -69,7 +67,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
                 }),
       leading: Padding(
         padding: const EdgeInsets.all(6.0),
-        child: buildRandomImage(),
+        child: buildLeading(),
       ),
       trailing: widget.isMultipleChoice
           ? Checkbox(
@@ -90,7 +88,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
                   context,
                   PageTransition(
                     type: PageTransitionType.fade,
-                    child: ExerciseExplanationPage(name: widget.title, exerciseID: widget.exerciseID),
+                    child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
                   ),
                 );
               },
@@ -102,17 +100,16 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
     );
   }
 
-  Widget buildRandomImage() {
-    int randomNumber = Random().nextInt(4);
-    return Image.network(
-      randomNumber == 0
-          ? "https://cdn-icons-png.flaticon.com/128/7922/7922281.png"
-          : randomNumber == 1
-              ? "https://cdn-icons-png.flaticon.com/128/2112/2112238.png"
-              : randomNumber == 2
-                  ? "https://cdn-icons-png.flaticon.com/128/7922/7922186.png"
-                  : "https://cdn-icons-png.flaticon.com/128/2382/2382633.png",
-    );
+  Widget buildLeading() {
+    return widget.exercise.typeID == 1
+        ? FlexusDefaultIcon(
+            iconData: Icons.repeat,
+            iconSize: AppSettings.fontSizeH2,
+          )
+        : FlexusDefaultIcon(
+            iconData: Icons.timer_outlined,
+            iconSize: AppSettings.fontSizeH2,
+          );
   }
 
   Widget highlightText(String text) {

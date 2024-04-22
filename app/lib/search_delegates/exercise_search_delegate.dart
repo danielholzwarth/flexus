@@ -121,14 +121,8 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
                             return FlexusExerciseListTile(
                               isMultipleChoice: isMultipleChoice,
                               query: query,
-                              title: filteredExercises[index].name,
+                              exercise: filteredExercises[index],
                               value: checkedItems.any((element) => element.id == filteredExercises[index].id) ? true : false,
-                              subtitle: filteredExercises[index].typeID == 1
-                                  ? "Measurement"
-                                  : filteredExercises[index].typeID == 2
-                                      ? "Duration"
-                                      : "Other",
-                              exerciseID: filteredExercises[index].id,
                               onTap: isMultipleChoice
                                   ? null
                                   : () {
