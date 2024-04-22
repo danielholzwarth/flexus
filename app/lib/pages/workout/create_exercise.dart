@@ -1,8 +1,11 @@
+import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateExercisePage extends StatefulWidget {
   const CreateExercisePage({super.key});
@@ -12,6 +15,8 @@ class CreateExercisePage extends StatefulWidget {
 }
 
 class _CreateExercisePageState extends State<CreateExercisePage> {
+  ExerciseBloc exerciseBloc = ExerciseBloc();
+
   final nameController = TextEditingController();
   final setsController = TextEditingController();
   final repsController = TextEditingController();
@@ -32,16 +37,26 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildName(deviceSize),
-            buildType(deviceSize),
-            buildGoal(deviceSize),
-            buildCreate(deviceSize),
-            SizedBox(height: deviceSize.height * 0.05),
-          ],
+      body: BlocListener(
+        bloc: exerciseBloc,
+        listener: (context, state) {
+          if (state is ExerciseCreated) {
+            FlexusGet.showGetSnackbar(message: "Exercise created!");
+          } else if (state is ExerciseError) {
+            FlexusGet.showGetSnackbar(message: "Error creating exercise!");
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildName(deviceSize),
+              buildType(deviceSize),
+              // buildGoal(deviceSize),
+              buildCreate(deviceSize),
+              SizedBox(height: deviceSize.height * 0.05),
+            ],
+          ),
         ),
       ),
     );
@@ -221,7 +236,10 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
           fontColor: AppSettings.fontV1,
           text: "Create",
           function: () {
-            print("Creating");
+            exerciseBloc.add(PostExercise(
+              name: nameController.text,
+              isRepetition: isRepetition,
+            ));
           },
         ),
       ),

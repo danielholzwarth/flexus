@@ -131,7 +131,8 @@ CREATE TABLE exercise (
 CREATE TABLE exercise_split (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     split_id BIGINT NOT NULL REFERENCES split(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE
+    exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    goal VARCHAR(50)
 );
 
 CREATE TABLE workout (
@@ -292,13 +293,13 @@ Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Barbell 
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Leg Press', 1);
 Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Lat Pulldowns', 1);
 
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 1);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (1, 2);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (2, 2);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (2, 3);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 1);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 3);
-Insert INTO "exercise_split" ("split_id", "exercise_id") VALUES (3, 4);
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (1, 1, '3x5x120kg');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (1, 2, '3x120s');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (2, 2, '2x90s');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (2, 3, '3x8x80kg');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (3, 1, '4x3x60kg');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (3, 3, '5x5x120kg');
+Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (3, 4, '2x3x40kg');
 
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (1, 1, now(), 1, '2024-01-05 06:45:00', '2024-01-05 07:40:00', 'false', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (1, null, now(), 2, '2024-01-07 17:30:00', '2024-01-07 18:15:00', 'true', 'false', 'false');

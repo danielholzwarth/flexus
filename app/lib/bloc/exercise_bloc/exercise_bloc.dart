@@ -13,22 +13,25 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   final userBox = Hive.box('userBox');
 
   ExerciseBloc() : super(ExerciseInitial()) {
-    // on<PostExercise>(_onPostExercise);
+    on<PostExercise>(_onPostExercise);
     on<GetExercises>(_onGetExercises);
     on<RefreshGetExercisesState>(_onRefreshGetExercisesState);
   }
 
-  // void _onPostExercise(PostExercise event, Emitter<ExerciseState> emit) async {
-  //   Response<dynamic> response;
-  //   response = await _friendshipService.postFriendship(userBox.get("flexusjwt"));
+  void _onPostExercise(PostExercise event, Emitter<ExerciseState> emit) async {
+    emit(ExerciseCreating());
 
-  //   if (response.isSuccessful) {
+    final response = await _friendshipService.postExercise(userBox.get("flexusjwt"), {
+      "name": event.name,
+      "typeID": event.isRepetition ? 1 : 2,
+    });
 
-  //     emit(ExerciseCreated());
-  //   } else {
-  //     emit(ExerciseError(error: response.error.toString()));
-  //   }
-  // }
+    if (response.isSuccessful) {
+      emit(ExerciseCreated());
+    } else {
+      emit(ExerciseError(error: response.error.toString()));
+    }
+  }
 
   void _onGetExercises(GetExercises event, Emitter<ExerciseState> emit) async {
     emit(ExercisesLoading());

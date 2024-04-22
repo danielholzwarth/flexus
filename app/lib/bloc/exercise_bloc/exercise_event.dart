@@ -4,10 +4,12 @@ part of 'exercise_bloc.dart';
 abstract class ExerciseEvent {}
 
 class PostExercise extends ExerciseEvent {
-  final Exercise exercise;
+  final String name;
+  final bool isRepetition;
 
   PostExercise({
-    required this.exercise,
+    required this.name,
+    required this.isRepetition,
   });
 }
 

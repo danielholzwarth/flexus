@@ -100,13 +100,11 @@ final class _$UserAccountService extends UserAccountService {
   Future<Response<dynamic>> getUserAccountsGym(
     String flexusJWTString,
     int gymID, {
-    String? keyword,
     bool? isWorkingOut,
   }) {
     final Uri $url = Uri.parse('/user_accounts/gym/${gymID}');
     final Map<String, dynamic> $params = <String, dynamic>{
-      'keyword': keyword,
-      'isWorkingOut': isWorkingOut,
+      'isWorkingOut': isWorkingOut
     };
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,

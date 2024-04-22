@@ -3,13 +3,14 @@ package exercise
 import (
 	"encoding/json"
 	"flexus/internal/types"
+	"io"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type ExerciseStore interface {
-	// PostExercise(userAccountID int, exercise types.Exercise) error
+	PostExercise(userAccountID int, name string, typeID int) error
 	GetExercises(userAccountID int) ([]types.Exercise, error)
 }
 
@@ -25,7 +26,7 @@ func NewService(exerciseStore ExerciseStore) http.Handler {
 		exerciseStore: exerciseStore,
 	}
 
-	// r.Post("/", s.postExercise())
+	r.Post("/", s.postExercise())
 	r.Get("/", s.getExercises())
 
 	return s
@@ -35,41 +36,55 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-// func (s service) postExercise() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
-// 		if !ok {
-// 			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
-// 			return
-// 		}
+func (s service) postExercise() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
 
-// 		var requestBody types.Exercise
+		var requestBody map[string]interface{}
 
-// 		decoder := json.NewDecoder(r.Body)
-// 		if err := decoder.Decode(&requestBody); err != nil {
-// 			http.Error(w, err.Error(), http.StatusBadRequest)
-// 			println(err.Error())
-// 			return
-// 		}
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
 
-// 		//Make check for other variables?
-// 		if requestBody.Name == "" {
-// 			http.Error(w, "Exercise Name can not be empty", http.StatusBadRequest)
-// 			println("Exercise Name can not be empty")
-// 			return
-// 		}
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
 
-// 		err := s.exerciseStore.PostExercise(claims.UserAccountID, requestBody)
-// 		if err != nil {
-// 			http.Error(w, "Failed to create Exercise", http.StatusInternalServerError)
-// 			println(err.Error())
-// 			return
-// 		}
+		name, ok := requestBody["name"].(string)
+		if !ok {
+			http.Error(w, "Error parsing name", http.StatusInternalServerError)
+			println("Error parsing name")
+			return
+		}
 
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.WriteHeader(http.StatusCreated)
-// 	}
-// }
+		typeIDFloat, ok := requestBody["typeID"].(float64)
+		if !ok {
+			http.Error(w, "Error parsing typeID", http.StatusInternalServerError)
+			println("Error parsing typeID")
+			return
+		}
+		typeID := int(typeIDFloat)
+
+		err = s.exerciseStore.PostExercise(claims.UserAccountID, name, typeID)
+		if err != nil {
+			http.Error(w, "Failed to create Exercise", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+	}
+}
 
 func (s service) getExercises() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

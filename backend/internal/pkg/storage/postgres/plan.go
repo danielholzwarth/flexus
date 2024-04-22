@@ -417,7 +417,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		exerciseQuery := `
 			SELECT *
 			FROM exercise
-			INNER JOIN exercise_split ON split_id = $1 AND exercise_id = exercise.id;
+			JOIN exercise_split ON split_id = $1 AND exercise_id = exercise.id;
 		`
 
 		exerciseRows, err := db.pool.Query(exerciseQuery, split.ID)
@@ -426,7 +426,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		}
 		defer exerciseRows.Close()
 
-		//Need somehow 7 parameters but does not use it?!
+		//Anything are the parameters of exercise_split
 		var anything any
 		for exerciseRows.Next() {
 			var exercise types.Exercise
@@ -435,6 +435,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 				&exercise.CreatorID,
 				&exercise.Name,
 				&exercise.TypeID,
+				&anything,
 				&anything,
 				&anything,
 				&anything,

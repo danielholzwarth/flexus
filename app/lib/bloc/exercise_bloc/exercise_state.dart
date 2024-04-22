@@ -5,6 +5,8 @@ abstract class ExerciseState {}
 
 class ExerciseInitial extends ExerciseState {}
 
+class ExerciseCreating extends ExerciseState {}
+
 class ExerciseCreated extends ExerciseState {}
 
 class ExercisesLoading extends ExerciseState {}

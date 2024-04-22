@@ -18,6 +18,26 @@ final class _$ExerciseService extends ExerciseService {
   final Type definitionType = ExerciseService;
 
   @override
+  Future<Response<dynamic>> postExercise(
+    String flexusJWTString,
+    Map<String, dynamic> exercise,
+  ) {
+    final Uri $url = Uri.parse('/exercises/');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = exercise;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> getExercises(String flexusJWTString) {
     final Uri $url = Uri.parse('/exercises/');
     final Map<String, String> $headers = {
