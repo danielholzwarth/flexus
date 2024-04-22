@@ -9,6 +9,14 @@ class ExerciseCreating extends ExerciseState {}
 
 class ExerciseCreated extends ExerciseState {}
 
+class ExerciseLoading extends ExerciseState {}
+
+class ExerciseLoaded extends ExerciseState {
+  final Exercise exercise;
+
+  ExerciseLoaded({required this.exercise});
+}
+
 class ExercisesLoading extends ExerciseState {}
 
 class ExercisesLoaded extends ExerciseState {

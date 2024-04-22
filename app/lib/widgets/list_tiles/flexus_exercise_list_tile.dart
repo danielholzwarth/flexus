@@ -55,7 +55,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: ExerciseExplanationPage(exerciseID: widget.exerciseID),
+                      child: ExerciseExplanationPage(name: widget.title, exerciseID: widget.exerciseID),
                     ),
                   );
                 }
@@ -90,7 +90,7 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
                   context,
                   PageTransition(
                     type: PageTransitionType.fade,
-                    child: ExerciseExplanationPage(exerciseID: widget.exerciseID),
+                    child: ExerciseExplanationPage(name: widget.title, exerciseID: widget.exerciseID),
                   ),
                 );
               },

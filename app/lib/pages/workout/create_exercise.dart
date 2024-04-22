@@ -72,15 +72,10 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
             top: deviceSize.height * 0.03,
             bottom: deviceSize.height * 0.01,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDefaultTextStyle(
-                text: 'Exercise Name',
-                fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-            ],
+          child: CustomDefaultTextStyle(
+            text: 'Exercise Name',
+            fontWeight: FontWeight.bold,
+            fontSize: AppSettings.fontSizeH3,
           ),
         ),
         Padding(
@@ -108,15 +103,10 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
             top: deviceSize.height * 0.02,
             bottom: deviceSize.height * 0.01,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDefaultTextStyle(
-                text: 'Type',
-                fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-            ],
+          child: CustomDefaultTextStyle(
+            text: 'Type',
+            fontWeight: FontWeight.bold,
+            fontSize: AppSettings.fontSizeH3,
           ),
         ),
         Row(
@@ -158,15 +148,10 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
             top: deviceSize.height * 0.03,
             bottom: deviceSize.height * 0.01,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDefaultTextStyle(
-                text: 'Goal',
-                fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-            ],
+          child: CustomDefaultTextStyle(
+            text: 'Goal',
+            fontWeight: FontWeight.bold,
+            fontSize: AppSettings.fontSizeH3,
           ),
         ),
         Padding(
