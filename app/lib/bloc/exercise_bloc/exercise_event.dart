@@ -13,15 +13,15 @@ class PostExercise extends ExerciseEvent {
   });
 }
 
+// class GetExercise extends ExerciseEvent {
+//   final int exerciseID;
+
+//   GetExercise({
+//     required this.exerciseID,
+//   });
+// }
+
 class GetExercises extends ExerciseEvent {}
-
-class GetExercise extends ExerciseEvent {
-  final int exerciseID;
-
-  GetExercise({
-    required this.exerciseID,
-  });
-}
 
 class RefreshGetExercisesState extends ExerciseEvent {
   final List<Exercise> exercises;

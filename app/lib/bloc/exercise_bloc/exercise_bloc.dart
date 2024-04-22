@@ -14,7 +14,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
 
   ExerciseBloc() : super(ExerciseInitial()) {
     on<PostExercise>(_onPostExercise);
-    on<GetExercise>(_onGetExercise);
+    // on<GetExercise>(_onGetExercise);
     on<GetExercises>(_onGetExercises);
     on<RefreshGetExercisesState>(_onRefreshGetExercisesState);
   }
@@ -34,27 +34,27 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     }
   }
 
-  void _onGetExercise(GetExercise event, Emitter<ExerciseState> emit) async {
-    emit(ExerciseLoading());
+  // void _onGetExercise(GetExercise event, Emitter<ExerciseState> emit) async {
+  //   emit(ExerciseLoading());
 
-    if (AppSettings.hasConnection) {
-      final response = await _friendshipService.getExercises(userBox.get("flexusjwt"));
+  //   if (AppSettings.hasConnection) {
+  //     final response = await _friendshipService.getExercises(userBox.get("flexusjwt"));
 
-      if (response.isSuccessful) {
-        if (response.body != "null") {
-          Exercise exercise = Exercise(id: 1, name: "TestEx", typeID: 1);
+  //     if (response.isSuccessful) {
+  //       if (response.body != "null") {
+  //         Exercise exercise = Exercise(id: 1, name: "TestEx", typeID: 1);
 
-          emit(ExerciseLoaded(exercise: exercise));
-        } else {
-          emit(ExerciseError(error: "No description found"));
-        }
-      } else {
-        emit(ExerciseError(error: response.error.toString()));
-      }
-    } else {
-      emit(ExerciseError(error: "No internet connection"));
-    }
-  }
+  //         emit(ExerciseLoaded(exercise: exercise));
+  //       } else {
+  //         emit(ExerciseError(error: "No description found"));
+  //       }
+  //     } else {
+  //       emit(ExerciseError(error: response.error.toString()));
+  //     }
+  //   } else {
+  //     emit(ExerciseError(error: "No internet connection"));
+  //   }
+  // }
 
   void _onGetExercises(GetExercises event, Emitter<ExerciseState> emit) async {
     emit(ExercisesLoading());

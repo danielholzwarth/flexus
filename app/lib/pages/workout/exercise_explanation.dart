@@ -3,7 +3,6 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExerciseExplanationPage extends StatefulWidget {
   const ExerciseExplanationPage({
@@ -23,7 +22,6 @@ class _ExerciseExplanationPageState extends State<ExerciseExplanationPage> {
 
   @override
   void initState() {
-    exerciseBloc.add(GetExercise(exerciseID: widget.exerciseID));
     super.initState();
   }
 
@@ -41,29 +39,18 @@ class _ExerciseExplanationPageState extends State<ExerciseExplanationPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: BlocBuilder(
-          bloc: exerciseBloc,
-          builder: (context, state) {
-            if (state is ExerciseLoaded) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: deviceSize.width * 0.05,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildMuscleGroups(deviceSize),
-                    buildCorrectForm(deviceSize),
-                    SizedBox(height: deviceSize.height * 0.1),
-                  ],
-                ),
-              );
-            } else if (state is ExerciseError) {
-              return Center(child: CustomDefaultTextStyle(text: state.error));
-            } else {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-            }
-          },
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: deviceSize.width * 0.05,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildMuscleGroups(deviceSize),
+              buildCorrectForm(deviceSize),
+              SizedBox(height: deviceSize.height * 0.1),
+            ],
+          ),
         ),
       ),
     );
