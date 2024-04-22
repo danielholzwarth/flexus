@@ -96,6 +96,17 @@ class ExerciseCustomSearchDelegate extends SearchDelegate {
             List<Exercise> filteredExercises =
                 state.exercises.where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase())).toList();
 
+            filteredExercises.sort((a, b) {
+              bool aChecked = checkedItems.any((element) => element.id == a.id);
+              bool bChecked = checkedItems.any((element) => element.id == b.id);
+              if (aChecked && !bChecked) {
+                return -1;
+              } else if (!aChecked && bChecked) {
+                return 1;
+              }
+              return 0;
+            });
+
             if (filteredExercises.isNotEmpty) {
               return Scaffold(
                 backgroundColor: AppSettings.background,
