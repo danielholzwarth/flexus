@@ -23,13 +23,14 @@ class AppSettings {
   static Color get confirm => isDarkMode ? const Color(0xFF00FF00) : const Color.fromARGB(255, 51, 95, 47);
   static Color get font => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF000000);
   static Color get fontV1 => isDarkMode ? const Color(0xFF00FF00) : const Color(0xFFFFFFFF);
-  static Color get blocked => isDarkMode ? const Color(0xFF00FF00) : const Color(0x30FFFFFF);
+  static Color get blocked => isDarkMode ? const Color(0xFF00FF00) : Color.fromARGB(255, 202, 202, 202);
 
   //Style
   static double elevation = 10.0;
 
   //Fontsize
   static double fontSize = 15.0;
+  static double fontSizeBig = 80.0;
   static double fontSizeH1 = 40.0;
   static double fontSizeH2 = 32.0;
   static double fontSizeH3 = 24.0;

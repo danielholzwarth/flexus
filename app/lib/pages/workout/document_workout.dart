@@ -1,9 +1,12 @@
 import 'package:app/pages/workout/document_exercise.dart';
+import 'package:app/pages/workout/timer.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:page_transition/page_transition.dart';
 
 class DocumentWorkoutPage extends StatefulWidget {
   const DocumentWorkoutPage({
@@ -81,6 +84,20 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         },
         controller: pageController,
         children: pages,
+      ),
+      floatingActionButton: FlexusFloatingActionButton(
+        icon: Icons.timer_outlined,
+        onPressed: () async {
+          dynamic result = await Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: const TimerPage(),
+            ),
+          );
+
+          debugPrint("Timer value: $result");
+        },
       ),
     );
   }
