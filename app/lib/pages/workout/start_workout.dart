@@ -6,9 +6,14 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
-class StartWorkoutPage extends StatelessWidget {
+class StartWorkoutPage extends StatefulWidget {
   const StartWorkoutPage({super.key});
 
+  @override
+  State<StartWorkoutPage> createState() => _StartWorkoutPageState();
+}
+
+class _StartWorkoutPageState extends State<StartWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -84,7 +89,7 @@ class StartWorkoutPage extends StatelessWidget {
               FlexusButton(
                 text: "Start",
                 function: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
@@ -104,7 +109,7 @@ class StartWorkoutPage extends StatelessWidget {
                     foregroundColor: MaterialStateProperty.all(AppSettings.primary),
                     fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.5))),
                 onPressed: () async {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,

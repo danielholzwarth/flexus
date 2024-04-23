@@ -5,19 +5,21 @@ import 'package:flutter/material.dart';
 class FlexusBasicTitle extends StatelessWidget {
   final Size deviceSize;
   final String text;
+  final bool hasPadding;
 
   const FlexusBasicTitle({
     super.key,
     required this.deviceSize,
     required this.text,
+    this.hasPadding = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        top: deviceSize.height * 0.03,
-        bottom: deviceSize.height * 0.01,
+        top: hasPadding ? deviceSize.height * 0.03 : 0,
+        bottom: hasPadding ? deviceSize.height * 0.01 : 0,
       ),
       child: CustomDefaultTextStyle(
         text: text,
