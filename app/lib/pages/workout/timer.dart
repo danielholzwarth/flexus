@@ -14,8 +14,7 @@ class TimerPage extends StatefulWidget {
 
 class _TimerPageState extends State<TimerPage> {
   Duration timerDuration = Duration.zero;
-  late Timer timer;
-  bool isInitialized = false;
+  late Timer timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {});
   bool isRunning = false;
   List<Duration> rounds = [];
 
@@ -32,7 +31,7 @@ class _TimerPageState extends State<TimerPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context, timerDuration.inSeconds);
           },
@@ -112,11 +111,6 @@ class _TimerPageState extends State<TimerPage> {
                       color: getColorByDuration(i, rounds),
                     ),
                   ),
-                  // Container(
-                  //   width: deviceSize.width * 0.25,
-                  //   color: AppSettings.font.withOpacity(0.15),
-                  //   height: 1,
-                  // ),
                 ],
               ),
           ],
@@ -133,14 +127,13 @@ class _TimerPageState extends State<TimerPage> {
               ? "CONTINUE"
               : "START",
       function: () {
-        if (!isInitialized || !isRunning) {
+        if (!isRunning) {
           timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
             setState(() {
               timerDuration = timerDuration += const Duration(milliseconds: 10);
             });
           });
           setState(() {
-            isInitialized = true;
             isRunning = true;
           });
         } else {
@@ -159,28 +152,26 @@ class _TimerPageState extends State<TimerPage> {
     return FlexusButton(
       text: timerDuration.inMilliseconds > 0 && !isRunning ? "RESET" : "ROUND",
       function: () {
-        if (isInitialized) {
-          if (timerDuration.inMilliseconds > 0 && !isRunning) {
-            setState(() {
-              rounds.clear();
-              timerDuration = Duration.zero;
-            });
-          } else if (isRunning) {
-            Duration currentRound = Duration.zero;
-            if (rounds.isEmpty) {
-              currentRound = timerDuration;
-            } else {
-              Duration allRoundDuration = Duration.zero;
-              for (var round in rounds) {
-                allRoundDuration = allRoundDuration + round;
-              }
-              currentRound = timerDuration - allRoundDuration;
+        if (timerDuration.inMilliseconds > 0 && !isRunning) {
+          setState(() {
+            rounds.clear();
+            timerDuration = Duration.zero;
+          });
+        } else if (isRunning) {
+          Duration currentRound = Duration.zero;
+          if (rounds.isEmpty) {
+            currentRound = timerDuration;
+          } else {
+            Duration allRoundDuration = Duration.zero;
+            for (var round in rounds) {
+              allRoundDuration = allRoundDuration + round;
             }
-
-            setState(() {
-              rounds.add(currentRound);
-            });
+            currentRound = timerDuration - allRoundDuration;
           }
+
+          setState(() {
+            rounds.add(currentRound);
+          });
         }
       },
       fontColor: timerDuration.inMilliseconds > 0 ? AppSettings.fontV1 : AppSettings.font,

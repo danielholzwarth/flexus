@@ -46,6 +46,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppSettings.background,
       appBar: AppBar(
         backgroundColor: AppSettings.background,
         title: CustomDefaultTextStyle(
@@ -59,7 +60,6 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               debugPrint("adding new page ${pages.length + 1}");
               pages.add(DocumentExercisePage(exerciseID: null, pageID: pages.length + 1));
               currentPageIndex = pages.length;
-              setState(() {});
 
               setState(() {
                 pageController.jumpToPage(currentPageIndex);
