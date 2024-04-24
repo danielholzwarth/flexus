@@ -13,6 +13,16 @@ class WorkoutLoading extends WorkoutState {}
 
 class WorkoutSearching extends WorkoutState {}
 
+class WorkoutDetailsLoading extends WorkoutState {}
+
+class WorkoutDetailsLoaded extends WorkoutState {
+  final WorkoutDetails workoutDetails;
+
+  WorkoutDetailsLoaded({
+    required this.workoutDetails,
+  });
+}
+
 class WorkoutUpdating extends WorkoutState {}
 
 class WorkoutDeleting extends WorkoutState {}

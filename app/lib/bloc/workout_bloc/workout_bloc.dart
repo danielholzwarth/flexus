@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:app/api/workout/workout_service.dart';
+import 'package:app/hive/exercise/exercise.dart';
+import 'package:app/hive/gym/gym.dart';
+import 'package:app/hive/split/split.dart';
 import 'package:app/hive/workout/workout.dart';
+import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +24,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     on<PostWorkout>(_onPostWorkout);
     on<GetWorkout>(_onGetWorkout);
     on<GetSearchWorkout>(_onGetSearchWorkout);
+    on<GetWorkoutDetails>(_onGetWorkoutDetails);
     on<PatchWorkout>(_onPatchWorkout);
     on<DeleteWorkout>(_onDeleteWorkout);
   }
@@ -107,6 +114,79 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     }
     workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
     emit(WorkoutLoaded(workoutOverviews: workoutOverviews));
+  }
+
+  void _onGetWorkoutDetails(GetWorkoutDetails event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutDetailsLoading());
+
+    final response = await _workoutService.getWorkoutDetails(userBox.get("flexusjwt"), event.workoutID);
+
+    if (response.isSuccessful) {
+      if (response.body != "null") {
+        Map<String, dynamic> json = jsonDecode(response.bodyString);
+
+        Gym? gym;
+
+        if (json['gym'] != null) {
+          Map<String, dynamic> gymJson = json['gym'];
+          gym = Gym(
+            id: gymJson['id'],
+            name: gymJson['name'],
+            streetName: gymJson['streetName'],
+            houseNumber: gymJson['houseNumber'],
+            zipCode: gymJson['zipCode'],
+            cityName: gymJson['cityName'],
+            latitude: gymJson['latitude'],
+            longitude: gymJson['longitude'],
+          );
+        }
+
+        List<Exercise> exercises = [];
+
+        if (json['exercises'] != null) {
+          List<dynamic> exercisesJson = json['exercises'];
+          exercises = exercisesJson.map((exerciseJson) {
+            return Exercise(
+              id: exerciseJson['id'],
+              name: exerciseJson['name'],
+              creatorID: exerciseJson['creatorID'],
+              typeID: exerciseJson['typeID'],
+            );
+          }).toList();
+        }
+
+        List<List<String>> measurements = [];
+        if (json['measurements'] != null) {
+          List<dynamic> measurementsJson = json['measurements'];
+          measurements = measurementsJson.map<List<String>>((measurementListJson) {
+            return List<String>.from(measurementListJson);
+          }).toList();
+        }
+
+        WorkoutDetails workoutDetails = WorkoutDetails(
+          workoutID: json['workoutID'],
+          date: DateTime.parse(json['date']),
+          gym: gym,
+          duration: json['duration'] ?? 0,
+          split: json['split'] != null
+              ? Split(
+                  id: json['split']['id'],
+                  planID: json['split']['planID'],
+                  name: json['split']['name'],
+                  orderInPlan: json['split']['orderInPlan'],
+                )
+              : null,
+          exercises: exercises,
+          measurements: measurements,
+        );
+
+        emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
+      } else {
+        emit(WorkoutError(error: "No workout details found"));
+      }
+    } else {
+      emit(WorkoutError(error: response.error.toString()));
+    }
   }
 
   void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {

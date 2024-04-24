@@ -33,6 +33,14 @@ class GetSearchWorkout extends WorkoutEvent {
   });
 }
 
+class GetWorkoutDetails extends WorkoutEvent {
+  final int workoutID;
+
+  GetWorkoutDetails({
+    required this.workoutID,
+  });
+}
+
 class PatchWorkout extends WorkoutEvent {
   final int workoutID;
   final bool isArchive;

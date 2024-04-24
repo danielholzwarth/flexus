@@ -112,6 +112,165 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 	return workoutOverviews, nil
 }
 
+func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutDetails, error) {
+	var workoutDetails types.WorkoutDetails
+
+	workoutDetails.WorkoutID = workoutID
+
+	query := `
+		SELECT w.starttime, EXTRACT(EPOCH FROM (w.endtime - w.starttime)) / 60 AS duration_minutes, w.gym_id, w.split_id
+		FROM workout w
+		JOIN user_account ua ON w.user_id = ua.id
+		WHERE w.id = $1
+		AND ua.id = $2;
+	`
+
+	var durationFloat *float64
+	var gymID *float64
+	var splitID *float64
+
+	err := db.pool.QueryRow(query, workoutID, userAccountID).Scan(
+		&workoutDetails.Date,
+		&durationFloat,
+		&gymID,
+		&splitID)
+	if err != nil {
+		return types.WorkoutDetails{}, err
+	}
+
+	if durationFloat != nil {
+		duration := int(*durationFloat)
+		workoutDetails.Duration = &duration
+	}
+
+	if gymID != nil {
+		var gym types.Gym
+		query = `
+			SELECT gym.*
+			FROM gym
+			JOIN workout w ON w.gym_id = gym.id
+			WHERE w.id = $1
+			AND w.user_id = $2
+			AND gym.id = $3;
+		`
+
+		err := db.pool.QueryRow(query, gymID, userAccountID, gymID).Scan(
+			&gym.ID,
+			&gym.Name,
+			&gym.StreetName,
+			&gym.HouseNumber,
+			&gym.ZipCode,
+			&gym.CityName,
+			&gym.Latitude,
+			&gym.Longitude)
+		if err != nil {
+			if !errors.Is(err, sql.ErrNoRows) {
+				return types.WorkoutDetails{}, err
+			}
+		} else {
+			workoutDetails.Gym = &gym
+		}
+	}
+
+	var split types.Split
+
+	if splitID != nil {
+		query = `
+			SELECT *
+			FROM split
+			WHERE split.id = $1;
+		`
+
+		err = db.pool.QueryRow(query, splitID).Scan(
+			&split.ID,
+			&split.PlanID,
+			&split.Name,
+			&split.OrderInPlan,
+		)
+		if err != nil {
+			return types.WorkoutDetails{}, err
+		}
+
+		workoutDetails.Split = &split
+	}
+
+	var exercises []types.Exercise
+	measurements := make([][]string, 0)
+
+	exerciseQuery := `
+		SELECT exercise.*
+		FROM exercise
+		JOIN set s ON s.exercise_id = exercise.id
+		WHERE s.workout_id = $1;
+	`
+
+	exerciseRows, err := db.pool.Query(exerciseQuery, workoutID)
+	if err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			return types.WorkoutDetails{}, err
+		}
+	}
+	defer exerciseRows.Close()
+
+	for exerciseRows.Next() {
+		var exercise types.Exercise
+		err := exerciseRows.Scan(
+			&exercise.ID,
+			&exercise.CreatorID,
+			&exercise.Name,
+			&exercise.TypeID)
+		if err != nil {
+			return types.WorkoutDetails{}, err
+		}
+
+		exercises = append(exercises, exercise)
+	}
+
+	if err := exerciseRows.Err(); err != nil {
+		return types.WorkoutDetails{}, err
+	}
+
+	workoutDetails.Exercises = &exercises
+
+	measurementQuery := `
+		SELECT measurement
+		FROM set
+		JOIN workout w ON set.workout_id = w.id
+		WHERE w.user_id = $1
+		AND set.exercise_id = $2
+		AND w.id = $3;
+	`
+
+	for i := 0; i < len(exercises); i++ {
+		measurementRows, err := db.pool.Query(measurementQuery, userAccountID, exercises[i].ID, workoutID)
+		if err != nil {
+			return types.WorkoutDetails{}, err
+		}
+		defer measurementRows.Close()
+
+		var m []string
+		for measurementRows.Next() {
+			var measurement string
+			err := measurementRows.Scan(&measurement)
+			if err != nil {
+				return types.WorkoutDetails{}, err
+			}
+
+			m = append(m, measurement)
+		}
+
+		if err := measurementRows.Err(); err != nil {
+			return types.WorkoutDetails{}, err
+		}
+
+		measurements = append(measurements, m)
+	}
+
+	workoutDetails.Measurements = &measurements
+
+	return workoutDetails, nil
+}
+
 func (db DB) PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error {
 	var query string
 	var args []interface{}

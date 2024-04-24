@@ -335,9 +335,9 @@ INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (14, 2, now(), null, now(), null, 'false', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (17, 2, now(), null, now(), null, 'false', 'false', 'false');
 
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (1, 1, 1, '3 x 215.5kg');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (1, 1, 1, '3x215.5kg');
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (4, 2, 1, '203.3s');
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 3, 1, '8 x 125.5kg');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 3, 1, '8x125.5kg');
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 2, 2, '192.8s');
 
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);

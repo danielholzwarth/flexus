@@ -21,6 +21,16 @@ type WorkoutOverview struct {
 	SplitName *string `json:"splitName"`
 }
 
+type WorkoutDetails struct {
+	WorkoutID    int         `json:"workoutID"`
+	Date         time.Time   `json:"date"`
+	Gym          *Gym        `json:"gym"`
+	Duration     *int        `json:"duration"`
+	Split        *Split      `json:"split"`
+	Exercises    *[]Exercise `json:"exercises"`
+	Measurements *[][]string `json:"measurements"`
+}
+
 type PostWorkout struct {
 	UserAccountID int       `json:"userAccountID"`
 	GymID         *int      `json:"gymID"`
