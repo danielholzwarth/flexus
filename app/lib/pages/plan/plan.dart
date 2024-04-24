@@ -7,6 +7,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
+import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
@@ -126,16 +127,11 @@ class _PlanPageState extends State<PlanPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: deviceSize.width * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDefaultTextStyle(
-                text: 'General',
-                fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-            ],
+          padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
+          child: FlexusBasicTitle(
+            deviceSize: deviceSize,
+            text: "General",
+            hasPadding: false,
           ),
         ),
         DataTable(
@@ -199,16 +195,11 @@ class _PlanPageState extends State<PlanPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: deviceSize.width * 0.05, bottom: deviceSize.height * 0.01),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomDefaultTextStyle(
-                text: 'Splits',
-                fontWeight: FontWeight.bold,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-            ],
+          padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
+          child: FlexusBasicTitle(
+            deviceSize: deviceSize,
+            text: "Splits",
+            hasPadding: false,
           ),
         ),
         for (int index = 0; index < planOverview.splitOverviews.length; index++)

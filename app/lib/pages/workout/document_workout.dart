@@ -70,6 +70,8 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           TextButton(
             onPressed: () {
               //Post and Finish Workout
+
+              //Save data locally
               Navigator.pop(context);
             },
             child: const CustomDefaultTextStyle(text: "Finish"),
