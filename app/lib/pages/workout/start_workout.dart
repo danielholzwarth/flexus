@@ -1,5 +1,6 @@
 import 'package:app/bloc/split_bloc/split_bloc.dart';
 import 'package:app/hive/plan/plan.dart';
+import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
@@ -23,14 +24,13 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
 
   SplitBloc splitBloc = SplitBloc();
 
-  late String planName;
-  late String splitName;
+  Plan? currentPlan;
+  Split? currentSplit;
 
   @override
   void initState() {
-    planName = userBox.get("currentPlanName") ?? "Choose plan";
-    splitName = userBox.get("currentSplitName") ?? "Choose split";
-
+    currentPlan = userBox.get("currentPlan");
+    currentSplit = userBox.get("currentSplit");
     super.initState();
   }
 
@@ -71,12 +71,11 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Plan Name"),
         FlexusButton(
-          text: planName,
+          text: currentPlan != null ? currentPlan!.name : "Choose Plan",
           function: () async {
             dynamic result = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
             if (result != null) {
-              Plan newPlan = result;
-              planName = newPlan.name;
+              currentPlan = result;
             }
           },
           width: deviceSize.width * 0.9,
@@ -95,7 +94,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           builder: (context, state) {
             if (state is SplitsLoaded) {
               return FlexusButton(
-                text: splitName,
+                text: currentSplit != null ? currentSplit!.name : "Choose Split",
                 function: () {
                   //Split Search Delegate
                 },
@@ -132,7 +131,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: const DocumentWorkoutPage(splitID: 1),
+                      child: const DocumentWorkoutPage(),
                     ),
                   );
                 },
@@ -152,7 +151,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: const DocumentWorkoutPage(splitID: null),
+                      child: DocumentWorkoutPage(plan: currentPlan, split: currentSplit),
                     ),
                   );
                 },

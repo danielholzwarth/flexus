@@ -1,3 +1,5 @@
+import 'package:app/hive/plan/plan.dart';
+import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/timer.dart';
 import 'package:app/resources/app_settings.dart';
@@ -11,10 +13,12 @@ import 'package:page_transition/page_transition.dart';
 class DocumentWorkoutPage extends StatefulWidget {
   const DocumentWorkoutPage({
     super.key,
-    required this.splitID,
+    this.split,
+    this.plan,
   });
 
-  final int? splitID;
+  final Split? split;
+  final Plan? plan;
 
   @override
   State<DocumentWorkoutPage> createState() => _DocumentWorkoutPageState();
@@ -31,7 +35,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   @override
   void initState() {
-    if (widget.splitID != null) {
+    if (widget.split != null) {
       //Add pages for each exercise
     } else {
       pages.add(const DocumentExercisePage(
@@ -71,7 +75,8 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
             onPressed: () {
               //Post and Finish Workout
 
-              //Save data locally
+              userBox.put("currentPlan", widget.plan);
+              userBox.put("currentSplit", widget.split);
               Navigator.pop(context);
             },
             child: const CustomDefaultTextStyle(text: "Finish"),
