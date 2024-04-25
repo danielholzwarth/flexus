@@ -23,16 +23,17 @@ class WorkoutDetailsAdapter extends TypeAdapter<WorkoutDetails> {
       duration: fields[3] as int,
       split: fields[4] as Split?,
       exercises: (fields[5] as List).cast<Exercise>(),
-      measurements: (fields[6] as List)
-          .map((dynamic e) => (e as List).cast<Measurement>())
+      sets: (fields[6] as List)
+          .map((dynamic e) => (e as List).cast<WorkoutSet>())
           .toList(),
+      pbSetIDs: (fields[7] as List).cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, WorkoutDetails obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.workoutID)
       ..writeByte(1)
@@ -46,7 +47,9 @@ class WorkoutDetailsAdapter extends TypeAdapter<WorkoutDetails> {
       ..writeByte(5)
       ..write(obj.exercises)
       ..writeByte(6)
-      ..write(obj.measurements);
+      ..write(obj.sets)
+      ..writeByte(7)
+      ..write(obj.pbSetIDs);
   }
 
   @override

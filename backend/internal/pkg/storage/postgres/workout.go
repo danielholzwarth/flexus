@@ -235,11 +235,11 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 	workoutDetails.Exercises = &exercises
 
 	//Get Measurements & Best Lifts
-	var measurements [][]types.Measurement
-	// var pbSetIDs []int
+	var sets [][]types.Set
+	var pbSetIDs []int
 
 	measurementQuery := `
-		SELECT repetitions, workload
+		SELECT set.*
 		FROM set
 		JOIN workout w ON set.workout_id = w.id
 		WHERE w.user_id = $1
@@ -247,15 +247,20 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 		AND w.id = $3;
 	`
 
-	// pbQuery := `
-	// 	SELECT $1 = (
-	// 		SELECT MAX(measurement)
-	// 		FROM set.measurement
-	// 		JOIN workout w ON w.id = set.workout_id
-	// 		WHERE w.user_id = $2
-	// 		AND set.exercise_id = $3
-	// 	);
-	// `
+	pbQuery := `
+		SELECT set.id
+		FROM set
+		JOIN workout w ON w.id = set.workout_id
+		WHERE w.user_id = $2
+		AND set.exercise_id = $3
+		AND $1 = (
+			SELECT MAX(workload)
+			FROM set
+			JOIN workout w ON w.id = set.workout_id
+			WHERE w.user_id = $2
+			AND set.exercise_id = $3
+		);
+	`
 
 	for i := 0; i < len(exercises); i++ {
 		measurementRows, err := db.pool.Query(measurementQuery, userAccountID, exercises[i].ID, workoutID)
@@ -264,25 +269,39 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 		}
 		defer measurementRows.Close()
 
-		var m []types.Measurement
+		var exerciseSets []types.Set
 		for measurementRows.Next() {
-			var measurement types.Measurement
-			err := measurementRows.Scan(&measurement.Repetitions, &measurement.Workload)
+			var set types.Set
+			err := measurementRows.Scan(&set.ID, &set.WorkoutID, &set.ExerciseID, &set.OrderNumber, &set.Repetitions, &set.Workload)
 			if err != nil {
 				return types.WorkoutDetails{}, err
 			}
 
-			m = append(m, measurement)
+			var pbSetID int
+
+			err = db.pool.QueryRow(pbQuery, set.Workload, userAccountID, exercises[i].ID).Scan(&pbSetID)
+			if err != nil {
+				if !errors.Is(err, sql.ErrNoRows) {
+					return types.WorkoutDetails{}, err
+				}
+			}
+
+			if pbSetID != 0 {
+				pbSetIDs = append(pbSetIDs, pbSetID)
+			}
+
+			exerciseSets = append(exerciseSets, set)
 		}
 
 		if err := measurementRows.Err(); err != nil {
 			return types.WorkoutDetails{}, err
 		}
 
-		measurements = append(measurements, m)
+		sets = append(sets, exerciseSets)
 	}
 
-	workoutDetails.Measurements = &measurements
+	workoutDetails.Sets = &sets
+	workoutDetails.PBSetIDs = &pbSetIDs
 
 	return workoutDetails, nil
 }

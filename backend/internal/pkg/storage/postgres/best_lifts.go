@@ -24,7 +24,7 @@ func (db *DB) GetBestLifts(userAccountID int) ([]types.BestLiftOverview, error) 
 
 	for rows.Next() {
 		var bestLiftOverview types.BestLiftOverview
-		if err := rows.Scan(&bestLiftOverview.ExerciseName, &bestLiftOverview.Measurement.Repetitions, &bestLiftOverview.Measurement.Workload); err != nil {
+		if err := rows.Scan(&bestLiftOverview.ExerciseName, &bestLiftOverview.Repetitions, &bestLiftOverview.Workload); err != nil {
 			return []types.BestLiftOverview{}, err
 		}
 

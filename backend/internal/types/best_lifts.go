@@ -8,6 +8,7 @@ type BestLift struct {
 }
 
 type BestLiftOverview struct {
-	ExerciseName string      `json:"exerciseName"`
-	Measurement  Measurement `json:"measurement"`
+	ExerciseName string  `json:"exerciseName"`
+	Repetitions  int     `json:"repetitions"`
+	Workload     float64 `json:"workload"`
 }

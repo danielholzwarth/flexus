@@ -1,8 +1,9 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
-import 'package:app/hive/workout/measurement.dart';
+import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -92,7 +93,7 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
             buildDataRow("Gym", workoutDetails.gym != null ? workoutDetails.gym!.name : "-"),
             buildDataRow("Duration", getDurationString(workoutDetails)),
             buildDataRow("Total moved weight", getTotalWeight(workoutDetails)),
-            buildDataRow("New Personal Bests", "X"),
+            buildDataRow("New Personal Bests", workoutDetails.pbSetIDs.length.toString()),
           ],
         ),
       ],
@@ -131,19 +132,21 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                       const DataColumn(label: CustomDefaultTextStyle(text: '')),
                     ],
                     rows: [
-                      for (int j = 0; j <= workoutDetails.measurements[i].length - 1; j++)
+                      for (int j = 0; j <= workoutDetails.sets[i].length - 1; j++)
                         DataRow(
                           cells: [
                             DataCell(CustomDefaultTextStyle(text: "Set ${j + 1}")),
                             DataCell(
                               CustomDefaultTextStyle(
                                 text: getMeasurementString(
-                                  workoutDetails.measurements[i][j],
+                                  workoutDetails.sets[i][j],
                                   workoutDetails.exercises[i].typeID == 1,
                                 ),
                               ),
                             ),
-                            DataCell(Container()),
+                            DataCell(workoutDetails.pbSetIDs.contains(workoutDetails.sets[i][j].id)
+                                ? const FlexusDefaultIcon(iconData: Icons.emoji_events)
+                                : Container()),
                           ],
                         ),
                     ],
@@ -175,11 +178,11 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
     );
   }
 
-  String getMeasurementString(Measurement measurement, bool isDuration) {
+  String getMeasurementString(WorkoutSet set, bool isDuration) {
     if (isDuration) {
-      return "${measurement.repetitions} x ${measurement.workload}kg";
+      return "${set.repetitions} x ${set.workload}kg";
     } else {
-      return "${measurement.workload}s";
+      return "${set.workload}s";
     }
   }
 
@@ -191,10 +194,10 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
 
   String getTotalWeight(WorkoutDetails workoutDetails) {
     double totalWeight = 0;
-    for (var i = 0; i < workoutDetails.exercises.length; i++) {
-      for (var measurement in workoutDetails.measurements[i]) {
+    for (var i = 0; i <= workoutDetails.exercises.length - 1; i++) {
+      for (var set in workoutDetails.sets[i]) {
         if (workoutDetails.exercises[i].typeID == 1) {
-          totalWeight += measurement.repetitions * measurement.workload;
+          totalWeight += set.repetitions * set.workload;
         }
       }
     }

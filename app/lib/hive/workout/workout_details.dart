@@ -1,7 +1,7 @@
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
+import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/split/split.dart';
-import 'package:app/hive/workout/measurement.dart';
 import 'package:hive/hive.dart';
 
 part 'workout_details.g.dart';
@@ -27,7 +27,10 @@ class WorkoutDetails extends HiveObject {
   List<Exercise> exercises;
 
   @HiveField(6)
-  List<List<Measurement>> measurements;
+  List<List<WorkoutSet>> sets;
+
+  @HiveField(7)
+  List<int> pbSetIDs;
 
   WorkoutDetails({
     required this.workoutID,
@@ -36,6 +39,7 @@ class WorkoutDetails extends HiveObject {
     required this.duration,
     this.split,
     required this.exercises,
-    required this.measurements,
+    required this.sets,
+    required this.pbSetIDs,
   });
 }

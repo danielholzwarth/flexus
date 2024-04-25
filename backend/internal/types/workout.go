@@ -22,19 +22,14 @@ type WorkoutOverview struct {
 }
 
 type WorkoutDetails struct {
-	WorkoutID    int              `json:"workoutID"`
-	Date         time.Time        `json:"date"`
-	Gym          *Gym             `json:"gym"`
-	Duration     *int             `json:"duration"`
-	Split        *Split           `json:"split"`
-	Exercises    *[]Exercise      `json:"exercises"`
-	Measurements *[][]Measurement `json:"measurements"`
-	PBSetIDs     *[]int           `json:"pbSetIDs"`
-}
-
-type Measurement struct {
-	Repetitions int     `json:"repetitions"`
-	Workload    float64 `json:"workload"`
+	WorkoutID int         `json:"workoutID"`
+	Date      time.Time   `json:"date"`
+	Gym       *Gym        `json:"gym"`
+	Duration  *int        `json:"duration"`
+	Split     *Split      `json:"split"`
+	Exercises *[]Exercise `json:"exercises"`
+	Sets      *[][]Set    `json:"sets"`
+	PBSetIDs  *[]int      `json:"pbSetIDs"`
 }
 
 type PostWorkout struct {

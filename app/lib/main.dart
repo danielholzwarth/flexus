@@ -10,12 +10,14 @@ import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/hive/notification/notification.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
+import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/hive/split/split_overview.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/hive/user_list/user_list.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/hive/workout/workout_overview.dart';
@@ -87,6 +89,8 @@ Future<void> initializeHive() async {
     if (!Hive.isAdapterRegistered(15)) Hive.registerAdapter(SplitAdapter());
     if (!Hive.isAdapterRegistered(16)) Hive.registerAdapter(SplitOverviewAdapter());
     if (!Hive.isAdapterRegistered(17)) Hive.registerAdapter(WorkoutDetailsAdapter());
+    if (!Hive.isAdapterRegistered(18)) Hive.registerAdapter(MeasurementAdapter());
+    if (!Hive.isAdapterRegistered(19)) Hive.registerAdapter(WorkoutSetAdapter());
 
     if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {
