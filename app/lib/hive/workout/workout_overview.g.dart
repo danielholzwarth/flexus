@@ -20,19 +20,22 @@ class WorkoutOverviewAdapter extends TypeAdapter<WorkoutOverview> {
       workout: fields[0] as Workout,
       splitName: fields[1] as String?,
       planName: fields[2] as String?,
+      bestLiftCount: fields[3] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, WorkoutOverview obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.workout)
       ..writeByte(1)
       ..write(obj.splitName)
       ..writeByte(2)
-      ..write(obj.planName);
+      ..write(obj.planName)
+      ..writeByte(3)
+      ..write(obj.bestLiftCount);
   }
 
   @override

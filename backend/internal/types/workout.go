@@ -19,6 +19,7 @@ type WorkoutOverview struct {
 	Workout   Workout `json:"workout"`
 	PlanName  *string `json:"planName"`
 	SplitName *string `json:"splitName"`
+	PBCount   int     `json:"pbCount"`
 }
 
 type WorkoutDetails struct {

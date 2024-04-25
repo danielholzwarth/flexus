@@ -64,6 +64,9 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 }
 
 func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error) {
+	var workoutOverviews []types.WorkoutOverview
+	var pbCount int
+
 	query := `
 		SELECT w.id, w.user_id, w.split_id, w.created_at, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
 		FROM workout w
@@ -78,7 +81,20 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 		return []types.WorkoutOverview{}, err
 	}
 
-	var workoutOverviews []types.WorkoutOverview
+	pbCountQuery := `
+		SELECT COUNT(s.exercise_id)
+		FROM set s
+		JOIN workout w ON w.id = s.workout_id
+		WHERE w.user_id = $1
+		AND w.id = $2
+		AND s.workload = (
+			SELECT MAX(workload)
+			FROM set
+				JOIN workout w ON w.id = set.workout_id
+			WHERE s.exercise_id = set.exercise_id
+				AND w.user_id = $1
+		);
+	`
 
 	for rows.Next() {
 		var workoutOverview types.WorkoutOverview
@@ -101,7 +117,15 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 			return nil, err
 		}
 
+		err = db.pool.QueryRow(pbCountQuery, userAccountID, workout.ID).Scan(&pbCount)
+		if err != nil {
+			if !errors.Is(err, sql.ErrNoRows) {
+				return nil, err
+			}
+		}
+
 		workoutOverview.Workout = workout
+		workoutOverview.PBCount = pbCount
 		workoutOverviews = append(workoutOverviews, workoutOverview)
 	}
 
@@ -248,18 +272,20 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 	`
 
 	pbQuery := `
-		SELECT set.id
-		FROM set
-		JOIN workout w ON w.id = set.workout_id
+		SELECT s.id
+		FROM set s
+		JOIN workout w ON w.id = s.workout_id
 		WHERE w.user_id = $2
-		AND set.exercise_id = $3
+		AND s.exercise_id = $3
+		AND w.id = $4
 		AND $1 = (
-			SELECT MAX(workload)
-			FROM set
-			JOIN workout w ON w.id = set.workout_id
+			SELECT MAX(s.workload)
+			FROM set s
+			JOIN workout w ON w.id = s.workout_id
 			WHERE w.user_id = $2
-			AND set.exercise_id = $3
-		);
+			AND s.exercise_id = $3
+		)
+		ORDER BY s.workload DESC;
 	`
 
 	for i := 0; i < len(exercises); i++ {
@@ -279,7 +305,7 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 
 			var pbSetID int
 
-			err = db.pool.QueryRow(pbQuery, set.Workload, userAccountID, exercises[i].ID).Scan(&pbSetID)
+			err = db.pool.QueryRow(pbQuery, set.Workload, userAccountID, exercises[i].ID, workoutID).Scan(&pbSetID)
 			if err != nil {
 				if !errors.Is(err, sql.ErrNoRows) {
 					return types.WorkoutDetails{}, err

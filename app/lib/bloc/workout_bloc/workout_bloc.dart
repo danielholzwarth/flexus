@@ -76,6 +76,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
               ),
               planName: json['planName'],
               splitName: json['splitName'],
+              bestLiftCount: json['pbCount'],
             );
           }).toList();
         }
@@ -169,7 +170,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
                 exerciseID: measurementMap['exerciseID'],
                 orderNumber: measurementMap['orderNumber'],
                 repetitions: measurementMap['repetitions'],
-                workload: measurementMap['workload'],
+                workload: double.parse(measurementMap['workload'].toString()),
               );
             }).toList();
           }).toList();

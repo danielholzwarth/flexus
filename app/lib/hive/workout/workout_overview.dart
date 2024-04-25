@@ -14,9 +14,13 @@ class WorkoutOverview extends HiveObject {
   @HiveField(2)
   String? planName;
 
+  @HiveField(3)
+  int bestLiftCount;
+
   WorkoutOverview({
     required this.workout,
     this.splitName,
     this.planName,
+    required this.bestLiftCount,
   });
 }

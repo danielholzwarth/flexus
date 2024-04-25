@@ -193,11 +193,11 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               ),
             ),
             Visibility(
-              visible: widget.workoutOverview.workout.id % 7 != 0,
+              visible: widget.workoutOverview.bestLiftCount > 0,
               child: Row(
                 children: [
                   CustomDefaultTextStyle(
-                    text: (widget.workoutOverview.workout.id % 7).toString(),
+                    text: widget.workoutOverview.bestLiftCount.toString(),
                   ),
                   FlexusDefaultIcon(
                     iconData: Icons.emoji_events,
