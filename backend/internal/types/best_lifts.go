@@ -11,4 +11,5 @@ type BestLiftOverview struct {
 	ExerciseName string  `json:"exerciseName"`
 	Repetitions  int     `json:"repetitions"`
 	Workload     float64 `json:"workload"`
+	IsRepetition bool    `json:"isRepetition"`
 }

@@ -17,7 +17,6 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -313,10 +312,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String getCorrectPedestralText(BestLiftOverview bestLiftOverview) {
-    if (bestLiftOverview.measurement != null) {
-      return bestLiftOverview.measurement!;
+    if (bestLiftOverview.isRepetition) {
+      return "${bestLiftOverview.repetitions} x ${bestLiftOverview.workload}kg";
     } else {
-      return "error loading";
+      return "${bestLiftOverview.workload}s";
     }
   }
 

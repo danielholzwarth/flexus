@@ -29,7 +29,9 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
           bestLiftOverviews = jsonList.map((jsonMap) {
             return BestLiftOverview(
               exerciseName: jsonMap['exerciseName'],
-              measurement: jsonMap['measurement'],
+              repetitions: jsonMap['repetitions'],
+              workload: jsonMap['workload'],
+              isRepetition: jsonMap['isRepetition'],
             );
           }).toList();
 
