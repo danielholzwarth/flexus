@@ -332,10 +332,11 @@ class _PlanPageState extends State<PlanPage> {
             switch (choice) {
               case "Select Plan":
               case "Change Plan":
-                final newPlanID = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
-                if (newPlanID != null) {
+                dynamic newPlanDyn = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
+                if (newPlanDyn != null) {
+                  Plan newPlan = newPlanDyn;
                   planBloc.add(PatchPlan(
-                    planID: newPlanID,
+                    planID: newPlan.id,
                     name: "isActive",
                     value: true,
                   ));

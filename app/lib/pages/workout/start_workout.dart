@@ -1,3 +1,5 @@
+import 'package:app/bloc/split_bloc/split_bloc.dart';
+import 'package:app/hive/plan/plan.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
@@ -5,6 +7,8 @@ import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
 class StartWorkoutPage extends StatefulWidget {
@@ -15,6 +19,21 @@ class StartWorkoutPage extends StatefulWidget {
 }
 
 class _StartWorkoutPageState extends State<StartWorkoutPage> {
+  final userBox = Hive.box('userBox');
+
+  SplitBloc splitBloc = SplitBloc();
+
+  late String planName;
+  late String splitName;
+
+  @override
+  void initState() {
+    planName = userBox.get("currentPlanName") ?? "Choose plan";
+    splitName = userBox.get("currentSplitName") ?? "Choose split";
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
@@ -52,12 +71,13 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Plan Name"),
         FlexusButton(
-          text: "Daniels 4er",
+          text: planName,
           function: () async {
             dynamic result = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
-            print(result);
-
-            //Load Splits (current first)
+            if (result != null) {
+              Plan newPlan = result;
+              planName = newPlan.name;
+            }
           },
           width: deviceSize.width * 0.9,
         ),
@@ -70,12 +90,27 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Today's Split"),
-        FlexusButton(
-          text: "Push",
-          function: () {
-            //Split Search Delegate
+        BlocBuilder(
+          bloc: splitBloc,
+          builder: (context, state) {
+            if (state is SplitsLoaded) {
+              return FlexusButton(
+                text: splitName,
+                function: () {
+                  //Split Search Delegate
+                },
+                width: deviceSize.width * 0.9,
+              );
+            } else {
+              return FlexusButton(
+                text: "Local Split",
+                function: () {
+                  //Split Search Delegate
+                },
+                width: deviceSize.width * 0.9,
+              );
+            }
           },
-          width: deviceSize.width * 0.9,
         ),
       ],
     );

@@ -95,7 +95,7 @@ class PlanCustomSearchDelegate extends SearchDelegate {
                           ],
                         ),
                         onPressed: () {
-                          close(context, filteredPlans[index].id);
+                          close(context, filteredPlans[index]);
                         },
                       );
                     },
