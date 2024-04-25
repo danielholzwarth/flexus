@@ -115,6 +115,7 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutDetails, error) {
 	var workoutDetails types.WorkoutDetails
 
+	//Get ID, starttime, duration, gymID and splitID
 	workoutDetails.WorkoutID = workoutID
 
 	query := `
@@ -172,6 +173,7 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 		}
 	}
 
+	//Get Split
 	var split types.Split
 
 	if splitID != nil {
@@ -194,11 +196,11 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 		workoutDetails.Split = &split
 	}
 
+	//Get Exercises
 	var exercises []types.Exercise
-	measurements := make([][]string, 0)
 
 	exerciseQuery := `
-		SELECT exercise.*
+		SELECT DISTINCT exercise.*
 		FROM exercise
 		JOIN set s ON s.exercise_id = exercise.id
 		WHERE s.workout_id = $1;
@@ -232,14 +234,28 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 
 	workoutDetails.Exercises = &exercises
 
+	//Get Measurements & Best Lifts
+	var measurements [][]types.Measurement
+	// var pbSetIDs []int
+
 	measurementQuery := `
-		SELECT measurement
+		SELECT repetitions, workload
 		FROM set
 		JOIN workout w ON set.workout_id = w.id
 		WHERE w.user_id = $1
 		AND set.exercise_id = $2
 		AND w.id = $3;
 	`
+
+	// pbQuery := `
+	// 	SELECT $1 = (
+	// 		SELECT MAX(measurement)
+	// 		FROM set.measurement
+	// 		JOIN workout w ON w.id = set.workout_id
+	// 		WHERE w.user_id = $2
+	// 		AND set.exercise_id = $3
+	// 	);
+	// `
 
 	for i := 0; i < len(exercises); i++ {
 		measurementRows, err := db.pool.Query(measurementQuery, userAccountID, exercises[i].ID, workoutID)
@@ -248,10 +264,10 @@ func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutD
 		}
 		defer measurementRows.Close()
 
-		var m []string
+		var m []types.Measurement
 		for measurementRows.Next() {
-			var measurement string
-			err := measurementRows.Scan(&measurement)
+			var measurement types.Measurement
+			err := measurementRows.Scan(&measurement.Repetitions, &measurement.Workload)
 			if err != nil {
 				return types.WorkoutDetails{}, err
 			}

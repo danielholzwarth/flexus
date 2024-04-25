@@ -153,7 +153,8 @@ CREATE TABLE set (
     workout_id BIGINT NOT NULL REFERENCES workout(id) ON DELETE CASCADE ON UPDATE CASCADE,
     exercise_id BIGINT NOT NULL REFERENCES exercise(id) ON DELETE CASCADE ON UPDATE CASCADE,
     order_number INTEGER NOT NULL,
-    measurement VARCHAR(50) NOT NULL
+    repetitions INTEGER NOT NULL,
+    workload DECIMAL NOT NULL
 );
 
 CREATE TABLE best_lifts (
@@ -335,10 +336,10 @@ INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (14, 2, now(), null, now(), null, 'false', 'false', 'false');
 INSERT INTO "workout" ("user_id", "gym_id", "created_at", "split_id", "starttime", "endtime", "is_archived", "is_stared", "is_pinned") VALUES (17, 2, now(), null, now(), null, 'false', 'false', 'false');
 
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (1, 1, 1, '3x215.5kg');
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (4, 2, 1, '203.3s');
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 3, 1, '8x125.5kg');
-Insert INTO "set" ("workout_id", "exercise_id", "order_number", "measurement") VALUES (7, 2, 2, '192.8s');
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (1, 1, 1, 3, 215.5);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (4, 2, 1, 1, 203.3);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (7, 3, 1, 8, 125.5);
+Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (7, 2, 2, 1, 192.8);
 
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
 Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 2, 2);

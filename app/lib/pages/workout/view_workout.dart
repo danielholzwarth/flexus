@@ -1,4 +1,5 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
@@ -134,7 +135,14 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
                         DataRow(
                           cells: [
                             DataCell(CustomDefaultTextStyle(text: "Set ${j + 1}")),
-                            DataCell(CustomDefaultTextStyle(text: workoutDetails.measurements[i][j])),
+                            DataCell(
+                              CustomDefaultTextStyle(
+                                text: getMeasurementString(
+                                  workoutDetails.measurements[i][j],
+                                  workoutDetails.exercises[i].typeID == 1,
+                                ),
+                              ),
+                            ),
                             DataCell(Container()),
                           ],
                         ),
@@ -167,6 +175,14 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
     );
   }
 
+  String getMeasurementString(Measurement measurement, bool isDuration) {
+    if (isDuration) {
+      return "${measurement.repetitions} x ${measurement.workload}kg";
+    } else {
+      return "${measurement.workload}s";
+    }
+  }
+
   String getDurationString(WorkoutDetails workoutDetails) {
     String hoursString = workoutDetails.duration > 60 ? "${(workoutDetails.duration / 60).floor()}h " : "";
     String minutesString = "${workoutDetails.duration % 60}min";
@@ -177,10 +193,8 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
     double totalWeight = 0;
     for (var i = 0; i < workoutDetails.exercises.length; i++) {
       for (var measurement in workoutDetails.measurements[i]) {
-        if (!measurement.endsWith("s")) {
-          measurement = measurement.replaceAll("kg", "");
-          List<String> mSplit = measurement.split("x");
-          totalWeight += int.parse(mSplit[0]) * double.parse(mSplit[1]);
+        if (workoutDetails.exercises[i].typeID == 1) {
+          totalWeight += measurement.repetitions * measurement.workload;
         }
       }
     }

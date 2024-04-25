@@ -24,7 +24,7 @@ class WorkoutDetailsAdapter extends TypeAdapter<WorkoutDetails> {
       split: fields[4] as Split?,
       exercises: (fields[5] as List).cast<Exercise>(),
       measurements: (fields[6] as List)
-          .map((dynamic e) => (e as List).cast<String>())
+          .map((dynamic e) => (e as List).cast<Measurement>())
           .toList(),
     );
   }

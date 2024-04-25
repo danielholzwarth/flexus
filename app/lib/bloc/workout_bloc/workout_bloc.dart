@@ -4,6 +4,7 @@ import 'package:app/api/workout/workout_service.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/hive/workout/workout_overview.dart';
@@ -123,6 +124,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
     if (response.isSuccessful) {
       if (response.body != "null") {
+        print(response.bodyString);
+
         Map<String, dynamic> json = jsonDecode(response.bodyString);
 
         Gym? gym;
@@ -155,11 +158,16 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           }).toList();
         }
 
-        List<List<String>> measurements = [];
+        List<List<Measurement>> measurements = [];
         if (json['measurements'] != null) {
           List<dynamic> measurementsJson = json['measurements'];
-          measurements = measurementsJson.map<List<String>>((measurementListJson) {
-            return List<String>.from(measurementListJson);
+          measurements = measurementsJson.map<List<Measurement>>((measurementListJson) {
+            return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
+              return Measurement(
+                repetitions: measurementMap['repetitions'],
+                workload: measurementMap['workload'],
+              );
+            }).toList();
           }).toList();
         }
 
