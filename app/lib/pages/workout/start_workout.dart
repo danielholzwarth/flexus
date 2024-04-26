@@ -156,51 +156,21 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
   }
 
   Widget buildBottom(BuildContext context, Size deviceSize) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: deviceSize.width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              FlexusButton(
-                text: "Start",
-                function: () {
-                  Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: DocumentWorkoutPage(gym: currentGym, plan: currentPlan, split: currentSplit),
-                    ),
-                  );
-                },
-                backgroundColor: AppSettings.primary,
-                fontColor: AppSettings.fontV1,
-              ),
-              SizedBox(height: deviceSize.height * 0.02),
-              TextButton(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                    surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                    overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                    foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                    fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.5))),
-                onPressed: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: const DocumentWorkoutPage(),
-                    ),
-                  );
-                },
-                child: const CustomDefaultTextStyle(text: "Start custom workout"),
-              ),
-            ],
-          ),
-        ),
-      ],
+    return Center(
+      child: FlexusButton(
+        text: "Start",
+        function: () {
+          Navigator.pushReplacement(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: DocumentWorkoutPage(gym: currentGym, plan: currentPlan, split: currentSplit),
+            ),
+          );
+        },
+        backgroundColor: AppSettings.primary,
+        fontColor: AppSettings.fontV1,
+      ),
     );
   }
 }
