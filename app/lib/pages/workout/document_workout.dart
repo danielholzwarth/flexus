@@ -75,8 +75,12 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
             onPressed: () {
               //Post and Finish Workout
 
-              userBox.put("currentPlan", widget.plan);
-              userBox.put("currentSplit", widget.split);
+              if (widget.plan != null) {
+                userBox.put("currentPlan", widget.plan);
+              }
+              if (widget.split != null) {
+                userBox.put("currentSplit", widget.split);
+              }
               Navigator.pop(context);
             },
             child: const CustomDefaultTextStyle(text: "Finish"),

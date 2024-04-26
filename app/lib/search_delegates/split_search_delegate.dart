@@ -17,6 +17,8 @@ class SplitSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   SplitBloc splitBloc = SplitBloc();
 
+  bool isLoaded = false;
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -56,7 +58,10 @@ class SplitSearchDelegate extends SearchDelegate {
   }
 
   Widget buildSearchResults(BuildContext context) {
-    splitBloc.add(GetSplits(planID: 0));
+    if (!isLoaded) {
+      splitBloc.add(GetSplits(planID: planID));
+      isLoaded = true;
+    }
 
     return GestureDetector(
       onTap: () {

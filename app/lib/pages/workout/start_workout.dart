@@ -1,4 +1,3 @@
-import 'package:app/bloc/split_bloc/split_bloc.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_workout.dart';
@@ -21,9 +20,6 @@ class StartWorkoutPage extends StatefulWidget {
 
 class _StartWorkoutPageState extends State<StartWorkoutPage> {
   final userBox = Hive.box('userBox');
-
-  SplitBloc splitBloc = SplitBloc();
-
   Plan? currentPlan;
   Split? currentSplit;
 
@@ -72,9 +68,11 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         FlexusBasicTitle(deviceSize: deviceSize, text: "Plan Name"),
         FlexusButton(
           text: currentPlan != null ? currentPlan!.name : "Choose Plan",
+          fontColor: currentPlan != null ? AppSettings.font : AppSettings.primary,
           function: () async {
             dynamic result = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
             if (result != null) {
+              currentSplit = null;
               setState(() {
                 currentPlan = result;
               });
@@ -97,6 +95,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                   ? currentSplit!.name
                   : "Choose Split"
               : "Choose Plan first",
+          fontColor: currentSplit != null ? AppSettings.font : AppSettings.primary,
           function: currentPlan != null
               ? () async {
                   dynamic result = await showSearch(context: context, delegate: SplitSearchDelegate(planID: currentPlan!.id));
@@ -129,7 +128,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: const DocumentWorkoutPage(),
+                      child: DocumentWorkoutPage(plan: currentPlan, split: currentSplit),
                     ),
                   );
                 },
@@ -149,7 +148,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: DocumentWorkoutPage(plan: currentPlan, split: currentSplit),
+                      child: DocumentWorkoutPage(),
                     ),
                   );
                 },

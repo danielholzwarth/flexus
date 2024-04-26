@@ -1,4 +1,6 @@
+import 'package:app/api/split/split_service.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -7,6 +9,8 @@ part 'split_event.dart';
 part 'split_state.dart';
 
 class SplitBloc extends Bloc<SplitEvent, SplitState> {
+  final SplitService splitService = SplitService.create();
+
   final userBox = Hive.box('userBox');
 
   SplitBloc() : super(SplitInitial()) {
@@ -16,12 +20,30 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   void _onGetSplits(GetSplits event, Emitter<SplitState> emit) async {
     emit(SplitsLoading());
 
-    List<Split> splits = [
-      Split(id: 1, planID: 1, name: "name1", orderInPlan: 1),
-      Split(id: 2, planID: 2, name: "name2", orderInPlan: 2),
-      Split(id: 3, planID: 3, name: "name3", orderInPlan: 3),
-    ];
+    Response<dynamic> response = await splitService.getSplits(userBox.get("flexusjwt"), event.planID);
 
-    emit(SplitsLoaded(splits: splits));
+    if (response.isSuccessful) {
+      List<Split> splits = [];
+
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
+
+        for (final gymData in jsonList) {
+          final Split split = Split(
+            id: gymData['id'],
+            planID: gymData['planID'],
+            name: gymData['name'],
+            orderInPlan: gymData['orderInPlan'],
+          );
+          splits.add(split);
+        }
+
+        emit(SplitsLoaded(splits: splits));
+      } else {
+        emit(SplitsLoaded(splits: const []));
+      }
+    } else {
+      emit(SplitError(error: response.error.toString()));
+    }
   }
 }
