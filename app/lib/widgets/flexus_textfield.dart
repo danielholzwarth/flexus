@@ -38,6 +38,7 @@ class FlexusTextField extends StatelessWidget {
         height: deviceSize.height * 0.08,
         child: Center(
           child: TextField(
+            keyboardType: textInputType,
             obscureText: isObscure,
             onChanged: onChanged,
             textAlign: TextAlign.center,

@@ -25,10 +25,6 @@ class DocumentExercisePage extends StatefulWidget {
 class _DocumentExercisePageState extends State<DocumentExercisePage> with AutomaticKeepAliveClientMixin<DocumentExercisePage> {
   final userBox = Hive.box('userBox');
 
-  final PageController pageController = PageController();
-  int currentPageIndex = 0;
-  int count = 0;
-
   Exercise exercise = Exercise(id: 0, name: "", typeID: 0);
 
   bool isRepetition = false;
@@ -100,6 +96,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       hintText: "Sets",
                       textController: setsGoalController,
                       width: deviceSize.width * 0.25,
+                      textInputType: TextInputType.number,
                       onChanged: (String newValue) {
                         setState(() {});
                       },
@@ -108,6 +105,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       hintText: "Reps",
                       textController: repsGoalController,
                       width: deviceSize.width * 0.25,
+                      textInputType: TextInputType.number,
                       onChanged: (String newValue) {
                         setState(() {});
                       },
@@ -116,6 +114,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       hintText: "Weigth",
                       textController: weightGoalController,
                       width: deviceSize.width * 0.25,
+                      textInputType: TextInputType.number,
                       onChanged: (String newValue) {
                         setState(() {});
                       },
@@ -129,6 +128,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       hintText: "Sets",
                       textController: setsGoalController,
                       width: deviceSize.width * 0.4,
+                      textInputType: TextInputType.number,
                       onChanged: (String newValue) {
                         setState(() {});
                       },
@@ -137,6 +137,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       hintText: "Duration",
                       textController: durationGoalController,
                       width: deviceSize.width * 0.4,
+                      textInputType: TextInputType.number,
                       onChanged: (String newValue) {
                         setState(() {});
                       },
@@ -164,6 +165,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                         hintText: "Reps",
                         textController: setController[i]["reps"]!,
                         width: deviceSize.width * 0.25,
+                        textInputType: TextInputType.number,
                         onChanged: (String newValue) {
                           setState(() {});
                         },
@@ -174,6 +176,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                         hintText: "Weigth",
                         textController: setController[i]["weight"]!,
                         width: deviceSize.width * 0.25,
+                        textInputType: TextInputType.number,
                         onChanged: (String newValue) {
                           setState(() {});
                         },
@@ -184,6 +187,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                         hintText: "Duration",
                         textController: setController[i]["duration"]!,
                         width: deviceSize.width * 0.4,
+                        textInputType: TextInputType.number,
                         onChanged: (String newValue) {
                           setState(() {});
                         },
