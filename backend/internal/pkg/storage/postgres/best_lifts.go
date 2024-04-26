@@ -4,7 +4,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetBestLifts(userAccountID int) ([]types.BestLiftOverview, error) {
+func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOverview, error) {
 	var bestLiftOverviews []types.BestLiftOverview
 	var typeID int
 	query := `

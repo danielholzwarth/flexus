@@ -42,7 +42,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGym(GetGym event, Emitter<GymState> emit) async {
-    final response = await _gymService.getGymsExisting(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
+    final response = await _gymService.getGymExisting(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
 
     if (response.isSuccessful) {
       bool exists = response.body;

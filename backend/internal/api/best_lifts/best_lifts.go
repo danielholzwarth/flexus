@@ -10,7 +10,7 @@ import (
 )
 
 type BestLiftsStore interface {
-	GetBestLifts(userAccountID int) ([]types.BestLiftOverview, error)
+	GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOverview, error)
 }
 
 type service struct {
@@ -25,7 +25,7 @@ func NewService(bestLiftsStore BestLiftsStore) http.Handler {
 		bestLiftsStore: bestLiftsStore,
 	}
 
-	r.Get("/{userAccountID}", s.getBestLifts())
+	r.Get("/{userAccountID}", s.getBestLiftsFromUserID())
 
 	return s
 }
@@ -34,7 +34,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) getBestLifts() http.HandlerFunc {
+func (s service) getBestLiftsFromUserID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -50,7 +50,7 @@ func (s service) getBestLifts() http.HandlerFunc {
 			return
 		}
 
-		bestLiftsOverview, err := s.bestLiftsStore.GetBestLifts(userAccountID)
+		bestLiftsOverview, err := s.bestLiftsStore.GetBestLiftsFromUserID(userAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get bestLiftsOverview", http.StatusInternalServerError)
 			println(err.Error())

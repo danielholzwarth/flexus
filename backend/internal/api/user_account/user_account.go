@@ -13,13 +13,13 @@ import (
 )
 
 type UserAccountStore interface {
-	GetUserAccountInformation(userAccountID int) (types.UserAccountInformation, error)
+	GetUserAccountFromUserID(userAccountID int) (types.UserAccountInformation, error)
 	PatchUserAccount(columnName string, value any, userAccountID int) error
 	GetUsernameAvailability(username string) (bool, error)
 	DeleteUserAccount(userAccountID int) error
 	ValidatePasswordByID(userAccountID int, password string) error
 	GetUserAccountInformations(userAccountID int, keyword string, isFriend bool, hasRequest bool) ([]any, error)
-	GetUserAccountInformationsGym(userAccountID int, gymID int, isWorkingOut bool) ([]any, error)
+	GetUserAccountsFromGymID(userAccountID int, gymID int, isWorkingOut bool) ([]any, error)
 	PatchEntireUserAccount(userAccountID int, userAccount types.UserAccount) error
 }
 
@@ -35,11 +35,11 @@ func NewService(userAccountStore UserAccountStore) http.Handler {
 		userAccountStore: userAccountStore,
 	}
 
-	r.Get("/{userAccountID}", s.getUserAccountInformation())
+	r.Get("/{userAccountID}", s.getUserAccountFromUserID())
 	r.Patch("/", s.patchUserAccount())
 	r.Delete("/", s.deleteUserAccount())
 	r.Get("/", s.getUserAccountInformations())
-	r.Get("/gym/{gymID}", s.getUserAccountInformationsGym())
+	r.Get("/gym/{gymID}", s.getUserAccountsFromGymID())
 	r.Patch("/sync", s.patchEntireUserAccount())
 
 	return s
@@ -49,7 +49,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) getUserAccountInformation() http.HandlerFunc {
+func (s service) getUserAccountFromUserID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -65,7 +65,7 @@ func (s service) getUserAccountInformation() http.HandlerFunc {
 			return
 		}
 
-		userAccountOverview, err := s.userAccountStore.GetUserAccountInformation(userAccountID)
+		userAccountOverview, err := s.userAccountStore.GetUserAccountFromUserID(userAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get userAccountOverview", http.StatusInternalServerError)
 			println(err.Error())
@@ -269,7 +269,7 @@ func (s service) getUserAccountInformations() http.HandlerFunc {
 	}
 }
 
-func (s service) getUserAccountInformationsGym() http.HandlerFunc {
+func (s service) getUserAccountsFromGymID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		println("gym")
 
@@ -300,7 +300,7 @@ func (s service) getUserAccountInformationsGym() http.HandlerFunc {
 			}
 		}
 
-		informations, err := s.userAccountStore.GetUserAccountInformationsGym(claims.UserAccountID, gymID, isWorkingOut)
+		informations, err := s.userAccountStore.GetUserAccountsFromGymID(claims.UserAccountID, gymID, isWorkingOut)
 		if err != nil {
 			http.Error(w, "Failed to get UserInformation", http.StatusInternalServerError)
 			println(err.Error())

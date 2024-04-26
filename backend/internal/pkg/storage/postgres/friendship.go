@@ -40,7 +40,7 @@ func (db *DB) CreateFriendship(friendship types.Friendship) error {
 	return nil
 }
 
-func (db *DB) GetFriendship(requestorID int, requestedID int) (*types.Friendship, error) {
+func (db *DB) GetFriendshipFromUserID(requestorID int, requestedID int) (*types.Friendship, error) {
 	friendship := &types.Friendship{}
 
 	query := `

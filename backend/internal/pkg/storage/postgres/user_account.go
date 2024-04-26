@@ -6,7 +6,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetUserAccountInformation(userAccountID int) (types.UserAccountInformation, error) {
+func (db *DB) GetUserAccountFromUserID(userAccountID int) (types.UserAccountInformation, error) {
 	var userAccount types.UserAccountInformation
 
 	query := `
@@ -164,7 +164,7 @@ func (db *DB) GetUserAccountInformations(userAccountID int, keyword string, isFr
 	return informations, nil
 }
 
-func (db *DB) GetUserAccountInformationsGym(userAccountID int, gymID int, isWorkingOut bool) ([]any, error) {
+func (db *DB) GetUserAccountsFromGymID(userAccountID int, gymID int, isWorkingOut bool) ([]any, error) {
 	query := `
 		SELECT DISTINCT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture,
 		(SELECT w.starttime 

@@ -115,7 +115,7 @@ func (db *DB) PatchUserList(userAccountID int, listID int, userID int) error {
 	return nil
 }
 
-func (db *DB) GetEntireUserList(userAccountID int, listID int) ([]int, error) {
+func (db *DB) GetUserListFromListID(userAccountID int, listID int) ([]int, error) {
 	query := `
 		SELECT ul.id
 		FROM user_list ul

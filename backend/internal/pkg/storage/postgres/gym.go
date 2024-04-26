@@ -5,7 +5,7 @@ import (
 )
 
 func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
-	exists, err := db.GetGymExists(gym.Name, gym.Latitude, gym.Longitude)
+	exists, err := db.GetGymExisting(gym.Name, gym.Latitude, gym.Longitude)
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func (db *DB) PostGym(userAccountID int, gym types.Gym) error {
 	return nil
 }
 
-func (db *DB) GetGymExists(name string, lat float64, lon float64) (bool, error) {
+func (db *DB) GetGymExisting(name string, lat float64, lon float64) (bool, error) {
 	query := `
         SELECT EXISTS(
 			SELECT 1

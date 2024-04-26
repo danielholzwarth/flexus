@@ -25,7 +25,7 @@ func NewService(splitsStore SplitsStore) http.Handler {
 		splitsStore: splitsStore,
 	}
 
-	r.Get("/{planID}", s.getSplits())
+	r.Get("/{planID}", s.getSplitsFromPlanID())
 
 	return s
 }
@@ -34,7 +34,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) getSplits() http.HandlerFunc {
+func (s service) getSplitsFromPlanID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {

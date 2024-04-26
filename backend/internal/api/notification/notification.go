@@ -9,7 +9,7 @@ import (
 )
 
 type NotificationStore interface {
-	GetNewUsersWorkingOut(userAccountID int) ([]types.NotificationNewUserWorkingOut, error)
+	GetNewWorkoutNotifications(userAccountID int) ([]types.NotificationNewUserWorkingOut, error)
 }
 
 type service struct {
@@ -24,7 +24,7 @@ func NewService(notificationStore NotificationStore) http.Handler {
 		notificationStore: notificationStore,
 	}
 
-	r.Get("/", s.fetchData())
+	r.Get("/", s.getNewWorkoutNotifications())
 
 	return s
 }
@@ -33,7 +33,7 @@ func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.handler.ServeHTTP(w, r)
 }
 
-func (s service) fetchData() http.HandlerFunc {
+func (s service) getNewWorkoutNotifications() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -41,7 +41,7 @@ func (s service) fetchData() http.HandlerFunc {
 			return
 		}
 
-		users, err := s.notificationStore.GetNewUsersWorkingOut(claims.UserAccountID)
+		users, err := s.notificationStore.GetNewWorkoutNotifications(claims.UserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get users", http.StatusInternalServerError)
 			println(err.Error())

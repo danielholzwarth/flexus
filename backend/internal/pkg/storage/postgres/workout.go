@@ -136,7 +136,7 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 	return workoutOverviews, nil
 }
 
-func (db DB) GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutDetails, error) {
+func (db DB) GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (types.WorkoutDetails, error) {
 	var workoutDetails types.WorkoutDetails
 
 	//Get ID, starttime, duration, gymID and splitID

@@ -13,7 +13,7 @@ import (
 type WorkoutStore interface {
 	PostWorkout(postWorkout types.PostWorkout) error
 	GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error)
-	GetWorkoutDetails(userAccountID int, workoutID int) (types.WorkoutDetails, error)
+	GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (types.WorkoutDetails, error)
 	PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error
 	DeleteWorkout(userAccountID int, workoutID int) error
 	PatchEntireWorkouts(userAccountID int, workouts []types.Workout) error
@@ -33,7 +33,7 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 
 	r.Post("/", s.createWorkout())
 	r.Get("/", s.getWorkoutOverviews())
-	r.Get("/{workoutID}", s.getWorkoutDetails())
+	r.Get("/{workoutID}", s.getWorkoutDetailsFromWorkoutID())
 	r.Patch("/{workoutID}", s.patchWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
 	r.Patch("/sync", s.patchEntireWorkouts())
@@ -109,7 +109,7 @@ func (s service) getWorkoutOverviews() http.HandlerFunc {
 	}
 }
 
-func (s service) getWorkoutDetails() http.HandlerFunc {
+func (s service) getWorkoutDetailsFromWorkoutID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -125,7 +125,7 @@ func (s service) getWorkoutDetails() http.HandlerFunc {
 			return
 		}
 
-		workoutDetails, err := s.workoutStore.GetWorkoutDetails(claims.UserAccountID, workoutID)
+		workoutDetails, err := s.workoutStore.GetWorkoutDetailsFromWorkoutID(claims.UserAccountID, workoutID)
 		if err != nil {
 			http.Error(w, "Failed to get WorkoutDetails", http.StatusInternalServerError)
 			println(err.Error())

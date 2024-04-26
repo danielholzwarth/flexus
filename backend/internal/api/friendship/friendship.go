@@ -12,7 +12,7 @@ import (
 
 type FriendshipStore interface {
 	CreateFriendship(friendship types.Friendship) error
-	GetFriendship(requestorID int, requestedID int) (*types.Friendship, error)
+	GetFriendshipFromUserID(requestorID int, requestedID int) (*types.Friendship, error)
 	PatchFriendship(requestorID int, requestedID int, columnName string, value any) error
 	DeleteFriendship(requestorID int, requestedID int) error
 }
@@ -30,7 +30,7 @@ func NewService(friendshipStore FriendshipStore) http.Handler {
 	}
 
 	r.Post("/{userAccountID}", s.createFriendship())
-	r.Get("/{userAccountID}", s.getFriendship())
+	r.Get("/{userAccountID}", s.getFriendshipFromUserID())
 	r.Patch("/{userAccountID}", s.patchFriendship())
 	r.Delete("/{userAccountID}", s.deleteFriendship())
 
@@ -75,7 +75,7 @@ func (s service) createFriendship() http.HandlerFunc {
 	}
 }
 
-func (s service) getFriendship() http.HandlerFunc {
+func (s service) getFriendshipFromUserID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -91,7 +91,7 @@ func (s service) getFriendship() http.HandlerFunc {
 			return
 		}
 
-		friendship, err := s.friendshipStore.GetFriendship(claims.UserAccountID, requestedUserAccountID)
+		friendship, err := s.friendshipStore.GetFriendshipFromUserID(claims.UserAccountID, requestedUserAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get Friendship", http.StatusInternalServerError)
 			println(err.Error())

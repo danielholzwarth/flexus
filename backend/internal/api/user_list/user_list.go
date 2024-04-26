@@ -14,7 +14,7 @@ type UserListStore interface {
 	PostUserList(userAccountID int, columnName string) (int, error)
 	GetHasUserList(userAccountID int, listID int, userID int) (bool, error)
 	PatchUserList(userAccountID int, listID int, userID int) error
-	GetEntireUserList(userAccountID int, listID int) ([]int, error)
+	GetUserListFromListID(userAccountID int, listID int) ([]int, error)
 }
 
 type service struct {
@@ -32,7 +32,7 @@ func NewService(userListStore UserListStore) http.Handler {
 	r.Post("/", s.postUserList())
 	r.Get("/", s.getHasUserList())
 	r.Patch("/", s.patchUserList())
-	r.Get("/{listID}", s.getEntireUserList())
+	r.Get("/{listID}", s.getUserListFromListID())
 
 	return s
 }
@@ -225,7 +225,7 @@ func (s service) patchUserList() http.HandlerFunc {
 	}
 }
 
-func (s service) getEntireUserList() http.HandlerFunc {
+func (s service) getUserListFromListID() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -241,7 +241,7 @@ func (s service) getEntireUserList() http.HandlerFunc {
 			return
 		}
 
-		settings, err := s.userListStore.GetEntireUserList(claims.UserAccountID, listID)
+		settings, err := s.userListStore.GetUserListFromListID(claims.UserAccountID, listID)
 		if err != nil {
 			http.Error(w, "Failed to get availability", http.StatusInternalServerError)
 			println(err.Error())

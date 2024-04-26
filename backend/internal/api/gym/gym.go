@@ -11,7 +11,7 @@ import (
 
 type GymStore interface {
 	PostGym(userAccountID int, gym types.Gym) error
-	GetGymExists(name string, lat float64, lon float64) (bool, error)
+	GetGymExisting(name string, lat float64, lon float64) (bool, error)
 	GetGymsSearch(keyword string) ([]types.Gym, error)
 	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
 }
@@ -29,7 +29,7 @@ func NewService(gymStore GymStore) http.Handler {
 	}
 
 	r.Post("/", s.postGym())
-	r.Get("/exists", s.getGymExists())
+	r.Get("/exists", s.getGymExisting())
 	r.Get("/search", s.getGymsSearch())
 	r.Get("/overviews", s.getGymOverviews())
 
@@ -57,7 +57,6 @@ func (s service) postGym() http.HandlerFunc {
 			return
 		}
 
-		//Make check for other variables?
 		if requestBody.Name == "" {
 			http.Error(w, "Gym Name can not be empty", http.StatusBadRequest)
 			println("Gym Name can not be empty")
@@ -76,7 +75,7 @@ func (s service) postGym() http.HandlerFunc {
 	}
 }
 
-func (s service) getGymExists() http.HandlerFunc {
+func (s service) getGymExisting() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
 		if !ok {
@@ -100,7 +99,7 @@ func (s service) getGymExists() http.HandlerFunc {
 			return
 		}
 
-		exists, err := s.gymStore.GetGymExists(name, lat, lon)
+		exists, err := s.gymStore.GetGymExisting(name, lat, lon)
 		if err != nil {
 			http.Error(w, "Failed to get Gyms", http.StatusInternalServerError)
 			println(err.Error())

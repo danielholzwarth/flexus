@@ -38,7 +38,7 @@ final class _$GymService extends GymService {
   }
 
   @override
-  Future<Response<dynamic>> getGymsExisting(
+  Future<Response<dynamic>> getGymExisting(
     String flexusJWTString,
     String name,
     double lat,

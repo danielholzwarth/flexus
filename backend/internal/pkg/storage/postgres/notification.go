@@ -4,7 +4,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) GetNewUsersWorkingOut(userAccountID int) ([]types.NotificationNewUserWorkingOut, error) {
+func (db *DB) GetNewWorkoutNotifications(userAccountID int) ([]types.NotificationNewUserWorkingOut, error) {
 	var notifications []types.NotificationNewUserWorkingOut
 
 	query := `
