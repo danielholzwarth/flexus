@@ -406,7 +406,7 @@ class _GymPageState extends State<GymPage> {
         IconButton(
           icon: const FlexusDefaultIcon(iconData: Icons.add_business),
           onPressed: () async {
-            await showSearch(context: context, delegate: GymsCustomSearchDelegate());
+            await showSearch(context: context, delegate: GymSearchDelegate());
             gymBloc.add(GetGymOverviews());
           },
         ),

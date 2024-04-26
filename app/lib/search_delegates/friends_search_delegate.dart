@@ -7,11 +7,11 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FriendsCustomSearchDelegate extends SearchDelegate {
+class FriendSearchDelegate extends SearchDelegate {
   final bool? isFriend;
   final bool? hasRequest;
 
-  FriendsCustomSearchDelegate({
+  FriendSearchDelegate({
     this.isFriend,
     this.hasRequest,
   });

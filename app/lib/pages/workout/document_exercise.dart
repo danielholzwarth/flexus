@@ -68,7 +68,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> {
           text: exercise.id != 0 ? exercise.name : "Pick Exercise",
           fontColor: exercise.id != 0 ? AppSettings.font : AppSettings.primary,
           function: () async {
-            dynamic pickedExercise = await showSearch(context: context, delegate: ExerciseCustomSearchDelegate(isMultipleChoice: false));
+            dynamic pickedExercise = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
             if (pickedExercise != null) {
               setState(() {
                 exercise = pickedExercise;

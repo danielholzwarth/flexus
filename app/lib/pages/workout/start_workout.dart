@@ -70,7 +70,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           text: currentPlan != null ? currentPlan!.name : "Choose Plan",
           fontColor: currentPlan != null ? AppSettings.font : AppSettings.primary,
           function: () async {
-            dynamic result = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
+            dynamic result = await showSearch(context: context, delegate: PlanSearchDelegate());
             if (result != null) {
               currentSplit = null;
               setState(() {

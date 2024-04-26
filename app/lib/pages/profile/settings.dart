@@ -202,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () async {
                   if (AppSettings.hasConnection) {
                     if (userSettings.notifyUserListID != null) {
-                      await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.notifyUserListID!));
+                      await showSearch(context: context, delegate: UserListSearchDelegate(listID: userSettings.notifyUserListID!));
                       setState(() {});
                     } else {
                       ScaffoldMessenger.of(context).clearSnackBars();
@@ -308,7 +308,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () async {
                   if (AppSettings.hasConnection) {
                     if (userSettings.pullUserListID != null) {
-                      await showSearch(context: context, delegate: UserListCustomSearchDelegate(listID: userSettings.pullUserListID!));
+                      await showSearch(context: context, delegate: UserListSearchDelegate(listID: userSettings.pullUserListID!));
                       setState(() {});
                     } else {
                       ScaffoldMessenger.of(context).clearSnackBars();

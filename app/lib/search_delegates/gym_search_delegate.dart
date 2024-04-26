@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
-class GymsCustomSearchDelegate extends SearchDelegate {
+class GymSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   GymBloc searchGymBloc = GymBloc();
   bool isAddNew = false;

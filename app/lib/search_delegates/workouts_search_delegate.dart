@@ -7,10 +7,10 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class WorkoutsCustomSearchDelegate extends SearchDelegate {
+class WorkoutSearchDelegate extends SearchDelegate {
   final bool? isArchived;
 
-  WorkoutsCustomSearchDelegate({
+  WorkoutSearchDelegate({
     this.isArchived,
   });
 

@@ -135,7 +135,7 @@ class _FriendsPageState extends State<FriendsPage> {
         IconButton(
           icon: const FlexusDefaultIcon(iconData: Icons.search),
           onPressed: () async {
-            await showSearch(context: context, delegate: FriendsCustomSearchDelegate(isFriend: false, hasRequest: false));
+            await showSearch(context: context, delegate: FriendSearchDelegate(isFriend: false, hasRequest: false));
             userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
           },
         ),

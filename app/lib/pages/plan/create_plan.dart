@@ -362,7 +362,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                   onPressed: () async {
                     dynamic splitExercises = await showSearch(
                       context: context,
-                      delegate: ExerciseCustomSearchDelegate(oldCheckedItems: exerciseList[splitControllers[index].text] ?? []),
+                      delegate: ExerciseSearchDelegate(oldCheckedItems: exerciseList[splitControllers[index].text] ?? []),
                     );
                     if (splitExercises != null) {
                       exerciseList[splitControllers[index].text] = splitExercises;

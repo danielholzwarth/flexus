@@ -227,7 +227,7 @@ class _PlanPageState extends State<PlanPage> {
                                   onPressed: () async {
                                     dynamic pickedExercises = await showSearch(
                                         context: context,
-                                        delegate: ExerciseCustomSearchDelegate(oldCheckedItems: planOverview.splitOverviews[index].exercises));
+                                        delegate: ExerciseSearchDelegate(oldCheckedItems: planOverview.splitOverviews[index].exercises));
                                     if (pickedExercises != null) {
                                       List<Exercise> newExercises = pickedExercises;
                                       List<int> newExerciseIDs = [];
@@ -332,7 +332,7 @@ class _PlanPageState extends State<PlanPage> {
             switch (choice) {
               case "Select Plan":
               case "Change Plan":
-                dynamic newPlanDyn = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
+                dynamic newPlanDyn = await showSearch(context: context, delegate: PlanSearchDelegate());
                 if (newPlanDyn != null) {
                   Plan newPlan = newPlanDyn;
                   planBloc.add(PatchPlan(

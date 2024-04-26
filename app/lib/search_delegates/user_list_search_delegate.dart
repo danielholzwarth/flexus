@@ -7,10 +7,10 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserListCustomSearchDelegate extends SearchDelegate {
+class UserListSearchDelegate extends SearchDelegate {
   final int listID;
 
-  UserListCustomSearchDelegate({
+  UserListSearchDelegate({
     required this.listID,
   });
 

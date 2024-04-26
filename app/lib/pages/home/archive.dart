@@ -125,7 +125,7 @@ class _ArchivePageState extends State<ArchivePage> {
         IconButton(
           icon: const FlexusDefaultIcon(iconData: Icons.search),
           onPressed: () async {
-            await showSearch(context: context, delegate: WorkoutsCustomSearchDelegate(isArchived: true));
+            await showSearch(context: context, delegate: WorkoutSearchDelegate(isArchived: true));
             workoutBloc.add(GetSearchWorkout(isArchive: true));
           },
         ),
