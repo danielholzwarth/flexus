@@ -6,6 +6,7 @@ import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/home/archive.dart';
 import 'package:app/pages/profile/profile.dart';
 import 'package:app/pages/sign_in/login.dart';
+import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/pages/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
@@ -135,18 +136,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  FlexusFloatingActionButton buildFloatingActionButton(BuildContext context) {
-    return FlexusFloatingActionButton(
-      onPressed: () async {
-        Navigator.push(
-          context,
-          PageTransition(
-            type: PageTransitionType.fade,
-            child: const StartWorkoutPage(),
-          ),
-        );
+  Widget buildFloatingActionButton(BuildContext context) {
+    return BlocBuilder(
+      bloc: workoutBloc,
+      builder: (context, state) {
+        if (state is WorkoutLoaded) {
+          List<WorkoutOverview> overviews = state.workoutOverviews;
+          if (overviews.any((element) => element.workout.endtime == null)) {
+            return FlexusFloatingActionButton(
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const DocumentWorkoutPage(),
+                  ),
+                ).then((value) => workoutBloc.add(GetWorkout()));
+              },
+              icon: Icons.play_arrow,
+            );
+          } else {
+            return FlexusFloatingActionButton(
+              onPressed: () async {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const StartWorkoutPage(),
+                  ),
+                ).then((value) => workoutBloc.add(GetWorkout()));
+              },
+              icon: Icons.fitness_center,
+            );
+          }
+        } else {
+          return Container();
+        }
       },
-      icon: Icons.fitness_center,
     );
   }
 

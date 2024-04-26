@@ -40,17 +40,19 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: AppSettings.background,
-        onTap: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: ViewWorkoutPage(
-                workoutID: workout.id,
-              ),
-            ),
-          );
-        },
+        onTap: workout.endtime != null
+            ? () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft,
+                    child: ViewWorkoutPage(
+                      workoutID: workout.id,
+                    ),
+                  ),
+                );
+              }
+            : null,
         leading: buildDate(workout),
         title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),
@@ -121,16 +123,16 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
             ),
             workout.endtime != null
                 ? CustomDefaultTextStyle(
-                    text: "${DateFormat('HH:mm').format(workout.endtime!)} ",
+                    text: "- ${DateFormat('HH:mm').format(workout.endtime!)} ",
                     fontSize: AppSettings.fontSizeT2,
                   )
                 : workout.starttime.isBefore(DateTime.now())
                     ? CustomDefaultTextStyle(
-                        text: "(in progress)",
+                        text: "(in planning)",
                         fontSize: AppSettings.fontSizeT2,
                       )
                     : CustomDefaultTextStyle(
-                        text: "(in planning)",
+                        text: "(in progress)",
                         fontSize: AppSettings.fontSizeT2,
                       ),
             workout.endtime != null
