@@ -4,11 +4,11 @@ import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
+import 'package:app/search_delegates/split_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -75,7 +75,9 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           function: () async {
             dynamic result = await showSearch(context: context, delegate: PlanCustomSearchDelegate());
             if (result != null) {
-              currentPlan = result;
+              setState(() {
+                currentPlan = result;
+              });
             }
           },
           width: deviceSize.width * 0.9,
@@ -89,27 +91,23 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Today's Split"),
-        BlocBuilder(
-          bloc: splitBloc,
-          builder: (context, state) {
-            if (state is SplitsLoaded) {
-              return FlexusButton(
-                text: currentSplit != null ? currentSplit!.name : "Choose Split",
-                function: () {
-                  //Split Search Delegate
-                },
-                width: deviceSize.width * 0.9,
-              );
-            } else {
-              return FlexusButton(
-                text: "Local Split",
-                function: () {
-                  //Split Search Delegate
-                },
-                width: deviceSize.width * 0.9,
-              );
-            }
-          },
+        FlexusButton(
+          text: currentPlan != null
+              ? currentSplit != null
+                  ? currentSplit!.name
+                  : "Choose Split"
+              : "Choose Plan first",
+          function: currentPlan != null
+              ? () async {
+                  dynamic result = await showSearch(context: context, delegate: SplitSearchDelegate(planID: currentPlan!.id));
+                  if (result != null) {
+                    setState(() {
+                      currentSplit = result;
+                    });
+                  }
+                }
+              : () {},
+          width: deviceSize.width * 0.9,
         ),
       ],
     );

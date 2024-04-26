@@ -16,6 +16,12 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   void _onGetSplits(GetSplits event, Emitter<SplitState> emit) async {
     emit(SplitsLoading());
 
-    emit(SplitsLoading());
+    List<Split> splits = [
+      Split(id: 1, planID: 1, name: "name1", orderInPlan: 1),
+      Split(id: 2, planID: 2, name: "name2", orderInPlan: 2),
+      Split(id: 3, planID: 3, name: "name3", orderInPlan: 3),
+    ];
+
+    emit(SplitsLoaded(splits: splits));
   }
 }
