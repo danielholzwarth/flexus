@@ -18,7 +18,7 @@ final class _$SplitService extends SplitService {
   final Type definitionType = SplitService;
 
   @override
-  Future<Response<dynamic>> getSplits(
+  Future<Response<dynamic>> getSplitsFromPlanID(
     String flexusJWTString,
     int planID,
   ) {

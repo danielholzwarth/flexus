@@ -24,7 +24,7 @@ abstract class UserListService extends ChopperService {
   );
 
   @Get(path: '/{listID}')
-  Future<Response> getEntireUserList(
+  Future<Response> getUserListFromListID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('listID') int listID,
   );

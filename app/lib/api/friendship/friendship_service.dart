@@ -12,7 +12,7 @@ abstract class FriendshipService extends ChopperService {
   );
 
   @Get(path: '/{userAccountID}')
-  Future<Response> getFriendship(
+  Future<Response> getFriendshipFromUserID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('userAccountID') int userAccountID,
   );

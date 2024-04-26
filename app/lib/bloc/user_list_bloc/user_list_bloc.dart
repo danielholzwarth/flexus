@@ -74,7 +74,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
     List<int> userList = [];
 
     if (AppSettings.hasConnection) {
-      Response<dynamic> response = await userListService.getEntireUserList(userBox.get("flexusjwt"), event.listID);
+      Response<dynamic> response = await userListService.getUserListFromListID(userBox.get("flexusjwt"), event.listID);
 
       if (response.isSuccessful) {
         if (response.body != "null") {

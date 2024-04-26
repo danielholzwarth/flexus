@@ -54,7 +54,7 @@ void onStart(ServiceInstance serviceInstance) async {
     Box userBox = Hive.box("userBox");
     String flexusJWT = userBox.get("flexusjwt");
 
-    final response = await notificationService.fetchData(flexusJWT);
+    final response = await notificationService.getNewWorkoutNotifications(flexusJWT);
     List<noti.Notification> notifications = [];
 
     Duration timeZoneOffset = DateTime.now().timeZoneOffset;

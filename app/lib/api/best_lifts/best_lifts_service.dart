@@ -6,7 +6,7 @@ part 'best_lifts_service.chopper.dart';
 @ChopperApi(baseUrl: '/best_lifts')
 abstract class BestLiftsService extends ChopperService {
   @Get(path: '/{userAccountID}')
-  Future<Response> getBestLifts(
+  Future<Response> getBestLiftsFromUserID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('userAccountID') int userAccountID,
   );

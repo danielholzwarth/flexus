@@ -36,7 +36,7 @@ final class _$FriendshipService extends FriendshipService {
   }
 
   @override
-  Future<Response<dynamic>> getFriendship(
+  Future<Response<dynamic>> getFriendshipFromUserID(
     String flexusJWTString,
     int userAccountID,
   ) {

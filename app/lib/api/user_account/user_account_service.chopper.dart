@@ -18,7 +18,7 @@ final class _$UserAccountService extends UserAccountService {
   final Type definitionType = UserAccountService;
 
   @override
-  Future<Response<dynamic>> getUserAccount(
+  Future<Response<dynamic>> getUserAccountFromUserID(
     String flexusJWTString,
     int userAccountID,
   ) {
@@ -97,7 +97,7 @@ final class _$UserAccountService extends UserAccountService {
   }
 
   @override
-  Future<Response<dynamic>> getUserAccountsGym(
+  Future<Response<dynamic>> getUserAccountsFromGymID(
     String flexusJWTString,
     int gymID, {
     bool? isWorkingOut,

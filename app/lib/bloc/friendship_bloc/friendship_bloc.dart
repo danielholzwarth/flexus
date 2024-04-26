@@ -44,7 +44,7 @@ class FriendshipBloc extends Bloc<FriendshipEvent, FriendshipState> {
     emit(FriendshipLoading());
 
     if (AppSettings.hasConnection) {
-      final response = await _friendshipService.getFriendship(userBox.get("flexusjwt"), event.requestedID);
+      final response = await _friendshipService.getFriendshipFromUserID(userBox.get("flexusjwt"), event.requestedID);
 
       if (response.isSuccessful) {
         if (response.body != "null") {

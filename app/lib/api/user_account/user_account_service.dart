@@ -6,7 +6,7 @@ part 'user_account_service.chopper.dart';
 @ChopperApi(baseUrl: '/user_accounts')
 abstract class UserAccountService extends ChopperService {
   @Get(path: '/{userAccountID}')
-  Future<Response> getUserAccount(
+  Future<Response> getUserAccountFromUserID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('userAccountID') int userAccountID,
   );
@@ -31,7 +31,7 @@ abstract class UserAccountService extends ChopperService {
   });
 
   @Get(path: '/gym/{gymID}')
-  Future<Response> getUserAccountsGym(
+  Future<Response> getUserAccountsFromGymID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('gymID') int gymID, {
     @Query('isWorkingOut') bool? isWorkingOut,

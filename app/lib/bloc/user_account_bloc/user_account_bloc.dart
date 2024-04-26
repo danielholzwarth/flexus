@@ -27,7 +27,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     emit(UserAccountLoading());
 
     if (AppSettings.hasConnection) {
-      Response<dynamic> response = await _userAccountService.getUserAccount(userBox.get("flexusjwt"), event.userAccountID);
+      Response<dynamic> response = await _userAccountService.getUserAccountFromUserID(userBox.get("flexusjwt"), event.userAccountID);
 
       if (response.isSuccessful) {
         if (response.body != "null") {
@@ -167,7 +167,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccountsGym(GetUserAccountsGym event, Emitter<UserAccountState> emit) async {
     emit(UserAccountsLoading());
 
-    Response<dynamic> response = await _userAccountService.getUserAccountsGym(
+    Response<dynamic> response = await _userAccountService.getUserAccountsFromGymID(
       userBox.get("flexusjwt"),
       event.gymID,
       isWorkingOut: event.isWorkingOut,

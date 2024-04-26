@@ -18,7 +18,7 @@ final class _$BestLiftsService extends BestLiftsService {
   final Type definitionType = BestLiftsService;
 
   @override
-  Future<Response<dynamic>> getBestLifts(
+  Future<Response<dynamic>> getBestLiftsFromUserID(
     String flexusJWTString,
     int userAccountID,
   ) {

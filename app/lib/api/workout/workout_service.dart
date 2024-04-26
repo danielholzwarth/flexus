@@ -30,7 +30,7 @@ abstract class WorkoutService extends ChopperService {
   );
 
   @Get(path: '/{workoutID}')
-  Future<Response> getWorkoutDetails(
+  Future<Response> getWorkoutDetailsFromWorkoutID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('workoutID') int workoutID,
   );

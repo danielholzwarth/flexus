@@ -6,7 +6,7 @@ part 'notification_service.chopper.dart';
 @ChopperApi(baseUrl: '/notifications')
 abstract class NotificationService extends ChopperService {
   @Get(path: '/')
-  Future<Response> fetchData(
+  Future<Response> getNewWorkoutNotifications(
     @Header('flexusjwt') String flexusJWTString,
   );
 

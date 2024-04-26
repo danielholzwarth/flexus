@@ -121,7 +121,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetWorkoutDetails(GetWorkoutDetails event, Emitter<WorkoutState> emit) async {
     emit(WorkoutDetailsLoading());
 
-    final response = await _workoutService.getWorkoutDetails(userBox.get("flexusjwt"), event.workoutID);
+    final response = await _workoutService.getWorkoutDetailsFromWorkoutID(userBox.get("flexusjwt"), event.workoutID);
 
     if (response.isSuccessful) {
       if (response.body != "null") {

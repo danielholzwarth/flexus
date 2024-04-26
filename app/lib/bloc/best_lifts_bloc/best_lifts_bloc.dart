@@ -22,7 +22,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     List<BestLiftOverview> bestLiftOverviews = [];
 
     if (AppSettings.hasConnection) {
-      final response = await _bestLiftsService.getBestLifts(userBox.get("flexusjwt"), event.userAccountID);
+      final response = await _bestLiftsService.getBestLiftsFromUserID(userBox.get("flexusjwt"), event.userAccountID);
       if (response.isSuccessful) {
         if (response.body != "null" && response.body.isNotEmpty) {
           List<dynamic> jsonList = response.body;

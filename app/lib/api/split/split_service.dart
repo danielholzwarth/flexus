@@ -6,7 +6,7 @@ part 'split_service.chopper.dart';
 @ChopperApi(baseUrl: '/splits')
 abstract class SplitService extends ChopperService {
   @Get(path: '/{planID}')
-  Future<Response> getSplits(
+  Future<Response> getSplitsFromPlanID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('planID') int planID,
   );

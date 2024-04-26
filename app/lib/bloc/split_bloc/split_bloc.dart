@@ -20,7 +20,7 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   void _onGetSplits(GetSplits event, Emitter<SplitState> emit) async {
     emit(SplitsLoading());
 
-    Response<dynamic> response = await splitService.getSplits(userBox.get("flexusjwt"), event.planID);
+    Response<dynamic> response = await splitService.getSplitsFromPlanID(userBox.get("flexusjwt"), event.planID);
 
     if (response.isSuccessful) {
       List<Split> splits = [];

@@ -78,7 +78,7 @@ final class _$UserListService extends UserListService {
   }
 
   @override
-  Future<Response<dynamic>> getEntireUserList(
+  Future<Response<dynamic>> getUserListFromListID(
     String flexusJWTString,
     int listID,
   ) {

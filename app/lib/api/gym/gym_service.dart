@@ -12,7 +12,7 @@ abstract class GymService extends ChopperService {
   );
 
   @Get(path: '/exists')
-  Future<Response> getGym(
+  Future<Response> getGymsExisting(
     @Header('flexusjwt') String flexusJWTString,
     @Query('name') String name,
     @Query('lat') double lat,

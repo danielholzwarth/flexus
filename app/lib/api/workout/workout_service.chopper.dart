@@ -92,7 +92,7 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
-  Future<Response<dynamic>> getWorkoutDetails(
+  Future<Response<dynamic>> getWorkoutDetailsFromWorkoutID(
     String flexusJWTString,
     int workoutID,
   ) {
