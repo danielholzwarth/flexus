@@ -31,6 +31,15 @@ class GetGymsSearch extends GymEvent {
   });
 }
 
+class GetMyGyms extends GymEvent {
+  final String query;
+
+  GetMyGyms({
+    required this.query,
+  });
+}
+
+
 class GetGymOverviews extends GymEvent {}
 
 class DeleteGym extends GymEvent {

@@ -1,3 +1,4 @@
+import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_exercise.dart';
@@ -13,12 +14,14 @@ import 'package:page_transition/page_transition.dart';
 class DocumentWorkoutPage extends StatefulWidget {
   const DocumentWorkoutPage({
     super.key,
-    this.split,
+    this.gym,
     this.plan,
+    this.split,
   });
 
-  final Split? split;
+  final Gym? gym;
   final Plan? plan;
+  final Split? split;
 
   @override
   State<DocumentWorkoutPage> createState() => _DocumentWorkoutPageState();
@@ -33,15 +36,24 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   List<Widget> pages = [];
 
+  bool hasCurrentWorkout = true;
+
   @override
   void initState() {
-    if (widget.split != null) {
-      //Add pages for each exercise
+    if (hasCurrentWorkout) {
+      //Get Local Workout Data
     } else {
-      pages.add(const DocumentExercisePage(
-        exerciseID: null,
-        pageID: 1,
-      ));
+      if (widget.split != null) {
+        //Load exercises for split
+        //As soon as loaded display accordingly
+
+        //Add pages for each exercise
+      } else {
+        pages.add(const DocumentExercisePage(
+          exerciseID: null,
+          pageID: 1,
+        ));
+      }
     }
 
     super.initState();
@@ -74,7 +86,10 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           TextButton(
             onPressed: () {
               //Post and Finish Workout
-
+              
+              if (widget.gym != null) {
+                userBox.put("currentGym", widget.gym);
+              }
               if (widget.plan != null) {
                 userBox.put("currentPlan", widget.plan);
               }

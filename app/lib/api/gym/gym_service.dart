@@ -25,6 +25,12 @@ abstract class GymService extends ChopperService {
     @Query('keyword') String? keyword,
   });
 
+  @Get(path: '/')
+  Future<Response> getMyGyms(
+    @Header('flexusjwt') String flexusJWTString, {
+    @Query('keyword') String? keyword,
+  });
+
   @Get(path: '/overviews')
   Future<Response> getGymOverviews(
     @Header('flexusjwt') String flexusJWTString,

@@ -1,11 +1,14 @@
+import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/search_delegates/my_gym_search_delegate.dart';
 import 'package:app/search_delegates/plan_search_delegate.dart';
 import 'package:app/search_delegates/split_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -20,11 +23,13 @@ class StartWorkoutPage extends StatefulWidget {
 
 class _StartWorkoutPageState extends State<StartWorkoutPage> {
   final userBox = Hive.box('userBox');
+  Gym? currentGym;
   Plan? currentPlan;
   Split? currentSplit;
 
   @override
   void initState() {
+    currentGym = userBox.get("currentGym");
     currentPlan = userBox.get("currentPlan");
     currentSplit = userBox.get("currentSplit");
     super.initState();
@@ -43,6 +48,21 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         ),
         centerTitle: true,
         backgroundColor: AppSettings.background,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                currentGym = null;
+                currentPlan = null;
+                currentSplit = null;
+              });
+            },
+            icon: FlexusDefaultIcon(
+              iconData: Icons.restart_alt,
+              iconSize: AppSettings.fontSizeH3,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -50,14 +70,37 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              buildGym(context, deviceSize),
               buildPlan(context, deviceSize),
               buildSplit(context, deviceSize),
-              SizedBox(height: deviceSize.height * 0.35),
+              SizedBox(height: deviceSize.height * 0.2),
               buildBottom(context, deviceSize),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildGym(BuildContext context, Size deviceSize) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FlexusBasicTitle(deviceSize: deviceSize, text: "Gym"),
+        FlexusButton(
+          text: currentGym != null ? currentGym!.name : "Choose Gym",
+          fontColor: currentGym != null ? AppSettings.font : AppSettings.primary,
+          function: () async {
+            dynamic result = await showSearch(context: context, delegate: MyGymSearchDelegate());
+            if (result != null) {
+              setState(() {
+                currentGym = result;
+              });
+            }
+          },
+          width: deviceSize.width * 0.9,
+        ),
+      ],
     );
   }
 
@@ -128,7 +171,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: DocumentWorkoutPage(plan: currentPlan, split: currentSplit),
+                      child: DocumentWorkoutPage(gym: currentGym, plan: currentPlan, split: currentSplit),
                     ),
                   );
                 },
@@ -148,7 +191,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     context,
                     PageTransition(
                       type: PageTransitionType.fade,
-                      child: DocumentWorkoutPage(),
+                      child: const DocumentWorkoutPage(),
                     ),
                   );
                 },

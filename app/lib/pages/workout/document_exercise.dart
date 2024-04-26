@@ -22,7 +22,7 @@ class DocumentExercisePage extends StatefulWidget {
   State<DocumentExercisePage> createState() => _DocumentExercisePageState();
 }
 
-class _DocumentExercisePageState extends State<DocumentExercisePage> {
+class _DocumentExercisePageState extends State<DocumentExercisePage> with AutomaticKeepAliveClientMixin<DocumentExercisePage> {
   final userBox = Hive.box('userBox');
 
   final PageController pageController = PageController();
@@ -41,7 +41,11 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> {
   List<Map<String, TextEditingController>> setController = [];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     Size deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(

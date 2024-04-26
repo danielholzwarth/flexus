@@ -20,6 +20,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     on<PostGym>(_onPostGym);
     on<GetGym>(_onGetGym);
     on<GetGymsSearch>(_onGetGymsSearch);
+    on<GetMyGyms>(_onGetMyGyms);
     on<GetGymOverviews>(_onGetGymOverviews);
   }
 
@@ -47,6 +48,39 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     if (response.isSuccessful) {
       bool exists = response.body;
       emit(GymLoaded(exists: exists));
+    } else {
+      emit(GymError(error: response.error.toString()));
+    }
+  }
+
+  void _onGetMyGyms(GetMyGyms event, Emitter<GymState> emit) async {
+    emit(GymLoading());
+
+    final response = await _gymService.getMyGyms(userBox.get("flexusjwt"), keyword: event.query);
+
+    if (response.isSuccessful) {
+      List<Gym> gyms = [];
+      if (response.body != "null") {
+        final List<dynamic> jsonList = response.body;
+
+        for (final gymData in jsonList) {
+          final Gym gym = Gym(
+            id: gymData['id'],
+            name: gymData['name'],
+            streetName: gymData['streetName'],
+            houseNumber: gymData['houseNumber'],
+            zipCode: gymData['zipCode'],
+            cityName: gymData['cityName'],
+            latitude: gymData['latitude'],
+            longitude: gymData['longitude'],
+          );
+          gyms.add(gym);
+        }
+
+        emit(MyGymsLoaded(gyms: gyms));
+      } else {
+        emit(MyGymsLoaded(gyms: gyms));
+      }
     } else {
       emit(GymError(error: response.error.toString()));
     }

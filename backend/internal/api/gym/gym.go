@@ -13,6 +13,7 @@ type GymStore interface {
 	PostGym(userAccountID int, gym types.Gym) error
 	GetGymExisting(name string, lat float64, lon float64) (bool, error)
 	GetGymsSearch(keyword string) ([]types.Gym, error)
+	GetMyGyms(userAccountID int, keyword string) ([]types.Gym, error)
 	GetGymOverviews(userAccountID int) ([]types.GymOverview, error)
 }
 
@@ -30,6 +31,7 @@ func NewService(gymStore GymStore) http.Handler {
 
 	r.Post("/", s.postGym())
 	r.Get("/exists", s.getGymExisting())
+	r.Get("/", s.getMyGyms())
 	r.Get("/search", s.getGymsSearch())
 	r.Get("/overviews", s.getGymOverviews())
 
@@ -130,6 +132,36 @@ func (s service) getGymsSearch() http.HandlerFunc {
 		keyword := r.URL.Query().Get("keyword")
 
 		gyms, err := s.gymStore.GetGymsSearch(keyword)
+		if err != nil {
+			http.Error(w, "Failed to get Gyms", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(gyms)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) getMyGyms() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		keyword := r.URL.Query().Get("keyword")
+
+		gyms, err := s.gymStore.GetMyGyms(claims.UserAccountID, keyword)
 		if err != nil {
 			http.Error(w, "Failed to get Gyms", http.StatusInternalServerError)
 			println(err.Error())

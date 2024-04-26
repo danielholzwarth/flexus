@@ -17,8 +17,6 @@ class GymLoaded extends GymState {
   });
 }
 
-class GymsSearchLoading extends GymState {}
-
 class GymsSearchLoaded extends GymState {
   final List<Gym> gyms;
 
@@ -27,7 +25,13 @@ class GymsSearchLoaded extends GymState {
   });
 }
 
-class GymOverviewsLoading extends GymState {}
+class MyGymsLoaded extends GymState {
+  final List<Gym> gyms;
+
+  MyGymsLoaded({
+    required this.gyms,
+  });
+}
 
 class GymOverviewsLoaded extends GymState {
   final List<GymOverview> gymOverviews;

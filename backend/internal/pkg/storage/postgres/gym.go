@@ -73,6 +73,38 @@ func (db *DB) GetGymsSearch(keyword string) ([]types.Gym, error) {
 	return gyms, nil
 }
 
+func (db *DB) GetMyGyms(userAccountID int, keyword string) ([]types.Gym, error) {
+	var gyms []types.Gym
+
+	query := `
+        SELECT g.*
+        FROM gym g
+		JOIN user_account_gym uag ON uag.gym_id = g.id
+		WHERE (LOWER(name) LIKE '%' || LOWER($1) || '%')
+		AND uag.user_id = $2;
+    `
+
+	rows, err := db.pool.Query(query, keyword, userAccountID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var gym types.Gym
+
+		err := rows.Scan(&gym.ID, &gym.Name, &gym.StreetName, &gym.HouseNumber, &gym.ZipCode, &gym.CityName, &gym.Latitude, &gym.Longitude)
+		if err != nil {
+			return nil, err
+		}
+
+		gyms = append(gyms, gym)
+	}
+
+	return gyms, nil
+
+}
+
 func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 	var gymOverviews []types.GymOverview
 
