@@ -16,6 +16,12 @@ abstract class ExerciseService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Get(path: '/{splitID}')
+  Future<Response> getExercisesFromSplitID(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('splitID') int splitID,
+  );
+
   static ExerciseService create() {
     final client = ChopperClient(
         baseUrl: AppSettings.useIPv4 ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),

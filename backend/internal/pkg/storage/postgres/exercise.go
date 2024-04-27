@@ -67,3 +67,37 @@ func (db *DB) GetExercises(userAccountID int) ([]types.Exercise, error) {
 
 	return exercises, nil
 }
+
+func (db *DB) GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.Exercise, error) {
+	var exercises []types.Exercise
+
+	query := `
+        SELECT e.*
+        FROM exercise e
+		JOIN exercise_split es ON es.exercise_id = e.id
+		JOIN split s ON s.id = es.split_id
+		JOIN plan p ON p.id = s.plan_id
+		WHERE p.user_id = $1
+		AND s.id = $2
+		ORDER BY e.id ASC;
+    `
+
+	rows, err := db.pool.Query(query, userAccountID, splitID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var exercise types.Exercise
+
+		err := rows.Scan(&exercise.ID, &exercise.CreatorID, &exercise.Name, &exercise.TypeID)
+		if err != nil {
+			return nil, err
+		}
+
+		exercises = append(exercises, exercise)
+	}
+
+	return exercises, nil
+}

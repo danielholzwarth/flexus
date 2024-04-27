@@ -11,11 +11,11 @@ import 'package:hive/hive.dart';
 class DocumentExercisePage extends StatefulWidget {
   const DocumentExercisePage({
     super.key,
-    required this.exerciseID,
+    required this.exercise,
     required this.pageID,
   });
 
-  final int? exerciseID;
+  final Exercise? exercise;
   final int pageID;
 
   @override
@@ -24,8 +24,6 @@ class DocumentExercisePage extends StatefulWidget {
 
 class _DocumentExercisePageState extends State<DocumentExercisePage> with AutomaticKeepAliveClientMixin<DocumentExercisePage> {
   final userBox = Hive.box('userBox');
-
-  Exercise exercise = Exercise(id: 0, name: "", typeID: 0);
 
   bool isRepetition = false;
   final setsGoalController = TextEditingController();
@@ -36,8 +34,16 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
   int setCount = 0;
   List<Map<String, TextEditingController>> setController = [];
 
+  Exercise? _exercise;
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    _exercise = widget.exercise;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +71,13 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Exercise ${widget.pageID}"),
         FlexusButton(
-          text: exercise.id != 0 ? exercise.name : "Pick Exercise",
-          fontColor: exercise.id != 0 ? AppSettings.font : AppSettings.primary,
+          text: _exercise != null ? _exercise!.name : "Pick Exercise",
+          fontColor: _exercise != null ? AppSettings.font : AppSettings.primary,
           function: () async {
             dynamic pickedExercise = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
             if (pickedExercise != null) {
               setState(() {
-                exercise = pickedExercise;
+                _exercise = pickedExercise;
               });
             }
           },

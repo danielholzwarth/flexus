@@ -51,4 +51,22 @@ final class _$ExerciseService extends ExerciseService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getExercisesFromSplitID(
+    String flexusJWTString,
+    int splitID,
+  ) {
+    final Uri $url = Uri.parse('/exercises/${splitID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
 }

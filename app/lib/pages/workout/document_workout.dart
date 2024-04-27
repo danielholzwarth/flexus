@@ -1,3 +1,4 @@
+import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/split/split.dart';
@@ -7,7 +8,9 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -29,6 +32,7 @@ class DocumentWorkoutPage extends StatefulWidget {
 
 class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   final userBox = Hive.box('userBox');
+  final ExerciseBloc exerciseBloc = ExerciseBloc();
 
   final PageController pageController = PageController();
   int currentPageIndex = 0;
@@ -36,7 +40,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   List<Widget> pages = [];
 
-  bool hasCurrentWorkout = true;
+  bool hasCurrentWorkout = false;
 
   @override
   void initState() {
@@ -44,15 +48,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
       //Get Local Workout Data
     } else {
       if (widget.split != null) {
-        //Load exercises for split
-        //As soon as loaded display accordingly
-
-        //Add pages for each exercise
+        exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.split!.id));
       } else {
-        pages.add(const DocumentExercisePage(
-          exerciseID: null,
-          pageID: 1,
-        ));
+        pages.add(const DocumentExercisePage(exercise: null, pageID: 1));
       }
     }
 
@@ -66,19 +64,18 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
       appBar: AppBar(
         backgroundColor: AppSettings.background,
         title: CustomDefaultTextStyle(
-          text: "SplitName",
+          text: widget.split != null ? widget.split!.name : "Custom Workout",
           fontSize: AppSettings.fontSizeH3,
         ),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              debugPrint("adding new page ${pages.length + 1}");
-              pages.add(DocumentExercisePage(exerciseID: null, pageID: pages.length + 1));
+              pages.add(DocumentExercisePage(exercise: null, pageID: pages.length + 1));
               currentPageIndex = pages.length;
 
               setState(() {
-                pageController.jumpToPage(currentPageIndex);
+                pageController.animateToPage(currentPageIndex - 1, duration: Duration(seconds: 1), curve: Curves.easeInOut);
               });
             },
             icon: const FlexusDefaultIcon(iconData: Icons.add),
@@ -86,7 +83,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           TextButton(
             onPressed: () {
               //Post and Finish Workout
-              
+
               if (widget.gym != null) {
                 userBox.put("currentGym", widget.gym);
               }
@@ -102,14 +99,31 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           ),
         ],
       ),
-      body: PageView(
-        onPageChanged: (value) => {
-          setState(() {
-            currentPageIndex = value;
-          }),
+      body: BlocConsumer(
+        bloc: exerciseBloc,
+        listener: (context, state) {
+          if (state is ExercisesFromSplitIDLoaded) {
+            for (int i = 0; i <= state.exercises.length - 1; i++) {
+              pages.add(DocumentExercisePage(exercise: state.exercises[i], pageID: i + 1));
+            }
+          }
         },
-        controller: pageController,
-        children: pages,
+        builder: (context, state) {
+          if (state is ExercisesLoading) {
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+          } else {
+            return PageView(
+              scrollBehavior: const CupertinoScrollBehavior(),
+              onPageChanged: (value) => {
+                setState(() {
+                  currentPageIndex = value;
+                }),
+              },
+              controller: pageController,
+              children: pages,
+            );
+          }
+        },
       ),
       floatingActionButton: FlexusFloatingActionButton(
         icon: Icons.timer_outlined,
