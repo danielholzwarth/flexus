@@ -190,6 +190,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         text: "Start",
         function: () {
           workoutBloc.add(PostWorkout(gymID: currentGym?.id, splitID: currentSplit?.id, startTime: DateTime.now()));
+          userBox.put("hasCurrentWorkout", true);
         },
         backgroundColor: AppSettings.primary,
         fontColor: AppSettings.fontV1,

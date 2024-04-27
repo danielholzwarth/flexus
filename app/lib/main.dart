@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/hive/best_lift/best_lift.dart';
 import 'package:app/hive/best_lift/best_lift_overview.dart';
+import 'package:app/hive/exercise/current_exercise.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/friendship/friendship.dart';
 import 'package:app/hive/gym/gym.dart';
@@ -17,6 +18,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/hive/user_list/user_list.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
+import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/measurement.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
@@ -91,6 +93,8 @@ Future<void> initializeHive() async {
     if (!Hive.isAdapterRegistered(17)) Hive.registerAdapter(WorkoutDetailsAdapter());
     if (!Hive.isAdapterRegistered(18)) Hive.registerAdapter(MeasurementAdapter());
     if (!Hive.isAdapterRegistered(19)) Hive.registerAdapter(WorkoutSetAdapter());
+    if (!Hive.isAdapterRegistered(20)) Hive.registerAdapter(CurrentWorkoutAdapter());
+    if (!Hive.isAdapterRegistered(21)) Hive.registerAdapter(CurrentExerciseAdapter());
 
     if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {

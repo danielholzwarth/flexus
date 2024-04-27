@@ -1,7 +1,9 @@
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
+import 'package:app/hive/exercise/current_exercise.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/timer.dart';
 import 'package:app/resources/app_settings.dart';
@@ -40,17 +42,24 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   List<Widget> pages = [];
 
-  bool hasCurrentWorkout = false;
+  late CurrentWorkout currentWorkout;
 
   @override
   void initState() {
-    if (hasCurrentWorkout) {
-      //Get Local Workout Data
+    dynamic currentWorkoutDyn = userBox.get("currentWorkout");
+
+    if (currentWorkoutDyn != null) {
+      currentWorkout = currentWorkoutDyn;
+
+      for (int i = 0; i <= currentWorkout.exercises.length - 1; i++) {
+        pages.add(DocumentExercisePage(exercise: currentWorkout.exercises[i].exercise, pageID: i + 1));
+      }
     } else {
       if (widget.split != null) {
         exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.split!.id));
       } else {
         pages.add(const DocumentExercisePage(exercise: null, pageID: 1));
+        currentWorkout = CurrentWorkout(exercises: []);
       }
     }
 
@@ -93,6 +102,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               if (widget.split != null) {
                 userBox.put("currentSplit", widget.split);
               }
+
+              userBox.delete("currentWorkout");
+
               Navigator.pop(context);
             },
             child: const CustomDefaultTextStyle(text: "Finish"),
@@ -103,9 +115,14 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         bloc: exerciseBloc,
         listener: (context, state) {
           if (state is ExercisesFromSplitIDLoaded) {
+            List<CurrentExercise> currentExercises = [];
             for (int i = 0; i <= state.exercises.length - 1; i++) {
               pages.add(DocumentExercisePage(exercise: state.exercises[i], pageID: i + 1));
+              currentExercises.add(CurrentExercise(exercise: state.exercises[i], goal: "goalxgoal", measurements: []));
             }
+
+            currentWorkout = CurrentWorkout(gym: widget.gym, plan: widget.plan, split: widget.split, exercises: currentExercises);
+            userBox.put("currentWorkout", currentWorkout);
           }
         },
         builder: (context, state) {

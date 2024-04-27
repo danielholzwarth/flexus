@@ -330,7 +330,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       final response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
 
       if (response.isSuccessful) {
-        workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
+        WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
+        if (workoutOverview.workout.endtime == null) {
+          userBox.delete("currentWorkout");
+        }
+
+        workoutOverviews.remove(workoutOverview);
 
         userBox.put("workoutOverviews", workoutOverviews);
         workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
@@ -340,7 +345,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         emit(WorkoutError(error: response.error.toString()));
       }
     } else {
-      workoutOverviews.removeWhere((overview) => overview.workout.id == event.workoutID);
+      WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
+      if (workoutOverview.workout.endtime == null) {
+        userBox.delete("currentWorkout");
+      }
+
+      workoutOverviews.remove(workoutOverview);
 
       userBox.put("workoutOverviews", workoutOverviews);
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
