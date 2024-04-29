@@ -1,6 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
+import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -35,11 +36,11 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
     final workout = widget.workoutOverview.workout;
 
     return Slidable(
-      startActionPane: buildStartActionPane(workout),
-      endActionPane: buildEndActionPane(workout),
+      startActionPane: workout.endtime != null ? buildStartActionPane(workout) : null,
+      endActionPane: true ? buildEndActionPane(workout) : null,
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
-        tileColor: AppSettings.background,
+        tileColor: workout.endtime != null ? AppSettings.background : AppSettings.primaryShade48,
         onTap: workout.endtime != null
             ? () {
                 Navigator.push(
@@ -52,7 +53,15 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                   ),
                 );
               }
-            : null,
+            : () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const DocumentWorkoutPage(),
+                  ),
+                );
+              },
         leading: buildDate(workout),
         title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),
