@@ -9,6 +9,7 @@ import 'package:app/hive/friendship/friendship.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/hive/notification/notification.dart';
+import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/hive/set/workout_set.dart';
@@ -95,6 +96,7 @@ Future<void> initializeHive() async {
     if (!Hive.isAdapterRegistered(19)) Hive.registerAdapter(WorkoutSetAdapter());
     if (!Hive.isAdapterRegistered(20)) Hive.registerAdapter(CurrentWorkoutAdapter());
     if (!Hive.isAdapterRegistered(21)) Hive.registerAdapter(CurrentExerciseAdapter());
+    if (!Hive.isAdapterRegistered(22)) Hive.registerAdapter(CurrentPlanAdapter());
 
     if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {
