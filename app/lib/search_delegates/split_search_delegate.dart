@@ -1,4 +1,6 @@
 import 'package:app/bloc/split_bloc/split_bloc.dart';
+import 'package:app/hive/plan/current_plan.dart';
+import 'package:app/hive/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_split_list_tile.dart';
@@ -8,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplitSearchDelegate extends SearchDelegate {
-  final int planID;
+  final Plan plan;
 
   SplitSearchDelegate({
-    required this.planID,
+    required this.plan,
   });
 
   ScrollController scrollController = ScrollController();
@@ -59,7 +61,7 @@ class SplitSearchDelegate extends SearchDelegate {
 
   Widget buildSearchResults(BuildContext context) {
     if (!isLoaded) {
-      splitBloc.add(GetSplits(planID: planID));
+      splitBloc.add(GetSplits(planID: plan.id));
       isLoaded = true;
     }
 
@@ -72,6 +74,7 @@ class SplitSearchDelegate extends SearchDelegate {
         builder: (context, state) {
           if (state is SplitsLoaded) {
             if (state.splits.isNotEmpty) {
+              state.splits.sort((a, b) => a.id.compareTo(b.id));
               return Scaffold(
                 backgroundColor: AppSettings.background,
                 body: FlexusScrollBar(
@@ -83,7 +86,7 @@ class SplitSearchDelegate extends SearchDelegate {
                         onPressed: () {
                           close(
                             context,
-                            state.splits[index],
+                            CurrentPlan(plan: plan, currentSplit: index, splits: state.splits),
                           );
                         },
                         title: state.splits[index].name,

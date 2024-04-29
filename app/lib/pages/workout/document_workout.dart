@@ -1,8 +1,8 @@
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/hive/exercise/current_exercise.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
-import 'package:app/hive/plan/plan.dart';
-import 'package:app/hive/split/split.dart';
+import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/timer.dart';
@@ -20,13 +20,11 @@ class DocumentWorkoutPage extends StatefulWidget {
   const DocumentWorkoutPage({
     super.key,
     this.gym,
-    this.plan,
-    this.split,
+    this.currentPlan,
   });
 
   final Gym? gym;
-  final Plan? plan;
-  final Split? split;
+  final CurrentPlan? currentPlan;
 
   @override
   State<DocumentWorkoutPage> createState() => _DocumentWorkoutPageState();
@@ -38,28 +36,34 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   final PageController pageController = PageController();
   int currentPageIndex = 0;
-  int exerciseLength = 4;
 
-  List<Widget> pages = [];
+  List<Widget> pages = List.empty(growable: true);
 
-  late CurrentWorkout currentWorkout;
+  CurrentWorkout? currentWorkout;
 
   @override
   void initState() {
-    dynamic currentWorkoutDyn = userBox.get("currentWorkout");
+    CurrentWorkout? workout = userBox.get("currentWorkout");
 
-    if (currentWorkoutDyn != null) {
-      currentWorkout = currentWorkoutDyn;
+    if (workout != null) {
+      currentWorkout = workout;
 
-      for (int i = 0; i <= currentWorkout.exercises.length - 1; i++) {
-        pages.add(DocumentExercisePage(exercise: currentWorkout.exercises[i].exercise, pageID: i + 1));
+      for (int i = 0; i <= currentWorkout!.exercises.length - 1; i++) {
+        pages.add(DocumentExercisePage(pageID: i + 1));
       }
     } else {
-      if (widget.split != null) {
-        exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.split!.id));
+      if (widget.currentPlan != null) {
+        if (widget.currentPlan!.splits.isNotEmpty) {
+          exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id));
+        } else {
+          pages.add(const DocumentExercisePage(pageID: 1));
+          currentWorkout = CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), goal: "", measurements: [])]);
+          userBox.put("currentWorkout", currentWorkout);
+        }
       } else {
-        pages.add(const DocumentExercisePage(exercise: null, pageID: 1));
-        currentWorkout = CurrentWorkout(exercises: []);
+        pages.add(const DocumentExercisePage(pageID: 1));
+        currentWorkout = CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), goal: "", measurements: [])]);
+        userBox.put("currentWorkout", currentWorkout);
       }
     }
 
@@ -73,18 +77,25 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
       appBar: AppBar(
         backgroundColor: AppSettings.background,
         title: CustomDefaultTextStyle(
-          text: widget.split != null ? widget.split!.name : "Custom Workout",
+          text: getPlanName(),
           fontSize: AppSettings.fontSizeH3,
         ),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
-              pages.add(DocumentExercisePage(exercise: null, pageID: pages.length + 1));
-              currentPageIndex = pages.length;
+              pages.add(DocumentExercisePage(pageID: pages.length + 1));
+
+              if (currentWorkout != null) {
+                currentWorkout!.exercises.add(CurrentExercise(
+                  exercise: Exercise(id: 0, name: "", typeID: 0),
+                  goal: "goalxgoal",
+                  measurements: [],
+                ));
+              }
 
               setState(() {
-                pageController.animateToPage(currentPageIndex - 1, duration: Duration(seconds: 1), curve: Curves.easeInOut);
+                pageController.animateToPage(pages.length - 1, duration: const Duration(seconds: 1), curve: Curves.easeInOut);
               });
             },
             icon: const FlexusDefaultIcon(iconData: Icons.add),
@@ -96,13 +107,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               if (widget.gym != null) {
                 userBox.put("currentGym", widget.gym);
               }
-              if (widget.plan != null) {
-                userBox.put("currentPlan", widget.plan);
+              if (widget.currentPlan != null) {
+                userBox.put("currentPlan", widget.currentPlan);
               }
-              if (widget.split != null) {
-                userBox.put("currentSplit", widget.split);
-              }
-
               userBox.delete("currentWorkout");
 
               Navigator.pop(context);
@@ -116,12 +123,23 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         listener: (context, state) {
           if (state is ExercisesFromSplitIDLoaded) {
             List<CurrentExercise> currentExercises = [];
-            for (int i = 0; i <= state.exercises.length - 1; i++) {
-              pages.add(DocumentExercisePage(exercise: state.exercises[i], pageID: i + 1));
-              currentExercises.add(CurrentExercise(exercise: state.exercises[i], goal: "goalxgoal", measurements: []));
+
+            if (state.exercises.isNotEmpty) {
+              for (int i = 0; i <= state.exercises.length - 1; i++) {
+                pages.add(DocumentExercisePage(pageID: i + 1));
+                currentExercises.add(CurrentExercise(exercise: state.exercises[i], goal: "goalxgoal", measurements: []));
+              }
+            } else {
+              pages.add(const DocumentExercisePage(pageID: 1));
             }
 
-            currentWorkout = CurrentWorkout(gym: widget.gym, plan: widget.plan, split: widget.split, exercises: currentExercises);
+            currentWorkout = CurrentWorkout(
+              gym: widget.gym,
+              plan: widget.currentPlan?.plan,
+              split: widget.currentPlan != null ? widget.currentPlan!.splits[widget.currentPlan!.currentSplit] : null,
+              exercises: currentExercises,
+            );
+
             userBox.put("currentWorkout", currentWorkout);
           }
         },
@@ -142,20 +160,37 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           }
         },
       ),
-      floatingActionButton: FlexusFloatingActionButton(
-        icon: Icons.timer_outlined,
-        onPressed: () async {
-          dynamic result = await Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: const TimerPage(),
-            ),
-          );
-
-          debugPrint("Timer value: $result");
-        },
-      ),
+      floatingActionButton: buildFloatingActionButton(),
     );
+  }
+
+  Widget buildFloatingActionButton() {
+    return FlexusFloatingActionButton(
+      icon: Icons.timer_outlined,
+      onPressed: () async {
+        dynamic result = await Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const TimerPage(),
+          ),
+        );
+
+        debugPrint("Timer value: $result");
+      },
+    );
+  }
+
+  String getPlanName() {
+    if (widget.currentPlan != null) {
+      if (widget.currentPlan!.splits.isNotEmpty) {
+        return widget.currentPlan!.splits[widget.currentPlan!.currentSplit].name;
+      }
+    } else if (currentWorkout != null) {
+      if (currentWorkout!.split != null) {
+        return currentWorkout!.split!.name;
+      }
+    }
+    return "Custom Workout";
   }
 }

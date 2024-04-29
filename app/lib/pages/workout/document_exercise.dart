@@ -1,4 +1,6 @@
-import 'package:app/hive/exercise/exercise.dart';
+import 'package:app/hive/exercise/current_exercise.dart';
+import 'package:app/hive/workout/current_workout.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
@@ -11,11 +13,9 @@ import 'package:hive/hive.dart';
 class DocumentExercisePage extends StatefulWidget {
   const DocumentExercisePage({
     super.key,
-    required this.exercise,
     required this.pageID,
   });
 
-  final Exercise? exercise;
   final int pageID;
 
   @override
@@ -34,20 +34,20 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
   int setCount = 0;
   List<Map<String, TextEditingController>> setController = [];
 
-  Exercise? _exercise;
+  CurrentExercise? currentExercise;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    _exercise = widget.exercise;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+    if (currentWorkout != null) {
+      currentExercise = currentWorkout.exercises[widget.pageID - 1];
+    }
+
     Size deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -71,14 +71,26 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Exercise ${widget.pageID}"),
         FlexusButton(
-          text: _exercise != null ? _exercise!.name : "Pick Exercise",
-          fontColor: _exercise != null ? AppSettings.font : AppSettings.primary,
+          text: currentExercise != null
+              ? currentExercise!.exercise.id != 0
+                  ? currentExercise!.exercise.name
+                  : "Pick Exercise"
+              : "Pick Exercise",
+          fontColor: currentExercise != null
+              ? currentExercise!.exercise.id != 0
+                  ? AppSettings.font
+                  : AppSettings.primary
+              : AppSettings.primary,
           function: () async {
             dynamic pickedExercise = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
             if (pickedExercise != null) {
-              setState(() {
-                _exercise = pickedExercise;
-              });
+              //Get Full Details of Exercise
+              if (currentExercise != null) {
+                currentExercise!.exercise = pickedExercise;
+              } else {
+                currentExercise = CurrentExercise(exercise: pickedExercise, goal: "goal", measurements: []);
+              }
+              setState(() {});
             }
           },
           width: deviceSize.width * 0.9,
@@ -210,6 +222,13 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
               "weight": TextEditingController(),
               "duration": TextEditingController(),
             });
+
+            // if (currentExercise != null) {
+            currentExercise!.measurements.add(Measurement(repetitions: 0, workload: 0));
+            // } else {
+            //   currentExercise = CurrentExercise(exercise: exercise, goal: goal, measurements: measurements)
+            // }
+
             setState(() {
               setCount += 1;
             });

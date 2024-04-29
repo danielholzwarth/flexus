@@ -1,7 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/gym/gym.dart';
-import 'package:app/hive/plan/plan.dart';
-import 'package:app/hive/split/split.dart';
+import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/my_gym_search_delegate.dart';
@@ -28,15 +27,19 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
   final WorkoutBloc workoutBloc = WorkoutBloc();
 
   Gym? currentGym;
-  Plan? currentPlan;
-  Split? currentSplit;
+  CurrentPlan? currentPlan;
 
   @override
   void initState() {
     currentGym = userBox.get("currentGym");
     currentPlan = userBox.get("currentPlan");
-    currentSplit = userBox.get("currentSplit");
-
+    if (currentPlan != null) {
+      if (currentPlan!.currentSplit == currentPlan!.splits.length - 1) {
+        currentPlan!.currentSplit = 0;
+      } else {
+        currentPlan!.currentSplit += 1;
+      }
+    }
     super.initState();
   }
 
@@ -51,11 +54,17 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         bloc: workoutBloc,
         listener: (context, state) {
           if (state is WorkoutCreated) {
+            userBox.put("currentGym", currentGym);
+            userBox.put("currentPlan", currentPlan);
+
             Navigator.pushReplacement(
               context,
               PageTransition(
                 type: PageTransitionType.fade,
-                child: DocumentWorkoutPage(gym: currentGym, plan: currentPlan, split: currentSplit),
+                child: DocumentWorkoutPage(
+                  gym: currentGym,
+                  currentPlan: currentPlan,
+                ),
               ),
             );
           }
@@ -99,7 +108,6 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
             setState(() {
               currentGym = null;
               currentPlan = null;
-              currentSplit = null;
             });
           },
           icon: FlexusDefaultIcon(
@@ -139,15 +147,18 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Plan Name"),
         FlexusButton(
-          text: currentPlan != null ? currentPlan!.name : "Choose Plan",
+          text: currentPlan != null ? currentPlan!.plan.name : "Choose Plan",
           fontColor: currentPlan != null ? AppSettings.font : AppSettings.primary,
           function: () async {
             dynamic result = await showSearch(context: context, delegate: PlanSearchDelegate());
             if (result != null) {
-              currentSplit = null;
-              setState(() {
-                currentPlan = result;
-              });
+              if (currentPlan != null) {
+                currentPlan!.plan = result;
+                currentPlan!.splits = [];
+              } else {
+                currentPlan = CurrentPlan(plan: result, currentSplit: 0, splits: []);
+              }
+              setState(() {});
             }
           },
           width: deviceSize.width * 0.9,
@@ -163,17 +174,17 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         FlexusBasicTitle(deviceSize: deviceSize, text: "Today's Split"),
         FlexusButton(
           text: currentPlan != null
-              ? currentSplit != null
-                  ? currentSplit!.name
+              ? currentPlan!.splits.isNotEmpty
+                  ? currentPlan!.splits[currentPlan!.currentSplit].name
                   : "Choose Split"
               : "Choose Plan first",
-          fontColor: currentSplit != null ? AppSettings.font : AppSettings.primary,
+          fontColor: currentPlan != null && currentPlan!.splits.isNotEmpty ? AppSettings.font : AppSettings.primary,
           function: currentPlan != null
               ? () async {
-                  dynamic result = await showSearch(context: context, delegate: SplitSearchDelegate(planID: currentPlan!.id));
+                  dynamic result = await showSearch(context: context, delegate: SplitSearchDelegate(plan: currentPlan!.plan));
                   if (result != null) {
                     setState(() {
-                      currentSplit = result;
+                      currentPlan = result;
                     });
                   }
                 }
@@ -189,8 +200,15 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       child: FlexusButton(
         text: "Start",
         function: () {
-          workoutBloc.add(PostWorkout(gymID: currentGym?.id, splitID: currentSplit?.id, startTime: DateTime.now()));
-          userBox.put("hasCurrentWorkout", true);
+          workoutBloc.add(PostWorkout(
+            gymID: currentGym?.id,
+            splitID: currentPlan != null
+                ? currentPlan!.splits.isNotEmpty
+                    ? currentPlan!.splits[currentPlan!.currentSplit].id
+                    : null
+                : null,
+            startTime: DateTime.now(),
+          ));
         },
         backgroundColor: AppSettings.primary,
         fontColor: AppSettings.fontV1,
