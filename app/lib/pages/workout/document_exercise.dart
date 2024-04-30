@@ -4,9 +4,10 @@ import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
-import 'package:app/widgets/flexus_textfield.dart';
+import 'package:app/widgets/flexus_table_textfield.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
+import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -70,9 +71,8 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
         child: Column(
           children: [
             buildExercise(context, deviceSize),
-            buildGoal(deviceSize),
-            SizedBox(height: deviceSize.height * 0.05),
-            buildSets(deviceSize),
+            currentExercise != null && currentExercise!.exercise.id != 0 ? buildGoal(deviceSize) : Container(),
+            currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
           ],
         ),
       ),
@@ -114,189 +114,318 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
   }
 
   Widget buildGoal(Size deviceSize) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FlexusBasicTitle(deviceSize: deviceSize, text: "Goal"),
-          currentExercise!.exercise.typeID == 1
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FlexusTextField(
-                      hintText: "Sets",
-                      textController: setsGoalController,
-                      width: deviceSize.width * 0.25,
-                      textInputType: TextInputType.number,
-                      onChanged: (String newValue) {
-                        setState(() {});
-                      },
-                    ),
-                    FlexusTextField(
-                      hintText: "Reps",
-                      textController: repsGoalController,
-                      width: deviceSize.width * 0.25,
-                      textInputType: TextInputType.number,
-                      onChanged: (String newValue) {
-                        setState(() {});
-                      },
-                    ),
-                    FlexusTextField(
-                      hintText: "Weigth",
-                      textController: weightGoalController,
-                      width: deviceSize.width * 0.25,
-                      textInputType: TextInputType.number,
-                      onChanged: (String newValue) {
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FlexusTextField(
-                      hintText: "Sets",
-                      textController: setsGoalController,
-                      width: deviceSize.width * 0.4,
-                      textInputType: TextInputType.number,
-                      onChanged: (String newValue) {
-                        setState(() {});
-                      },
-                    ),
-                    FlexusTextField(
-                      hintText: "Duration",
-                      textController: durationGoalController,
-                      width: deviceSize.width * 0.4,
-                      textInputType: TextInputType.number,
-                      onChanged: (String newValue) {
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ExpansionTile(
+          initiallyExpanded: true,
+          tilePadding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+          shape: InputBorder.none,
+          title: FlexusBasicTitle(
+            deviceSize: deviceSize,
+            text: "Last workout",
+            hasPadding: true,
+          ),
+          children: [
+            currentExercise!.exercise.typeID == 1
+                ? DataTable(
+                    columns: const [
+                      DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                      DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
+                      DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                    ],
+                    rows: [
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Set 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Reps 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "WL 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Set 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Reps 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "WL 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Set 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "Reps 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "WL 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : DataTable(
+                    columns: const [
+                      DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                      DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                    ],
+                    rows: [
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            FlexusTableTextField(
+                              hintText: "Sets",
+                              textAlign: TextAlign.left,
+                              textController: setsGoalController,
+                              textInputType: TextInputType.number,
+                              onChanged: (String newValue) {},
+                            ),
+                          ),
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: const CustomDefaultTextStyle(
+                                text: "WL 1",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget buildSets(Size deviceSize) {
     if (currentExercise != null && currentExercise!.measurements.isNotEmpty) {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  FlexusBasicTitle(deviceSize: deviceSize, text: "Set X"),
-                  currentExercise!.exercise.typeID == 1
-                      ? Row(
-                          children: [
-                            FlexusTextField(
-                              hintText: "Reps",
-                              textController: setController[i]["reps"]!,
-                              width: deviceSize.width * 0.25,
-                              textInputType: TextInputType.number,
-                              onChanged: (String newValue) {
-                                setState(() {});
-                              },
-                            ),
-                            FlexusTextField(
-                              hintText: "Weigth",
-                              textController: setController[i]["weight"]!,
-                              width: deviceSize.width * 0.25,
-                              textInputType: TextInputType.number,
-                              onChanged: (String newValue) {
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        )
-                      : FlexusTextField(
-                          hintText: "Duration",
-                          textController: setController[i]["duration"]!,
-                          width: deviceSize.width * 0.4,
-                          textInputType: TextInputType.number,
-                          onChanged: (String newValue) {
-                            setState(() {});
-                          },
-                        ),
-                ],
-              ),
-            ),
-          SizedBox(height: deviceSize.height * 0.02),
-          IconButton(
-            onPressed: () {
-              if (currentExercise != null) {
-                if (currentExercise!.exercise.typeID == 1) {
-                  setController.add({
-                    "reps": TextEditingController(),
-                    "weight": TextEditingController(),
-                  });
-                } else {
-                  setController.add({
-                    "duration": TextEditingController(),
-                  });
-                }
-
-                currentExercise!.measurements.add(Measurement(repetitions: 0, workload: 0));
-
-                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
-                if (currentWorkout != null) {
-                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
-                }
-                userBox.put("currentWorkout", currentWorkout);
-
-                setState(() {});
-              } else {
-                print("pick exercise first");
-              }
-            },
-            icon: FlexusDefaultIcon(
-              iconData: Icons.add,
-              iconColor: AppSettings.primary,
-              iconSize: AppSettings.fontSizeH2,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
+            child: FlexusBasicTitle(
+              deviceSize: deviceSize,
+              text: "Current Workout",
+              hasPadding: true,
             ),
           ),
+          currentExercise!.exercise.typeID == 1
+              ? DataTable(
+                  columns: const [
+                    DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                  ],
+                  rows: [
+                    for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: CustomDefaultTextStyle(
+                                text: "Set ${i + 1}",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            FlexusTableTextField(
+                              hintText: "Reps",
+                              textAlign: TextAlign.left,
+                              textController: setController[i]["reps"]!,
+                              textInputType: TextInputType.number,
+                              onChanged: (String newValue) {
+                                currentExercise!.measurements[i].repetitions = int.tryParse(newValue) ?? 0;
+
+                                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                if (currentWorkout != null) {
+                                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                  userBox.put("currentWorkout", currentWorkout);
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          DataCell(
+                            FlexusTableTextField(
+                              hintText: "Workload",
+                              textAlign: TextAlign.left,
+                              textController: setController[i]["weight"]!,
+                              textInputType: TextInputType.number,
+                              onChanged: (String newValue) {
+                                currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
+
+                                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                if (currentWorkout != null) {
+                                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                  userBox.put("currentWorkout", currentWorkout);
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                )
+              : DataTable(
+                  columns: const [
+                    DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                  ],
+                  rows: [
+                    for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: deviceSize.width * 0.15,
+                              child: CustomDefaultTextStyle(
+                                text: "Set ${i + 1}",
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            FlexusTableTextField(
+                              hintText: "Workload",
+                              textController: setController[i]["duration"]!,
+                              textInputType: TextInputType.number,
+                              onChanged: (String newValue) {
+                                currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
+
+                                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                if (currentWorkout != null) {
+                                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                  userBox.put("currentWorkout", currentWorkout);
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+          SizedBox(height: deviceSize.height * 0.02),
+          buildAddButton(),
+          SizedBox(height: deviceSize.height * 0.15),
         ],
       );
     } else {
-      return IconButton(
-        onPressed: () {
-          if (currentExercise != null) {
-            if (currentExercise!.exercise.typeID == 1) {
-              setController.add({
-                "reps": TextEditingController(),
-                "weight": TextEditingController(),
-              });
-            } else {
-              setController.add({
-                "duration": TextEditingController(),
-              });
-            }
-
-            currentExercise!.measurements.add(Measurement(repetitions: 0, workload: 0));
-
-            CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
-            if (currentWorkout != null) {
-              currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
-            }
-
-            setState(() {});
-          } else {
-            print("pick exercise first");
-          }
-        },
-        icon: FlexusDefaultIcon(
-          iconData: Icons.add,
-          iconColor: AppSettings.primary,
-          iconSize: AppSettings.fontSizeH2,
-        ),
-      );
+      return buildAddButton();
     }
+  }
+
+  Widget buildAddButton() {
+    return IconButton(
+      onPressed: () {
+        if (currentExercise != null) {
+          if (currentExercise!.exercise.typeID == 1) {
+            setController.add({
+              "reps": TextEditingController(),
+              "weight": TextEditingController(),
+            });
+          } else {
+            setController.add({
+              "duration": TextEditingController(),
+            });
+          }
+
+          currentExercise!.measurements.add(Measurement(repetitions: 0, workload: 0));
+
+          CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+          if (currentWorkout != null) {
+            currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+            userBox.put("currentWorkout", currentWorkout);
+          }
+
+          setState(() {});
+        } else {
+          print("pick exercise first");
+        }
+      },
+      icon: FlexusDefaultIcon(
+        iconData: Icons.add,
+        iconColor: AppSettings.primary,
+        iconSize: AppSettings.fontSizeH2,
+      ),
+    );
   }
 }

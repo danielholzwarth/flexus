@@ -37,6 +37,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
 
     return Slidable(
       startActionPane: workout.endtime != null ? buildStartActionPane(workout) : null,
+      //  endActionPane: workout.endtime != null ? buildEndActionPane(workout) : null,
       endActionPane: true ? buildEndActionPane(workout) : null,
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
