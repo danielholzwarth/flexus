@@ -1,4 +1,6 @@
+import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/hive/exercise/current_exercise.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
@@ -9,6 +11,7 @@ import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 
 class DocumentExercisePage extends StatefulWidget {
@@ -25,6 +28,8 @@ class DocumentExercisePage extends StatefulWidget {
 
 class _DocumentExercisePageState extends State<DocumentExercisePage> with AutomaticKeepAliveClientMixin<DocumentExercisePage> {
   final userBox = Hive.box('userBox');
+
+  final ExerciseBloc exerciseBloc = ExerciseBloc();
 
   final setsGoalController = TextEditingController();
   final repsGoalController = TextEditingController();
@@ -68,12 +73,31 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     return Scaffold(
       backgroundColor: AppSettings.background,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildExercise(context, deviceSize),
-            currentExercise != null && currentExercise!.exercise.id != 0 ? buildGoal(deviceSize) : Container(),
-            currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
-          ],
+        child: BlocConsumer(
+          bloc: exerciseBloc,
+          listener: (context, state) {
+            if (state is ExerciseFromExerciseIDLoaded) {
+              if (currentExercise != null) {
+                currentExercise = state.currentExercise;
+
+                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                if (currentWorkout != null) {
+                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                  userBox.put("currentWorkout", currentWorkout);
+                }
+              }
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                buildExercise(context, deviceSize),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildGoal(deviceSize) : Container(),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -98,11 +122,14 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           function: () async {
             dynamic pickedExercise = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
             if (pickedExercise != null) {
-              //Get Full Details of Exercise
               if (currentExercise != null) {
-                currentExercise!.exercise = pickedExercise;
+                if (currentExercise!.exercise != pickedExercise) {
+                  Exercise ex = pickedExercise;
+                  exerciseBloc.add(GetExerciseFromExerciseID(exerciseID: ex.id));
+                }
               } else {
-                currentExercise = CurrentExercise(exercise: pickedExercise, oldMeasurements: [], measurements: []);
+                Exercise ex = pickedExercise;
+                exerciseBloc.add(GetExerciseFromExerciseID(exerciseID: ex.id));
               }
               setState(() {});
             }
@@ -338,7 +365,12 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
         ],
       );
     } else {
-      return buildAddButton();
+      return Column(
+        children: [
+          SizedBox(height: deviceSize.height * 0.03),
+          buildAddButton(),
+        ],
+      );
     }
   }
 

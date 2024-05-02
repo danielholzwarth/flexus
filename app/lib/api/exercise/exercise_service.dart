@@ -16,6 +16,12 @@ abstract class ExerciseService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Get(path: '/single/{exerciseID}')
+  Future<Response> getExerciseFromExerciseID(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('exerciseID') int exerciseID,
+  );
+
   @Get(path: '/{splitID}')
   Future<Response> getExercisesFromSplitID(
     @Header('flexusjwt') String flexusJWTString,

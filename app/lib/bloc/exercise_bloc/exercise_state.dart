@@ -17,6 +17,14 @@ class ExercisesLoaded extends ExerciseState {
   ExercisesLoaded({required this.exercises});
 }
 
+class ExerciseFromExerciseIDLoaded extends ExerciseState {
+  final CurrentExercise? currentExercise;
+
+  ExerciseFromExerciseIDLoaded({
+    required this.currentExercise,
+  });
+}
+
 class ExercisesFromSplitIDLoaded extends ExerciseState {
   final List<CurrentExercise> currentExercises;
 

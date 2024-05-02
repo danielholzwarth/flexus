@@ -17,6 +17,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   ExerciseBloc() : super(ExerciseInitial()) {
     on<PostExercise>(_onPostExercise);
     on<GetExercises>(_onGetExercises);
+    on<GetExerciseFromExerciseID>(_onGetExerciseFromExerciseID);
     on<GetExercisesFromSplitID>(_onGetExercisesFromSplitID);
     on<RefreshGetExercisesState>(_onRefreshGetExercisesState);
     on<RefreshGetCurrentExercisesState>(_onRefreshGetCurrentExercisesState);
@@ -69,6 +70,47 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     }
   }
 
+  void _onGetExerciseFromExerciseID(GetExerciseFromExerciseID event, Emitter<ExerciseState> emit) async {
+    emit(ExercisesLoading());
+
+    CurrentExercise? currentExercise;
+
+    if (AppSettings.hasConnection) {
+      final response = await exerciseService.getExerciseFromExerciseID(userBox.get("flexusjwt"), event.exerciseID);
+
+      if (response.isSuccessful) {
+        if (response.body != null) {
+          final Map<String, dynamic> json = response.body;
+          currentExercise = CurrentExercise(
+            exercise: Exercise(
+              id: json['id'],
+              creatorID: json['creatorID'],
+              name: json['name'],
+              typeID: json['typeID'],
+            ),
+            oldMeasurements: json['oldMeasurements'] != null
+                ? List.from(json['oldMeasurements']).map((measurementJson) {
+                    return Measurement(
+                      repetitions: measurementJson['repetitions'],
+                      workload: double.parse(measurementJson['workload'].toString()),
+                    );
+                  }).toList()
+                : [],
+            measurements: [],
+          );
+
+          emit(ExerciseFromExerciseIDLoaded(currentExercise: currentExercise));
+        } else {
+          emit(ExerciseFromExerciseIDLoaded(currentExercise: null));
+        }
+      } else {
+        emit(ExerciseError(error: response.error.toString()));
+      }
+    } else {
+      emit(CurrentExercisesLoaded(currentExercises: const []));
+    }
+  }
+
   void _onGetExercisesFromSplitID(GetExercisesFromSplitID event, Emitter<ExerciseState> emit) async {
     emit(ExercisesLoading());
 
@@ -76,8 +118,6 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
 
     if (AppSettings.hasConnection) {
       final response = await exerciseService.getExercisesFromSplitID(userBox.get("flexusjwt"), event.splitID);
-
-      print(response.bodyString);
 
       if (response.isSuccessful) {
         if (response.body != "null") {

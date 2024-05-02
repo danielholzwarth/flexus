@@ -68,6 +68,59 @@ func (db *DB) GetExercises(userAccountID int) ([]types.Exercise, error) {
 	return exercises, nil
 }
 
+func (db *DB) GetExerciseFromExerciseID(userAccountID int, exerciseID int) (types.ExerciseInformation, error) {
+	var information types.ExerciseInformation
+
+	query := `
+        SELECT *
+        FROM exercise e
+		WHERE e.id = $1;
+    `
+
+	err := db.pool.QueryRow(query, exerciseID).Scan(&information.ID, &information.CreatorID, &information.Name, &information.TypeID)
+	if err != nil {
+		return types.ExerciseInformation{}, err
+	}
+
+	oldMeasurementQuery := `
+		SELECT s.repetitions, s.workload
+		FROM set s
+		JOIN workout w ON w.id = s.workout_id
+		WHERE s.exercise_id = $1
+		AND w.user_id = $2
+		AND s.workout_id = (
+			SELECT MAX(w.id)
+			FROM workout w
+			JOIN set s ON s.workout_id = w.id
+			WHERE s.exercise_id = $1
+			AND w.user_id = $2
+		)
+		ORDER BY s.order_number ASC;
+	`
+
+	var oldMeasurements []types.Measurement
+
+	measurementRows, err := db.pool.Query(oldMeasurementQuery, information.ID, userAccountID)
+	if err != nil {
+		return types.ExerciseInformation{}, err
+	}
+	defer measurementRows.Close()
+
+	for measurementRows.Next() {
+		var oldMeasurement types.Measurement
+
+		err := measurementRows.Scan(&oldMeasurement.Repetitions, &oldMeasurement.Workload)
+		if err != nil {
+			return types.ExerciseInformation{}, err
+		}
+		oldMeasurements = append(oldMeasurements, oldMeasurement)
+	}
+
+	information.OldMeasurements = &oldMeasurements
+
+	return information, nil
+}
+
 func (db *DB) GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.ExerciseInformation, error) {
 	var exercises []types.ExerciseInformation
 

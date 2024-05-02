@@ -13,6 +13,7 @@ import (
 type ExerciseStore interface {
 	PostExercise(userAccountID int, name string, typeID int) error
 	GetExercises(userAccountID int) ([]types.Exercise, error)
+	GetExerciseFromExerciseID(userAccountID int, exerciseID int) (types.ExerciseInformation, error)
 	GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.ExerciseInformation, error)
 }
 
@@ -30,6 +31,7 @@ func NewService(exerciseStore ExerciseStore) http.Handler {
 
 	r.Post("/", s.postExercise())
 	r.Get("/", s.getExercises())
+	r.Get("/single/{exerciseID}", s.getExerciseFromExerciseID())
 	r.Get("/{splitID}", s.getExercisesFromSplitID())
 
 	return s
@@ -98,6 +100,42 @@ func (s service) getExercises() http.HandlerFunc {
 		}
 
 		exercises, err := s.exerciseStore.GetExercises(claims.UserAccountID)
+		if err != nil {
+			http.Error(w, "Failed to get Exercises", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		response, err := json.Marshal(exercises)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
+func (s service) getExerciseFromExerciseID() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		exerciseIDValue := chi.URLParam(r, "exerciseID")
+		exerciseID, err := strconv.Atoi(exerciseIDValue)
+		if err != nil || exerciseID <= 0 {
+			http.Error(w, "Wrong input for exerciseID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		exercises, err := s.exerciseStore.GetExerciseFromExerciseID(claims.UserAccountID, exerciseID)
 		if err != nil {
 			http.Error(w, "Failed to get Exercises", http.StatusInternalServerError)
 			println(err.Error())
