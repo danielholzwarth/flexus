@@ -102,7 +102,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
               if (currentExercise != null) {
                 currentExercise!.exercise = pickedExercise;
               } else {
-                currentExercise = CurrentExercise(exercise: pickedExercise, goal: "goal", measurements: []);
+                currentExercise = CurrentExercise(exercise: pickedExercise, oldMeasurements: [], measurements: []);
               }
               setState(() {});
             }
@@ -128,139 +128,89 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
             hasPadding: true,
           ),
           children: [
-            currentExercise!.exercise.typeID == 1
-                ? DataTable(
-                    columns: const [
-                      DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                      DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
-                      DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
-                    ],
-                    rows: [
-                      DataRow(
-                        cells: [
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Set 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Reps 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "WL 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                        ],
+            currentExercise!.oldMeasurements.isEmpty
+                ? Center(
+                    child: SizedBox(
+                      width: deviceSize.width * 0.4,
+                      child: const CustomDefaultTextStyle(
+                        text: "No old data found",
+                        textAlign: TextAlign.center,
                       ),
-                      DataRow(
-                        cells: [
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Set 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Reps 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "WL 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      DataRow(
-                        cells: [
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Set 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "Reps 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "WL 1",
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   )
-                : DataTable(
-                    columns: const [
-                      DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                      DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
-                    ],
-                    rows: [
-                      DataRow(
-                        cells: [
-                          DataCell(
-                            FlexusTableTextField(
-                              hintText: "Sets",
-                              textAlign: TextAlign.left,
-                              textController: setsGoalController,
-                              textInputType: TextInputType.number,
-                              onChanged: (String newValue) {},
+                : currentExercise!.exercise.typeID == 1
+                    ? DataTable(
+                        columns: const [
+                          DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                          DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
+                          DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                        ],
+                        rows: [
+                          for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
+                            DataRow(
+                              cells: [
+                                DataCell(
+                                  SizedBox(
+                                    width: deviceSize.width * 0.15,
+                                    child: CustomDefaultTextStyle(
+                                      text: "Set ${i + 1}",
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: deviceSize.width * 0.15,
+                                    child: CustomDefaultTextStyle(
+                                      text: currentExercise!.oldMeasurements[i].repetitions.toString(),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: deviceSize.width * 0.15,
+                                    child: CustomDefaultTextStyle(
+                                      text: currentExercise!.oldMeasurements[i].workload.toString(),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          DataCell(
-                            SizedBox(
-                              width: deviceSize.width * 0.15,
-                              child: const CustomDefaultTextStyle(
-                                text: "WL 1",
-                                textAlign: TextAlign.left,
-                              ),
+                        ],
+                      )
+                    : DataTable(
+                        columns: const [
+                          DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                          DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                        ],
+                        rows: [
+                          for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
+                            DataRow(
+                              cells: [
+                                DataCell(
+                                  SizedBox(
+                                    width: deviceSize.width * 0.15,
+                                    child: CustomDefaultTextStyle(
+                                      text: "Set ${i + 1}",
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: deviceSize.width * 0.15,
+                                    child: CustomDefaultTextStyle(
+                                      text: currentExercise!.oldMeasurements[i].workload.toString(),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
                         ],
                       ),
-                    ],
-                  ),
           ],
         ),
       ],

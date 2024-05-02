@@ -57,12 +57,14 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id));
         } else {
           pages.add(const DocumentExercisePage(pageID: 1));
-          currentWorkout = CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), goal: "", measurements: [])]);
+          currentWorkout =
+              CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: [])]);
           userBox.put("currentWorkout", currentWorkout);
         }
       } else {
         pages.add(const DocumentExercisePage(pageID: 1));
-        currentWorkout = CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), goal: "", measurements: [])]);
+        currentWorkout =
+            CurrentWorkout(exercises: [CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: [])]);
         userBox.put("currentWorkout", currentWorkout);
       }
     }
@@ -89,7 +91,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               if (currentWorkout != null) {
                 currentWorkout!.exercises.add(CurrentExercise(
                   exercise: Exercise(id: 0, name: "", typeID: 0),
-                  goal: "goalxgoal",
+                  oldMeasurements: [],
                   measurements: [],
                 ));
               }
@@ -124,10 +126,11 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           if (state is ExercisesFromSplitIDLoaded) {
             List<CurrentExercise> currentExercises = [];
 
-            if (state.exercises.isNotEmpty) {
-              for (int i = 0; i <= state.exercises.length - 1; i++) {
+            if (state.currentExercises.isNotEmpty) {
+              for (int i = 0; i <= state.currentExercises.length - 1; i++) {
                 pages.add(DocumentExercisePage(pageID: i + 1));
-                currentExercises.add(CurrentExercise(exercise: state.exercises[i], goal: "goalxgoal", measurements: []));
+                currentExercises.add(CurrentExercise(
+                    exercise: state.currentExercises[i].exercise, oldMeasurements: state.currentExercises[i].oldMeasurements, measurements: []));
               }
             } else {
               pages.add(const DocumentExercisePage(pageID: 1));

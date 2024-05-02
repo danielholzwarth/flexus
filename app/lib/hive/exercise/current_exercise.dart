@@ -10,14 +10,14 @@ class CurrentExercise extends HiveObject {
   Exercise exercise;
 
   @HiveField(1)
-  String goal;
+  List<Measurement> oldMeasurements;
 
   @HiveField(2)
   List<Measurement> measurements;
 
   CurrentExercise({
     required this.exercise,
-    required this.goal,
+    required this.oldMeasurements,
     required this.measurements,
   });
 }

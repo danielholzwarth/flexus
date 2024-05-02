@@ -13,7 +13,7 @@ import (
 type ExerciseStore interface {
 	PostExercise(userAccountID int, name string, typeID int) error
 	GetExercises(userAccountID int) ([]types.Exercise, error)
-	GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.Exercise, error)
+	GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.ExerciseInformation, error)
 }
 
 type service struct {

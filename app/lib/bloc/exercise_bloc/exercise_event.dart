@@ -30,3 +30,11 @@ class RefreshGetExercisesState extends ExerciseEvent {
     required this.exercises,
   });
 }
+
+class RefreshGetCurrentExercisesState extends ExerciseEvent {
+  final List<CurrentExercise> currentExercises;
+
+  RefreshGetCurrentExercisesState({
+    required this.currentExercises,
+  });
+}

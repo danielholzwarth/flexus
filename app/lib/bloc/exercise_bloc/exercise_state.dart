@@ -18,9 +18,17 @@ class ExercisesLoaded extends ExerciseState {
 }
 
 class ExercisesFromSplitIDLoaded extends ExerciseState {
-  final List<Exercise> exercises;
+  final List<CurrentExercise> currentExercises;
 
-  ExercisesFromSplitIDLoaded({required this.exercises});
+  ExercisesFromSplitIDLoaded({
+    required this.currentExercises,
+  });
+}
+
+class CurrentExercisesLoaded extends ExerciseState {
+  final List<CurrentExercise> currentExercises;
+
+  CurrentExercisesLoaded({required this.currentExercises});
 }
 
 class ExerciseError extends ExerciseState {

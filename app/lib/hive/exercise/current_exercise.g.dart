@@ -18,7 +18,7 @@ class CurrentExerciseAdapter extends TypeAdapter<CurrentExercise> {
     };
     return CurrentExercise(
       exercise: fields[0] as Exercise,
-      goal: fields[1] as String,
+      oldMeasurements: (fields[1] as List).cast<Measurement>(),
       measurements: (fields[2] as List).cast<Measurement>(),
     );
   }
@@ -30,7 +30,7 @@ class CurrentExerciseAdapter extends TypeAdapter<CurrentExercise> {
       ..writeByte(0)
       ..write(obj.exercise)
       ..writeByte(1)
-      ..write(obj.goal)
+      ..write(obj.oldMeasurements)
       ..writeByte(2)
       ..write(obj.measurements);
   }
