@@ -56,12 +56,12 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           setController.add({
             "reps": TextEditingController(
                 text: currentExercise!.measurements[i].repetitions > 0 ? currentExercise!.measurements[i].repetitions.toString() : null),
-            "weight": TextEditingController(
+            "workload": TextEditingController(
                 text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
           });
         } else {
           setController.add({
-            "duration": TextEditingController(
+            "workload": TextEditingController(
                 text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
           });
         }
@@ -78,6 +78,8 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           listener: (context, state) {
             if (state is ExerciseFromExerciseIDLoaded) {
               if (currentExercise != null) {
+                setController.clear();
+
                 currentExercise = state.currentExercise;
 
                 CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
@@ -131,6 +133,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                 Exercise ex = pickedExercise;
                 exerciseBloc.add(GetExerciseFromExerciseID(exerciseID: ex.id));
               }
+
               setState(() {});
             }
           },
@@ -300,7 +303,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                             FlexusTableTextField(
                               hintText: "Workload",
                               textAlign: TextAlign.left,
-                              textController: setController[i]["weight"]!,
+                              textController: setController[i]["workload"]!,
                               textInputType: TextInputType.number,
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
@@ -340,7 +343,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                           DataCell(
                             FlexusTableTextField(
                               hintText: "Workload",
-                              textController: setController[i]["duration"]!,
+                              textController: setController[i]["workload"]!,
                               textInputType: TextInputType.number,
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
@@ -378,16 +381,10 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     return IconButton(
       onPressed: () {
         if (currentExercise != null) {
-          if (currentExercise!.exercise.typeID == 1) {
-            setController.add({
-              "reps": TextEditingController(),
-              "weight": TextEditingController(),
-            });
-          } else {
-            setController.add({
-              "duration": TextEditingController(),
-            });
-          }
+          setController.add({
+            "reps": TextEditingController(),
+            "workload": TextEditingController(),
+          });
 
           currentExercise!.measurements.add(Measurement(repetitions: 0, workload: 0));
 
