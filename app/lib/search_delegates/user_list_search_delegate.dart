@@ -59,7 +59,7 @@ class UserListSearchDelegate extends SearchDelegate {
     userAccountBloc.add(GetUserAccounts(isFriend: true));
 
     return GestureDetector(
-      onTap: () {
+      onVerticalDragDown: (details) {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(

@@ -61,7 +61,7 @@ class FriendSearchDelegate extends SearchDelegate {
     userAccountBloc.add(GetUserAccounts(keyword: query, isFriend: isFriend, hasRequest: hasRequest));
 
     return GestureDetector(
-      onTap: () {
+      onVerticalDragDown: (details) {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

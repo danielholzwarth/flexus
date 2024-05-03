@@ -59,7 +59,7 @@ class WorkoutSearchDelegate extends SearchDelegate {
     workoutBloc.add(GetSearchWorkout(keyWord: query, isArchive: isArchived));
 
     return GestureDetector(
-      onTap: () {
+      onVerticalDragDown: (details) {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

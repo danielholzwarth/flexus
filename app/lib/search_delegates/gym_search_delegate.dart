@@ -72,7 +72,7 @@ class GymSearchDelegate extends SearchDelegate {
         searchGymBloc.add(GetGymsSearch(query: query));
 
         return GestureDetector(
-          onTap: () {
+          onVerticalDragDown: (details) {
             FocusScope.of(context).unfocus();
           },
           child: BlocBuilder(
@@ -116,7 +116,7 @@ class GymSearchDelegate extends SearchDelegate {
         );
       } else {
         return GestureDetector(
-          onTap: () {
+          onVerticalDragDown: (details) {
             FocusScope.of(context).unfocus();
           },
           child: Scaffold(
@@ -145,7 +145,7 @@ class GymSearchDelegate extends SearchDelegate {
       }
     } else {
       return GestureDetector(
-        onTap: () {
+        onVerticalDragDown: (details) {
           FocusScope.of(context).unfocus();
         },
         child: FutureBuilder(

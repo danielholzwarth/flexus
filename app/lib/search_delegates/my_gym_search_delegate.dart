@@ -61,7 +61,7 @@ class MyGymSearchDelegate extends SearchDelegate {
     }
 
     return GestureDetector(
-      onTap: () {
+      onVerticalDragDown: (details) {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(
