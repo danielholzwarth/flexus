@@ -53,12 +53,72 @@ final class _$WorkoutService extends WorkoutService {
   }
 
   @override
+  Future<Response<dynamic>> getWorkoutFromID(
+    String flexusJWTString,
+    int workoutID,
+  ) {
+    final Uri $url = Uri.parse('/workouts/${workoutID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> patchWorkout(
     String flexusJWTString,
     int workoutID,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/workouts/${workoutID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'PATCH',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> patchStartWorkout(
+    String flexusJWTString,
+    int workoutID,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/workouts/start/${workoutID}');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'PATCH',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> patchFinishWorkout(
+    String flexusJWTString,
+    int workoutID,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/workouts/finish/${workoutID}');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
@@ -96,7 +156,7 @@ final class _$WorkoutService extends WorkoutService {
     String flexusJWTString,
     int workoutID,
   ) {
-    final Uri $url = Uri.parse('/workouts/${workoutID}');
+    final Uri $url = Uri.parse('/workouts/details/${workoutID}');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };

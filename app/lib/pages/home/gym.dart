@@ -292,6 +292,7 @@ class _GymPageState extends State<GymPage> {
 
                               DateTime startTime = DateTime.now().copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
 
+                              //TODO: Create Workout with starttime Now, isActive false
                               GymOverview? pickedGymOverview = gymOverviews.firstWhereOrNull((element) => element.gym.name == selectedItem);
                               if (pickedGymOverview != null) {
                                 workoutBloc.add(PostWorkout(gymID: pickedGymOverview.gym.id, startTime: startTime));

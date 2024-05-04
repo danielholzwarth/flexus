@@ -26,4 +26,13 @@ class CurrentWorkout extends HiveObject {
     this.split,
     required this.exercises,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'gym': gym?.toJson(),
+      'plan': plan?.toJson(),
+      'split': split?.toJson(),
+      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
+    };
+  }
 }

@@ -14,4 +14,11 @@ class Measurement extends HiveObject {
     required this.repetitions,
     required this.workload,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'repetitions': repetitions,
+      'workload': workload,
+    };
+  }
 }

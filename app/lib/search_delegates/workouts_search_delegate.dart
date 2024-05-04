@@ -70,7 +70,7 @@ class WorkoutSearchDelegate extends SearchDelegate {
               backgroundColor: AppSettings.background,
               body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
             );
-          } else if (state is WorkoutLoaded) {
+          } else if (state is WorkoutsLoaded) {
             if (state.workoutOverviews.isNotEmpty) {
               return Scaffold(
                 backgroundColor: AppSettings.background,

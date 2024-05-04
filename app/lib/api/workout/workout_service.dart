@@ -16,8 +16,28 @@ abstract class WorkoutService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Get(path: '/{workoutID}')
+  Future<Response> getWorkoutFromID(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('workoutID') int workoutID,
+  );
+
   @Patch(path: '/{workoutID}')
   Future<Response> patchWorkout(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('workoutID') int workoutID,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @Patch(path: '/start/{workoutID}')
+  Future<Response> patchStartWorkout(
+    @Header('flexusjwt') String flexusJWTString,
+    @Path('workoutID') int workoutID,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @Patch(path: '/finish/{workoutID}')
+  Future<Response> patchFinishWorkout(
     @Header('flexusjwt') String flexusJWTString,
     @Path('workoutID') int workoutID,
     @Body() Map<String, dynamic> body,
@@ -29,7 +49,7 @@ abstract class WorkoutService extends ChopperService {
     @Path('workoutID') int workoutID,
   );
 
-  @Get(path: '/{workoutID}')
+  @Get(path: '/details/{workoutID}')
   Future<Response> getWorkoutDetailsFromWorkoutID(
     @Header('flexusjwt') String flexusJWTString,
     @Path('workoutID') int workoutID,

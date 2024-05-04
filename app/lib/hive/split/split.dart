@@ -22,4 +22,13 @@ class Split extends HiveObject {
     required this.name,
     required this.orderInPlan,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'planID': planID,
+      'name': name,
+      'orderInPlan': orderInPlan,
+    };
+  }
 }

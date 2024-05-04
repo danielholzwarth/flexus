@@ -11,6 +11,8 @@ class WorkoutCreated extends WorkoutState {}
 
 class WorkoutLoading extends WorkoutState {}
 
+class WorkoutsLoading extends WorkoutState {}
+
 class WorkoutSearching extends WorkoutState {}
 
 class WorkoutDetailsLoading extends WorkoutState {}
@@ -28,9 +30,17 @@ class WorkoutUpdating extends WorkoutState {}
 class WorkoutDeleting extends WorkoutState {}
 
 class WorkoutLoaded extends WorkoutState {
-  final List<WorkoutOverview> workoutOverviews;
+  final Workout? workout;
 
   WorkoutLoaded({
+    required this.workout,
+  });
+}
+
+class WorkoutsLoaded extends WorkoutState {
+  final List<WorkoutOverview> workoutOverviews;
+
+  WorkoutsLoaded({
     required this.workoutOverviews,
   });
 }

@@ -1,6 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/current_plan.dart';
+import 'package:app/hive/workout/workout.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/my_gym_search_delegate.dart';
@@ -16,7 +17,11 @@ import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
 class StartWorkoutPage extends StatefulWidget {
-  const StartWorkoutPage({super.key});
+  const StartWorkoutPage({
+    super.key,
+    this.workout,
+  });
+  final Workout? workout;
 
   @override
   State<StartWorkoutPage> createState() => _StartWorkoutPageState();
@@ -31,7 +36,11 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
 
   @override
   void initState() {
-    currentGym = userBox.get("currentGym");
+    if (widget.workout != null) {
+      workoutBloc.add(GetWorkoutDetails(workoutID: widget.workout!.id));
+    } else {
+      currentGym = userBox.get("currentGym");
+    }
     currentPlan = userBox.get("currentPlan");
     if (currentPlan != null) {
       if (currentPlan!.currentSplit == currentPlan!.splits.length - 1) {
@@ -40,6 +49,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
         currentPlan!.currentSplit += 1;
       }
     }
+
     super.initState();
   }
 
@@ -53,7 +63,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       body: BlocConsumer(
         bloc: workoutBloc,
         listener: (context, state) {
-          if (state is WorkoutCreated) {
+          if (state is WorkoutCreated || state is WorkoutsLoaded) {
             userBox.put("currentGym", currentGym);
             userBox.put("currentPlan", currentPlan);
 
@@ -68,9 +78,13 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
               ),
             );
           }
+
+          if (state is WorkoutDetailsLoaded) {
+            currentGym = state.workoutDetails.gym;
+          }
         },
         builder: (context, state) {
-          if (state is WorkoutCreating || state is WorkoutCreated) {
+          if (state is WorkoutCreating || state is WorkoutCreated || state is WorkoutDetailsLoading) {
             return Scaffold(body: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
           } else {
             return SingleChildScrollView(
@@ -200,15 +214,29 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       child: FlexusButton(
         text: "Start",
         function: () {
-          workoutBloc.add(PostWorkout(
-            gymID: currentGym?.id,
-            splitID: currentPlan != null
-                ? currentPlan!.splits.isNotEmpty
-                    ? currentPlan!.splits[currentPlan!.currentSplit].id
-                    : null
-                : null,
-            startTime: DateTime.now(),
-          ));
+          if (widget.workout != null) {
+            workoutBloc.add(PatchWorkout(
+              workoutID: widget.workout!.id,
+              name: "startWorkout",
+              splitID: currentPlan != null
+                  ? currentPlan!.splits.isNotEmpty
+                      ? currentPlan!.splits[currentPlan!.currentSplit].id
+                      : null
+                  : null,
+              gymID: currentGym?.id,
+            ));
+          } else {
+            workoutBloc.add(PostWorkout(
+              gymID: currentGym?.id,
+              splitID: currentPlan != null
+                  ? currentPlan!.splits.isNotEmpty
+                      ? currentPlan!.splits[currentPlan!.currentSplit].id
+                      : null
+                  : null,
+              startTime: DateTime.now(),
+              isActive: true,
+            ));
+          }
         },
         backgroundColor: AppSettings.primary,
         fontColor: AppSettings.fontV1,

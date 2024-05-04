@@ -2,6 +2,7 @@ import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/workout/document_workout.dart';
+import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -37,11 +38,14 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
 
     return Slidable(
       startActionPane: workout.endtime != null ? buildStartActionPane(workout) : null,
-      //  endActionPane: workout.endtime != null ? buildEndActionPane(workout) : null,
-      endActionPane: true ? buildEndActionPane(workout) : null,
+      endActionPane: buildEndActionPane(workout),
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
-        tileColor: workout.endtime != null ? AppSettings.background : AppSettings.primaryShade48,
+        tileColor: workout.endtime == null
+            ? workout.isActive
+                ? AppSettings.primaryShade48
+                : AppSettings.blocked.withOpacity(0.6)
+            : AppSettings.background,
         onTap: workout.endtime != null
             ? () {
                 Navigator.push(
@@ -54,15 +58,25 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                   ),
                 );
               }
-            : () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: const DocumentWorkoutPage(),
-                  ),
-                );
-              },
+            : workout.isActive
+                ? () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: const DocumentWorkoutPage(),
+                      ),
+                    );
+                  }
+                : () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: StartWorkoutPage(workout: workout),
+                      ),
+                    );
+                  },
         leading: buildDate(workout),
         title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),
@@ -71,29 +85,45 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
   }
 
   ActionPane buildEndActionPane(Workout workout) {
-    return ActionPane(
-      motion: const StretchMotion(),
-      extentRatio: 0.5,
-      children: [
-        SlidableAction(
-          backgroundColor: AppSettings.primary,
-          icon: workout.isArchived ? Icons.unarchive : Icons.archive,
-          label: workout.isArchived ? "Unarchive" : "Archive",
-          foregroundColor: AppSettings.fontV1,
-          onPressed: (context) => widget.workoutBloc
-              .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isArchived", value: !workout.isArchived)),
-        ),
-        SlidableAction(
-          backgroundColor: AppSettings.error,
-          icon: Icons.delete,
-          label: "Delete",
-          foregroundColor: AppSettings.fontV1,
-          onPressed: (context) {
-            widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id, isArchive: workout.isArchived));
-          },
-        ),
-      ],
-    );
+    return workout.endtime != null
+        ? ActionPane(
+            motion: const StretchMotion(),
+            extentRatio: 0.5,
+            children: [
+              SlidableAction(
+                backgroundColor: AppSettings.primary,
+                icon: workout.isArchived ? Icons.unarchive : Icons.archive,
+                label: workout.isArchived ? "Unarchive" : "Archive",
+                foregroundColor: AppSettings.fontV1,
+                onPressed: (context) => widget.workoutBloc
+                    .add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isArchived", value: !workout.isArchived)),
+              ),
+              SlidableAction(
+                backgroundColor: AppSettings.error,
+                icon: Icons.delete,
+                label: "Delete",
+                foregroundColor: AppSettings.fontV1,
+                onPressed: (context) {
+                  widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id, isArchive: workout.isArchived));
+                },
+              ),
+            ],
+          )
+        : ActionPane(
+            motion: const StretchMotion(),
+            extentRatio: 0.25,
+            children: [
+              SlidableAction(
+                backgroundColor: AppSettings.error,
+                icon: Icons.delete,
+                label: "Delete",
+                foregroundColor: AppSettings.fontV1,
+                onPressed: (context) {
+                  widget.workoutBloc.add(DeleteWorkout(workoutID: workout.id, isArchive: workout.isArchived));
+                },
+              ),
+            ],
+          );
   }
 
   ActionPane buildStartActionPane(Workout workout) {
@@ -136,13 +166,13 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                     text: "- ${DateFormat('HH:mm').format(workout.endtime!)} ",
                     fontSize: AppSettings.fontSizeT2,
                   )
-                : workout.starttime.isBefore(DateTime.now())
+                : workout.isActive
                     ? CustomDefaultTextStyle(
-                        text: "(in planning)",
+                        text: "(in progress)",
                         fontSize: AppSettings.fontSizeT2,
                       )
                     : CustomDefaultTextStyle(
-                        text: "(in progress)",
+                        text: "(in planning)",
                         fontSize: AppSettings.fontSizeT2,
                       ),
             workout.endtime != null
@@ -172,9 +202,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       children: [
         widget.workoutOverview.splitName != null
             ? highlightTitle(widget.workoutOverview.splitName!)
-            : const CustomDefaultTextStyle(
-                text: "Custom Workout",
-              ),
+            : const CustomDefaultTextStyle(text: "Custom Workout"),
         //Get actual PRs
         Row(
           children: [

@@ -15,6 +15,8 @@ type WorkoutStore interface {
 	GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, error)
 	GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (types.WorkoutDetails, error)
 	PatchWorkout(userAccountID int, workoutID int, columnName string, value any) error
+	PatchStartWorkout(userAccountID int, workout types.StartWorkout) error
+	PatchFinishWorkout(userAccountID int, workout types.FinishWorkout) error
 	DeleteWorkout(userAccountID int, workoutID int) error
 	PatchEntireWorkouts(userAccountID int, workouts []types.Workout) error
 }
@@ -33,8 +35,11 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 
 	r.Post("/", s.createWorkout())
 	r.Get("/", s.getWorkoutOverviews())
-	r.Get("/{workoutID}", s.getWorkoutDetailsFromWorkoutID())
+	// r.Get("/{workoutID}", s.getWorkoutFromID())
+	r.Get("/details/{workoutID}", s.getWorkoutDetailsFromWorkoutID())
 	r.Patch("/{workoutID}", s.patchWorkout())
+	r.Patch("/start/{workoutID}", s.patchStartWorkout())
+	r.Patch("/finish/{workoutID}", s.patchFinishWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
 	r.Patch("/sync", s.patchEntireWorkouts())
 
@@ -200,6 +205,103 @@ func (s service) patchWorkout() http.HandlerFunc {
 				println(err.Error())
 				return
 			}
+		}
+
+		if isActive, ok := requestBody["isActive"].(bool); ok {
+			err = s.workoutStore.PatchWorkout(claims.UserAccountID, workoutID, "is_active", isActive)
+			if err != nil {
+				http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchStartWorkout() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		workoutIDValue := chi.URLParam(r, "workoutID")
+		workoutID, err := strconv.Atoi(workoutIDValue)
+		if err != nil || workoutID <= 0 {
+			http.Error(w, "Wrong input for workoutID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		var requestBody types.StartWorkout
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		requestBody.WorkoutID = workoutID
+
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		err = s.workoutStore.PatchStartWorkout(claims.UserAccountID, requestBody)
+		if err != nil {
+			http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchFinishWorkout() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		workoutIDValue := chi.URLParam(r, "workoutID")
+		workoutID, err := strconv.Atoi(workoutIDValue)
+		if err != nil || workoutID <= 0 {
+			http.Error(w, "Wrong input for workoutID. Must be integer greater than 0.", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		var requestBody map[string]interface{}
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Error reading request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		if err := json.Unmarshal(body, &requestBody); err != nil {
+			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		var workout types.FinishWorkout
+
+		err = s.workoutStore.PatchFinishWorkout(claims.UserAccountID, workout)
+		if err != nil {
+			http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
+			println(err.Error())
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")

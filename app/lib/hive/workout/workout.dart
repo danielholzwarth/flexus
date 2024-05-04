@@ -23,12 +23,15 @@ class Workout extends HiveObject {
   DateTime? endtime;
 
   @HiveField(6)
-  bool isArchived;
+  bool isActive;
 
   @HiveField(7)
-  bool isStared;
+  bool isArchived;
 
   @HiveField(8)
+  bool isStared;
+
+  @HiveField(9)
   bool isPinned;
 
   Workout({
@@ -38,6 +41,7 @@ class Workout extends HiveObject {
     required this.createdAt,
     required this.starttime,
     this.endtime,
+    required this.isActive,
     required this.isArchived,
     required this.isStared,
     required this.isPinned,

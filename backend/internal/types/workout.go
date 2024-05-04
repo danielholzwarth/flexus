@@ -10,6 +10,7 @@ type Workout struct {
 	CreatedAt     time.Time  `json:"createdAt"`
 	Starttime     time.Time  `json:"starttime"`
 	Endtime       *time.Time `json:"endtime"`
+	IsActive      bool       `json:"isActive"`
 	IsArchived    bool       `json:"isArchived"`
 	IsStared      bool       `json:"isStared"`
 	IsPinned      bool       `json:"isPinned"`
@@ -38,4 +39,18 @@ type PostWorkout struct {
 	GymID         *int      `json:"gymID"`
 	SplitID       *int      `json:"splitID"`
 	Starttime     time.Time `json:"starttime"`
+	IsActive      bool      `json:"isActive"`
+}
+
+type StartWorkout struct {
+	WorkoutID     int       `json:"workoutID"`
+	SplitID       *int      `json:"splitID"`
+	GymID         *int      `json:"gymID"`
+}
+
+type FinishWorkout struct {
+	WorkoutID     int       `json:"workoutID"`
+	SplitID       *int      `json:"splitID"`
+	GymID         *int      `json:"gymID"`
+	//OTHER STUFF SETS etc
 }

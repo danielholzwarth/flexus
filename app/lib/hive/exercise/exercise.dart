@@ -22,4 +22,13 @@ class Exercise extends HiveObject {
     required this.name,
     required this.typeID,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'creatorID': creatorID,
+      'name': name,
+      'typeID': typeID,
+    };
+  }
 }

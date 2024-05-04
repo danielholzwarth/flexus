@@ -42,8 +42,8 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 	}
 
 	query = `
-		INSERT INTO workout (user_id, split_id, gym_id, created_at, starttime, is_archived, is_stared, is_pinned)
-		VALUES ($1, $2, $3, NOW(), $4, FALSE, FALSE, FALSE);
+		INSERT INTO workout (user_id, split_id, gym_id, created_at, starttime, is_active, is_archived, is_stared, is_pinned)
+		VALUES ($1, $2, $3, NOW(), $4, $5, FALSE, FALSE, FALSE);
 	`
 
 	_, err = tx.Exec(
@@ -51,7 +51,8 @@ func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
 		postWorkout.UserAccountID,
 		postWorkout.SplitID,
 		postWorkout.GymID,
-		postWorkout.Starttime)
+		postWorkout.Starttime,
+		postWorkout.IsActive)
 	if err != nil {
 		return err
 	}
@@ -68,12 +69,12 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 	var pbCount int
 
 	query := `
-		SELECT w.id, w.user_id, w.split_id, w.created_at, w.starttime, w.endtime, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
+		SELECT w.id, w.user_id, w.split_id, w.created_at, w.starttime, w.endtime, w.is_active, w.is_archived, w.is_stared, w.is_pinned, p.name as plan_name, s.name as split_name
 		FROM workout w
 		LEFT JOIN split s ON w.split_id = s.id
 		LEFT JOIN plan p ON s.plan_id = p.id
 		WHERE w.user_id = $1
-		ORDER BY w.is_pinned DESC, w.starttime DESC;
+		ORDER BY w.is_active DESC, w.endtime IS NOT NULL, w.is_pinned DESC, w.starttime DESC;
     `
 
 	rows, err := db.pool.Query(query, userAccountID)
@@ -107,6 +108,7 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 			&workout.CreatedAt,
 			&workout.Starttime,
 			&workout.Endtime,
+			&workout.IsActive,
 			&workout.IsArchived,
 			&workout.IsStared,
 			&workout.IsPinned,
@@ -139,7 +141,6 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 func (db DB) GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (types.WorkoutDetails, error) {
 	var workoutDetails types.WorkoutDetails
 
-	//Get ID, starttime, duration, gymID and splitID
 	workoutDetails.WorkoutID = workoutID
 
 	query := `
@@ -179,7 +180,7 @@ func (db DB) GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (t
 			AND gym.id = $3;
 		`
 
-		err := db.pool.QueryRow(query, gymID, userAccountID, gymID).Scan(
+		err := db.pool.QueryRow(query, workoutID, userAccountID, gymID).Scan(
 			&gym.ID,
 			&gym.Name,
 			&gym.StreetName,
@@ -359,6 +360,31 @@ func (db DB) PatchWorkout(userAccountID int, workoutID int, columnName string, v
 		}
 		return err
 	}
+
+	return nil
+}
+
+func (db DB) PatchStartWorkout(userAccountID int, workout types.StartWorkout) error {
+	query := `
+		UPDATE workout
+		SET split_id = $3, gym_id = $4, starttime = NOW(), is_active = TRUE
+		WHERE id = $1 
+		AND user_id = $2;
+	`
+
+	_, err := db.pool.Exec(query, workout.WorkoutID, userAccountID, workout.SplitID, workout.GymID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("workout not found")
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (db DB) PatchFinishWorkout(userAccountID int, workout types.FinishWorkout) error {
+	println("Not implemented yet")
 
 	return nil
 }

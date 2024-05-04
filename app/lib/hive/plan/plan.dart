@@ -38,4 +38,17 @@ class Plan extends HiveObject {
     required this.isWeekly,
     this.restList,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userID': userID,
+      'splitCount': splitCount,
+      'name': name,
+      'createdAt': createdAt.toIso8601String(),
+      'isActive': isActive,
+      'isWeekly': isWeekly,
+      'restList': restList ?? [],
+    };
+  }
 }

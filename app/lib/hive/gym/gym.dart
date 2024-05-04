@@ -38,4 +38,17 @@ class Gym extends HiveObject {
     required this.latitude,
     required this.longitude,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'streetName': streetName,
+      'houseNumber': houseNumber,
+      'zipCode': zipCode,
+      'cityName': cityName,
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+  }
 }

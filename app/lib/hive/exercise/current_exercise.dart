@@ -20,4 +20,12 @@ class CurrentExercise extends HiveObject {
     required this.oldMeasurements,
     required this.measurements,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'exercise': exercise.toJson(),
+      'oldMeasurements': oldMeasurements.map((measurement) => measurement.toJson()).toList(),
+      'measurements': measurements.map((measurement) => measurement.toJson()).toList(),
+    };
+  }
 }

@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    workoutBloc.add(GetWorkout());
+    workoutBloc.add(GetWorkouts());
     UserAccount userAccount = userBox.get("userAccount");
     userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
     super.initState();
@@ -79,12 +79,12 @@ class _HomePageState extends State<HomePage> {
     return BlocConsumer(
       bloc: workoutBloc,
       listener: (context, state) {
-        if (state is WorkoutLoaded) {
+        if (state is WorkoutsLoaded) {
           setState(() {});
         }
       },
       builder: (context, state) {
-        if (state is WorkoutLoaded) {
+        if (state is WorkoutsLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                         createdAt: state.workoutOverviews[index].workout.createdAt,
                         starttime: state.workoutOverviews[index].workout.starttime,
                         endtime: state.workoutOverviews[index].workout.endtime,
+                        isActive: state.workoutOverviews[index].workout.isActive,
                         isArchived: state.workoutOverviews[index].workout.isArchived,
                         isStared: state.workoutOverviews[index].workout.isStared,
                         isPinned: state.workoutOverviews[index].workout.isPinned,
@@ -140,9 +141,9 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder(
       bloc: workoutBloc,
       builder: (context, state) {
-        if (state is WorkoutLoaded) {
+        if (state is WorkoutsLoaded) {
           List<WorkoutOverview> overviews = state.workoutOverviews;
-          if (overviews.any((element) => element.workout.endtime == null)) {
+          if (overviews.any((element) => element.workout.isActive == true)) {
             return FlexusFloatingActionButton(
               onPressed: () async {
                 Navigator.push(
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                     type: PageTransitionType.fade,
                     child: const DocumentWorkoutPage(),
                   ),
-                ).then((value) => workoutBloc.add(GetWorkout()));
+                ).then((value) => workoutBloc.add(GetWorkouts()));
               },
               icon: Icons.play_arrow,
             );
@@ -164,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     type: PageTransitionType.fade,
                     child: const StartWorkoutPage(),
                   ),
-                ).then((value) => workoutBloc.add(GetWorkout()));
+                ).then((value) => workoutBloc.add(GetWorkouts()));
               },
               icon: Icons.fitness_center,
             );
@@ -262,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                 type: PageTransitionType.fade,
                 child: const ArchivePage(),
               ),
-            ).then((value) => workoutBloc.add(GetWorkout()));
+            ).then((value) => workoutBloc.add(GetWorkouts()));
           },
         ),
         IconButton(
@@ -280,7 +281,7 @@ class _HomePageState extends State<HomePage> {
         IconButton(
           onPressed: () async {
             await showSearch(context: context, delegate: WorkoutSearchDelegate(isArchived: false));
-            workoutBloc.add(GetWorkout());
+            workoutBloc.add(GetWorkouts());
           },
           icon: const FlexusDefaultIcon(iconData: Icons.search),
         )

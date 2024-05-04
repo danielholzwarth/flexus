@@ -61,7 +61,7 @@ class _ArchivePageState extends State<ArchivePage> {
     return BlocBuilder(
       bloc: workoutBloc,
       builder: (context, state) {
-        if (state is WorkoutLoaded) {
+        if (state is WorkoutsLoaded) {
           if (state.workoutOverviews.isNotEmpty) {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -75,6 +75,7 @@ class _ArchivePageState extends State<ArchivePage> {
                         createdAt: state.workoutOverviews[index].workout.createdAt,
                         starttime: state.workoutOverviews[index].workout.starttime,
                         endtime: state.workoutOverviews[index].workout.endtime,
+                        isActive: state.workoutOverviews[index].workout.isActive,
                         isArchived: state.workoutOverviews[index].workout.isArchived,
                         isStared: state.workoutOverviews[index].workout.isStared,
                         isPinned: state.workoutOverviews[index].workout.isPinned,

@@ -1,4 +1,5 @@
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
+import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/exercise/current_exercise.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
@@ -33,6 +34,7 @@ class DocumentWorkoutPage extends StatefulWidget {
 class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   final userBox = Hive.box('userBox');
   final ExerciseBloc exerciseBloc = ExerciseBloc();
+  final WorkoutBloc workoutBloc = WorkoutBloc();
 
   final PageController pageController = PageController();
   int currentPageIndex = 0;
@@ -104,17 +106,28 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           ),
           TextButton(
             onPressed: () {
-              //Post and Finish Workout
+              CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
 
-              if (widget.gym != null) {
-                userBox.put("currentGym", widget.gym);
-              }
-              if (widget.currentPlan != null) {
-                userBox.put("currentPlan", widget.currentPlan);
-              }
-              userBox.delete("currentWorkout");
+              if (currentWorkout != null) {
+                debugPrint('Saving');
 
-              Navigator.pop(context);
+                workoutBloc.add(PatchWorkout(
+                  workoutID: -1,
+                  name: "finishWorkout",
+                  currentWorkout: currentWorkout,
+                ));
+                if (widget.gym != null) {
+                  userBox.put("currentGym", widget.gym);
+                }
+                if (widget.currentPlan != null) {
+                  userBox.put("currentPlan", widget.currentPlan);
+                }
+                userBox.delete("currentWorkout");
+
+                Navigator.pop(context);
+              } else {
+                debugPrint('Null?');
+              }
             },
             child: const CustomDefaultTextStyle(text: "Finish"),
           ),
