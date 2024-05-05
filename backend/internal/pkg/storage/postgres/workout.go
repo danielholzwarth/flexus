@@ -384,7 +384,62 @@ func (db DB) PatchStartWorkout(userAccountID int, workout types.StartWorkout) er
 }
 
 func (db DB) PatchFinishWorkout(userAccountID int, workout types.FinishWorkout) error {
-	println("Not implemented yet")
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil || err != nil {
+			tx.Rollback()
+			if p != nil {
+				panic(p)
+			}
+		}
+	}()
+
+	//Patch Workout
+	var workoutID int
+
+	query := `
+		UPDATE workout
+		SET endtime = NOW(), is_active = FALSE
+		WHERE user_id = $1 
+		AND is_active = TRUE
+		RETURNING id;
+	`
+
+	err = tx.QueryRow(query, userAccountID).Scan(&workoutID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return errors.New("workout not found")
+		}
+		return err
+	}
+
+	//Create Sets
+	query = `
+		INSERT INTO set (workout_id, exercise_id, order_number, repetitions, workload)
+		VALUES ($1, $2, $3, $4, $5);
+	`
+
+	for exIndex := 0; exIndex < len(workout.Exercises); exIndex++ {
+		for measIndex := 0; measIndex < len(workout.Exercises[exIndex].Measurements); measIndex++ {
+			_, err = tx.Exec(
+				query,
+				workoutID,
+				workout.Exercises[exIndex].Exercise.ID,
+				exIndex*len(workout.Exercises)+measIndex+1,
+				workout.Exercises[exIndex].Measurements[measIndex].Repetitions,
+				workout.Exercises[exIndex].Measurements[measIndex].Workload)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
 
 	return nil
 }

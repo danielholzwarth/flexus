@@ -39,7 +39,7 @@ func NewService(workoutStore WorkoutStore) http.Handler {
 	r.Get("/details/{workoutID}", s.getWorkoutDetailsFromWorkoutID())
 	r.Patch("/{workoutID}", s.patchWorkout())
 	r.Patch("/start/{workoutID}", s.patchStartWorkout())
-	r.Patch("/finish/{workoutID}", s.patchFinishWorkout())
+	r.Patch("/finish", s.patchFinishWorkout())
 	r.Delete("/{workoutID}", s.deleteWorkout())
 	r.Patch("/sync", s.patchEntireWorkouts())
 
@@ -273,15 +273,7 @@ func (s service) patchFinishWorkout() http.HandlerFunc {
 			return
 		}
 
-		workoutIDValue := chi.URLParam(r, "workoutID")
-		workoutID, err := strconv.Atoi(workoutIDValue)
-		if err != nil || workoutID <= 0 {
-			http.Error(w, "Wrong input for workoutID. Must be integer greater than 0.", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		var requestBody map[string]interface{}
+		var requestBody types.FinishWorkout
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, "Error reading request body", http.StatusBadRequest)
@@ -295,9 +287,7 @@ func (s service) patchFinishWorkout() http.HandlerFunc {
 			return
 		}
 
-		var workout types.FinishWorkout
-
-		err = s.workoutStore.PatchFinishWorkout(claims.UserAccountID, workout)
+		err = s.workoutStore.PatchFinishWorkout(claims.UserAccountID, requestBody)
 		if err != nil {
 			http.Error(w, "Failed to patch workout", http.StatusInternalServerError)
 			println(err.Error())

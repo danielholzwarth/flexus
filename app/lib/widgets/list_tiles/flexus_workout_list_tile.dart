@@ -44,7 +44,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
         tileColor: workout.endtime == null
             ? workout.isActive
                 ? AppSettings.primaryShade48
-                : AppSettings.blocked.withOpacity(0.6)
+                : AppSettings.blocked.withOpacity(0.4)
             : AppSettings.background,
         onTap: workout.endtime != null
             ? () {

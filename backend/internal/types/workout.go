@@ -43,14 +43,13 @@ type PostWorkout struct {
 }
 
 type StartWorkout struct {
-	WorkoutID     int       `json:"workoutID"`
-	SplitID       *int      `json:"splitID"`
-	GymID         *int      `json:"gymID"`
+	WorkoutID int  `json:"workoutID"`
+	SplitID   *int `json:"splitID"`
+	GymID     *int `json:"gymID"`
 }
 
 type FinishWorkout struct {
-	WorkoutID     int       `json:"workoutID"`
-	SplitID       *int      `json:"splitID"`
-	GymID         *int      `json:"gymID"`
-	//OTHER STUFF SETS etc
+	SplitID   *int                     `json:"splitID"`
+	GymID     *int                     `json:"gymID"`
+	Exercises []NewExerciseInformation `json:"exercises"`
 }

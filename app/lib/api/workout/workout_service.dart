@@ -36,10 +36,9 @@ abstract class WorkoutService extends ChopperService {
     @Body() Map<String, dynamic> body,
   );
 
-  @Patch(path: '/finish/{workoutID}')
+  @Patch(path: '/finish')
   Future<Response> patchFinishWorkout(
     @Header('flexusjwt') String flexusJWTString,
-    @Path('workoutID') int workoutID,
     @Body() Map<String, dynamic> body,
   );
 

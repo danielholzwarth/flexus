@@ -115,10 +115,9 @@ final class _$WorkoutService extends WorkoutService {
   @override
   Future<Response<dynamic>> patchFinishWorkout(
     String flexusJWTString,
-    int workoutID,
     Map<String, dynamic> body,
   ) {
-    final Uri $url = Uri.parse('/workouts/finish/${workoutID}');
+    final Uri $url = Uri.parse('/workouts/finish');
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };

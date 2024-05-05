@@ -318,10 +318,19 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         break;
 
       case "finishWorkout":
+        List<Map<String, dynamic>> exercises = [];
+        for (final ex in event.currentWorkout!.exercises) {
+          exercises.add(ex.toJson());
+        }
+
         final response = await _workoutService.patchFinishWorkout(
           userBox.get("flexusjwt"),
-          event.workoutID,
-          {"exercises": event.currentWorkout!.toJson()},
+          {
+            "workoutID": event.currentWorkout?.plan?.id,
+            "splitID": event.currentWorkout?.split?.id,
+            "gymID": event.currentWorkout?.gym?.id,
+            "exercises": exercises,
+          },
         );
 
         if (response.isSuccessful) {

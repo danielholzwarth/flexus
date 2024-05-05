@@ -14,3 +14,9 @@ type ExerciseInformation struct {
 	TypeID          int            `json:"typeID"`
 	OldMeasurements *[]Measurement `json:"oldMeasurements"`
 }
+
+type NewExerciseInformation struct {
+	Exercise        Exercise      `json:"exercise"`
+	OldMeasurements []Measurement `json:"oldMeasurements"`
+	Measurements    []Measurement `json:"measurements"`
+}
