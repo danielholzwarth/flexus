@@ -5,6 +5,7 @@ import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/workout/current_workout.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/timer.dart';
 import 'package:app/resources/app_settings.dart';
@@ -109,12 +110,23 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
 
               if (currentWorkout != null) {
-                debugPrint('Saving');
+                CurrentWorkout finishedCurrentWorkout =
+                    CurrentWorkout(gym: currentWorkout.gym, plan: currentWorkout.plan, split: currentWorkout.split, exercises: []);
+
+                for (var ex in currentWorkout.exercises) {
+                  CurrentExercise current = CurrentExercise(exercise: ex.exercise, oldMeasurements: ex.oldMeasurements, measurements: []);
+                  for (var m in ex.measurements) {
+                    if (m.workload > 0) {
+                      current.measurements.add(Measurement(repetitions: m.repetitions > 0 ? m.repetitions : 1, workload: m.workload));
+                    }
+                  }
+                  finishedCurrentWorkout.exercises.add(current);
+                }
 
                 workoutBloc.add(PatchWorkout(
                   workoutID: -1,
                   name: "finishWorkout",
-                  currentWorkout: currentWorkout,
+                  currentWorkout: finishedCurrentWorkout,
                 ));
                 if (widget.gym != null) {
                   userBox.put("currentGym", widget.gym);
@@ -147,6 +159,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               }
             } else {
               pages.add(const DocumentExercisePage(pageID: 1));
+              currentExercises.add(CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: []));
             }
 
             currentWorkout = CurrentWorkout(
