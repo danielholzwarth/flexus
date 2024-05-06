@@ -177,7 +177,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                       ),
             workout.endtime != null
                 ? CustomDefaultTextStyle(
-                    text: "(${workout.endtime!.difference(workout.starttime).inMinutes} min)",
+                    text: getCorrectDurationString(workout.starttime, workout.endtime!),
                     fontSize: AppSettings.fontSizeT2,
                   )
                 : const SizedBox(),
@@ -287,6 +287,19 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
         fontSize: AppSettings.fontSizeH4,
       ),
     );
+  }
+}
+
+String getCorrectDurationString(DateTime first, DateTime? second) {
+  if (second != null) {
+    int minutes = second.difference(first).inMinutes.abs();
+    if (minutes < 1) {
+      return first.minute != second.minute ? "(1 min)" : "(0 min)";
+    }
+
+    return "($minutes min)";
+  } else {
+    return "-";
   }
 }
 

@@ -12,13 +12,13 @@ class WorkoutDetails extends HiveObject {
   int workoutID;
 
   @HiveField(1)
-  DateTime date;
+  DateTime startTime;
 
   @HiveField(2)
-  Gym? gym;
+  DateTime? endtime;
 
   @HiveField(3)
-  int duration;
+  Gym? gym;
 
   @HiveField(4)
   Split? split;
@@ -34,9 +34,9 @@ class WorkoutDetails extends HiveObject {
 
   WorkoutDetails({
     required this.workoutID,
+    required this.startTime,
+    required this.endtime,
     required this.gym,
-    required this.date,
-    required this.duration,
     this.split,
     required this.exercises,
     required this.sets,

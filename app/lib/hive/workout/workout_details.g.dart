@@ -18,9 +18,9 @@ class WorkoutDetailsAdapter extends TypeAdapter<WorkoutDetails> {
     };
     return WorkoutDetails(
       workoutID: fields[0] as int,
-      gym: fields[2] as Gym?,
-      date: fields[1] as DateTime,
-      duration: fields[3] as int,
+      startTime: fields[1] as DateTime,
+      endtime: fields[2] as DateTime?,
+      gym: fields[3] as Gym?,
       split: fields[4] as Split?,
       exercises: (fields[5] as List).cast<Exercise>(),
       sets: (fields[6] as List)
@@ -37,11 +37,11 @@ class WorkoutDetailsAdapter extends TypeAdapter<WorkoutDetails> {
       ..writeByte(0)
       ..write(obj.workoutID)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.startTime)
       ..writeByte(2)
-      ..write(obj.gym)
+      ..write(obj.endtime)
       ..writeByte(3)
-      ..write(obj.duration)
+      ..write(obj.gym)
       ..writeByte(4)
       ..write(obj.split)
       ..writeByte(5)

@@ -2,6 +2,7 @@ import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -89,9 +90,9 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
             DataColumn(label: CustomDefaultTextStyle(text: '')),
           ],
           rows: [
-            buildDataRow("Date", DateFormat('dd.MM.yyyy').format(DateTime.parse(workoutDetails.date.toString()))),
+            buildDataRow("Date", DateFormat('dd.MM.yyyy').format(DateTime.parse(workoutDetails.startTime.toString()))),
             buildDataRow("Gym", workoutDetails.gym != null ? workoutDetails.gym!.name : "-"),
-            buildDataRow("Duration", getDurationString(workoutDetails)),
+            buildDataRow("Duration", getCorrectDurationString(workoutDetails.startTime, workoutDetails.endtime)),
             buildDataRow("Total moved weight", getTotalWeight(workoutDetails)),
             buildDataRow("New Personal Bests", workoutDetails.pbSetIDs.length.toString()),
           ],
@@ -184,12 +185,6 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
     } else {
       return "${set.workload}s";
     }
-  }
-
-  String getDurationString(WorkoutDetails workoutDetails) {
-    String hoursString = workoutDetails.duration > 60 ? "${(workoutDetails.duration / 60).floor()}h " : "";
-    String minutesString = "${workoutDetails.duration % 60}min";
-    return hoursString + minutesString;
   }
 
   String getTotalWeight(WorkoutDetails workoutDetails) {

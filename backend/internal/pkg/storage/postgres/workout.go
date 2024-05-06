@@ -144,29 +144,23 @@ func (db DB) GetWorkoutDetailsFromWorkoutID(userAccountID int, workoutID int) (t
 	workoutDetails.WorkoutID = workoutID
 
 	query := `
-		SELECT w.starttime, EXTRACT(EPOCH FROM (w.endtime - w.starttime)) / 60 AS duration_minutes, w.gym_id, w.split_id
+		SELECT w.starttime, w.endtime, w.gym_id, w.split_id
 		FROM workout w
 		JOIN user_account ua ON w.user_id = ua.id
 		WHERE w.id = $1
 		AND ua.id = $2;
 	`
 
-	var durationFloat *float64
 	var gymID *float64
 	var splitID *float64
 
 	err := db.pool.QueryRow(query, workoutID, userAccountID).Scan(
-		&workoutDetails.Date,
-		&durationFloat,
+		&workoutDetails.Starttime,
+		&workoutDetails.Endtime,
 		&gymID,
 		&splitID)
 	if err != nil {
 		return types.WorkoutDetails{}, err
-	}
-
-	if durationFloat != nil {
-		duration := int(*durationFloat)
-		workoutDetails.Duration = &duration
 	}
 
 	if gymID != nil {

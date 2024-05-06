@@ -25,9 +25,9 @@ type WorkoutOverview struct {
 
 type WorkoutDetails struct {
 	WorkoutID int         `json:"workoutID"`
-	Date      time.Time   `json:"date"`
+	Starttime time.Time   `json:"starttime"`
+	Endtime   *time.Time  `json:"endtime"`
 	Gym       *Gym        `json:"gym"`
-	Duration  *int        `json:"duration"`
 	Split     *Split      `json:"split"`
 	Exercises *[]Exercise `json:"exercises"`
 	Sets      *[][]Set    `json:"sets"`
