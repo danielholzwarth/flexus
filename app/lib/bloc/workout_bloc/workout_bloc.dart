@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/workout/workout_service.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
@@ -162,9 +160,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
     if (response.isSuccessful) {
       if (response.body != "null") {
-        print(response.bodyString);
-
-        Map<String, dynamic> json = jsonDecode(response.bodyString);
+        Map<String, dynamic> json = response.body;
 
         Gym? gym;
 
