@@ -359,18 +359,53 @@ func (db DB) PatchWorkout(userAccountID int, workoutID int, columnName string, v
 }
 
 func (db DB) PatchStartWorkout(userAccountID int, workout types.StartWorkout) error {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil || err != nil {
+			tx.Rollback()
+			if p != nil {
+				panic(p)
+			}
+		}
+	}()
+
 	query := `
+		SELECT EXISTS(
+			SELECT 1
+			FROM workout
+			WHERE user_id = $1 
+			AND is_active = TRUE
+		);
+	`
+
+	var exists bool
+	err = tx.QueryRow("SELECT EXISTS(SELECT 1 FROM workout WHERE user_id = $1 AND is_active = TRUE)", userAccountID).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("there is already an active workout")
+	}
+
+	query = `
 		UPDATE workout
 		SET split_id = $3, gym_id = $4, starttime = NOW(), is_active = TRUE
 		WHERE id = $1 
 		AND user_id = $2;
 	`
 
-	_, err := db.pool.Exec(query, workout.WorkoutID, userAccountID, workout.SplitID, workout.GymID)
+	_, err = tx.Exec(query, workout.WorkoutID, userAccountID, workout.SplitID, workout.GymID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return errors.New("workout not found")
 		}
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
 		return err
 	}
 

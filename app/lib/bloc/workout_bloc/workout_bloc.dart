@@ -217,7 +217,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         WorkoutDetails workoutDetails = WorkoutDetails(
           workoutID: json['workoutID'],
           startTime: DateTime.parse(json['starttime']),
-          endtime: DateTime.tryParse(json['endtime']),
+          endtime: json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
           gym: gym,
           split: json['split'] != null
               ? Split(
