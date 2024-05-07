@@ -202,8 +202,9 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       children: [
         widget.workoutOverview.splitName != null
             ? highlightTitle(widget.workoutOverview.splitName!)
-            : const CustomDefaultTextStyle(text: "Custom Workout"),
-        //Get actual PRs
+            : widget.workoutOverview.workout.endtime != null
+                ? const CustomDefaultTextStyle(text: "Custom Workout")
+                : const CustomDefaultTextStyle(text: "Start Workout"),
         Row(
           children: [
             Visibility(

@@ -28,16 +28,8 @@ class DocumentExercisePage extends StatefulWidget {
 
 class _DocumentExercisePageState extends State<DocumentExercisePage> with AutomaticKeepAliveClientMixin<DocumentExercisePage> {
   final userBox = Hive.box('userBox');
-
   final ExerciseBloc exerciseBloc = ExerciseBloc();
-
-  final setsGoalController = TextEditingController();
-  final repsGoalController = TextEditingController();
-  final weightGoalController = TextEditingController();
-  final durationGoalController = TextEditingController();
-
   List<Map<String, TextEditingController>> setController = [];
-
   CurrentExercise? currentExercise;
 
   @override
@@ -47,6 +39,50 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
   Widget build(BuildContext context) {
     super.build(context);
 
+    initController();
+
+    Size deviceSize = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: AppSettings.background,
+      body: buildBody(deviceSize),
+    );
+  }
+
+  SingleChildScrollView buildBody(Size deviceSize) {
+    return SingleChildScrollView(
+      child: BlocConsumer(
+        bloc: exerciseBloc,
+        listener: (context, state) {
+          if (state is ExerciseFromExerciseIDLoaded) {
+            if (currentExercise != null) {
+              setController.clear();
+
+              currentExercise = state.currentExercise;
+
+              CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+              if (currentWorkout != null) {
+                currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                userBox.put("currentWorkout", currentWorkout);
+              }
+            }
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            children: [
+              buildExercise(context, deviceSize),
+              currentExercise != null && currentExercise!.exercise.id != 0 ? buildOldMeasurements(deviceSize) : Container(),
+              currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void initController() {
     CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
     if (currentWorkout != null) {
       currentExercise = currentWorkout.exercises[widget.pageID - 1];
@@ -67,42 +103,6 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
         }
       }
     }
-
-    Size deviceSize = MediaQuery.of(context).size;
-
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      body: SingleChildScrollView(
-        child: BlocConsumer(
-          bloc: exerciseBloc,
-          listener: (context, state) {
-            if (state is ExerciseFromExerciseIDLoaded) {
-              if (currentExercise != null) {
-                setController.clear();
-
-                currentExercise = state.currentExercise;
-
-                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
-                if (currentWorkout != null) {
-                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
-
-                  userBox.put("currentWorkout", currentWorkout);
-                }
-              }
-            }
-          },
-          builder: (context, state) {
-            return Column(
-              children: [
-                buildExercise(context, deviceSize),
-                currentExercise != null && currentExercise!.exercise.id != 0 ? buildGoal(deviceSize) : Container(),
-                currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
-              ],
-            );
-          },
-        ),
-      ),
-    );
   }
 
   Widget buildExercise(BuildContext context, Size deviceSize) {
@@ -143,7 +143,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     );
   }
 
-  Widget buildGoal(Size deviceSize) {
+  Widget buildOldMeasurements(Size deviceSize) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -201,7 +201,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                                   SizedBox(
                                     width: deviceSize.width * 0.15,
                                     child: CustomDefaultTextStyle(
-                                      text: currentExercise!.oldMeasurements[i].workload.toString(),
+                                      text: "${currentExercise!.oldMeasurements[i].workload}kg",
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
@@ -232,7 +232,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                                   SizedBox(
                                     width: deviceSize.width * 0.15,
                                     child: CustomDefaultTextStyle(
-                                      text: currentExercise!.oldMeasurements[i].workload.toString(),
+                                      text: "${currentExercise!.oldMeasurements[i].workload}s",
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
