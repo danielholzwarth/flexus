@@ -9,9 +9,8 @@ import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 
 class RegisterUsernamePage extends StatefulWidget {
@@ -70,20 +69,41 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
       fontColor: AppSettings.fontV1,
       function: () async {
         if (usernameController.text.length < 6) {
-          await FlexusGet.showGetSnackbar(message: "Username must be at least 6 characters long!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Username must be at least 6 characters long!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else if (usernameController.text.length > 20) {
-          await FlexusGet.showGetSnackbar(message: "Username must be shorter than 20 characters!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Username must be shorter than 20 characters!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else {
           final response = await loginUserAccountService.getUsernameAvailability(usernameController.text);
           if (response.statusCode == 200) {
             final bool availability = response.body;
             if (!availability) {
-              await FlexusGet.showGetSnackbar(message: "Username is already assigned!");
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: "Username is already assigned!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
               setState(() {});
             } else {
-              if (!Get.isSnackbarOpen) {
-                Get.closeCurrentSnackbar();
-              }
               Navigator.push(
                 context,
                 PageTransition(
@@ -93,7 +113,15 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
               );
             }
           } else {
-            await FlexusGet.showGetSnackbar(message: "Statuscode ${response.statusCode}\nError: ${response.error}");
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: "Statuscode ${response.statusCode}\nError: ${response.error}",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
           }
         }
       },

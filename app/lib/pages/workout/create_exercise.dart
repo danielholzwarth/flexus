@@ -3,9 +3,9 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateExercisePage extends StatefulWidget {
   const CreateExercisePage({super.key});
@@ -41,9 +41,25 @@ class _CreateExercisePageState extends State<CreateExercisePage> {
         bloc: exerciseBloc,
         listener: (context, state) {
           if (state is ExerciseCreated) {
-            FlexusGet.showGetSnackbar(message: "Exercise created!");
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: "Exercise created!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.confirm,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
           } else if (state is ExerciseError) {
-            FlexusGet.showGetSnackbar(message: "Error creating exercise!");
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: "Exercise creating failed!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
           }
         },
         child: SingleChildScrollView(

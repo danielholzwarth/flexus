@@ -16,9 +16,9 @@ import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_overview_list_tile.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -292,7 +292,6 @@ class _GymPageState extends State<GymPage> {
 
                               DateTime startTime = DateTime.now().copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
 
-                              //TODO: Create Workout with starttime Now, isActive false
                               GymOverview? pickedGymOverview = gymOverviews.firstWhereOrNull((element) => element.gym.name == selectedItem);
                               if (pickedGymOverview != null) {
                                 workoutBloc.add(PostWorkout(gymID: pickedGymOverview.gym.id, startTime: startTime));
@@ -317,7 +316,15 @@ class _GymPageState extends State<GymPage> {
           gymBloc.add(GetGymOverviews());
           setState(() {});
         } else {
-          FlexusGet.showGetSnackbar(message: "Gyms can not have a duplicate name.");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Gyms can not have a duplicate name.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
           setState(() {});
         }
       },

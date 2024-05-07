@@ -7,9 +7,9 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
@@ -195,7 +195,15 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
             FlexusButton(
               text: "Send Notification",
               function: () async {
-                await FlexusGet.showGetSnackbar(message: "Not implemented yet.");
+                Fluttertoast.cancel();
+                Fluttertoast.showToast(
+                  msg: "Not implemented yet",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  backgroundColor: AppSettings.error,
+                  textColor: AppSettings.fontV1,
+                  fontSize: AppSettings.fontSize,
+                );
               },
               backgroundColor: AppSettings.backgroundV1,
               fontColor: AppSettings.fontV1,

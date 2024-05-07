@@ -12,12 +12,11 @@ import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:get/get.dart' as get_x;
 
 class RegisterPasswordPage extends StatefulWidget {
   final String username;
@@ -119,11 +118,35 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
       fontColor: AppSettings.fontV1,
       function: () async {
         if (passwordController.text.length < 8) {
-          await FlexusGet.showGetSnackbar(message: "Password must be longer than 8 characters!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Password must be longer than 8 characters!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else if (passwordController.text.length > 128) {
-          await FlexusGet.showGetSnackbar(message: "Passwords must be shorter or equal to 128 characters!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Passwords must be shorter or equal to 128 characters!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else if (passwordController.text != confirmPasswordController.text) {
-          await FlexusGet.showGetSnackbar(message: "Passwords are not equal!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Passwords are not equal!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else {
           Response<dynamic> response = await loginUserAccountService.postUserAccount({
             "username": widget.username,
@@ -148,10 +171,6 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
             await getUserSettings();
 
-            if (!get_x.Get.isSnackbarOpen) {
-              get_x.Get.closeCurrentSnackbar();
-            }
-
             Navigator.pushAndRemoveUntil(
               context,
               PageTransition(
@@ -161,7 +180,15 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               (route) => false,
             );
           } else {
-            await FlexusGet.showGetSnackbar(message: "Statuscode ${response.statusCode}\nError: ${response.error}");
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: "Statuscode ${response.statusCode}\nError: ${response.error}",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
           }
         }
       },

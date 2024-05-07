@@ -11,12 +11,11 @@ import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:get/get.dart' as get_x;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -102,10 +101,6 @@ class _LoginPageState extends State<LoginPage> {
 
           await getUserSettings();
 
-          if (!get_x.Get.isSnackbarOpen) {
-            get_x.Get.closeCurrentSnackbar();
-          }
-
           Navigator.pushAndRemoveUntil(
             context,
             PageTransition(
@@ -115,7 +110,15 @@ class _LoginPageState extends State<LoginPage> {
             (route) => false,
           );
         } else {
-          await FlexusGet.showGetSnackbar(message: "Wrong username or password.");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Wrong username or password.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         }
       },
     );

@@ -6,9 +6,8 @@ import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
 
 class RegisterNamePage extends StatefulWidget {
@@ -71,13 +70,26 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
       fontColor: AppSettings.fontV1,
       function: () async {
         if (nameController.text.isEmpty) {
-          await FlexusGet.showGetSnackbar(message: "Name must not be empty!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Name must not be empty!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else if (nameController.text.length > 20) {
-          await FlexusGet.showGetSnackbar(message: "Name must not be longer than 20 characters!");
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Name must not be longer than 20 characters!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         } else {
-          if (!Get.isSnackbarOpen) {
-            Get.closeCurrentSnackbar();
-          }
           Navigator.push(
             context,
             PageTransition(

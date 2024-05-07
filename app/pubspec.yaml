@@ -52,6 +52,9 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.0.0
 
+  #Toast
+  fluttertoast: ^8.2.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

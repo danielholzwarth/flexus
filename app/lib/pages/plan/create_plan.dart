@@ -5,11 +5,10 @@ import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
-import 'package:app/widgets/style/flexus_get_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreatePlanPage extends StatefulWidget {
   const CreatePlanPage({super.key});
@@ -130,14 +129,19 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                 switch (currentStep) {
                   case 0:
                     if (nameController.text.isNotEmpty) {
-                      if (!Get.isSnackbarOpen) {
-                        Get.closeCurrentSnackbar();
-                      }
                       setState(() {
                         currentStep++;
                       });
                     } else {
-                      await FlexusGet.showGetSnackbar(message: "Plan Name can not be empty!");
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: "Plan Name can not be empty!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
+                      );
                     }
                     break;
 
@@ -161,22 +165,35 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
 
                         isWeeklyRepetetive = false;
                       }
-                      if (!Get.isSnackbarOpen) {
-                        Get.closeCurrentSnackbar();
-                      }
 
                       setState(() {
                         currentStep++;
                       });
                     } else {
-                      await FlexusGet.showGetSnackbar(message: "Split Count must be greater than 0.");
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: "Split Count must be greater than 0.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
+                      );
                     }
 
                     break;
 
                   case 2:
                     if (splitControllers.any((element) => element.text.isEmpty)) {
-                      await FlexusGet.showGetSnackbar(message: "Each Split must have a Name.");
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: "Each Split must have a Name.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
+                      );
                     } else {
                       Set<String> uniqueTexts = {};
                       bool hasDuplicates = false;
@@ -188,11 +205,16 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                       }
 
                       if (hasDuplicates) {
-                        await FlexusGet.showGetSnackbar(message: "Duplicate texts are not allowed.");
+                        Fluttertoast.cancel();
+                        Fluttertoast.showToast(
+                          msg: "Duplicate texts are not allowed.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          backgroundColor: AppSettings.error,
+                          textColor: AppSettings.fontV1,
+                          fontSize: AppSettings.fontSize,
+                        );
                       } else {
-                        if (!Get.isSnackbarOpen) {
-                          Get.closeCurrentSnackbar();
-                        }
                         setState(() {
                           currentStep++;
                         });
