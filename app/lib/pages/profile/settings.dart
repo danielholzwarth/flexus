@@ -46,12 +46,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void dispose() {
+    super.dispose();
     scrollController.dispose();
     textEditingController.dispose();
     oldPasswordController.dispose();
     newPasswordController.dispose();
     confirmNewPasswordController.dispose();
-    super.dispose();
   }
 
   @override

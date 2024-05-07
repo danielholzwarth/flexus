@@ -52,9 +52,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    super.dispose();
     scrollController.dispose();
     searchController.dispose();
-    super.dispose();
   }
 
   @override

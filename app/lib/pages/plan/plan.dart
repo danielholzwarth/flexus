@@ -35,8 +35,8 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   void dispose() {
-    scrollController.dispose();
     super.dispose();
+    scrollController.dispose();
   }
 
   @override

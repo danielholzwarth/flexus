@@ -35,9 +35,9 @@ class _ArchivePageState extends State<ArchivePage> {
 
   @override
   void dispose() {
+    super.dispose();
     scrollController.dispose();
     searchController.dispose();
-    super.dispose();
   }
 
   @override

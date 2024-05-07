@@ -54,9 +54,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   }
 
   @override
-  void dispose() {
-    timer?.cancel();
+  void dispose() async {
     super.dispose();
+    timer?.cancel();
   }
 
   @override
@@ -231,14 +231,14 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         if (val != null) {
           timerValue = val;
           timerDuration = Duration(milliseconds: timerValue.milliseconds);
-          if (!timerValue.isRunning) {
-            timerValue.milliseconds = 0;
-          } else {
+          if (timerValue.isRunning && timerValue.milliseconds > 0) {
             timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
               setState(() {
                 timerDuration = timerDuration += const Duration(milliseconds: 10);
               });
             });
+          } else {
+            timerValue.milliseconds = 0;
           }
         }
       },

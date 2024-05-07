@@ -60,8 +60,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void dispose() {
-    reportTextController.dispose();
     super.dispose();
+    reportTextController.dispose();
   }
 
   @override

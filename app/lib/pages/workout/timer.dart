@@ -25,7 +25,7 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void initState() {
-    if (widget.timerValue != null && widget.timerValue!.isRunning) {
+    if (widget.timerValue != null && widget.timerValue!.isRunning && widget.timerValue!.milliseconds > 0) {
       timerDuration = Duration(milliseconds: widget.timerValue!.milliseconds);
       timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
         setState(() {
@@ -39,8 +39,8 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void dispose() {
-    timer?.cancel();
     super.dispose();
+    timer?.cancel();
   }
 
   @override
@@ -52,7 +52,7 @@ class _TimerPageState extends State<TimerPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context, TimerValue(isRunning: true, milliseconds: timerDuration.inMilliseconds));
+            Navigator.pop(context, TimerValue(isRunning: timer?.isActive ?? false, milliseconds: timerDuration.inMilliseconds));
           },
         ),
         title: CustomDefaultTextStyle(

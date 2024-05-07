@@ -47,8 +47,8 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
   @override
   void dispose() {
-    animationController.dispose();
     super.dispose();
+    animationController.dispose();
   }
 
   @override

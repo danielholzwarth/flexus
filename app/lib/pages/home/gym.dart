@@ -46,8 +46,8 @@ class _GymPageState extends State<GymPage> {
 
   @override
   void dispose() {
-    scrollController.dispose();
     super.dispose();
+    scrollController.dispose();
   }
 
   @override

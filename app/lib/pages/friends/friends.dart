@@ -36,9 +36,9 @@ class _FriendsPageState extends State<FriendsPage> {
 
   @override
   void dispose() {
+    super.dispose();
     scrollController.dispose();
     searchController.dispose();
-    super.dispose();
   }
 
   @override

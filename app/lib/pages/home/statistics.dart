@@ -14,8 +14,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   @override
   void dispose() {
-    scrollController.dispose();
     super.dispose();
+    scrollController.dispose();
   }
 
   @override

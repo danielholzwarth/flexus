@@ -41,12 +41,12 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
 
   @override
   void dispose() {
+    super.dispose();
     nameController.dispose();
     splitCountController.dispose();
     for (var controller in splitControllers) {
       controller.dispose();
     }
-    super.dispose();
   }
 
   @override
