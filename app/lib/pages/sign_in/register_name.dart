@@ -28,8 +28,8 @@ class _RegisterNamePageState extends State<RegisterNamePage> {
 
   @override
   void dispose() {
-    super.dispose();
     nameController.dispose();
+    super.dispose();
   }
 
   @override

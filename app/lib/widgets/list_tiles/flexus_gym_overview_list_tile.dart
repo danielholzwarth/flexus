@@ -37,9 +37,9 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   @override
   void dispose() {
-    super.dispose();
     textEditingController.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override

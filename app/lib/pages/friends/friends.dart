@@ -30,15 +30,15 @@ class _FriendsPageState extends State<FriendsPage> {
 
   @override
   void initState() {
-    userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
     super.initState();
+    userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
   }
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
     searchController.dispose();
+    super.dispose();
   }
 
   @override

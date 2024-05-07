@@ -26,8 +26,8 @@ class _FlexusGymExpansionTileState extends State<FlexusGymExpansionTile> {
 
   @override
   void initState() {
-    userAccountGymBloc.add(GetUserAccountGym(gymID: widget.gym.id));
     super.initState();
+    userAccountGymBloc.add(GetUserAccountGym(gymID: widget.gym.id));
   }
 
   @override

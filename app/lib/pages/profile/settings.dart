@@ -40,18 +40,18 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    settingsBloc.add(GetSettings());
     super.initState();
+    settingsBloc.add(GetSettings());
   }
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
     textEditingController.dispose();
     oldPasswordController.dispose();
     newPasswordController.dispose();
     confirmNewPasswordController.dispose();
+    super.dispose();
   }
 
   @override

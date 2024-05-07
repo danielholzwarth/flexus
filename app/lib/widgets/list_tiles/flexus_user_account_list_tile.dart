@@ -27,8 +27,8 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
 
   @override
   void initState() {
-    friendshipBloc.add(GetFriendship(requestedID: widget.userAccount.id));
     super.initState();
+    friendshipBloc.add(GetFriendship(requestedID: widget.userAccount.id));
   }
 
   @override

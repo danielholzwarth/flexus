@@ -47,18 +47,16 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
   @override
   void dispose() {
-    super.dispose();
     animationController.dispose();
+    super.dispose();
   }
 
   @override
   void initState() {
+    super.initState();
     initializationBloc.add(InitializeApp());
-
     final flexusjwt = userBox.get("flexusjwt");
     AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
-
-    super.initState();
   }
 
   @override

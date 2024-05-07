@@ -38,16 +38,16 @@ class _GymPageState extends State<GymPage> {
 
   @override
   void initState() {
+    super.initState();
     if (AppSettings.hasConnection) {
       gymBloc.add(GetGymOverviews());
     }
-    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override

@@ -27,8 +27,8 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
 
   @override
   void initState() {
-    workoutBloc.add(GetWorkoutDetails(workoutID: widget.workoutID));
     super.initState();
+    workoutBloc.add(GetWorkoutDetails(workoutID: widget.workoutID));
   }
 
   @override

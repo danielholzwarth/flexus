@@ -29,8 +29,8 @@ class _FlexusUserListListTileState extends State<FlexusUserListListTile> {
 
   @override
   void initState() {
-    userListBloc.add(GetHasUserList(listID: widget.listID, userID: widget.userAccount.id));
     super.initState();
+    userListBloc.add(GetHasUserList(listID: widget.listID, userID: widget.userAccount.id));
   }
 
   @override

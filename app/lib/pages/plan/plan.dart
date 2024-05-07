@@ -29,14 +29,14 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   void initState() {
-    planBloc.add(GetActivePlan());
     super.initState();
+    planBloc.add(GetActivePlan());
   }
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override

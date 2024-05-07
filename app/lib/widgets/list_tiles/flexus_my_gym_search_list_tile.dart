@@ -25,8 +25,8 @@ class _FlexusMyGymSearchListTileState extends State<FlexusMyGymSearchListTile> {
 
   @override
   void initState() {
-    userAccountGymBloc.add(GetUserAccountGym(gymID: widget.gym.id));
     super.initState();
+    userAccountGymBloc.add(GetUserAccountGym(gymID: widget.gym.id));
   }
 
   @override

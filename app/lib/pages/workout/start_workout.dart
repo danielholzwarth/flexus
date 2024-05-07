@@ -36,14 +36,20 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.workout != null) {
       workoutBloc.add(GetWorkoutDetails(workoutID: widget.workout!.id));
     } else {
       currentGym = userBox.get("currentGym");
     }
     currentPlan = userBox.get("currentPlan");
-
-    super.initState();
+    if (currentPlan != null) {
+      if (currentPlan!.currentSplit == currentPlan!.splits.length - 1) {
+        currentPlan!.currentSplit = 0;
+      } else {
+        currentPlan!.currentSplit += 1;
+      }
+    }
   }
 
   @override

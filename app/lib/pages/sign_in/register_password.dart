@@ -40,9 +40,9 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
 
   @override
   void dispose() {
-    super.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override

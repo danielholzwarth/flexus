@@ -48,6 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    super.initState();
     bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
     userAccountBloc.add(GetUserAccount(userAccountID: widget.userID));
     friendshipBloc.add(GetFriendship(requestedID: widget.userID));
@@ -55,13 +56,12 @@ class _ProfilePageState extends State<ProfilePage> {
     isNameChecked = false;
     isUsernameChecked = false;
     isOtherChecked = false;
-    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     reportTextController.dispose();
+    super.dispose();
   }
 
   @override

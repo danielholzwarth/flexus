@@ -21,11 +21,6 @@ class _ExerciseExplanationPageState extends State<ExerciseExplanationPage> {
   ExerciseBloc exerciseBloc = ExerciseBloc();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
 

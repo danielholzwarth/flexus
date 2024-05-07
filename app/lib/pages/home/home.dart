@@ -44,17 +44,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    super.initState();
     workoutBloc.add(GetWorkouts());
     UserAccount userAccount = userBox.get("userAccount");
     userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
-    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
     searchController.dispose();
+    super.dispose();
   }
 
   @override

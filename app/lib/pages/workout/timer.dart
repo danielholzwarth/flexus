@@ -25,6 +25,7 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.timerValue != null && widget.timerValue!.isRunning && widget.timerValue!.milliseconds > 0) {
       timerDuration = Duration(milliseconds: widget.timerValue!.milliseconds);
       timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
@@ -34,13 +35,12 @@ class _TimerPageState extends State<TimerPage> {
       });
       isRunning = true;
     }
-    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     timer?.cancel();
+    super.dispose();
   }
 
   @override

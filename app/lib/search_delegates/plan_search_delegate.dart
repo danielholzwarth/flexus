@@ -17,8 +17,8 @@ class PlanSearchDelegate extends SearchDelegate {
 
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+    super.dispose();
   }
 
   @override
