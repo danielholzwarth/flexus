@@ -1,12 +1,17 @@
 import 'dart:async';
 
+import 'package:app/hive/timer/timer_value.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 
 class TimerPage extends StatefulWidget {
-  const TimerPage({super.key});
+  const TimerPage({
+    super.key,
+    this.timerValue,
+  });
+  final TimerValue? timerValue;
 
   @override
   State<TimerPage> createState() => _TimerPageState();
@@ -14,13 +19,27 @@ class TimerPage extends StatefulWidget {
 
 class _TimerPageState extends State<TimerPage> {
   Duration timerDuration = Duration.zero;
-  late Timer timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {});
+  Timer? timer;
   bool isRunning = false;
   List<Duration> rounds = [];
 
   @override
+  void initState() {
+    if (widget.timerValue != null && widget.timerValue!.isRunning) {
+      timerDuration = Duration(milliseconds: widget.timerValue!.milliseconds);
+      timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+        setState(() {
+          timerDuration = timerDuration += const Duration(milliseconds: 10);
+        });
+      });
+      isRunning = true;
+    }
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -33,7 +52,7 @@ class _TimerPageState extends State<TimerPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context, timerDuration.inSeconds);
+            Navigator.pop(context, TimerValue(isRunning: true, milliseconds: timerDuration.inMilliseconds));
           },
         ),
         title: CustomDefaultTextStyle(
@@ -138,7 +157,7 @@ class _TimerPageState extends State<TimerPage> {
           });
         } else {
           setState(() {
-            timer.cancel();
+            timer?.cancel();
             isRunning = false;
           });
         }
@@ -192,7 +211,7 @@ class _TimerPageState extends State<TimerPage> {
           foregroundColor: MaterialStateProperty.all(AppSettings.primary),
           fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.5))),
       onPressed: () async {
-        Navigator.pop(context, timerDuration.inSeconds);
+        Navigator.pop(context, TimerValue(isRunning: false, milliseconds: timerDuration.inMilliseconds));
       },
       child: CustomDefaultTextStyle(
         text: "Exit",

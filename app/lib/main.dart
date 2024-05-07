@@ -15,6 +15,7 @@ import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/hive/split/split_overview.dart';
+import 'package:app/hive/timer/timer_value.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/hive/user_list/user_list.dart';
@@ -97,6 +98,7 @@ Future<void> initializeHive() async {
     if (!Hive.isAdapterRegistered(20)) Hive.registerAdapter(CurrentWorkoutAdapter());
     if (!Hive.isAdapterRegistered(21)) Hive.registerAdapter(CurrentExerciseAdapter());
     if (!Hive.isAdapterRegistered(22)) Hive.registerAdapter(CurrentPlanAdapter());
+    if (!Hive.isAdapterRegistered(23)) Hive.registerAdapter(TimerValueAdapter());
 
     if (!Hive.isBoxOpen('userBox')) await Hive.openBox('userBox');
   } catch (e) {

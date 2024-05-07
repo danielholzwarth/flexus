@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/exercise/current_exercise.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/current_plan.dart';
+import 'package:app/hive/timer/timer_value.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/measurement.dart';
 import 'package:app/pages/workout/document_exercise.dart';
@@ -40,6 +43,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   int currentPageIndex = 0;
   List<Widget> pages = List.empty(growable: true);
   CurrentWorkout? currentWorkout;
+  Timer? timer;
+  TimerValue timerValue = TimerValue(isRunning: false, milliseconds: 0);
+  Duration timerDuration = Duration.zero;
 
   @override
   void initState() {
@@ -48,12 +54,18 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   }
 
   @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppSettings.background,
       appBar: buildAppBar(context),
       body: buildBody(),
-      floatingActionButton: buildFloatingActionButton(),
+      floatingActionButton: timerValue.isRunning ? buildFloatingTimerButton() : buildFloatingActionButton(),
     );
   }
 
@@ -205,17 +217,72 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
     return FlexusFloatingActionButton(
       icon: Icons.timer_outlined,
       onPressed: () async {
-        dynamic result = await Navigator.push(
+        if (timerValue.isRunning) {
+          timerValue.milliseconds = timerDuration.inMilliseconds;
+        }
+
+        dynamic val = await Navigator.push(
           context,
           PageTransition(
             type: PageTransitionType.fade,
-            child: const TimerPage(),
+            child: TimerPage(timerValue: timerValue),
           ),
         );
-
-        debugPrint("Timer value: $result");
+        if (val != null) {
+          timerValue = val;
+          timerDuration = Duration(milliseconds: timerValue.milliseconds);
+          if (!timerValue.isRunning) {
+            timerValue.milliseconds = 0;
+          } else {
+            timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+              setState(() {
+                timerDuration = timerDuration += const Duration(milliseconds: 10);
+              });
+            });
+          }
+        }
       },
     );
+  }
+
+  Widget buildFloatingTimerButton() {
+    return FloatingActionButton.extended(
+      elevation: AppSettings.elevation,
+      backgroundColor: AppSettings.primary,
+      label: CustomDefaultTextStyle(
+        text: formatTime(timerDuration),
+        color: AppSettings.fontV1,
+        fontSize: AppSettings.fontSizeH4,
+      ),
+      onPressed: () async {
+        if (timerValue.isRunning) {
+          timerValue.milliseconds = timerDuration.inMilliseconds;
+        }
+
+        dynamic val = await Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: TimerPage(timerValue: timerValue),
+          ),
+        );
+        if (val != null) {
+          timerValue = val;
+          timerDuration = Duration(milliseconds: timerValue.milliseconds);
+          if (!timerValue.isRunning) {
+            timerValue.milliseconds = 0;
+          }
+        }
+      },
+    );
+  }
+
+  String formatTime(Duration duration) {
+    String minutesString = duration.inMinutes >= 1 ? "${duration.inMinutes.toString().padLeft(1, '0')}:" : "";
+    String secondsString = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    String millisecondsString = ((duration.inMilliseconds % 1000) ~/ 10).toString().padLeft(2, '0');
+
+    return "$minutesString$secondsString:$millisecondsString";
   }
 
   String getPlanName() {

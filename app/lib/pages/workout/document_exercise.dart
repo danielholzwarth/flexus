@@ -49,7 +49,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     );
   }
 
-  SingleChildScrollView buildBody(Size deviceSize) {
+  Widget buildBody(Size deviceSize) {
     return SingleChildScrollView(
       child: BlocConsumer(
         bloc: exerciseBloc,
