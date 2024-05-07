@@ -42,13 +42,6 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       currentGym = userBox.get("currentGym");
     }
     currentPlan = userBox.get("currentPlan");
-    if (currentPlan != null) {
-      if (currentPlan!.currentSplit == currentPlan!.splits.length - 1) {
-        currentPlan!.currentSplit = 0;
-      } else {
-        currentPlan!.currentSplit += 1;
-      }
-    }
 
     super.initState();
   }

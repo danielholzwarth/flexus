@@ -170,6 +170,12 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
                 userBox.put("currentGym", widget.gym);
               }
               if (widget.currentPlan != null) {
+                if (widget.currentPlan!.currentSplit == widget.currentPlan!.splits.length - 1) {
+                  widget.currentPlan!.currentSplit = 0;
+                } else {
+                  widget.currentPlan!.currentSplit += 1;
+                }
+
                 userBox.put("currentPlan", widget.currentPlan);
               }
               userBox.delete("currentWorkout");
