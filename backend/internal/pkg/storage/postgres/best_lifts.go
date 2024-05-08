@@ -1,6 +1,8 @@
 package postgres
 
 import (
+	"database/sql"
+	"errors"
 	"flexus/internal/types"
 )
 
@@ -19,17 +21,19 @@ func (db *DB) PostBestLift(userAccountID int, exerciseID int, position int) ([]t
 
 	err := db.pool.QueryRow(query, exerciseID, userAccountID).Scan(&setID)
 	if err != nil {
-		return []types.BestLiftOverview{}, err
-	}
-
-	query = `
+		if !errors.Is(err, sql.ErrNoRows) {
+			return []types.BestLiftOverview{}, err
+		}
+	} else {
+		query = `
 		INSERT INTO best_lifts (user_id, set_id, position)
 		VALUES ($1, $2, $3);	
 	`
 
-	_, err = db.pool.Exec(query, userAccountID, setID, position)
-	if err != nil {
-		return []types.BestLiftOverview{}, err
+		_, err = db.pool.Exec(query, userAccountID, setID, position)
+		if err != nil {
+			return []types.BestLiftOverview{}, err
+		}
 	}
 
 	bestLifts, err := db.GetBestLiftsFromUserID(userAccountID)
@@ -68,21 +72,23 @@ func (db *DB) PatchBestLift(userAccountID int, exerciseID int, position int) ([]
 			LIMIT 1;
 		`
 
-		err := db.pool.QueryRow(query, userAccountID, setID, position).Scan(&setID)
+		err := db.pool.QueryRow(query, exerciseID, userAccountID).Scan(&setID)
 		if err != nil {
-			return []types.BestLiftOverview{}, err
-		}
-
-		query = `
+			if !errors.Is(err, sql.ErrNoRows) {
+				return []types.BestLiftOverview{}, err
+			}
+		} else {
+			query = `
 			UPDATE best_lifts
 			SET set_id = $1
 			WHERE user_id = $2 
 			AND position = $3;
 		`
 
-		_, err = db.pool.Exec(query, setID, userAccountID, position)
-		if err != nil {
-			return []types.BestLiftOverview{}, err
+			_, err = db.pool.Exec(query, setID, userAccountID, position)
+			if err != nil {
+				return []types.BestLiftOverview{}, err
+			}
 		}
 
 		bestLifts, err := db.GetBestLiftsFromUserID(userAccountID)
@@ -105,12 +111,12 @@ func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOvervie
 	var bestLiftOverviews []types.BestLiftOverview
 	var typeID int
 	query := `
-        SELECT e.name AS "exerciseName", e.type_id, s.repetitions, s.workload
+        SELECT e.name AS "exerciseName", e.type_id, s.repetitions, s.workload, bl.position
         FROM best_lifts bl
         JOIN set s ON bl.set_id = s.id
         JOIN exercise e ON s.exercise_id= e.id
 		WHERE bl.user_id = $1
-		ORDER BY bl.position;
+		ORDER BY bl.position ASC;
 	`
 
 	rows, err := db.pool.Query(query, userAccountID)
@@ -121,7 +127,8 @@ func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOvervie
 
 	for rows.Next() {
 		var bestLiftOverview types.BestLiftOverview
-		if err := rows.Scan(&bestLiftOverview.ExerciseName, &typeID, &bestLiftOverview.Repetitions, &bestLiftOverview.Workload); err != nil {
+		err := rows.Scan(&bestLiftOverview.ExerciseName, &typeID, &bestLiftOverview.Repetitions, &bestLiftOverview.Workload, &bestLiftOverview.Position)
+		if err != nil {
 			return []types.BestLiftOverview{}, err
 		}
 

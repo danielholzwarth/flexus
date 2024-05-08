@@ -27,6 +27,20 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     final response = await _bestLiftsService.postBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
 
     if (response.isSuccessful) {
+      if (response.body != "null" && response.body.isNotEmpty) {
+        List<dynamic> jsonList = response.body;
+        bestLiftOverviews = jsonList.map((jsonMap) {
+          return BestLiftOverview(
+            exerciseName: jsonMap['exerciseName'],
+            repetitions: jsonMap['repetitions'],
+            workload: double.parse(jsonMap['workload'].toString()),
+            isRepetition: jsonMap['isRepetition'],
+            position: jsonMap['position'],
+          );
+        }).toList();
+
+        userBox.put("bestLiftOverview", bestLiftOverviews);
+      }
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
     } else {
       emit(BestLiftsError(error: response.error.toString()));
@@ -42,6 +56,20 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
     final response = await _bestLiftsService.patchBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
 
     if (response.isSuccessful) {
+      if (response.body != "null" && response.body.isNotEmpty) {
+        List<dynamic> jsonList = response.body;
+        bestLiftOverviews = jsonList.map((jsonMap) {
+          return BestLiftOverview(
+            exerciseName: jsonMap['exerciseName'],
+            repetitions: jsonMap['repetitions'],
+            workload: double.parse(jsonMap['workload'].toString()),
+            isRepetition: jsonMap['isRepetition'],
+            position: jsonMap['position'],
+          );
+        }).toList();
+
+        userBox.put("bestLiftOverview", bestLiftOverviews);
+      }
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
     } else {
       emit(BestLiftsError(error: response.error.toString()));
@@ -64,6 +92,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
               repetitions: jsonMap['repetitions'],
               workload: double.parse(jsonMap['workload'].toString()),
               isRepetition: jsonMap['isRepetition'],
+              position: jsonMap['position'],
             );
           }).toList();
 

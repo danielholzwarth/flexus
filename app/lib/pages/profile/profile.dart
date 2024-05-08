@@ -19,6 +19,7 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -264,22 +265,19 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _buildPedestal(
-                  state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
-                  state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here",
+                  state.bestLiftOverviews.firstWhereOrNull((element) => element.position == 1),
                   deviceSize.height * 0.08,
                   deviceSize.width,
                   1,
                 ),
                 _buildPedestal(
-                  state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
-                  state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here",
+                  state.bestLiftOverviews.firstWhereOrNull((element) => element.position == 0),
                   deviceSize.height * 0.1,
                   deviceSize.width,
                   0,
                 ),
                 _buildPedestal(
-                  state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
-                  state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here",
+                  state.bestLiftOverviews.firstWhereOrNull((element) => element.position == 2),
                   deviceSize.height * 0.06,
                   deviceSize.width,
                   2,
@@ -287,28 +285,15 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             );
           } else {
-            UserAccount userAccount = userBox.get("userAccount");
-            if (userAccount.id == widget.userID) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.08, deviceSize.width, 1),
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.1, deviceSize.width, 0),
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.06, deviceSize.width, 2),
-                ],
-              );
-            } else {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  _buildPedestal("", "None", deviceSize.height * 0.08, deviceSize.width, 1),
-                  _buildPedestal("", "None", deviceSize.height * 0.1, deviceSize.width, 0),
-                  _buildPedestal("", "None", deviceSize.height * 0.06, deviceSize.width, 2),
-                ],
-              );
-            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _buildPedestal(null, deviceSize.height * 0.08, deviceSize.width, 1),
+                _buildPedestal(null, deviceSize.height * 0.1, deviceSize.width, 0),
+                _buildPedestal(null, deviceSize.height * 0.06, deviceSize.width, 2),
+              ],
+            );
           }
         } else {
           return Center(child: CircularProgressIndicator(color: AppSettings.primary));
@@ -615,13 +600,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildPedestal(String text, String topText, double height, double screenwidth, int position) {
+  Widget _buildPedestal(BestLiftOverview? bestLiftOverview, double height, double screenwidth, int position) {
     UserAccount userAccount = userBox.get("userAccount");
     return Column(
       children: [
-        CustomDefaultTextStyle(
-          text: text,
-        ),
+        CustomDefaultTextStyle(text: bestLiftOverview != null ? bestLiftOverview.exerciseName : ""),
         Container(
           width: screenwidth / 3.5,
           height: height,
@@ -629,17 +612,23 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Center(
             child: TextButton(
               onPressed: userAccount.id == widget.userID
-                  ? () async {
-                      final val = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
-                      if (val != null) {
-                        Exercise ex = val;
-                        bestLiftsBloc.add(PostBestLift(position: position, exerciseID: ex.id));
-                      }
-                    }
+                  ? bestLiftOverview != null
+                      ? () async {
+                          final val = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
+                          if (val != null) {
+                            Exercise ex = val;
+                            bestLiftsBloc.add(PatchBestLift(position: position, exerciseID: ex.id));
+                          }
+                        }
+                      : () async {
+                          final val = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
+                          if (val != null) {
+                            Exercise ex = val;
+                            bestLiftsBloc.add(PostBestLift(position: position, exerciseID: ex.id));
+                          }
+                        }
                   : null,
-              child: CustomDefaultTextStyle(
-                text: topText,
-              ),
+              child: CustomDefaultTextStyle(text: bestLiftOverview != null ? getCorrectPedestralText(bestLiftOverview) : "[Empty]"),
             ),
           ),
         ),

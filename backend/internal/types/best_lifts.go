@@ -12,4 +12,5 @@ type BestLiftOverview struct {
 	Repetitions  int     `json:"repetitions"`
 	Workload     float64 `json:"workload"`
 	IsRepetition bool    `json:"isRepetition"`
+	Position     int     `json:"position"`
 }

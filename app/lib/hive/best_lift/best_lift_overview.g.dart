@@ -21,13 +21,14 @@ class BestLiftOverviewAdapter extends TypeAdapter<BestLiftOverview> {
       repetitions: fields[1] as int,
       workload: fields[2] as double,
       isRepetition: fields[3] as bool,
+      position: fields[4] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, BestLiftOverview obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.exerciseName)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class BestLiftOverviewAdapter extends TypeAdapter<BestLiftOverview> {
       ..writeByte(2)
       ..write(obj.workload)
       ..writeByte(3)
-      ..write(obj.isRepetition);
+      ..write(obj.isRepetition)
+      ..writeByte(4)
+      ..write(obj.position);
   }
 
   @override

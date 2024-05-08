@@ -16,10 +16,14 @@ class BestLiftOverview extends HiveObject {
   @HiveField(3)
   bool isRepetition;
 
+  @HiveField(4)
+  int position;
+
   BestLiftOverview({
     required this.exerciseName,
     required this.repetitions,
     required this.workload,
     required this.isRepetition,
+    required this.position,
   });
 }
