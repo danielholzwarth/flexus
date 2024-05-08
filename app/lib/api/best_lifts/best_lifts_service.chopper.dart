@@ -18,6 +18,46 @@ final class _$BestLiftsService extends BestLiftsService {
   final Type definitionType = BestLiftsService;
 
   @override
+  Future<Response<dynamic>> postBestLift(
+    String flexusJWTString,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/best_lifts/');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> patchBestLift(
+    String flexusJWTString,
+    Map<String, dynamic> body,
+  ) {
+    final Uri $url = Uri.parse('/best_lifts/');
+    final Map<String, String> $headers = {
+      'flexusjwt': flexusJWTString,
+    };
+    final $body = body;
+    final Request $request = Request(
+      'PATCH',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> getBestLiftsFromUserID(
     String flexusJWTString,
     int userAccountID,

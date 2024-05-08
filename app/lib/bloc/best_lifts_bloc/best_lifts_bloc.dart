@@ -13,7 +13,39 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   final userBox = Hive.box('userBox');
 
   BestLiftsBloc() : super(BestLiftsInitial()) {
+    on<PostBestLift>(_onPostBestLift);
+    on<PatchBestLift>(_onPatchBestLift);
     on<GetBestLifts>(_onGetBestLifts);
+  }
+
+  void _onPostBestLift(PostBestLift event, Emitter<BestLiftsState> emit) async {
+    print("post");
+    emit(BestLiftPosting());
+
+    List<BestLiftOverview> bestLiftOverviews = [];
+
+    final response = await _bestLiftsService.postBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
+
+    if (response.isSuccessful) {
+      emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
+    } else {
+      emit(BestLiftsError(error: response.error.toString()));
+    }
+  }
+
+  void _onPatchBestLift(PatchBestLift event, Emitter<BestLiftsState> emit) async {
+    print("patch");
+    emit(BestLiftPatching());
+
+    List<BestLiftOverview> bestLiftOverviews = [];
+
+    final response = await _bestLiftsService.patchBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
+
+    if (response.isSuccessful) {
+      emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
+    } else {
+      emit(BestLiftsError(error: response.error.toString()));
+    }
   }
 
   void _onGetBestLifts(GetBestLifts event, Emitter<BestLiftsState> emit) async {
@@ -30,7 +62,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
             return BestLiftOverview(
               exerciseName: jsonMap['exerciseName'],
               repetitions: jsonMap['repetitions'],
-              workload: jsonMap['workload'],
+              workload: double.parse(jsonMap['workload'].toString()),
               isRepetition: jsonMap['isRepetition'],
             );
           }).toList();

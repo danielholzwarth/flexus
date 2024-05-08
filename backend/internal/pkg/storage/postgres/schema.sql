@@ -21,11 +21,6 @@ CREATE TABLE language (
     name VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE position (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE user_account (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
@@ -162,7 +157,7 @@ CREATE TABLE best_lifts (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES user_account(id) ON DELETE CASCADE ON UPDATE CASCADE,
     set_id BIGINT NOT NULL REFERENCES set(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    position_id BIGINT NOT NULL REFERENCES position(id) ON DELETE CASCADE ON UPDATE CASCADE
+    position INTEGER NOT NULL
 );
 
 
@@ -172,10 +167,6 @@ Insert INTO "exercise_type" ("name") VALUES ('duration');
 
 Insert INTO "language" ("name") VALUES ('english');
 Insert INTO "language" ("name") VALUES ('german');
-
-Insert INTO "position" ("name") VALUES ('first');
-Insert INTO "position" ("name") VALUES ('second');
-Insert INTO "position" ("name") VALUES ('third');
 
 Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('hustler21', 'Karl', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2023-05-12', 5, null);
@@ -342,9 +333,8 @@ Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (7, 3, 1, 8, 125.5);
 Insert INTO "set" ("workout_id", "exercise_id", "order_number", "repetitions", "workload") VALUES (7, 2, 2, 1, 192.8);
 
-Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 1, 1);
-Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 2, 2);
-Insert INTO "best_lifts" ("user_id", "set_id", "position_id") VALUES (1, 3, 3);
-
+Insert INTO "best_lifts" ("user_id", "set_id", "position") VALUES (1, 1, 1);
+Insert INTO "best_lifts" ("user_id", "set_id", "position") VALUES (1, 2, 2);
+Insert INTO "best_lifts" ("user_id", "set_id", "position") VALUES (1, 3, 3);
 
 COMMIT;

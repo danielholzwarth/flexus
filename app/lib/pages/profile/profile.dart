@@ -6,6 +6,7 @@ import 'package:app/bloc/best_lifts_bloc/best_lifts_bloc.dart';
 import 'package:app/bloc/friendship_bloc/friendship_bloc.dart';
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/hive/best_lift/best_lift_overview.dart';
+import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/friends.dart';
 import 'package:app/pages/profile/leveling.dart';
@@ -263,20 +264,26 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _buildPedestal(
-                    state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
-                    state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here",
-                    deviceSize.height * 0.08,
-                    deviceSize.width),
+                  state.bestLiftOverviews.length >= 2 ? getCorrectPedestralText(state.bestLiftOverviews[1]) : "",
+                  state.bestLiftOverviews.length >= 2 ? state.bestLiftOverviews[1].exerciseName : "Tap here",
+                  deviceSize.height * 0.08,
+                  deviceSize.width,
+                  1,
+                ),
                 _buildPedestal(
-                    state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
-                    state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here",
-                    deviceSize.height * 0.1,
-                    deviceSize.width),
+                  state.bestLiftOverviews.isNotEmpty ? getCorrectPedestralText(state.bestLiftOverviews[0]) : "",
+                  state.bestLiftOverviews.isNotEmpty ? state.bestLiftOverviews[0].exerciseName : "Tap here",
+                  deviceSize.height * 0.1,
+                  deviceSize.width,
+                  0,
+                ),
                 _buildPedestal(
-                    state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
-                    state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here",
-                    deviceSize.height * 0.06,
-                    deviceSize.width),
+                  state.bestLiftOverviews.length >= 3 ? getCorrectPedestralText(state.bestLiftOverviews[2]) : "",
+                  state.bestLiftOverviews.length >= 3 ? state.bestLiftOverviews[2].exerciseName : "Tap here",
+                  deviceSize.height * 0.06,
+                  deviceSize.width,
+                  2,
+                ),
               ],
             );
           } else {
@@ -286,9 +293,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.08, deviceSize.width),
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.1, deviceSize.width),
-                  _buildPedestal("", "Tap here", deviceSize.height * 0.06, deviceSize.width),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.08, deviceSize.width, 1),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.1, deviceSize.width, 0),
+                  _buildPedestal("", "Tap here", deviceSize.height * 0.06, deviceSize.width, 2),
                 ],
               );
             } else {
@@ -296,9 +303,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildPedestal("", "None", deviceSize.height * 0.08, deviceSize.width),
-                  _buildPedestal("", "None", deviceSize.height * 0.1, deviceSize.width),
-                  _buildPedestal("", "None", deviceSize.height * 0.06, deviceSize.width),
+                  _buildPedestal("", "None", deviceSize.height * 0.08, deviceSize.width, 1),
+                  _buildPedestal("", "None", deviceSize.height * 0.1, deviceSize.width, 0),
+                  _buildPedestal("", "None", deviceSize.height * 0.06, deviceSize.width, 2),
                 ],
               );
             }
@@ -608,7 +615,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildPedestal(String text, String topText, double height, double screenwidth) {
+  Widget _buildPedestal(String text, String topText, double height, double screenwidth, int position) {
     UserAccount userAccount = userBox.get("userAccount");
     return Column(
       children: [
@@ -623,7 +630,11 @@ class _ProfilePageState extends State<ProfilePage> {
             child: TextButton(
               onPressed: userAccount.id == widget.userID
                   ? () async {
-                      await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
+                      final val = await showSearch(context: context, delegate: ExerciseSearchDelegate(isMultipleChoice: false));
+                      if (val != null) {
+                        Exercise ex = val;
+                        bestLiftsBloc.add(PostBestLift(position: position, exerciseID: ex.id));
+                      }
                     }
                   : null,
               child: CustomDefaultTextStyle(
