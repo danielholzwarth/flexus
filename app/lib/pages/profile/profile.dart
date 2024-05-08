@@ -160,7 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               alignment: Alignment.center,
                               child: CustomDefaultTextStyle(
-                                text: "Add Picture",
+                                text: userAccount.id == widget.userID ? "Add Picture" : "",
                                 fontSize: AppSettings.fontSize,
                                 color: AppSettings.font.withOpacity(0.5),
                               ),
