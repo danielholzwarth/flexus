@@ -12,6 +12,7 @@ import 'package:app/pages/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
@@ -45,9 +46,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    workoutBloc.add(GetWorkouts());
-    UserAccount userAccount = userBox.get("userAccount");
-    userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
+    loadData();
   }
 
   @override
@@ -73,6 +72,12 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: buildFloatingActionButton(context),
     );
+  }
+
+  void loadData() {
+    workoutBloc.add(GetWorkouts());
+    UserAccount userAccount = userBox.get("userAccount");
+    userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
   }
 
   Widget buildWorkouts() {
@@ -123,13 +128,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
         } else if (state is WorkoutError) {
-          return SliverFillRemaining(
-            child: Center(
-              child: CustomDefaultTextStyle(
-                text: 'Error: ${state.error}',
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
         } else {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         }

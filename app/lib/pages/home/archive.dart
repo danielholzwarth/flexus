@@ -3,6 +3,7 @@ import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/workouts_search_delegate.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/list_tiles/flexus_workout_list_tile.dart';
@@ -30,7 +31,7 @@ class _ArchivePageState extends State<ArchivePage> {
   @override
   void initState() {
     super.initState();
-    workoutBloc.add(GetSearchWorkout(isArchive: true));
+    loadData();
   }
 
   @override
@@ -55,6 +56,10 @@ class _ArchivePageState extends State<ArchivePage> {
         ),
       ),
     );
+  }
+
+  void loadData() {
+    workoutBloc.add(GetSearchWorkout(isArchive: true));
   }
 
   BlocBuilder<WorkoutBloc, Object?> buildWorkouts() {
@@ -100,13 +105,7 @@ class _ArchivePageState extends State<ArchivePage> {
             );
           }
         } else if (state is WorkoutError) {
-          return SliverFillRemaining(
-            child: Center(
-              child: CustomDefaultTextStyle(
-                text: 'Error: ${state.error}',
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
         } else {
           return SliverFillRemaining(
             child: Center(child: CircularProgressIndicator(color: AppSettings.primary)),

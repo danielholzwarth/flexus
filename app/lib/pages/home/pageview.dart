@@ -5,6 +5,7 @@ import 'package:app/pages/home/statistics.dart';
 import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +55,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    initializationBloc.add(InitializeApp());
-    final flexusjwt = userBox.get("flexusjwt");
-    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
+    loadData();
   }
 
   @override
@@ -91,12 +90,18 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
           return buildPages();
           // }
         } else if (state is InitializingError) {
-          return Center(child: CustomDefaultTextStyle(text: "Error: ${state.error}"));
+          return FlexusError(text: state.error, func: loadData);
         } else {
           return const Center(child: CustomDefaultTextStyle(text: "Error: No valid state"));
         }
       },
     );
+  }
+
+  void loadData() {
+    initializationBloc.add(InitializeApp());
+    final flexusjwt = userBox.get("flexusjwt");
+    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
   }
 
   Scaffold buildPages() {

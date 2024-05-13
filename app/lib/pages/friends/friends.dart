@@ -3,6 +3,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/pages/friends/show_qr.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/friends_search_delegate.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
@@ -31,7 +32,7 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   void initState() {
     super.initState();
-    userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
+    loadData();
   }
 
   @override
@@ -98,18 +99,16 @@ class _FriendsPageState extends State<FriendsPage> {
             );
           }
         } else if (state is UserAccountsError) {
-          return SliverFillRemaining(
-            child: Center(
-              child: CustomDefaultTextStyle(
-                text: 'Error: ${state.error}',
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
         } else {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         }
       },
     );
+  }
+
+  void loadData() {
+    userAccountBloc.add(GetUserAccounts(isFriend: true, hasRequest: true));
   }
 
   FlexusSliverAppBar buildAppBar(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/bloc/gym_bloc/gym_bloc.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_expansion_tile.dart';
 import 'package:app/widgets/list_tiles/flexus_gym_osm_expansion_tile.dart';
@@ -157,14 +158,7 @@ class GymSearchDelegate extends SearchDelegate {
                 body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
               );
             } else if (snapshot.hasError) {
-              return Scaffold(
-                backgroundColor: AppSettings.background,
-                body: Center(
-                  child: CustomDefaultTextStyle(
-                    text: 'Error: ${snapshot.error}',
-                  ),
-                ),
-              );
+              return Scaffold(backgroundColor: AppSettings.background, body: FlexusError(text: snapshot.error.toString(), func: null));
             } else {
               final List<Map<String, dynamic>> searchResults = snapshot.data ?? [];
 

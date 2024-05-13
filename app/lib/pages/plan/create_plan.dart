@@ -2,6 +2,7 @@ import 'package:app/bloc/plan_bloc/plan_bloc.dart';
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_simple_textfield.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -75,7 +76,10 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           } else if (state is PlanError) {
             return Scaffold(
               backgroundColor: AppSettings.background,
-              body: CustomDefaultTextStyle(text: state.error),
+              body: FlexusError(
+                text: state.error,
+                func: createPlan,
+              ),
             );
           } else {
             return Stepper(
@@ -227,58 +231,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     });
 
                   case 4:
-                    List<bool> boolList = [];
-                    List<String> splitNames = [];
-                    List<List<int>> exerciseIDs = [];
-
-                    if (isWeeklyRepetetive) {
-                      for (int i = 0; i < weeklyAcceptedData.length; i++) {
-                        boolList.add(weeklyAcceptedData[i].isEmpty);
-                      }
-
-                      for (int i = 0; i < weeklyAcceptedData.length; i++) {
-                        if (weeklyAcceptedData[i].isEmpty) {
-                          splitNames.add("Rest");
-                          exerciseIDs.add([-1]);
-                        } else {
-                          splitNames.add(weeklyAcceptedData[i]);
-                          List<Exercise> splitExercises =
-                              exerciseList[splitControllers.firstWhere((element) => element.text == weeklyAcceptedData[i]).text] ?? [];
-                          List<int> splitExerciseIDs = [];
-
-                          for (int j = 0; j < splitExercises.length; j++) {
-                            splitExerciseIDs.add(splitExercises[j].id);
-                          }
-
-                          exerciseIDs.add(splitExerciseIDs);
-                        }
-                      }
-                    } else {
-                      for (int i = 0; i < splitControllers.length; i++) {
-                        splitNames.add(splitControllers[i].text);
-                        if (exerciseList[splitControllers[i].text] != null) {
-                          List<Exercise> splitExercises = exerciseList[splitControllers[i].text]!;
-                          List<int> splitExerciseIDs = [];
-
-                          for (int j = 0; j < splitExercises.length; j++) {
-                            splitExerciseIDs.add(splitExercises[j].id);
-                          }
-
-                          exerciseIDs.add(splitExerciseIDs);
-                        } else {
-                          exerciseIDs.add([-1]);
-                        }
-                      }
-                    }
-
-                    planBloc.add(PostPlan(
-                      splitCount: splitCount,
-                      planName: nameController.text,
-                      isWeekly: isWeeklyRepetetive,
-                      weeklyRestList: boolList,
-                      splits: splitNames,
-                      exercises: exerciseIDs,
-                    ));
+                    createPlan();
 
                     break;
 
@@ -295,6 +248,60 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
         ),
       ],
     );
+  }
+
+  void createPlan() {
+    List<bool> boolList = [];
+    List<String> splitNames = [];
+    List<List<int>> exerciseIDs = [];
+
+    if (isWeeklyRepetetive) {
+      for (int i = 0; i < weeklyAcceptedData.length; i++) {
+        boolList.add(weeklyAcceptedData[i].isEmpty);
+      }
+
+      for (int i = 0; i < weeklyAcceptedData.length; i++) {
+        if (weeklyAcceptedData[i].isEmpty) {
+          splitNames.add("Rest");
+          exerciseIDs.add([-1]);
+        } else {
+          splitNames.add(weeklyAcceptedData[i]);
+          List<Exercise> splitExercises = exerciseList[splitControllers.firstWhere((element) => element.text == weeklyAcceptedData[i]).text] ?? [];
+          List<int> splitExerciseIDs = [];
+
+          for (int j = 0; j < splitExercises.length; j++) {
+            splitExerciseIDs.add(splitExercises[j].id);
+          }
+
+          exerciseIDs.add(splitExerciseIDs);
+        }
+      }
+    } else {
+      for (int i = 0; i < splitControllers.length; i++) {
+        splitNames.add(splitControllers[i].text);
+        if (exerciseList[splitControllers[i].text] != null) {
+          List<Exercise> splitExercises = exerciseList[splitControllers[i].text]!;
+          List<int> splitExerciseIDs = [];
+
+          for (int j = 0; j < splitExercises.length; j++) {
+            splitExerciseIDs.add(splitExercises[j].id);
+          }
+
+          exerciseIDs.add(splitExerciseIDs);
+        } else {
+          exerciseIDs.add([-1]);
+        }
+      }
+    }
+
+    planBloc.add(PostPlan(
+      splitCount: splitCount,
+      planName: nameController.text,
+      isWeekly: isWeeklyRepetetive,
+      weeklyRestList: boolList,
+      splits: splitNames,
+      exercises: exerciseIDs,
+    ));
   }
 
   Step buildTypeStep(Size deviceSize) {

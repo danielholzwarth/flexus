@@ -3,6 +3,7 @@ import 'package:app/bloc/user_account_gym_bloc/user_account_gym_bloc.dart';
 import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/list_tiles/flexus_user_account_gym_list_tile.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -231,11 +232,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                                 );
                               }
                             } else if (state is UserAccountsError) {
-                              return Center(
-                                child: CustomDefaultTextStyle(
-                                  text: 'Error: ${state.error}',
-                                ),
-                              );
+                              return FlexusError(text: state.error, func: loadData);
                             } else {
                               return Center(child: CircularProgressIndicator(color: AppSettings.primary));
                             }
@@ -318,6 +315,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
         );
       },
     );
+  }
+
+//TODO
+  void loadData() {
+    userAccountBloc.add(GetUserAccountsGym(gymID: widget.gymOverview.gym.id, isWorkingOut: true));
   }
 
   Future<void> openMaps(double latitude, double longitude) async {

@@ -10,6 +10,7 @@ import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/gym_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/flexuse_no_connection_scaffold.dart';
@@ -39,9 +40,7 @@ class _GymPageState extends State<GymPage> {
   @override
   void initState() {
     super.initState();
-    if (AppSettings.hasConnection) {
-      gymBloc.add(GetGymOverviews());
-    }
+    loadData();
   }
 
   @override
@@ -70,6 +69,12 @@ class _GymPageState extends State<GymPage> {
       );
     } else {
       return const FlexusNoConnectionScaffold();
+    }
+  }
+
+  void loadData() {
+    if (AppSettings.hasConnection) {
+      gymBloc.add(GetGymOverviews());
     }
   }
 
@@ -104,13 +109,7 @@ class _GymPageState extends State<GymPage> {
             );
           }
         } else if (state is UserAccountsError) {
-          return SliverFillRemaining(
-            child: Center(
-              child: CustomDefaultTextStyle(
-                text: 'Error: ${state.error}',
-              ),
-            ),
-          );
+          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
         } else {
           return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
         }
