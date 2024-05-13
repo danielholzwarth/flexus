@@ -172,7 +172,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                         fontSize: AppSettings.fontSizeT2,
                       )
                     : CustomDefaultTextStyle(
-                        text: "(in planning)",
+                        text: "(planned)",
                         fontSize: AppSettings.fontSizeT2,
                       ),
             workout.endtime != null

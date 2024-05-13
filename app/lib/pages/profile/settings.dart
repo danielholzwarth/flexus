@@ -16,6 +16,7 @@ import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -133,21 +134,34 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 );
               } else {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Center(
-                      child: CustomDefaultTextStyle(text: response.error.toString()),
-                    ),
-                  ),
+                Fluttertoast.cancel();
+                Fluttertoast.showToast(
+                  msg: response.error.toString(),
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  backgroundColor: AppSettings.error,
+                  textColor: AppSettings.fontV1,
+                  fontSize: AppSettings.fontSize,
                 );
               }
             } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
-                ),
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'This feature requires internet connection!',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'This feature requires internet connection!',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
               );
             }
           },
@@ -205,21 +219,25 @@ class _SettingsPageState extends State<SettingsPage> {
                       await showSearch(context: context, delegate: UserListSearchDelegate(listID: userSettings.notifyUserListID!));
                       setState(() {});
                     } else {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: CustomDefaultTextStyle(text: "Error loading user list! Please open settings again!"),
-                          ),
-                        ),
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: 'Error loading user list! Please open settings again!',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
                       );
                     }
                   } else {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
-                      ),
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                      msg: 'This feature requires internet connection!',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   }
                 },
@@ -258,23 +276,25 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 settingsBloc.add(PatchSettings(name: "isNotifyEveryone", value: value));
               } else {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: CustomDefaultTextStyle(text: "Error creating userlist. Was returned empty!"),
-                    ),
-                  ),
+                Fluttertoast.cancel();
+                Fluttertoast.showToast(
+                  msg: 'Error creating userlist. Was returned empty!',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  backgroundColor: AppSettings.error,
+                  textColor: AppSettings.fontV1,
+                  fontSize: AppSettings.fontSize,
                 );
               }
             } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Center(
-                    child: CustomDefaultTextStyle(text: 'Error: ${response.error}'),
-                  ),
-                ),
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Error: ${response.error}',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
               );
             }
           } else {
@@ -311,21 +331,24 @@ class _SettingsPageState extends State<SettingsPage> {
                       await showSearch(context: context, delegate: UserListSearchDelegate(listID: userSettings.pullUserListID!));
                       setState(() {});
                     } else {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Center(
-                            child: CustomDefaultTextStyle(text: "Error loading user list! Please open settings again!"),
-                          ),
-                        ),
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: 'Error loading user list! Please open settings again!',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
                       );
                     }
                   } else {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
-                      ),
+                    Fluttertoast.showToast(
+                      msg: 'This feature requires internet connection!',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   }
                 },
@@ -366,23 +389,25 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 pullUserListBloc.add(GetEntireUserList(listID: response.body));
               } else {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Center(
-                      child: CustomDefaultTextStyle(text: "Error creating userlist. Was returned empty!"),
-                    ),
-                  ),
+                Fluttertoast.cancel();
+                Fluttertoast.showToast(
+                  msg: 'Error creating userlist. Was returned empty!',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  backgroundColor: AppSettings.error,
+                  textColor: AppSettings.fontV1,
+                  fontSize: AppSettings.fontSize,
                 );
               }
             } else {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Center(
-                    child: CustomDefaultTextStyle(text: 'Error: ${response.error}'),
-                  ),
-                ),
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Error: ${response.error}',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
               );
             }
           } else {
@@ -415,14 +440,14 @@ class _SettingsPageState extends State<SettingsPage> {
   //       isText: true,
   //       value: "",
   //       onPressed: () {
-  //         ScaffoldMessenger.of(context).clearSnackBars();
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Center(
-  //               child:CustomDefaultTextStyle(
-  // text: "Not implemented yet :("),
-  //             ),
-  //           ),
+  //         Fluttertoast.cancel();
+  //         Fluttertoast.showToast(
+  //           msg: 'not implemented yet',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.CENTER,
+  //           backgroundColor: AppSettings.error,
+  //           textColor: AppSettings.fontV1,
+  //           fontSize: AppSettings.fontSize,
   //         );
   //       },
   //     ),
@@ -486,13 +511,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     textEditingController.clear();
                     Navigator.pop(context);
                   } else {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Center(
-                          child: CustomDefaultTextStyle(text: 'Invalid input for fontsize'),
-                        ),
-                      ),
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                      msg: 'Invalid input for fontsize',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   }
                 },
@@ -563,24 +589,39 @@ class _SettingsPageState extends State<SettingsPage> {
                           final confirmedPassword = confirmNewPasswordController.text;
 
                           if (newPassword != confirmedPassword) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: CustomDefaultTextStyle(text: 'Passwords do not match'),
-                              ),
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg: 'Passwords do not match',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: AppSettings.error,
+                              textColor: AppSettings.fontV1,
+                              fontSize: AppSettings.fontSize,
                             );
                           } else if (newPassword.length > 128) {
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg: 'Password cannot be longer than 128 characters.',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: AppSettings.error,
+                              textColor: AppSettings.fontV1,
+                              fontSize: AppSettings.fontSize,
+                            );
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: CustomDefaultTextStyle(text: 'Password cannot be longer than 128 characters'),
                               ),
                             );
                           } else if (newPassword.length < 8) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: CustomDefaultTextStyle(text: 'Password must be at least 8 characters long'),
-                              ),
+                            Fluttertoast.cancel();
+                            Fluttertoast.showToast(
+                              msg: 'Password must be at least 8 characters long',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: AppSettings.error,
+                              textColor: AppSettings.fontV1,
+                              fontSize: AppSettings.fontSize,
                             );
                           } else {
                             settingsBloc.add(
@@ -604,11 +645,14 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             );
           } else {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: CustomDefaultTextStyle(text: 'This feature requires internet connection!'),
-              ),
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: 'This feature requires internet connection!',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
             );
           }
         },
@@ -640,22 +684,24 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: textEditingController,
                 onEditingComplete: () {
                   if (textEditingController.text.length > 20) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Center(
-                          child: CustomDefaultTextStyle(text: 'Username can not be longer than 20 characters'),
-                        ),
-                      ),
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                      msg: 'Username can not be longer than 20 characters',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   } else if (textEditingController.text.length < 6) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Center(
-                          child: CustomDefaultTextStyle(text: 'Username must be at least 6 characters long'),
-                        ),
-                      ),
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                      msg: 'Username must be at least 6 characters long',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   } else {
                     settingsBloc.add(PatchSettings(name: "username", value: textEditingController.text));
@@ -698,13 +744,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: textEditingController,
                 onEditingComplete: () {
                   if (textEditingController.text.length > 20) {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Center(
-                          child: CustomDefaultTextStyle(text: 'Name can not be longer than 20 characters'),
-                        ),
-                      ),
+                    Fluttertoast.cancel();
+                    Fluttertoast.showToast(
+                      msg: 'Name can not be longer than 20 characters',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: AppSettings.error,
+                      textColor: AppSettings.fontV1,
+                      fontSize: AppSettings.fontSize,
                     );
                   } else if (textEditingController.text.isNotEmpty) {
                     settingsBloc.add(PatchSettings(name: "name", value: textEditingController.text));
