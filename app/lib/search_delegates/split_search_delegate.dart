@@ -89,7 +89,7 @@ class SplitSearchDelegate extends SearchDelegate {
                             CurrentPlan(plan: plan, currentSplit: index, splits: state.splits),
                           );
                         },
-                        title: state.splits[index].name,
+                        title: "${index + 1}. ${state.splits[index].name}",
                         query: query,
                         key: UniqueKey(),
                       );

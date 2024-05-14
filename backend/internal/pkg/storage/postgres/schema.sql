@@ -161,12 +161,29 @@ CREATE TABLE best_lifts (
 );
 
 
---INSERTS
+--INSERTS NECESSARY
 Insert INTO "exercise_type" ("name") VALUES ('reps');
 Insert INTO "exercise_type" ("name") VALUES ('duration');
 
 Insert INTO "language" ("name") VALUES ('english');
 Insert INTO "language" ("name") VALUES ('german');
+
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpress', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 2);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Squats', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Pull-Ups', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Shoulder Press', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Barbell Rows', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Leg Press', 1);
+Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Lat Pulldowns', 1);
+
+COMMIT;
+
+
+--INSERTS Other
+BEGIN;
 
 Insert INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('dholzwarth', 'BigD', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', now(), 13, null);
 INSERT INTO "user_account" ("username", "name", "password", "created_at", "level", "profile_picture") VALUES ('hustler21', 'Karl', '$2a$10$98nFaNeDYZ/eWHxQcY9GqOXQBPj/RbcQaW6PaI.UlZCxXdQ80vnq.', '2023-05-12', 5, null);
@@ -273,18 +290,6 @@ Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Brust Bizep
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Beine Po', 2);
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Schulter Nacken', 3);
 Insert INTO "split" ("plan_id", "name", "order_in_plan") VALUES (2, 'Rücken Trizeps Bauch', 4);
-
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Benchpress', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Plank', 2);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Deadlift', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Biceps Curls', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Squats', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Bench Press', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Pull-Ups', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Shoulder Press', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Barbell Rows', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Leg Press', 1);
-Insert INTO "exercise" ("creator_id", "name", "type_id") VALUES (null, 'Lat Pulldowns', 1);
 
 Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (1, 1, '3x5x120kg');
 Insert INTO "exercise_split" ("split_id", "exercise_id", "goal") VALUES (1, 2, '3x120s');
