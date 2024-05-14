@@ -87,19 +87,21 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     if (currentWorkout != null) {
       currentExercise = currentWorkout.exercises[widget.pageID - 1];
 
-      for (int i = 0; i <= currentExercise!.measurements.length - 1; i++) {
-        if (currentExercise!.exercise.typeID == 1) {
-          setController.add({
-            "reps": TextEditingController(
-                text: currentExercise!.measurements[i].repetitions > 0 ? currentExercise!.measurements[i].repetitions.toString() : null),
-            "workload": TextEditingController(
-                text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
-          });
-        } else {
-          setController.add({
-            "workload": TextEditingController(
-                text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
-          });
+      if (setController.isEmpty) {
+        for (int i = 0; i <= currentExercise!.measurements.length - 1; i++) {
+          if (currentExercise!.exercise.typeID == 1) {
+            setController.add({
+              "reps": TextEditingController(
+                  text: currentExercise!.measurements[i].repetitions > 0 ? currentExercise!.measurements[i].repetitions.toString() : null),
+              "workload": TextEditingController(
+                  text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
+            });
+          } else {
+            setController.add({
+              "workload": TextEditingController(
+                  text: currentExercise!.measurements[i].workload > 0 ? currentExercise!.measurements[i].workload.toString() : null),
+            });
+          }
         }
       }
     }
