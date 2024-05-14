@@ -20,4 +20,11 @@ class CurrentPlan extends HiveObject {
     required this.currentSplit,
     required this.splits,
   });
+
+  CurrentPlan.clone(CurrentPlan other)
+      : this(
+          currentSplit: other.currentSplit,
+          splits: List.from(other.splits),
+          plan: other.plan,
+        );
 }

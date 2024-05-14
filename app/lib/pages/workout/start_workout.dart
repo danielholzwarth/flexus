@@ -44,11 +44,14 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
     }
     currentPlan = userBox.get("currentPlan");
     if (currentPlan != null) {
+      CurrentPlan oldPlan = CurrentPlan.clone(currentPlan!);
+
       if (currentPlan!.currentSplit == currentPlan!.splits.length - 1) {
         currentPlan!.currentSplit = 0;
       } else {
         currentPlan!.currentSplit += 1;
       }
+      userBox.put("currentPlan", oldPlan);
     }
   }
 
