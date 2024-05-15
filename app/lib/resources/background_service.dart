@@ -37,6 +37,7 @@ Future<bool> onIosBackground(ServiceInstance serviceInstance) async {
 @pragma('vm:entry-point')
 void onStart(ServiceInstance serviceInstance) async {
   if (serviceInstance is AndroidServiceInstance) {
+    debugPrint("starting background service");
     serviceInstance.on('setAsForeground').listen((event) {
       serviceInstance.setAsForegroundService();
     });
@@ -45,6 +46,7 @@ void onStart(ServiceInstance serviceInstance) async {
     });
   }
   serviceInstance.on('stopService').listen((event) {
+    debugPrint("stopping background service");
     serviceInstance.stopSelf();
   });
   Timer.periodic(const Duration(seconds: 30), (timer) async {
