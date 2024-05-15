@@ -315,7 +315,7 @@ class _HomePageState extends State<HomePage> {
             workoutBloc.add(GetWorkouts());
           },
           icon: const FlexusDefaultIcon(iconData: Icons.search),
-        )
+        ),
       ],
     );
   }

@@ -55,6 +55,9 @@ dependencies:
   #Toast
   fluttertoast: ^8.2.5
 
+  #Charts
+  fl_chart: ^0.68.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

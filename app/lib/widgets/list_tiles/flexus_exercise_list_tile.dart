@@ -1,10 +1,8 @@
 import 'package:app/hive/exercise/exercise.dart';
-import 'package:app/pages/workout/exercise_explanation.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:app/resources/app_settings.dart';
-import 'package:page_transition/page_transition.dart';
 
 class FlexusExerciseListTile extends StatefulWidget {
   final String? query;
