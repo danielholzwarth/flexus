@@ -1,8 +1,6 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
-import 'package:app/pages/workout/document_workout.dart';
-import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -17,12 +15,14 @@ class FlexusWorkoutListTile extends StatefulWidget {
   final WorkoutOverview workoutOverview;
   final WorkoutBloc workoutBloc;
   final String? query;
+  final Function()? onTap;
 
   const FlexusWorkoutListTile({
     super.key,
     required this.workoutOverview,
     required this.workoutBloc,
     this.query,
+    this.onTap,
   });
 
   @override
@@ -46,9 +46,8 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                 ? AppSettings.primaryShade48
                 : AppSettings.blocked.withOpacity(0.4)
             : AppSettings.background,
-        onTap: workout.endtime != null
-            ? () {
-                Navigator.push(
+        onTap: widget.onTap ??
+            () => Navigator.push(
                   context,
                   PageTransition(
                     type: PageTransitionType.rightToLeft,
@@ -56,27 +55,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                       workoutID: workout.id,
                     ),
                   ),
-                );
-              }
-            : workout.isActive
-                ? () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.fade,
-                        child: const DocumentWorkoutPage(),
-                      ),
-                    );
-                  }
-                : () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.fade,
-                        child: StartWorkoutPage(workout: workout),
-                      ),
-                    );
-                  },
+                ),
         leading: buildDate(workout),
         title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),

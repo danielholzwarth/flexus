@@ -117,7 +117,7 @@ Future<void> getUserSettings() async {
     chopper.Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
 
     if (response.isSuccessful) {
-      if (response.body != "null") {
+      if (response.body != null) {
         final Map<String, dynamic> jsonMap = response.body;
 
         final userSettings = UserSettings(

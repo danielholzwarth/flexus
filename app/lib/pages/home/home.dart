@@ -9,6 +9,7 @@ import 'package:app/pages/sign_in/login.dart';
 import 'package:app/pages/workout/document_workout.dart';
 import 'package:app/pages/workout/start_workout.dart';
 import 'package:app/pages/plan/plan.dart';
+import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/workouts_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
@@ -113,6 +114,37 @@ class _HomePageState extends State<HomePage> {
                       bestLiftCount: state.workoutOverviews[index].bestLiftCount,
                     ),
                     workoutBloc: workoutBloc,
+                    onTap: state.workoutOverviews[index].workout.endtime != null
+                        ? () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: ViewWorkoutPage(
+                                  workoutID: state.workoutOverviews[index].workout.id,
+                                ),
+                              ),
+                            );
+                          }
+                        : state.workoutOverviews[index].workout.isActive
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: const DocumentWorkoutPage(),
+                                  ),
+                                ).then((value) => workoutBloc.add(GetWorkouts()));
+                              }
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: StartWorkoutPage(workout: state.workoutOverviews[index].workout),
+                                  ),
+                                ).then((value) => workoutBloc.add(GetWorkouts()));
+                              },
                   );
                 },
                 childCount: state.workoutOverviews.length,
@@ -151,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     type: PageTransitionType.fade,
                     child: const DocumentWorkoutPage(),
                   ),
-                ).then((value) => workoutBloc.add(GetWorkouts()));
+                );
               },
               icon: Icons.play_arrow,
             );
