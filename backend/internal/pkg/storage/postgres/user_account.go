@@ -176,7 +176,8 @@ func (db *DB) GetUserAccountsFromGymID(userAccountID int, gymID int, isWorkingOu
 		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
 			FROM workout w
 			WHERE w.gym_id = $1 
-			AND w.endtime IS NOT NULL 
+			AND w.endtime IS NOT NULL
+			AND w.user_id = ua.id
 			AND w.starttime IS NOT NULL) AS avg_workout_duration
 		FROM user_account ua
 		JOIN workout ON ua.id = workout.user_id
@@ -184,27 +185,9 @@ func (db *DB) GetUserAccountsFromGymID(userAccountID int, gymID int, isWorkingOu
 		WHERE workout.gym_id = $1
 		AND workout.endtime IS NULL 
 		AND (friendship.requestor_id = $2 OR friendship.requested_id = $2)
-		AND friendship.is_accepted = TRUE
+		AND friendship.is_accepted = TRUE;
 
-		UNION
-
-		SELECT DISTINCT ua.id, ua.username, ua.name, ua.created_at, ua.level, ua.profile_picture,
-		(SELECT w.starttime 
-			 FROM workout w 
-			 WHERE w.gym_id = $1 
-			 AND w.endtime IS NULL 
-			 AND w.starttime IS NOT NULL 
-			 AND w.user_id = ua.id) AS starttime, 
-		(SELECT AVG(EXTRACT(EPOCH FROM (endtime - starttime)))
-			 FROM workout w
-			 WHERE w.gym_id = $1 
-			 AND w.endtime IS NOT NULL 
-			 AND w.starttime IS NOT NULL) AS avg_workout_duration
-		FROM user_account ua
-		JOIN workout ON ua.id = workout.user_id
-		WHERE workout.gym_id = $1
-		AND workout.endtime IS NULL
-		AND ua.id = $2;
+		
 	`
 
 	var informations []any
