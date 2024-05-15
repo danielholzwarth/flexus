@@ -48,15 +48,16 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
             ),
       onTap: widget.onTap ??
           (widget.isMultipleChoice
-              ? () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
-                    ),
-                  );
-                }
+              ? null
+              // ? () {
+              //     Navigator.push(
+              //       context,
+              //       PageTransition(
+              //         type: PageTransitionType.fade,
+              //         child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
+              //       ),
+              //     );
+              //   }
               : () {
                   setState(() {
                     isChecked = !isChecked;
@@ -83,15 +84,16 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
               value: isChecked,
             )
           : IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
-                  ),
-                );
-              },
+              onPressed: null,
+              // () {
+              //   Navigator.push(
+              //     context,
+              //     PageTransition(
+              //       type: PageTransitionType.fade,
+              //       child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
+              //     ),
+              //   );
+              // },
               icon: FlexusDefaultIcon(
                 iconData: Icons.info,
                 iconColor: AppSettings.primaryShade80,

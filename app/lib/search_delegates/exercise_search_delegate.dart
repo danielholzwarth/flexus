@@ -48,7 +48,7 @@ class ExerciseSearchDelegate extends SearchDelegate {
                     type: PageTransitionType.fade,
                     child: const CreateExercisePage(),
                   ),
-                );
+                ).then((value) => exerciseBloc.add(GetExercises()));
               },
               icon: const FlexusDefaultIcon(iconData: Icons.add),
             ),
