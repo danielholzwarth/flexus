@@ -5,6 +5,10 @@ class FlexusTableTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController textController;
   final Function(String) onChanged;
+  final Function()? onTap;
+  final Function(PointerDownEvent)? onTapOutside;
+  final Function()? onEditingComplete;
+
   final TextInputType textInputType;
   final TextAlign textAlign;
   final bool isObscure;
@@ -16,6 +20,9 @@ class FlexusTableTextField extends StatelessWidget {
     required this.hintText,
     required this.textController,
     required this.onChanged,
+    this.onTap,
+    this.onTapOutside,
+    this.onEditingComplete,
     this.textInputType = TextInputType.text,
     this.textAlign = TextAlign.center,
     this.isObscure = false,
@@ -32,10 +39,14 @@ class FlexusTableTextField extends StatelessWidget {
         keyboardType: textInputType,
         obscureText: isObscure,
         onChanged: onChanged,
+        onTap: onTap,
+        onTapOutside: onTapOutside,
+        onEditingComplete: onEditingComplete,
         textAlign: textAlign,
         controller: textController,
         cursorColor: fontColor ?? AppSettings.font,
         style: TextStyle(
+          overflow: TextOverflow.clip,
           color: fontColor ?? AppSettings.font,
           fontSize: AppSettings.fontSize,
         ),

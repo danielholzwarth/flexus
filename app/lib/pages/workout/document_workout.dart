@@ -217,6 +217,8 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
     return FlexusFloatingActionButton(
       icon: Icons.timer_outlined,
       onPressed: () async {
+        FocusManager.instance.primaryFocus?.unfocus();
+
         if (timerValue.isRunning) {
           timerValue.milliseconds = timerDuration.inMilliseconds;
         }
@@ -238,6 +240,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               });
             });
           } else {
+            userBox.put("timerValue", timerDuration.inMilliseconds);
             timerValue.milliseconds = 0;
           }
         }
@@ -255,6 +258,8 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         fontSize: AppSettings.fontSizeH4,
       ),
       onPressed: () async {
+        FocusManager.instance.primaryFocus?.unfocus();
+
         if (timerValue.isRunning) {
           timerValue.milliseconds = timerDuration.inMilliseconds;
         }
@@ -270,6 +275,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           timerValue = val;
           timerDuration = Duration(milliseconds: timerValue.milliseconds);
           if (!timerValue.isRunning) {
+            userBox.put("timerValue", timerDuration.inMilliseconds);
             timerValue.milliseconds = 0;
           }
         }

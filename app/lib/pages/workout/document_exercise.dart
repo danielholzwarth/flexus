@@ -264,10 +264,12 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           ),
           currentExercise!.exercise.typeID == 1
               ? DataTable(
+                  columnSpacing: 0,
+                  horizontalMargin: deviceSize.width * 0.05,
                   columns: const [
                     DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                    DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
-                    DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Repetitions (kg)", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Workload (s)", textAlign: TextAlign.left)),
                   ],
                   rows: [
                     for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
@@ -275,7 +277,6 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                         cells: [
                           DataCell(
                             SizedBox(
-                              width: deviceSize.width * 0.15,
                               child: CustomDefaultTextStyle(
                                 text: "Set ${i + 1}",
                                 textAlign: TextAlign.left,
@@ -288,6 +289,9 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                               textAlign: TextAlign.left,
                               textController: setController[i]["reps"]!,
                               textInputType: TextInputType.number,
+                              onTapOutside: (p0) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].repetitions = int.tryParse(newValue) ?? 0;
 
@@ -307,6 +311,9 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                               textAlign: TextAlign.left,
                               textController: setController[i]["workload"]!,
                               textInputType: TextInputType.number,
+                              onTapOutside: (p0) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
 
@@ -347,6 +354,15 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                               hintText: "Workload",
                               textController: setController[i]["workload"]!,
                               textInputType: TextInputType.number,
+                              onTap: () {
+                                int? millis = userBox.get("timerValue");
+                                if (millis == null) {
+                                  return;
+                                }
+                                if (setController[i]["workload"]!.text.isEmpty) {
+                                  setController[i]["workload"]!.text = (millis / 1000).toString();
+                                }
+                              },
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;
 
@@ -357,6 +373,29 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                                   userBox.put("currentWorkout", currentWorkout);
                                 }
                                 setState(() {});
+                              },
+                              onTapOutside: (p0) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+
+                                currentExercise!.measurements[i].workload = double.tryParse(setController[i]["workload"]!.text) ?? 0;
+
+                                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                if (currentWorkout != null) {
+                                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                  userBox.put("currentWorkout", currentWorkout);
+                                }
+                              },
+                              onEditingComplete: () {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                currentExercise!.measurements[i].workload = double.tryParse(setController[i]["workload"]!.text) ?? 0;
+
+                                CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                if (currentWorkout != null) {
+                                  currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                  userBox.put("currentWorkout", currentWorkout);
+                                }
                               },
                             ),
                           ),
@@ -398,8 +437,6 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           }
 
           setState(() {});
-        } else {
-          print("pick exercise first");
         }
       },
       icon: FlexusDefaultIcon(
