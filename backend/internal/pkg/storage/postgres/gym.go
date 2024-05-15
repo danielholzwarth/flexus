@@ -166,18 +166,21 @@ func (db *DB) GetGymOverviews(userAccountID int) ([]types.GymOverview, error) {
 		totalCountQuery := `
 			SELECT COUNT(*) 
 			FROM user_account_gym uag
-			JOIN user_account ON user_account.id = uag.user_id
-			JOIN friendship ON friendship.requestor_id = user_account.id OR friendship.requested_id = user_account.id
+			JOIN user_account ua ON ua.id = uag.user_id
+			JOIN friendship f ON f.requestor_id = ua.id OR f.requested_id = ua.id
 			WHERE uag.user_id != $1 
-				AND uag.gym_id = $2
-				AND (friendship.requestor_id = $1 OR friendship.requested_id = $1)
-				AND friendship.is_accepted = TRUE;
+			AND uag.gym_id = $2
+			AND (f.requestor_id = $1 OR f.requested_id = $1)
+			AND f.is_accepted = TRUE;
 		`
 
 		err = db.pool.QueryRow(totalCountQuery, userAccountID, gym.ID).Scan(&gymOverview.TotalFriends)
 		if err != nil {
 			return nil, err
 		}
+
+		//Add own user
+		gymOverview.TotalFriends += 1
 
 		gymOverview.Gym = gym
 		gymOverview.CurrentUserAccounts = userAccountInformations

@@ -186,8 +186,6 @@ func (db *DB) GetUserAccountsFromGymID(userAccountID int, gymID int, isWorkingOu
 		AND workout.endtime IS NULL 
 		AND (friendship.requestor_id = $2 OR friendship.requested_id = $2)
 		AND friendship.is_accepted = TRUE;
-
-		
 	`
 
 	var informations []any
