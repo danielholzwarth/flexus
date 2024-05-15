@@ -6,6 +6,7 @@ import (
 	"flexus/internal/types"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (db DB) PostWorkout(postWorkout types.PostWorkout) error {
@@ -426,10 +427,39 @@ func (db DB) PatchFinishWorkout(userAccountID int, workout types.FinishWorkout) 
 		}
 	}()
 
+	//Get last workout endtime and increase Level
+	query := `
+		SELECT starttime 
+		FROM workout 
+		WHERE user_id = $1 AND endtime IS NOT NULL
+		ORDER BY starttime DESC;
+	`
+
+	var lastStarttime time.Time
+	isFirstWorkout := false
+	err = tx.QueryRow(query, userAccountID).Scan(&lastStarttime)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			isFirstWorkout = true
+		} else {
+			return err
+		}
+	}
+
+	if isFirstWorkout || lastStarttime.Day() != time.Now().Day() {
+		query = `
+			UPDATE user_account
+			SET level = level + 1
+			WHERE id = $1;
+		`
+
+		_, err = tx.Exec(query, userAccountID)
+	}
+
 	//Patch Workout
 	var workoutID int
 
-	query := `
+	query = `
 		UPDATE workout
 		SET endtime = NOW(), is_active = FALSE
 		WHERE user_id = $1 
