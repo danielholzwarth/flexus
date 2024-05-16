@@ -7,7 +7,13 @@ class StatisticInitial extends StatisticState {}
 
 class StatisticLoading extends StatisticState {}
 
-class StatisticLoaded extends StatisticState {}
+class StatisticLoaded extends StatisticState {
+  final List<Map<String, dynamic>> values;
+
+  StatisticLoaded({
+    required this.values,
+  });
+}
 
 class StatisticError extends StatisticState {
   final String error;

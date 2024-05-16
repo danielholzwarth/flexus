@@ -21,44 +21,59 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       case "Total Moved Weight":
         final response = await _bestLiftsService.getTotalMovedWeight(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
-          if (response.body != "null" && response.body.isNotEmpty) {
-            emit(StatisticLoaded());
+          if (response.body != null && response.body.isNotEmpty) {
+            emit(StatisticLoaded(values: []));
           } else {
             emit(StatisticError(error: response.error.toString()));
           }
+        } else {
+          emit(StatisticError(error: response.error.toString()));
         }
         break;
 
       case "Total Reps":
         final response = await _bestLiftsService.getTotalReps(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
-          if (response.body != "null" && response.body.isNotEmpty) {
-            emit(StatisticLoaded());
+          if (response.body != null && response.body.isNotEmpty) {
+            emit(StatisticLoaded(values: []));
           } else {
             emit(StatisticError(error: response.error.toString()));
           }
+        } else {
+          emit(StatisticError(error: response.error.toString()));
         }
         break;
 
       case "Workout Days":
         final response = await _bestLiftsService.getWorkoutDays(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
-          if (response.body != "null" && response.body.isNotEmpty) {
-            emit(StatisticLoaded());
+          if (response.body != null && response.body.isNotEmpty) {
+            print(response.bodyString);
+
+            List<Map<String, dynamic>> values = [];
+            Map<String, dynamic> jsonMap = response.body;
+
+            values.add(jsonMap.map((key, value) => MapEntry(key, value)));
+
+            emit(StatisticLoaded(values: values));
           } else {
             emit(StatisticError(error: response.error.toString()));
           }
+        } else {
+          emit(StatisticError(error: response.error.toString()));
         }
         break;
 
       case "Workout Duration":
         final response = await _bestLiftsService.getWorkoutDuration(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
-          if (response.body != "null" && response.body.isNotEmpty) {
-            emit(StatisticLoaded());
+          if (response.body != null && response.body.isNotEmpty) {
+            emit(StatisticLoaded(values: []));
           } else {
             emit(StatisticError(error: response.error.toString()));
           }
+        } else {
+          emit(StatisticError(error: response.error.toString()));
         }
         break;
 

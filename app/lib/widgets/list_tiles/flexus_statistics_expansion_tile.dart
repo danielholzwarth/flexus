@@ -1,4 +1,5 @@
 import 'package:app/bloc/statistic_bloc/statistic_bloc.dart';
+import 'package:app/pages/plan/plan.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -68,7 +69,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
           if (state is StatisticLoaded) {
             switch (diagramType) {
               case 0:
-                return buildPieChart(deviceSize);
+                return buildPieChart(deviceSize, state.values);
 
               case 1:
                 return buildBarChart();
@@ -96,7 +97,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
     );
   }
 
-  PieChart buildPieChart(Size deviceSize) {
+  PieChart buildPieChart(Size deviceSize, List<Map<String, dynamic>> values) {
     return PieChart(
       PieChartData(
         pieTouchData: PieTouchData(
@@ -110,16 +111,19 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
             });
           },
         ),
-        sections: List.generate(
-          4,
-          (index) => PieChartSectionData(
-              value: (index + 1),
-              radius: touchIndex == index ? deviceSize.width * 0.38 : deviceSize.width * 0.3,
-              color: primaryColors[index],
-              titleStyle: TextStyle(
-                fontSize: touchIndex == index ? AppSettings.fontSizeH4 : AppSettings.fontSize,
-              )),
-        ),
+        sections: values[0].entries.map((entry) {
+          int index = values[0].keys.toList().indexOf(entry.key);
+          bool isTouched = touchIndex == index;
+          return PieChartSectionData(
+            value: entry.value.toDouble(),
+            title: "${getWeekday(int.parse(entry.key))}\n (${entry.value})",
+            titlePositionPercentageOffset: 0.7,
+            showTitle: true,
+            radius: isTouched ? deviceSize.width * 0.35 : deviceSize.width * 0.25,
+            color: primaryColors[index],
+            titleStyle: TextStyle(fontSize: isTouched ? AppSettings.fontSizeH4 : AppSettings.fontSize),
+          );
+        }).toList(),
         sectionsSpace: 0,
         centerSpaceRadius: 0,
       ),
@@ -137,11 +141,16 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
             CustomDefaultTextStyle(
               text: startIndex > 0 ? text.substring(0, startIndex) : "",
               color: AppSettings.font.withOpacity(0.5),
+              fontSize: fontSize,
             ),
-            CustomDefaultTextStyle(text: text.substring(startIndex, endIndex)),
+            CustomDefaultTextStyle(
+              text: text.substring(startIndex, endIndex),
+              fontSize: fontSize,
+            ),
             CustomDefaultTextStyle(
               text: endIndex < text.length ? text.substring(endIndex) : "",
               color: AppSettings.font.withOpacity(0.5),
+              fontSize: fontSize,
             ),
           ],
         );
@@ -149,8 +158,12 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
       return CustomDefaultTextStyle(
         text: text,
         color: AppSettings.font.withOpacity(0.5),
+        fontSize: fontSize,
       );
     }
-    return CustomDefaultTextStyle(text: text);
+    return CustomDefaultTextStyle(
+      text: text,
+      fontSize: fontSize,
+    );
   }
 }

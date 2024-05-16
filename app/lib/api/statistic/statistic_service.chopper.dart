@@ -20,12 +20,10 @@ final class _$StatisticService extends StatisticService {
   @override
   Future<Response<dynamic>> getTotalMovedWeight(
     String flexusJWTString,
-    int periodInDays,
+    int period,
   ) {
     final Uri $url = Uri.parse('/statistics/total-moved-weight');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'periodInDays': periodInDays
-    };
+    final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
@@ -42,12 +40,10 @@ final class _$StatisticService extends StatisticService {
   @override
   Future<Response<dynamic>> getTotalReps(
     String flexusJWTString,
-    int periodInDays,
+    int period,
   ) {
     final Uri $url = Uri.parse('/statistics/total-reps');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'periodInDays': periodInDays
-    };
+    final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
@@ -64,12 +60,10 @@ final class _$StatisticService extends StatisticService {
   @override
   Future<Response<dynamic>> getWorkoutDays(
     String flexusJWTString,
-    int periodInDays,
+    int period,
   ) {
     final Uri $url = Uri.parse('/statistics/workout-days');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'periodInDays': periodInDays
-    };
+    final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };
@@ -86,12 +80,10 @@ final class _$StatisticService extends StatisticService {
   @override
   Future<Response<dynamic>> getWorkoutDuration(
     String flexusJWTString,
-    int periodInDays,
+    int period,
   ) {
     final Uri $url = Uri.parse('/statistics/workout-duration');
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'periodInDays': periodInDays
-    };
+    final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
       'flexusjwt': flexusJWTString,
     };

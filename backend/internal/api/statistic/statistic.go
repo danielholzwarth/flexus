@@ -128,14 +128,14 @@ func (s service) getWorkoutDays() http.HandlerFunc {
 		}
 		period := int(periodInt64)
 
-		statisticOverviews, err := s.statisticStore.GetWorkoutDays(claims.UserAccountID, period)
+		workoutDays, err := s.statisticStore.GetWorkoutDays(claims.UserAccountID, period)
 		if err != nil {
-			http.Error(w, "Failed to get statisticOverview", http.StatusInternalServerError)
+			http.Error(w, "Failed to get workoutDays", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(statisticOverviews)
+		response, err := json.Marshal(workoutDays)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
