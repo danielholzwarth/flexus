@@ -215,7 +215,7 @@ class _PlanPageState extends State<PlanPage> {
                       children: [
                         CustomDefaultTextStyle(
                           text: planOverview.plan.isWeekly
-                              ? "${planOverview.splitOverviews[index].split.name} (${getWeekday(index)})"
+                              ? "${planOverview.splitOverviews[index].split.name} (${getWeekday(index, false)})"
                               : "${planOverview.splitOverviews[index].split.name} (Day ${index + 1})",
                           fontWeight: FontWeight.w600,
                           fontSize: AppSettings.fontSizeH4,
@@ -377,9 +377,9 @@ String getBlockedDays(PlanOverview planOverview) {
       for (var i = 0; i < restList.length; i++) {
         if (restList[i]) {
           if (blockedDays.isNotEmpty) {
-            blockedDays += ", ${getWeekday(i)}";
+            blockedDays += ", ${getWeekday(i, false)}";
           } else {
-            blockedDays += getWeekday(i);
+            blockedDays += getWeekday(i, false);
           }
         }
       }
@@ -392,7 +392,9 @@ String getBlockedDays(PlanOverview planOverview) {
   }
 }
 
-String getWeekday(int index) {
+String getWeekday(int index, bool isShort) {
   final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  return weekdays[index % 7];
+  final weekdaysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  return isShort == true ? weekdaysShort[index % 7] : weekdays[index % 7];
 }

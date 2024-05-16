@@ -56,14 +56,14 @@ func (s service) getTotalMovedWeight() http.HandlerFunc {
 		}
 		period := int(periodInt64)
 
-		statisticOverviews, err := s.statisticStore.GetTotalMovedWeight(claims.UserAccountID, period)
+		data, err := s.statisticStore.GetTotalMovedWeight(claims.UserAccountID, period)
 		if err != nil {
-			http.Error(w, "Failed to get statisticOverview", http.StatusInternalServerError)
+			http.Error(w, "Failed to get data", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(statisticOverviews)
+		response, err := json.Marshal(data)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -92,14 +92,14 @@ func (s service) getTotalReps() http.HandlerFunc {
 		}
 		period := int(periodInt64)
 
-		statisticOverviews, err := s.statisticStore.GetTotalReps(claims.UserAccountID, period)
+		data, err := s.statisticStore.GetTotalReps(claims.UserAccountID, period)
 		if err != nil {
-			http.Error(w, "Failed to get statisticOverview", http.StatusInternalServerError)
+			http.Error(w, "Failed to get data", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(statisticOverviews)
+		response, err := json.Marshal(data)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -128,14 +128,14 @@ func (s service) getWorkoutDays() http.HandlerFunc {
 		}
 		period := int(periodInt64)
 
-		workoutDays, err := s.statisticStore.GetWorkoutDays(claims.UserAccountID, period)
+		data, err := s.statisticStore.GetWorkoutDays(claims.UserAccountID, period)
 		if err != nil {
-			http.Error(w, "Failed to get workoutDays", http.StatusInternalServerError)
+			http.Error(w, "Failed to get data", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(workoutDays)
+		response, err := json.Marshal(data)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())
@@ -164,14 +164,14 @@ func (s service) getWorkoutDuration() http.HandlerFunc {
 		}
 		period := int(periodInt64)
 
-		statisticOverviews, err := s.statisticStore.GetWorkoutDuration(claims.UserAccountID, period)
+		data, err := s.statisticStore.GetWorkoutDuration(claims.UserAccountID, period)
 		if err != nil {
-			http.Error(w, "Failed to get statisticOverview", http.StatusInternalServerError)
+			http.Error(w, "Failed to get data", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(statisticOverviews)
+		response, err := json.Marshal(data)
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			println(err.Error())

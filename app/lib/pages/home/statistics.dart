@@ -1,3 +1,4 @@
+import 'package:app/hive/statistic/statistic.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/statistics_search_delegate.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
@@ -16,15 +17,14 @@ class StatisticsPage extends StatefulWidget {
 class _StatisticsPageState extends State<StatisticsPage> {
   ScrollController scrollController = ScrollController();
 
-  //0 - Pie, 1 - Bar, 2 - Line, 3 - Radar
-  Map<String, int> statistics = {
-    // "Skipped Splits" : 3,
-    "Total Moved Weight": 1,
-    "Total Reps": 1,
-    // "Weight of Exercise" : 2,
-    "Workout Days": 0,
-    "Workout Duration": 1,
-  };
+  // "Skipped Splits" : 3,
+  // "Weight of Exercise" : 2,
+  List<Statistic> statistics = [
+    Statistic(title: "Total Moved Weight", labelX: "Days of Week", labelY: "Weight in Tons", diagramType: 2),
+    Statistic(title: "Total Reps", labelX: "Days of Week", labelY: "Reps", diagramType: 2),
+    Statistic(title: "Workout Days", labelX: "", labelY: "", diagramType: 0),
+    Statistic(title: "Workout Duration", labelX: "Days of Week", labelY: "Duration in Minutes", diagramType: 2),
+  ];
 
   @override
   void dispose() {
@@ -63,11 +63,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
         child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
-            children: statistics.entries.map((e) {
-              return FlexusStatisticsExpansionTile(
-                title: e.key,
-                diagramType: e.value,
-              );
+            children: statistics.map((s) {
+              return FlexusStatisticsExpansionTile(statistic: s);
             }).toList(),
           ),
         ),

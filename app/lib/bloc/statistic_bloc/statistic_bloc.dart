@@ -21,11 +21,12 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       case "Total Moved Weight":
         final response = await _bestLiftsService.getTotalMovedWeight(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
+          List<Map<String, dynamic>> values = [];
           if (response.body != null && response.body.isNotEmpty) {
-            emit(StatisticLoaded(values: []));
-          } else {
-            emit(StatisticError(error: response.error.toString()));
+            Map<String, dynamic> jsonMap = response.body;
+            values.add(jsonMap.map((key, value) => MapEntry(key, value / 1000)));
           }
+          emit(StatisticLoaded(values: values));
         } else {
           emit(StatisticError(error: response.error.toString()));
         }
@@ -34,11 +35,12 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       case "Total Reps":
         final response = await _bestLiftsService.getTotalReps(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
+          List<Map<String, dynamic>> values = [];
           if (response.body != null && response.body.isNotEmpty) {
-            emit(StatisticLoaded(values: []));
-          } else {
-            emit(StatisticError(error: response.error.toString()));
+            Map<String, dynamic> jsonMap = response.body;
+            values.add(jsonMap.map((key, value) => MapEntry(key, value)));
           }
+          emit(StatisticLoaded(values: values));
         } else {
           emit(StatisticError(error: response.error.toString()));
         }
@@ -47,18 +49,12 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       case "Workout Days":
         final response = await _bestLiftsService.getWorkoutDays(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
+          List<Map<String, dynamic>> values = [];
           if (response.body != null && response.body.isNotEmpty) {
-            print(response.bodyString);
-
-            List<Map<String, dynamic>> values = [];
             Map<String, dynamic> jsonMap = response.body;
-
             values.add(jsonMap.map((key, value) => MapEntry(key, value)));
-
-            emit(StatisticLoaded(values: values));
-          } else {
-            emit(StatisticError(error: response.error.toString()));
           }
+          emit(StatisticLoaded(values: values));
         } else {
           emit(StatisticError(error: response.error.toString()));
         }
@@ -67,11 +63,12 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       case "Workout Duration":
         final response = await _bestLiftsService.getWorkoutDuration(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
+          List<Map<String, dynamic>> values = [];
           if (response.body != null && response.body.isNotEmpty) {
-            emit(StatisticLoaded(values: []));
-          } else {
-            emit(StatisticError(error: response.error.toString()));
+            Map<String, dynamic> jsonMap = response.body;
+            values.add(jsonMap.map((key, value) => MapEntry(key, (value / 60).roundToDouble())));
           }
+          emit(StatisticLoaded(values: values));
         } else {
           emit(StatisticError(error: response.error.toString()));
         }
