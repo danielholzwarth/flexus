@@ -16,14 +16,15 @@ class StatisticsPage extends StatefulWidget {
 class _StatisticsPageState extends State<StatisticsPage> {
   ScrollController scrollController = ScrollController();
 
-  List<String> statistics = [
-    "Average Moved Weight per Day", //Bar
-    "Skipped Splits per Plan", //Radar
-    "Total Reps per Day", //Bar
-    "Weight of Exercise", //Line (filled)
-    "Workout Days", //Pie
-    "Workout Duration per Day", //Bar
-  ];
+  //0 - Pie, 1 - Bar, 2 - Line, 3 - Radar
+  Map<String, int> statistics = {
+    // "Skipped Splits" : 3,
+    "Total Moved Weight": 1,
+    "Total Reps": 1,
+    // "Weight of Exercise" : 2,
+    "Workout Days": 0,
+    "Workout Duration": 1,
+  };
 
   @override
   void dispose() {
@@ -37,7 +38,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
       backgroundColor: AppSettings.background,
       appBar: AppBar(
         backgroundColor: AppSettings.background,
-        title: const CustomDefaultTextStyle(text: 'Statistics'),
+        title: CustomDefaultTextStyle(
+          text: 'Statistics',
+          fontSize: AppSettings.fontSizeH3,
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -59,9 +63,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
         child: SingleChildScrollView(
           controller: scrollController,
           child: Column(
-            children: [
-              for (int i = 0; i <= statistics.length - 1; i++) FlexusStatisticsExpansionTile(title: statistics[i]),
-            ],
+            children: statistics.entries.map((e) {
+              return FlexusStatisticsExpansionTile(
+                title: e.key,
+                diagramType: e.value,
+              );
+            }).toList(),
           ),
         ),
       ),
