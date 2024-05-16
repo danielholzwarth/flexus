@@ -19,7 +19,7 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
 
     switch (event.title) {
       case "Total Moved Weight":
-        final response = await _bestLiftsService.getTotalMovedWeight(userBox.get("flexusjwt"), event.periodInDays);
+        final response = await _bestLiftsService.getTotalMovedWeight(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
           if (response.body != "null" && response.body.isNotEmpty) {
             emit(StatisticLoaded());
@@ -30,7 +30,7 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Total Reps":
-        final response = await _bestLiftsService.getTotalReps(userBox.get("flexusjwt"), event.periodInDays);
+        final response = await _bestLiftsService.getTotalReps(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
           if (response.body != "null" && response.body.isNotEmpty) {
             emit(StatisticLoaded());
@@ -41,7 +41,7 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Workout Days":
-        final response = await _bestLiftsService.getWorkoutDays(userBox.get("flexusjwt"), event.periodInDays);
+        final response = await _bestLiftsService.getWorkoutDays(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
           if (response.body != "null" && response.body.isNotEmpty) {
             emit(StatisticLoaded());
@@ -52,7 +52,7 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Workout Duration":
-        final response = await _bestLiftsService.getWorkoutDuration(userBox.get("flexusjwt"), event.periodInDays);
+        final response = await _bestLiftsService.getWorkoutDuration(userBox.get("flexusjwt"), event.period);
         if (response.isSuccessful) {
           if (response.body != "null" && response.body.isNotEmpty) {
             emit(StatisticLoaded());

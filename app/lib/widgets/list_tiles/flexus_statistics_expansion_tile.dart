@@ -39,7 +39,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
   @override
   void initState() {
     super.initState();
-    statisticBloc.add(GetStatistic(title: widget.title, diagramType: widget.diagramType, periodInDays: 7));
+    statisticBloc.add(GetStatistic(title: widget.title, diagramType: widget.diagramType, period: 7));
   }
 
   @override
@@ -79,8 +79,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
           } else if (state is StatisticError) {
             return Center(
                 child: FlexusError(
-                    text: state.error,
-                    func: () => statisticBloc.add(GetStatistic(title: widget.title, diagramType: widget.diagramType, periodInDays: 7))));
+                    text: state.error, func: () => statisticBloc.add(GetStatistic(title: widget.title, diagramType: widget.diagramType, period: 7))));
           } else {
             return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
