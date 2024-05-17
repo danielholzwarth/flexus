@@ -361,7 +361,17 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                                 }
                                 if (setController[i]["workload"]!.text.isEmpty) {
                                   setController[i]["workload"]!.text = (millis / 1000).toString();
+
+                                  currentExercise!.measurements[i].workload = (millis / 1000);
+
+                                  CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                  if (currentWorkout != null) {
+                                    currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                    userBox.put("currentWorkout", currentWorkout);
+                                  }
                                 }
+                                setState(() {});
                               },
                               onChanged: (String newValue) {
                                 currentExercise!.measurements[i].workload = double.tryParse(newValue) ?? 0;

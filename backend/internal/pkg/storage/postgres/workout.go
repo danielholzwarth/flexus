@@ -84,7 +84,7 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 	}
 
 	pbCountQuery := `
-		SELECT COUNT(s.exercise_id)
+		SELECT COUNT(DISTINCT(s.exercise_id))
 		FROM set s
 		JOIN workout w ON w.id = s.workout_id
 		WHERE w.user_id = $1
@@ -92,9 +92,9 @@ func (db DB) GetWorkoutOverviews(userAccountID int) ([]types.WorkoutOverview, er
 		AND s.workload = (
 			SELECT MAX(workload)
 			FROM set
-				JOIN workout w ON w.id = set.workout_id
+			JOIN workout w ON w.id = set.workout_id
 			WHERE s.exercise_id = set.exercise_id
-				AND w.user_id = $1
+			AND w.user_id = $1
 		);
 	`
 
