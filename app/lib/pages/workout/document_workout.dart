@@ -173,6 +173,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
                 userBox.put("currentPlan", widget.currentPlan);
               }
               userBox.delete("currentWorkout");
+              userBox.delete("timerValue");
 
               Navigator.pop(context);
             } else {

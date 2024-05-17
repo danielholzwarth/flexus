@@ -394,7 +394,7 @@ String getBlockedDays(PlanOverview planOverview) {
 
 String getWeekday(int index, bool isShort) {
   final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  final weekdaysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  final weekdaysShort = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 
-  return isShort == true ? weekdaysShort[index % 7] : weekdays[index % 7];
+  return isShort == true ? weekdaysShort[(index - 1) % 7] : weekdays[(index - 1) % 7];
 }

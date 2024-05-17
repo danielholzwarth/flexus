@@ -1,6 +1,7 @@
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
+import 'package:app/pages/plan/plan.dart';
 import 'package:app/pages/workout/view_workout.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -263,7 +264,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       radius: AppSettings.fontSizeH3,
       backgroundColor: AppSettings.primaryShade48,
       child: CustomDefaultTextStyle(
-        text: _getWeekdayAbbreviation(workout.starttime.weekday),
+        text: getWeekday(workout.starttime.weekday, true),
         fontSize: AppSettings.fontSizeH4,
       ),
     );
@@ -281,9 +282,4 @@ String getCorrectDurationString(DateTime first, DateTime? second) {
   } else {
     return "-";
   }
-}
-
-String _getWeekdayAbbreviation(int index) {
-  final weekdays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
-  return weekdays[index % 7];
 }

@@ -41,7 +41,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          highlightText(widget.statistic.title, AppSettings.fontSizeH4),
+          highlightText("${widget.statistic.title} ${widget.statistic.labelY}", AppSettings.fontSizeH4),
         ],
       ),
       children: <Widget>[
@@ -62,6 +62,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
         builder: (context, state) {
           if (state is StatisticLoaded) {
             if (state.values.isNotEmpty) {
+              // List<Map<String, dynamic>> sortedValues = sortValues(state.values);
               switch (diagramType) {
                 case 0:
                   return buildPieChart(deviceSize, state.values);
@@ -96,11 +97,12 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
   }
 
   LineChart buildLineChart(Size deviceSize, List<Map<String, dynamic>> values) {
+    int currentDayIndex = DateTime.now().weekday;
     return LineChart(
       LineChartData(
-        minX: 0,
+        minX: currentDayIndex.toDouble() + 1,
         minY: 0,
-        maxX: period.toDouble() - 1,
+        maxX: (currentDayIndex + period).toDouble(),
         maxY: getHighestValueCeiled(values),
         lineBarsData: values.map((line) {
           int lineIndex = values.indexOf(line);
@@ -151,10 +153,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
           ),
           touchCallback: (FlTouchEvent event, LineTouchResponse? touchResponse) {
             if (touchResponse != null && touchResponse.lineBarSpots != null) {
-              final touchedSpot = touchResponse.lineBarSpots!.first;
-              // Here you can handle the touch event and display your information
-              print('Touched spot: (${touchedSpot.x}, ${touchedSpot.y})');
-              // Display additional information as needed
+              touchResponse.lineBarSpots!.first;
             }
           },
         ),
@@ -190,12 +189,23 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
 
   List<FlSpot> buildSpots(Map<String, dynamic> line) {
     List<FlSpot> spots = [];
+    int currentDayIndex = DateTime.now().weekday;
 
-    for (int i = 0; i <= period - 1; i++) {
+    if (period != currentDayIndex) {
+      for (int i = currentDayIndex + 1; i <= period - 1; i++) {
+        if (line.containsKey(i.toString())) {
+          spots.add(FlSpot(i.toDouble(), line[i.toString()].toDouble()));
+        } else {
+          spots.add(FlSpot(i.toDouble(), 0));
+        }
+      }
+    }
+
+    for (int i = 0; i <= currentDayIndex; i++) {
       if (line.containsKey(i.toString())) {
-        spots.add(FlSpot(i.toDouble(), line[i.toString()].toDouble()));
+        spots.add(FlSpot((i + period).toDouble(), line[i.toString()].toDouble()));
       } else {
-        spots.add(FlSpot(i.toDouble(), 0));
+        spots.add(FlSpot((i + period).toDouble(), 0));
       }
     }
 

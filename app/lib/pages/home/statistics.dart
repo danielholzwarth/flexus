@@ -15,13 +15,11 @@ class StatisticsPage extends StatefulWidget {
 class _StatisticsPageState extends State<StatisticsPage> {
   ScrollController scrollController = ScrollController();
 
-  // "Skipped Splits" : 3,
-  // "Weight of Exercise" : 2,
   List<Statistic> statistics = [
-    Statistic(title: "Total Moved Weight", labelX: "Days of Week", labelY: "Weight in Tons", diagramType: 2),
-    Statistic(title: "Total Reps", labelX: "Days of Week", labelY: "Reps", diagramType: 2),
-    Statistic(title: "Workout Days", labelX: "", labelY: "", diagramType: 0),
-    Statistic(title: "Workout Duration", labelX: "Days of Week", labelY: "Duration in Minutes", diagramType: 2),
+    Statistic(title: "Total Moved Weight", labelX: "Days of Week", labelY: "(in tons)", diagramType: 2),
+    Statistic(title: "Total Reps", labelX: "Days of Week", labelY: "", diagramType: 2),
+    Statistic(title: "Workout Days", labelX: "", labelY: "(all time)", diagramType: 0),
+    Statistic(title: "Workout Duration", labelX: "Days of Week", labelY: "(in mins)", diagramType: 2),
   ];
 
   @override
