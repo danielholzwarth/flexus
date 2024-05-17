@@ -42,11 +42,11 @@ class AppSettings {
 
   static List<Color> statisticColors = [
     const Color(0xFF0074B6),
-    Color(0xFF1D5CAD),
-    Color(0xFF3A45A4),
-    Color(0xFF572D9B),
-    Color(0xFF741692),
-    Color(0xFF910089),
+    const Color(0xFF1D5CAD),
+    const Color(0xFF3A45A4),
+    const Color(0xFF572D9B),
+    const Color(0xFF741692),
+    const Color(0xFF910089),
     const Color(0xFF4300B6),
   ];
 }
