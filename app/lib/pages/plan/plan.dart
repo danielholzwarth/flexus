@@ -255,7 +255,7 @@ class _PlanPageState extends State<PlanPage> {
                           dataRowMaxHeight: deviceSize.height * 0.05,
                           columns: const [
                             DataColumn(label: CustomDefaultTextStyle(text: 'Exercise')),
-                            DataColumn(label: CustomDefaultTextStyle(text: 'Measurements')),
+                            DataColumn(label: CustomDefaultTextStyle(text: 'Best set of last workout')),
                           ],
                           rows: [
                             for (int exerciseIndex = 0; exerciseIndex < planOverview.splitOverviews[index].exercises.length; exerciseIndex++)
@@ -264,22 +264,15 @@ class _PlanPageState extends State<PlanPage> {
                                   DataCell(
                                     Text("${exerciseIndex + 1}. ${planOverview.splitOverviews[index].exercises[exerciseIndex].name}"),
                                   ),
-                                  planOverview.splitOverviews[index].measurements.isNotEmpty
+                                  planOverview.splitOverviews[index].measurements.isNotEmpty &&
+                                          planOverview.splitOverviews[index].measurements[exerciseIndex].repetitions > 0
                                       ? DataCell(
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              for (int measurementIndex = 0;
-                                                  measurementIndex < planOverview.splitOverviews[index].measurements[exerciseIndex].length;
-                                                  measurementIndex++)
-                                                CustomDefaultTextStyle(
-                                                    text: planOverview.splitOverviews[index].measurements[exerciseIndex][measurementIndex],
-                                                    overflow: TextOverflow.clip),
-                                              const SizedBox()
-                                            ],
-                                          ),
+                                          CustomDefaultTextStyle(
+                                              text:
+                                                  "${planOverview.splitOverviews[index].measurements[exerciseIndex].repetitions} x ${planOverview.splitOverviews[index].measurements[exerciseIndex].workload}${planOverview.splitOverviews[index].exercises[exerciseIndex].typeID == 1 ? "kg" : "s"}",
+                                              overflow: TextOverflow.clip),
                                         )
-                                      : const DataCell(CustomDefaultTextStyle(text: "not implemented yet")),
+                                      : const DataCell(CustomDefaultTextStyle(text: "No data")),
                                 ],
                               ),
                           ],

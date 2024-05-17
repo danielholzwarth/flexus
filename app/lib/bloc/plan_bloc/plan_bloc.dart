@@ -4,6 +4,7 @@ import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/hive/split/split_overview.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -306,8 +307,11 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
                     );
                   }))
                 : [],
-            measurements: [],
-            //splitJson['measurements'] != null ? List<String>.from(splitJson['measurements'].map((measurementJson) => List<String>.from(measurementJson))): [],
+            measurements: splitJson['measurements'] != null
+                ? List<Measurement>.from(splitJson['measurements'].map((measurementJson) => Measurement(
+                    repetitions: measurementJson['repetitions'] ?? 0,
+                    workload: measurementJson['workload'] != null ? measurementJson['workload'].toDouble() : 0)))
+                : [],
           );
         }).toList();
 

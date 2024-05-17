@@ -8,7 +8,7 @@ type Split struct {
 }
 
 type SplitOverview struct {
-	Split        Split      `json:"split"`
-	Exercises    []Exercise `json:"exercises"`
-	Measurements [][]string `json:"measurements"`
+	Split        Split         `json:"split"`
+	Exercises    []Exercise    `json:"exercises"`
+	Measurements []Measurement `json:"measurements"`
 }

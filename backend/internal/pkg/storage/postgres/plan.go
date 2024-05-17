@@ -401,7 +401,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		var splitOverview types.SplitOverview
 		var split types.Split
 		var exercises []types.Exercise
-		// var splitMeasurements []string
+		var measurements []types.Measurement
 
 		err := rows.Scan(
 			&split.ID,
@@ -415,9 +415,27 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		splitOverview.Split = split
 
 		exerciseQuery := `
-			SELECT *
-			FROM exercise
-			JOIN exercise_split ON split_id = $1 AND exercise_id = exercise.id;
+			SELECT e.*
+			FROM exercise e
+			JOIN exercise_split es ON es.exercise_id = e.id
+			WHERE split_id = $1;
+		`
+
+		bestLiftQuery := `
+			SELECT s.repetitions, s.workload
+			FROM set s
+			JOIN workout w ON w.id = s.workout_id
+			WHERE s.exercise_id = $1
+			AND w.user_id = $2
+			AND s.workout_id = (
+				SELECT MAX(w.id)
+				FROM workout w
+				JOIN set s ON s.workout_id = w.id
+				WHERE s.exercise_id = $1
+				AND w.user_id = $2
+			)
+			ORDER BY s.workload DESC
+			LIMIT 1;
 		`
 
 		exerciseRows, err := db.pool.Query(exerciseQuery, split.ID)
@@ -426,8 +444,6 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 		}
 		defer exerciseRows.Close()
 
-		//Anything are the parameters of exercise_split
-		var anything any
 		for exerciseRows.Next() {
 			var exercise types.Exercise
 			err := exerciseRows.Scan(
@@ -435,16 +451,27 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 				&exercise.CreatorID,
 				&exercise.Name,
 				&exercise.TypeID,
-				&anything,
-				&anything,
-				&anything,
-				&anything,
 			)
 			if err != nil {
 				return types.PlanOverview{}, err
 			}
 
 			exercises = append(exercises, exercise)
+
+			//Get Best Lift of last workout
+			var measurement types.Measurement
+
+			err = db.pool.QueryRow(bestLiftQuery, exercise.ID, userID).Scan(&measurement.Repetitions, &measurement.Workload)
+			if err != nil {
+				if !errors.Is(err, sql.ErrNoRows) {
+					return types.PlanOverview{}, err
+				} else {
+					measurement.Repetitions = 0
+					measurement.Workload = 0
+				}
+			}
+
+			measurements = append(measurements, measurement)
 		}
 
 		if err := exerciseRows.Err(); err != nil {
@@ -453,45 +480,7 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 
 		splitOverview.Exercises = append(splitOverview.Exercises, exercises...)
 
-		// measurementQuery := `
-		// 	SELECT measurement
-		// 	FROM set
-		// 	INNER JOIN workout ON set.workout_id = workout.id
-		// 	WHERE workout.user_id = $1
-		// 	AND set.exercise_id = $2
-		// 	AND workout.id = (
-		// 		SELECT MAX(workout_id) 
-		// 		FROM set
-		// 		INNER JOIN workout ON set.workout_id = workout.id
-		// 		WHERE workout.user_id = $1
-		// 		AND set.exercise_id = $2
-		// 	);
-		// `
-		// for i := 0; i < len(exercises); i++ {
-		// 	measurementRows, err := db.pool.Query(measurementQuery, userID, exercises[i].ID)
-		// 	if err != nil {
-		// 		return types.PlanOverview{}, err
-		// 	}
-		// 	defer measurementRows.Close()
-
-		// 	found := measurementRows.Next()
-		// 	if !found {
-		// 		splitMeasurements = append(splitMeasurements, "none")
-		// 	} else {
-		// 		var measurement string
-		// 		err := measurementRows.Scan(&measurement)
-		// 		if err != nil {
-		// 			return types.PlanOverview{}, err
-		// 		}
-		// 		splitMeasurements = append(splitMeasurements, measurement)
-		// 	}
-
-		// 	if err := measurementRows.Err(); err != nil {
-		// 		return types.PlanOverview{}, err
-		// 	}
-		// }
-
-		// splitOverview.Measurements = append(splitOverview.Measurements, splitMeasurements)
+		splitOverview.Measurements = append(splitOverview.Measurements, measurements...)
 
 		splitOverviews = append(splitOverviews, splitOverview)
 	}

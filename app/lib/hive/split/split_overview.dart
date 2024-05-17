@@ -1,5 +1,6 @@
 import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:app/hive/workout/measurement.dart';
 import 'package:hive/hive.dart';
 
 part 'split_overview.g.dart';
@@ -13,7 +14,7 @@ class SplitOverview extends HiveObject {
   List<Exercise> exercises;
 
   @HiveField(2)
-  List<List<String>> measurements;
+  List<Measurement> measurements;
 
   SplitOverview({
     required this.split,

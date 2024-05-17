@@ -19,9 +19,7 @@ class SplitOverviewAdapter extends TypeAdapter<SplitOverview> {
     return SplitOverview(
       split: fields[0] as Split,
       exercises: (fields[1] as List).cast<Exercise>(),
-      measurements: (fields[2] as List)
-          .map((dynamic e) => (e as List).cast<String>())
-          .toList(),
+      measurements: (fields[2] as List).cast<Measurement>(),
     );
   }
 
