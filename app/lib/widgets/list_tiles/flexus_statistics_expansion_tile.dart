@@ -27,16 +27,6 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
   int touchIndex = -1;
   int period = 7;
 
-  List<Color> primaryColors = [
-    Colors.blue,
-    Colors.yellow,
-    Colors.green,
-    Colors.red,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -117,9 +107,10 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
 
           return LineChartBarData(
             spots: buildSpots(line),
-            color: primaryColors[lineIndex],
+            color: AppSettings.statisticColors[lineIndex],
             barWidth: 3,
             isCurved: true,
+            preventCurveOverShooting: true,
           );
         }).toList(),
         titlesData: FlTitlesData(
@@ -142,6 +133,30 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
               ),
             ),
           ),
+        ),
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((touchedSpot) {
+                final textStyle = TextStyle(
+                  color: AppSettings.background,
+                  fontSize: AppSettings.fontSize,
+                );
+                return LineTooltipItem(
+                  '${touchedSpot.y}',
+                  textStyle,
+                );
+              }).toList();
+            },
+          ),
+          touchCallback: (FlTouchEvent event, LineTouchResponse? touchResponse) {
+            if (touchResponse != null && touchResponse.lineBarSpots != null) {
+              final touchedSpot = touchResponse.lineBarSpots!.first;
+              // Here you can handle the touch event and display your information
+              print('Touched spot: (${touchedSpot.x}, ${touchedSpot.y})');
+              // Display additional information as needed
+            }
+          },
         ),
       ),
     );
@@ -210,12 +225,15 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
           bool isTouched = touchIndex == index;
           return PieChartSectionData(
             value: entry.value.toDouble(),
-            title: "${getWeekday(int.parse(entry.key), false)}\n (${entry.value})",
-            titlePositionPercentageOffset: 0.7,
+            title: "${getWeekday(int.parse(entry.key), true)} (${entry.value})",
+            titlePositionPercentageOffset: 0.6,
             showTitle: true,
-            radius: isTouched ? deviceSize.width * 0.35 : deviceSize.width * 0.25,
-            color: primaryColors[index],
-            titleStyle: TextStyle(fontSize: isTouched ? AppSettings.fontSizeH4 : AppSettings.fontSize),
+            radius: isTouched ? deviceSize.width * 0.4 : deviceSize.width * 0.3,
+            color: AppSettings.statisticColors[index],
+            titleStyle: TextStyle(
+              fontSize: isTouched ? AppSettings.fontSizeH4 : AppSettings.fontSize,
+              color: AppSettings.fontV1,
+            ),
           );
         }).toList(),
         sectionsSpace: 0,

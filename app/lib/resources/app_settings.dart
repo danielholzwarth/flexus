@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AppSettings {
@@ -23,7 +24,7 @@ class AppSettings {
   static Color get confirm => isDarkMode ? const Color(0xFF00FF00) : const Color.fromARGB(255, 51, 95, 47);
   static Color get font => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF000000);
   static Color get fontV1 => isDarkMode ? const Color(0xFF00FF00) : const Color(0xFFFFFFFF);
-  static Color get blocked => isDarkMode ? const Color(0xFF00FF00) : Color.fromARGB(255, 202, 202, 202);
+  static Color get blocked => isDarkMode ? const Color(0xFF00FF00) : const Color.fromARGB(255, 202, 202, 202);
 
   //Style
   static double elevation = 10.0;
@@ -38,4 +39,14 @@ class AppSettings {
   static double fontSizeT2 = 12.0;
   static double fontSizeT3 = 10.0;
   static double fontSizeT4 = 8.0;
+
+  static List<Color> statisticColors = [
+    const Color(0xFF0074B6),
+    Color(0xFF1D5CAD),
+    Color(0xFF3A45A4),
+    Color(0xFF572D9B),
+    Color(0xFF741692),
+    Color(0xFF910089),
+    const Color(0xFF4300B6),
+  ];
 }
