@@ -70,13 +70,23 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              buildExercise(context, deviceSize),
-              currentExercise != null && currentExercise!.exercise.id != 0 ? buildOldMeasurements(deviceSize) : Container(),
-              currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
-            ],
-          );
+          if (state is ExerciseInitial) {
+            return Column(
+              children: [
+                buildExercise(context, deviceSize),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildOldMeasurements(deviceSize) : Container(),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                buildExercise(context, deviceSize),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildOldMeasurements(deviceSize) : Container(),
+                currentExercise != null && currentExercise!.exercise.id != 0 ? buildSets(deviceSize) : Container(),
+              ],
+            );
+          }
         },
       ),
     );

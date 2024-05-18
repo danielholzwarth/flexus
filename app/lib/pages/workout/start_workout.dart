@@ -99,7 +99,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
                     buildPlan(context, deviceSize),
                     buildSplit(context, deviceSize),
                     SizedBox(height: deviceSize.height * 0.2),
-                    buildBottom(context, deviceSize),
+                    buildStart(context, deviceSize),
                   ],
                 ),
               ),
@@ -211,21 +211,21 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
     );
   }
 
-  Widget buildBottom(BuildContext context, Size deviceSize) {
+  Widget buildStart(BuildContext context, Size deviceSize) {
     return Center(
       child: FlexusButton(
         text: "Start",
         function: () {
           if (widget.workout != null) {
             workoutBloc.add(PatchWorkout(
-              workoutID: widget.workout!.id,
-              name: "startWorkout",
+              gymID: currentGym?.id,
               splitID: currentPlan != null
                   ? currentPlan!.splits.isNotEmpty
                       ? currentPlan!.splits[currentPlan!.currentSplit].id
                       : null
                   : null,
-              gymID: currentGym?.id,
+              workoutID: widget.workout!.id,
+              name: "startWorkout",
             ));
           } else {
             workoutBloc.add(PostWorkout(

@@ -13,6 +13,7 @@ import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/timer.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
+import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,7 +83,9 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               currentExercises.add(CurrentExercise(
                   exercise: state.currentExercises[i].exercise, oldMeasurements: state.currentExercises[i].oldMeasurements, measurements: []));
             }
-          } else {
+          }
+
+          if (pages.isEmpty) {
             pages.add(const DocumentExercisePage(pageID: 1));
             currentExercises.add(CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: []));
           }
@@ -98,8 +101,16 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         }
       },
       builder: (context, state) {
-        if (state is ExercisesLoading) {
+        if (state is ExercisesLoading || state is ExerciseInitial) {
           return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+        } else if (state is ExerciseError) {
+          return FlexusError(
+            text: state.error,
+            func: () {
+              buildPages();
+              setState(() {});
+            },
+          );
         } else {
           return PageView(
             scrollBehavior: const CupertinoScrollBehavior(),
