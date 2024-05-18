@@ -101,9 +101,11 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
         }
       },
       builder: (context, state) {
-        if (state is ExercisesLoading || state is ExerciseInitial) {
+        if (state is ExercisesLoading || state is ExerciseInitial && pages.isEmpty) {
           return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-        } else if (state is ExerciseError) {
+        }
+
+        if (state is ExerciseError) {
           return FlexusError(
             text: state.error,
             func: () {
@@ -111,18 +113,18 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               setState(() {});
             },
           );
-        } else {
-          return PageView(
-            scrollBehavior: const CupertinoScrollBehavior(),
-            onPageChanged: (value) => {
-              setState(() {
-                currentPageIndex = value;
-              }),
-            },
-            controller: pageController,
-            children: pages,
-          );
         }
+
+        return PageView(
+          scrollBehavior: const CupertinoScrollBehavior(),
+          onPageChanged: (value) => {
+            setState(() {
+              currentPageIndex = value;
+            }),
+          },
+          controller: pageController,
+          children: pages,
+        );
       },
     );
   }
