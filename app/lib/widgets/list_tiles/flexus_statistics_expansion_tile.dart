@@ -188,24 +188,14 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
   }
 
   List<FlSpot> buildSpots(Map<String, dynamic> line) {
-    List<FlSpot> spots = [];
     int currentDayIndex = DateTime.now().weekday;
+    List<FlSpot> spots = [];
 
-    if (period != currentDayIndex) {
-      for (int i = currentDayIndex + 1; i <= period - 1; i++) {
-        if (line.containsKey(i.toString())) {
-          spots.add(FlSpot(i.toDouble(), line[i.toString()].toDouble()));
-        } else {
-          spots.add(FlSpot(i.toDouble(), 0));
-        }
-      }
-    }
-
-    for (int i = 0; i <= currentDayIndex; i++) {
-      if (line.containsKey(i.toString())) {
-        spots.add(FlSpot((i + period).toDouble(), line[i.toString()].toDouble()));
+    for (int i = currentDayIndex + 1; i <= currentDayIndex + period; i++) {
+      if (line.containsKey((i % 7).toString())) {
+        spots.add(FlSpot(i.toDouble(), line[(i % 7).toString()].toDouble()));
       } else {
-        spots.add(FlSpot((i + period).toDouble(), 0));
+        spots.add(FlSpot(i.toDouble(), 0));
       }
     }
 

@@ -7,7 +7,7 @@ import (
 func (db *DB) GetTotalMovedWeight(userAccountID int, period int) (any, error) {
 
 	query := `
-		SELECT SUM(s.workload) AS total_workload, EXTRACT(DOW FROM w.starttime) AS weekday
+		SELECT SUM(s.workload * s.repetitions) AS total_workload, EXTRACT(DOW FROM w.starttime) AS weekday
 		FROM workout w
 		JOIN set s ON w.id = s.workout_id
 		JOIN exercise e ON s.exercise_id = e.id
