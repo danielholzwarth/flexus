@@ -70,61 +70,75 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
     );
   }
 
-  BlocConsumer<ExerciseBloc, Object?> buildBody() {
+  Widget buildBody() {
     return BlocConsumer(
-      bloc: exerciseBloc,
+      bloc: workoutBloc,
       listener: (context, state) {
-        if (state is ExercisesFromSplitIDLoaded) {
-          List<CurrentExercise> currentExercises = [];
-
-          if (state.currentExercises.isNotEmpty) {
-            for (int i = 0; i <= state.currentExercises.length - 1; i++) {
-              pages.add(DocumentExercisePage(pageID: i + 1));
-              currentExercises.add(CurrentExercise(
-                  exercise: state.currentExercises[i].exercise, oldMeasurements: state.currentExercises[i].oldMeasurements, measurements: []));
-            }
-          }
-
-          if (pages.isEmpty) {
-            pages.add(const DocumentExercisePage(pageID: 1));
-            currentExercises.add(CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: []));
-          }
-
-          currentWorkout = CurrentWorkout(
-            gym: widget.gym,
-            plan: widget.currentPlan?.plan,
-            split: widget.currentPlan != null ? widget.currentPlan!.splits[widget.currentPlan!.currentSplit] : null,
-            exercises: currentExercises,
-          );
-
-          userBox.put("currentWorkout", currentWorkout);
+        if (state is! WorkoutUpdating && state is! WorkoutInitial) {
+          Navigator.pop(context, true);
         }
       },
       builder: (context, state) {
-        if (state is ExercisesLoading || state is ExerciseInitial && pages.isEmpty) {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-        }
+        if (state is WorkoutUpdating || state is WorkoutInitial) {
+          return BlocConsumer(
+            bloc: exerciseBloc,
+            listener: (context, state) {
+              if (state is ExercisesFromSplitIDLoaded) {
+                List<CurrentExercise> currentExercises = [];
 
-        if (state is ExerciseError) {
-          return FlexusError(
-            text: state.error,
-            func: () {
-              buildPages();
-              setState(() {});
+                if (state.currentExercises.isNotEmpty) {
+                  for (int i = 0; i <= state.currentExercises.length - 1; i++) {
+                    pages.add(DocumentExercisePage(pageID: i + 1));
+                    currentExercises.add(CurrentExercise(
+                        exercise: state.currentExercises[i].exercise, oldMeasurements: state.currentExercises[i].oldMeasurements, measurements: []));
+                  }
+                }
+
+                if (pages.isEmpty) {
+                  pages.add(const DocumentExercisePage(pageID: 1));
+                  currentExercises.add(CurrentExercise(exercise: Exercise(id: 0, name: "", typeID: 0), oldMeasurements: [], measurements: []));
+                }
+
+                currentWorkout = CurrentWorkout(
+                  gym: widget.gym,
+                  plan: widget.currentPlan?.plan,
+                  split: widget.currentPlan != null ? widget.currentPlan!.splits[widget.currentPlan!.currentSplit] : null,
+                  exercises: currentExercises,
+                );
+
+                userBox.put("currentWorkout", currentWorkout);
+              }
+            },
+            builder: (context, state) {
+              if (state is ExercisesLoading || state is ExerciseInitial && pages.isEmpty) {
+                return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+              }
+
+              if (state is ExerciseError) {
+                return FlexusError(
+                  text: state.error,
+                  func: () {
+                    buildPages();
+                    setState(() {});
+                  },
+                );
+              }
+
+              return PageView(
+                scrollBehavior: const CupertinoScrollBehavior(),
+                onPageChanged: (value) => {
+                  setState(() {
+                    currentPageIndex = value;
+                  }),
+                },
+                controller: pageController,
+                children: pages,
+              );
             },
           );
+        } else {
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
         }
-
-        return PageView(
-          scrollBehavior: const CupertinoScrollBehavior(),
-          onPageChanged: (value) => {
-            setState(() {
-              currentPageIndex = value;
-            }),
-          },
-          controller: pageController,
-          children: pages,
-        );
       },
     );
   }
@@ -157,7 +171,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           icon: const FlexusDefaultIcon(iconData: Icons.add),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
 
             if (currentWorkout != null) {
@@ -187,8 +201,6 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               }
               userBox.delete("currentWorkout");
               userBox.delete("timerValue");
-
-              Navigator.pop(context);
             } else {
               debugPrint('Null?');
             }

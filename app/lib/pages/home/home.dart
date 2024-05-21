@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                     type: PageTransitionType.fade,
                     child: const DocumentWorkoutPage(),
                   ),
-                );
+                ).then((value) => workoutBloc.add(GetWorkouts()));
               },
               icon: Icons.play_arrow,
             );
