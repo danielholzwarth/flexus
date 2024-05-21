@@ -172,6 +172,12 @@ func (s service) patchUserAccount() http.HandlerFunc {
 					return
 				}
 
+				maxImageSize := 3 * 1024 * 1024 // 3 MB
+				if len(imageBytes) > maxImageSize {
+					http.Error(w, "Profile picture exceeds the maximum allowed size of 3 MB!", http.StatusBadRequest)
+					return
+				}
+
 				err = s.userAccountStore.PatchUserAccount("profile_picture", imageBytes, claims.UserAccountID)
 				if err != nil {
 					http.Error(w, "Failed to patch profilePicture", http.StatusInternalServerError)

@@ -7,6 +7,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,6 +30,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
   final ImagePicker imagePicker = ImagePicker();
   XFile? imageFile;
   final UserAccountBloc userAccountBloc = UserAccountBloc();
+  final int maxImageSize = 3 * 1024 * 1024; //3 MB
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +48,22 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
     );
   }
 
-  BlocBuilder<UserAccountBloc, Object?> buildPicture(Size deviceSize) {
-    return BlocBuilder(
+  Widget buildPicture(Size deviceSize) {
+    return BlocConsumer(
       bloc: userAccountBloc,
+      listener: (context, state) {
+        if (state is UserAccountError) {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: state.error,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
+        }
+      },
       builder: (context, state) {
         if (state is UserAccountLoaded) {
           return GestureDetector(
@@ -149,9 +164,22 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
         imageFile = pickedFile;
 
         List<int> imageBytes = await pickedFile.readAsBytes();
-        Uint8List uint8List = Uint8List.fromList(imageBytes);
 
-        userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
+        if (imageBytes.length <= maxImageSize) {
+          Uint8List uint8List = Uint8List.fromList(imageBytes);
+          userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
+        } else {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Filesize is to big. Max. 3MB allowed!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
+          setState(() {});
+        }
       }
     } catch (e) {
       debugPrint("Error picking image from gallery: $e");
@@ -167,9 +195,21 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
       final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
         List<int> imageBytes = await pickedFile.readAsBytes();
-        Uint8List uint8List = Uint8List.fromList(imageBytes);
-
-        userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
+        if (imageBytes.length <= maxImageSize) {
+          Uint8List uint8List = Uint8List.fromList(imageBytes);
+          userAccountBloc.add(PatchUserAccount(name: "profilePicture", value: uint8List));
+          setState(() {});
+        } else {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: "Filesize is to big. Max 3MB allowed!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
+        }
       }
     } catch (e) {
       debugPrint("Error taking image: $e");

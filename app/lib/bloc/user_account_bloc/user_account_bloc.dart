@@ -70,6 +70,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           if (response.isSuccessful) {
             userAccount.username = event.value;
             userBox.put("userAccount", userAccount);
+          } else {
+            emit(UserAccountError(error: response.error.toString()));
           }
         } else {
           userAccount.username = event.value;
@@ -84,6 +86,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           if (response.isSuccessful) {
             userAccount.name = event.value;
             userBox.put("userAccount", userAccount);
+          } else {
+            emit(UserAccountError(error: response.error.toString()));
           }
         } else {
           userAccount.name = event.value;
@@ -113,6 +117,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           if (response.isSuccessful) {
             userAccount.profilePicture = event.value;
             userBox.put("userAccount", userAccount);
+          } else {
+            emit(UserAccountError(error: response.error.toString()));
           }
         } else {
           userAccount.profilePicture = event.value;
@@ -121,7 +127,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
         break;
       default:
-        emit(UserAccountsError(error: "Patch not implemented yet!"));
+        emit(UserAccountError(error: "Patch not implemented yet!"));
     }
 
     emit(UserAccountLoaded(userAccount: userAccount));
