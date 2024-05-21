@@ -243,7 +243,6 @@ Insert INTO "user_account_user_list" ("user_id") VALUES (1);
 Insert INTO "user_account_user_list" ("user_id") VALUES (2);
 Insert INTO "user_account_user_list" ("user_id") VALUES (3);
 
-Insert INTO "user_list" ("list_id", "member_id") VALUES (1, 1);
 Insert INTO "user_list" ("list_id", "member_id") VALUES (1, 2);
 
 Insert INTO "user_settings" ("user_id", "font_size", "is_dark_mode", "language_id", "is_unlisted", "is_pull_from_everyone", "pull_user_list_id", "is_notify_everyone", "notify_user_list_id", "is_quick_access") VALUES (1, 15, 'false', 1, 'false', 'false', 1, 'true', null, 'false');

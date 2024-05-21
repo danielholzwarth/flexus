@@ -105,12 +105,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userSettings.fontSize = event.value;
             userBox.put("userSettings", userSettings);
-            AppSettings.fontSize = event.value;
+            updateAppSettingsFontSizes(event.value);
           }
         } else {
           userSettings.fontSize = event.value;
           userBox.put("userSettings", userSettings);
-          AppSettings.fontSize = event.value;
+          updateAppSettingsFontSizes(event.value);
         }
 
         break;
@@ -193,4 +193,17 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     emit(SettingsLoaded(userSettings: userSettings));
   }
+}
+
+void updateAppSettingsFontSizes(double newSize) {
+  double oldFontSize = AppSettings.fontSize;
+  AppSettings.fontSize = newSize;
+  AppSettings.fontSizeBig = AppSettings.fontSizeBig / oldFontSize * newSize;
+  AppSettings.fontSizeH1 = AppSettings.fontSizeH1 / oldFontSize * newSize;
+  AppSettings.fontSizeH2 = AppSettings.fontSizeH2 / oldFontSize * newSize;
+  AppSettings.fontSizeH3 = AppSettings.fontSizeH3 / oldFontSize * newSize;
+  AppSettings.fontSizeH4 = AppSettings.fontSizeH4 / oldFontSize * newSize;
+  AppSettings.fontSizeT2 = AppSettings.fontSizeT2 / oldFontSize * newSize;
+  AppSettings.fontSizeT3 = AppSettings.fontSizeT3 / oldFontSize * newSize;
+  AppSettings.fontSizeT4 = AppSettings.fontSizeT4 / oldFontSize * newSize;
 }
