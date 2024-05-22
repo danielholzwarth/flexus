@@ -146,7 +146,7 @@ class _RegisterUsernamePageState extends State<RegisterUsernamePage> {
         SizedBox(
           width: deviceSize.width * 0.15,
           child: IconButton(
-            onPressed: () => Navigator.popAndPushNamed(context, "/"),
+            onPressed: () => Navigator.pop(context),
             icon: FlexusDefaultIcon(iconData: Icons.adaptive.arrow_back),
             iconSize: AppSettings.fontSizeH3,
             alignment: Alignment.center,
