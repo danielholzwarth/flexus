@@ -73,6 +73,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userAccount.name = event.value;
             userBox.put("userAccount", userAccount);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userAccount.name = event.value;
@@ -86,6 +88,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userAccount.username = event.value;
             userBox.put("userAccount", userAccount);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userAccount.username = event.value;
@@ -95,7 +99,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       case "password":
-        await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        final response =
+            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        if (!response.isSuccessful) {
+          emit(SettingsError(error: response.error.toString()));
+        }
         break;
 
       //Appearance
@@ -106,6 +114,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             userSettings.fontSize = event.value;
             userBox.put("userSettings", userSettings);
             updateAppSettingsFontSizes(event.value);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.fontSize = event.value;
@@ -122,6 +132,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             userSettings.isDarkMode = event.value;
             userBox.put("userSettings", userSettings);
             AppSettings.isDarkMode = event.value;
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.isDarkMode = event.value;
@@ -137,6 +149,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userSettings.isUnlisted = event.value;
             userBox.put("userSettings", userSettings);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.isUnlisted = event.value;
@@ -151,6 +165,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userSettings.isPullFromEveryone = event.value;
             userBox.put("userSettings", userSettings);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.isPullFromEveryone = event.value;
@@ -165,6 +181,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userSettings.isNotifyEveryone = event.value;
             userBox.put("userSettings", userSettings);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.isNotifyEveryone = event.value;
@@ -179,6 +197,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           if (response.isSuccessful) {
             userSettings.isQuickAccess = event.value;
             userBox.put("userSettings", userSettings);
+          } else {
+            emit(SettingsError(error: response.error.toString()));
           }
         } else {
           userSettings.isQuickAccess = event.value;

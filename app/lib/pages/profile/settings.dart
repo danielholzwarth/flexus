@@ -9,9 +9,12 @@ import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/sign_in/start.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/user_list_search_delegate.dart';
+import 'package:app/widgets/buttons/flexus_button_small.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
+import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
+import 'package:app/widgets/sheets/flexus_show_modal_bottom_sheet_text_field.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
@@ -67,6 +70,17 @@ class _SettingsPageState extends State<SettingsPage> {
           if (state is SettingsLoaded) {
             setState(() {});
           }
+          if (state is SettingsError) {
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: state.error,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
+          }
         },
         builder: (context, state) {
           if (state is SettingsLoaded) {
@@ -83,8 +97,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   _buildSection("My Account"),
-                  buildName(userAccount, context),
-                  buildUsername(userAccount, context),
+                  buildName(userAccount, context, deviceSize),
+                  buildUsername(userAccount, context, deviceSize),
                   buildPassword(context, deviceSize),
                   _buildSection("Appearance"),
                   buildFontSize(state.userSettings, context),
@@ -547,229 +561,238 @@ class _SettingsPageState extends State<SettingsPage> {
         isObscure: true,
         onPressed: () {
           if (AppSettings.hasConnection) {
-            showDialog(
+            return showBottomSheet(
+              backgroundColor: AppSettings.background,
               context: context,
               builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: AppSettings.background,
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          labelText: "Old Password",
-                          labelStyle: TextStyle(color: AppSettings.primary),
-                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                        ),
-                        controller: oldPasswordController,
-                        obscureText: true,
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40.0),
+                      child: CustomDefaultTextStyle(
+                        text: "Change Password",
+                        fontSize: AppSettings.fontSizeH3,
                       ),
-                      SizedBox(height: deviceSize.height * 0.02),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "New Password",
-                          labelStyle: TextStyle(color: AppSettings.primary),
-                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                        ),
-                        controller: newPasswordController,
-                        obscureText: true,
-                      ),
-                      SizedBox(height: deviceSize.height * 0.02),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Confirm New Password",
-                          labelStyle: TextStyle(color: AppSettings.primary),
-                          border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                        ),
-                        controller: confirmNewPasswordController,
-                        obscureText: true,
-                        onEditingComplete: () {
-                          final newPassword = newPasswordController.text;
-                          final confirmedPassword = confirmNewPasswordController.text;
-
-                          if (newPassword != confirmedPassword) {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg: 'Passwords do not match',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: AppSettings.error,
-                              textColor: AppSettings.fontV1,
-                              fontSize: AppSettings.fontSize,
-                            );
-                          } else if (newPassword.length > 128) {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg: 'Password cannot be longer than 128 characters.',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: AppSettings.error,
-                              textColor: AppSettings.fontV1,
-                              fontSize: AppSettings.fontSize,
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: CustomDefaultTextStyle(text: 'Password cannot be longer than 128 characters'),
-                              ),
-                            );
-                          } else if (newPassword.length < 8) {
-                            Fluttertoast.cancel();
-                            Fluttertoast.showToast(
-                              msg: 'Password must be at least 8 characters long',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: AppSettings.error,
-                              textColor: AppSettings.fontV1,
-                              fontSize: AppSettings.fontSize,
-                            );
-                          } else {
-                            settingsBloc.add(
-                                PatchSettings(name: "password", value: newPasswordController.text.trim(), value2: oldPasswordController.text.trim()));
-
-                            Navigator.pop(context);
+                    ),
+                    FlexusTextField(
+                      hintText: "Old password",
+                      textController: oldPasswordController,
+                      isObscure: true,
+                      onChanged: (String newValue) {},
+                    ),
+                    SizedBox(height: deviceSize.height * 0.02),
+                    FlexusTextField(
+                      hintText: "New password",
+                      textController: newPasswordController,
+                      isObscure: true,
+                      onChanged: (String newValue) {},
+                    ),
+                    SizedBox(height: deviceSize.height * 0.02),
+                    FlexusTextField(
+                      hintText: "Confirm new password",
+                      textController: confirmNewPasswordController,
+                      isObscure: true,
+                      onChanged: (String newValue) {},
+                    ),
+                    SizedBox(height: deviceSize.height * 0.05),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FlexusButtonSmall(
+                          text: "Cancel",
+                          width: deviceSize.width * 0.3,
+                          fontColor: AppSettings.error,
+                          onPressed: () {
                             oldPasswordController.clear();
                             newPasswordController.clear();
                             confirmNewPasswordController.clear();
-                          }
-                        },
-                        onTapOutside: (_) {
-                          oldPasswordController.clear();
-                          newPasswordController.clear();
-                          confirmNewPasswordController.clear();
-                        },
-                      ),
-                    ],
-                  ),
+                            Navigator.pop(context);
+                          },
+                        ),
+                        FlexusButtonSmall(
+                          text: "Confirm",
+                          width: deviceSize.width * 0.3,
+                          onPressed: () {
+                            final newPassword = newPasswordController.text;
+                            final confirmedPassword = confirmNewPasswordController.text;
+
+                            if (newPassword != confirmedPassword) {
+                              Fluttertoast.cancel();
+                              Fluttertoast.showToast(
+                                msg: 'Passwords do not match',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: AppSettings.error,
+                                textColor: AppSettings.fontV1,
+                                fontSize: AppSettings.fontSize,
+                              );
+                              return;
+                            }
+
+                            if (newPassword.length > 128) {
+                              Fluttertoast.cancel();
+                              Fluttertoast.showToast(
+                                msg: 'Password cannot be longer than 128 characters.',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: AppSettings.error,
+                                textColor: AppSettings.fontV1,
+                                fontSize: AppSettings.fontSize,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: CustomDefaultTextStyle(text: 'Password cannot be longer than 128 characters'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            if (newPassword.length < 8) {
+                              Fluttertoast.cancel();
+                              Fluttertoast.showToast(
+                                msg: 'Password must be at least 8 characters long',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: AppSettings.error,
+                                textColor: AppSettings.fontV1,
+                                fontSize: AppSettings.fontSize,
+                              );
+                              return;
+                            }
+
+                            settingsBloc.add(PatchSettings(
+                              name: "password",
+                              value: newPasswordController.text.trim(),
+                              value2: oldPasswordController.text.trim(),
+                            ));
+
+                            oldPasswordController.clear();
+                            newPasswordController.clear();
+                            confirmNewPasswordController.clear();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
                 );
               },
             );
-          } else {
-            Fluttertoast.cancel();
-            Fluttertoast.showToast(
-              msg: 'This feature requires internet connection!',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              backgroundColor: AppSettings.error,
-              textColor: AppSettings.fontV1,
-              fontSize: AppSettings.fontSize,
-            );
           }
+
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: 'This feature requires internet connection!',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
         },
       ),
     );
   }
 
-  SliverToBoxAdapter buildUsername(UserAccount userAccount, BuildContext context) {
+  SliverToBoxAdapter buildUsername(UserAccount userAccount, BuildContext context, Size deviceSize) {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Username",
         subtitle: "The username must be unique.",
         value: userAccount.username,
         isText: true,
-        onPressed: () => showDialog(
+        onPressed: () => FlexusShowModalBottomSheetTextField.show(
           context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: AppSettings.background,
-              content: TextField(
-                decoration: InputDecoration(
-                  labelText: "Username",
-                  labelStyle: TextStyle(color: AppSettings.primary),
-                  border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                ),
-                autofocus: true,
-                controller: textEditingController,
-                onEditingComplete: () {
-                  if (textEditingController.text.length > 20) {
-                    Fluttertoast.cancel();
-                    Fluttertoast.showToast(
-                      msg: 'Username can not be longer than 20 characters',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: AppSettings.error,
-                      textColor: AppSettings.fontV1,
-                      fontSize: AppSettings.fontSize,
-                    );
-                  } else if (textEditingController.text.length < 6) {
-                    Fluttertoast.cancel();
-                    Fluttertoast.showToast(
-                      msg: 'Username must be at least 6 characters long',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: AppSettings.error,
-                      textColor: AppSettings.fontV1,
-                      fontSize: AppSettings.fontSize,
-                    );
-                  } else {
-                    settingsBloc.add(PatchSettings(name: "username", value: textEditingController.text));
-                    Navigator.pop(context);
-                    textEditingController.clear();
-                  }
-                },
-                onTapOutside: (event) {
-                  textEditingController.clear();
-                },
-              ),
-            );
+          title: "Change Username",
+          hintText: userAccount.username,
+          textEditingController: textEditingController,
+          onCancel: () {
+            textEditingController.clear();
+            Navigator.pop(context);
+          },
+          onConfirm: () {
+            if (textEditingController.text.length > 20) {
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Username can not be longer than 20 characters',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
+              return;
+            }
+
+            if (textEditingController.text.length < 6) {
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Username must be at least 6 characters long',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
+              return;
+            }
+
+            settingsBloc.add(PatchSettings(name: "username", value: textEditingController.text));
+            textEditingController.clear();
+            Navigator.pop(context);
           },
         ),
       ),
     );
   }
 
-  SliverToBoxAdapter buildName(UserAccount userAccount, BuildContext context) {
+  SliverToBoxAdapter buildName(UserAccount userAccount, BuildContext context, Size deviceSize) {
     return SliverToBoxAdapter(
       child: FlexusSettingsListTile(
         title: "Name",
         subtitle: "This is the name mostly shown to your friendship.",
         value: userAccount.name,
         isText: true,
-        onPressed: () => showDialog(
+        onPressed: () => FlexusShowModalBottomSheetTextField.show(
           context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: AppSettings.background,
-              content: TextField(
-                autofocus: true,
-                decoration: InputDecoration(
-                  labelText: "Name",
-                  labelStyle: TextStyle(color: AppSettings.primary),
-                  border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                ),
-                controller: textEditingController,
-                onEditingComplete: () {
-                  if (textEditingController.text.length > 20) {
-                    Fluttertoast.cancel();
-                    Fluttertoast.showToast(
-                      msg: 'Name can not be longer than 20 characters',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: AppSettings.error,
-                      textColor: AppSettings.fontV1,
-                      fontSize: AppSettings.fontSize,
-                    );
-                  } else if (textEditingController.text.isNotEmpty) {
-                    settingsBloc.add(PatchSettings(name: "name", value: textEditingController.text));
-                  }
-                  Navigator.pop(context);
-                  textEditingController.clear();
-                },
-                onTapOutside: (event) {
-                  textEditingController.clear();
-                },
-              ),
-            );
+          title: "Change Name",
+          hintText: userAccount.name,
+          textEditingController: textEditingController,
+          onCancel: () {
+            textEditingController.clear();
+            Navigator.pop(context);
+          },
+          onConfirm: () {
+            if (textEditingController.text.length > 20) {
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Name can not be longer than 20 characters',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
+              return;
+            }
+
+            if (textEditingController.text.isEmpty) {
+              Fluttertoast.cancel();
+              Fluttertoast.showToast(
+                msg: 'Name can not be empty',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: AppSettings.error,
+                textColor: AppSettings.fontV1,
+                fontSize: AppSettings.fontSize,
+              );
+              return;
+            }
+
+            settingsBloc.add(PatchSettings(name: "name", value: textEditingController.text));
+            textEditingController.clear();
+            Navigator.pop(context);
           },
         ),
       ),
