@@ -282,7 +282,7 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Who do you want to notify about your status?",
         value: userSettings.isNotifyEveryone,
         isBool: true,
-        onChanged: (value) async {
+        onChangedSwitch: (value) async {
           if (userSettings.notifyUserListID == null) {
             final UserListService userListService = UserListService.create();
 
@@ -393,7 +393,7 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Who do you want to be notified by about the status?",
         value: userSettings.isPullFromEveryone,
         isBool: true,
-        onChanged: (value) async {
+        onChangedSwitch: (value) async {
           if (userSettings.pullUserListID == null) {
             final UserListService userListService = UserListService.create();
 
@@ -444,7 +444,7 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Do you want to be listed in the search of other users?",
         value: !userSettings.isUnlisted,
         isBool: true,
-        onChanged: (value) {
+        onChangedSwitch: (value) {
           settingsBloc.add(PatchSettings(name: "isUnlisted", value: !value));
         },
       ),
@@ -480,7 +480,7 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "Display a Quick Access screen when you start the application.",
         value: userSettings.isQuickAccess,
         isBool: true,
-        onChanged: (value) {
+        onChangedSwitch: (value) {
           settingsBloc.add(PatchSettings(name: "isQuickAccess", value: value));
         },
       ),
@@ -494,7 +494,7 @@ class _SettingsPageState extends State<SettingsPage> {
         subtitle: "This is still under development!",
         value: userSettings.isDarkMode,
         isBool: true,
-        onChanged: (value) {
+        onChangedSwitch: (value) {
           settingsBloc.add(PatchSettings(name: "isDarkMode", value: value));
         },
       ),
@@ -506,49 +506,10 @@ class _SettingsPageState extends State<SettingsPage> {
       child: FlexusSettingsListTile(
         title: "Fontsize",
         value: userSettings.fontSize,
-        subtitle: "This is still under development!",
-        isText: true,
-        onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: AppSettings.background,
-              content: TextField(
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Fontsize",
-                  labelStyle: TextStyle(color: AppSettings.primary),
-                  border: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppSettings.primary, width: 2)),
-                ),
-                controller: textEditingController,
-                onEditingComplete: () {
-                  double? fontSize = double.tryParse(textEditingController.text);
-                  if (fontSize != null) {
-                    settingsBloc.add(PatchSettings(name: "fontSize", value: fontSize));
-                    textEditingController.clear();
-                    Navigator.pop(context);
-                  } else {
-                    Fluttertoast.cancel();
-                    Fluttertoast.showToast(
-                      msg: 'Invalid input for fontsize',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: AppSettings.error,
-                      textColor: AppSettings.fontV1,
-                      fontSize: AppSettings.fontSize,
-                    );
-                  }
-                },
-                onTapOutside: (event) {
-                  textEditingController.clear();
-                },
-              ),
-            );
-          },
-        ),
+        isSlider: true,
+        onChangedSlider: (newFontSize) {
+          settingsBloc.add(PatchSettings(name: "fontSize", value: newFontSize));
+        },
       ),
     );
   }
