@@ -16,6 +16,7 @@ class GymSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   GymBloc searchGymBloc = GymBloc();
   bool isAddNew = false;
+  String oldQuery = "anything";
 
   @override
   void dispose() {
@@ -57,15 +58,19 @@ class GymSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
   }
 
-  Widget buildSearchResults(BuildContext context) {
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     Size deviceSize = MediaQuery.of(context).size;
 
     if (!isAddNew) {
@@ -73,7 +78,7 @@ class GymSearchDelegate extends SearchDelegate {
         searchGymBloc.add(GetGymsSearch(query: query));
 
         return GestureDetector(
-          onVerticalDragDown: (details) {
+          onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: BlocBuilder(
@@ -117,7 +122,7 @@ class GymSearchDelegate extends SearchDelegate {
         );
       } else {
         return GestureDetector(
-          onVerticalDragDown: (details) {
+          onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: Scaffold(
@@ -146,7 +151,7 @@ class GymSearchDelegate extends SearchDelegate {
       }
     } else {
       return GestureDetector(
-        onVerticalDragDown: (details) {
+        onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: FutureBuilder(

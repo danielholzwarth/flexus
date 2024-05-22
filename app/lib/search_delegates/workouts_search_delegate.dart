@@ -9,13 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WorkoutSearchDelegate extends SearchDelegate {
   final bool? isArchived;
+  WorkoutBloc workoutBloc = WorkoutBloc();
+  ScrollController scrollController = ScrollController();
+  String oldQuery = "anything";
 
   WorkoutSearchDelegate({
     this.isArchived,
   });
-
-  WorkoutBloc workoutBloc = WorkoutBloc();
-  ScrollController scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -47,19 +47,23 @@ class WorkoutSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     workoutBloc.add(GetSearchWorkout(keyWord: query, isArchive: isArchived));
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

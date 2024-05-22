@@ -14,6 +14,7 @@ class PlanSearchDelegate extends SearchDelegate {
   PlanBloc planBloc = PlanBloc();
   bool isLoaded = false;
   List<Plan> items = [];
+  String oldQuery = "anything";
 
   @override
   void dispose() {
@@ -45,22 +46,26 @@ class PlanSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     if (!isLoaded) {
       planBloc.add(GetPlans());
       isLoaded = true;
     }
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

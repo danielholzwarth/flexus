@@ -11,18 +11,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ExerciseSearchDelegate extends SearchDelegate {
-  ExerciseSearchDelegate({
-    this.isMultipleChoice = true,
-    this.oldCheckedItems = const [],
-  });
-
-  bool isMultipleChoice;
+  final bool isMultipleChoice;
+  final List<Exercise> oldCheckedItems;
   ScrollController scrollController = ScrollController();
   ExerciseBloc exerciseBloc = ExerciseBloc();
   bool isLoaded = false;
   List<Exercise> items = [];
   List<Exercise> checkedItems = [];
-  List<Exercise> oldCheckedItems;
+  String oldQuery = "anything";
+
+  ExerciseSearchDelegate({
+    this.isMultipleChoice = true,
+    this.oldCheckedItems = const [],
+  });
 
   @override
   void dispose() {
@@ -80,23 +81,27 @@ class ExerciseSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     if (!isLoaded) {
       exerciseBloc.add(GetExercises());
       isLoaded = true;
       checkedItems.addAll(oldCheckedItems);
     }
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

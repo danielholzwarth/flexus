@@ -9,13 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserListSearchDelegate extends SearchDelegate {
   final int listID;
+  ScrollController scrollController = ScrollController();
+  UserAccountBloc userAccountBloc = UserAccountBloc();
+  String oldQuery = "anything";
 
   UserListSearchDelegate({
     required this.listID,
   });
-
-  ScrollController scrollController = ScrollController();
-  UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
   void dispose() {
@@ -47,19 +47,23 @@ class UserListSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     userAccountBloc.add(GetUserAccounts(isFriend: true));
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(

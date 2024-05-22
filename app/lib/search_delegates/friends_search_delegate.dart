@@ -10,14 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class FriendSearchDelegate extends SearchDelegate {
   final bool? isFriend;
   final bool? hasRequest;
+  ScrollController scrollController = ScrollController();
+  UserAccountBloc userAccountBloc = UserAccountBloc();
+  String oldQuery = "anything";
 
   FriendSearchDelegate({
     this.isFriend,
     this.hasRequest,
   });
-
-  ScrollController scrollController = ScrollController();
-  UserAccountBloc userAccountBloc = UserAccountBloc();
 
   @override
   void dispose() {
@@ -49,23 +49,28 @@ class FriendSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     userAccountBloc.add(GetUserAccounts(keyword: query, isFriend: isFriend, hasRequest: hasRequest));
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(
         bloc: userAccountBloc,
+        buildWhen: (previous, current) => rebuild,
         builder: (context, state) {
           if (state is UserAccountsLoaded) {
             if (state.userAccounts.isNotEmpty) {
@@ -80,6 +85,9 @@ class FriendSearchDelegate extends SearchDelegate {
                         userAccount: state.userAccounts[index],
                         query: query,
                         key: UniqueKey(),
+                        func: () {
+                          FocusScope.of(context).unfocus();
+                        },
                       );
                     },
                     itemCount: state.userAccounts.length,

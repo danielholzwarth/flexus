@@ -14,6 +14,7 @@ class MyGymSearchDelegate extends SearchDelegate {
   ScrollController scrollController = ScrollController();
   GymBloc gymBloc = GymBloc();
   bool isLoaded = false;
+  String oldQuery = "anything";
 
   @override
   void dispose() {
@@ -45,23 +46,27 @@ class MyGymSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     if (!isLoaded) {
       gymBloc.add(GetMyGyms(query: query));
 
       isLoaded = true;
     }
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(

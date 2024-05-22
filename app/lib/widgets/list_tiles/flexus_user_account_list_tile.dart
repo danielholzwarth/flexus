@@ -11,11 +11,13 @@ import 'package:page_transition/page_transition.dart';
 class FlexusUserAccountListTile extends StatefulWidget {
   final UserAccount userAccount;
   final String? query;
+  final Function()? func;
 
   const FlexusUserAccountListTile({
     super.key,
     required this.userAccount,
     this.query,
+    this.func,
   });
 
   @override
@@ -63,8 +65,9 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                     ),
                   ),
                 ),
-                onPressed: () => {
-                  friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
+                onPressed: () {
+                  widget.func != null ? widget.func!() : null;
+                  friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id));
                 },
                 child: CustomDefaultTextStyle(text: "Remove", color: AppSettings.error),
               );
@@ -83,8 +86,9 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                       ),
                     ),
                   ),
-                  onPressed: () => {
-                    friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id)),
+                  onPressed: () {
+                    widget.func != null ? widget.func!() : null;
+                    friendshipBloc.add(DeleteFriendship(requestedID: widget.userAccount.id));
                   },
                   child: CustomDefaultTextStyle(text: "Request sent", color: AppSettings.primary),
                 );
@@ -102,8 +106,9 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                       ),
                     ),
                   ),
-                  onPressed: () => {
-                    friendshipBloc.add(PatchFriendship(requestedID: widget.userAccount.id, name: "isAccepted", value: true)),
+                  onPressed: () {
+                    widget.func != null ? widget.func!() : null;
+                    friendshipBloc.add(PatchFriendship(requestedID: widget.userAccount.id, name: "isAccepted", value: true));
                   },
                   child: CustomDefaultTextStyle(text: "Accept Request", color: AppSettings.primary),
                 );
@@ -124,6 +129,7 @@ class _FlexusUserAccountListTileState extends State<FlexusUserAccountListTile> {
                 ),
               ),
               onPressed: () {
+                widget.func != null ? widget.func!() : null;
                 friendshipBloc.add(PostFriendship(requestedID: widget.userAccount.id));
               },
               child: CustomDefaultTextStyle(text: "Add", color: AppSettings.primary),

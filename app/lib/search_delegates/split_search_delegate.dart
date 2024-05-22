@@ -11,15 +11,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplitSearchDelegate extends SearchDelegate {
   final Plan plan;
+  ScrollController scrollController = ScrollController();
+  SplitBloc splitBloc = SplitBloc();
+  String oldQuery = "anything";
+  bool isLoaded = false;
 
   SplitSearchDelegate({
     required this.plan,
   });
-
-  ScrollController scrollController = ScrollController();
-  SplitBloc splitBloc = SplitBloc();
-
-  bool isLoaded = false;
 
   @override
   void dispose() {
@@ -51,22 +50,26 @@ class SplitSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return buildSearchResults(context);
+    return buildSearchResults(context, false);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return buildSearchResults(context);
-  }
-
-  Widget buildSearchResults(BuildContext context) {
     if (!isLoaded) {
       splitBloc.add(GetSplits(planID: plan.id));
       isLoaded = true;
     }
 
+    if (oldQuery == query) {
+      return buildSearchResults(context, false);
+    }
+    oldQuery = query;
+    return buildSearchResults(context, true);
+  }
+
+  Widget buildSearchResults(BuildContext context, bool rebuild) {
     return GestureDetector(
-      onVerticalDragDown: (details) {
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: BlocBuilder(
