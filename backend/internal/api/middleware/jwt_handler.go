@@ -17,7 +17,6 @@ func init() {
 	jwtKey = []byte(os.Getenv("JWT_KEY"))
 	if len(jwtKey) == 0 {
 		log.Fatalf("JWT_KEY is not set in .env file")
-		jwtKey = []byte("secret_key")
 	}
 }
 
@@ -101,6 +100,8 @@ func ValdiateToken(tokenString string) (types.Claims, error) {
 		func(t *jwt.Token) (interface{}, error) {
 			return jwtKey, nil
 		})
+
+	log.Print(string(jwtKey))
 
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
