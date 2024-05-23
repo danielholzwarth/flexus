@@ -1,3 +1,4 @@
+#IS OVERRIDDEN BY SERVER /deploy.sh
 version: '3.9'
 
 services:

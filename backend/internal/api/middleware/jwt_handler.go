@@ -101,8 +101,6 @@ func ValdiateToken(tokenString string) (types.Claims, error) {
 			return jwtKey, nil
 		})
 
-	log.Print(string(jwtKey))
-
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			println(err.Error())
