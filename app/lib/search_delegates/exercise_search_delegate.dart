@@ -110,9 +110,8 @@ class ExerciseSearchDelegate extends SearchDelegate {
         bloc: exerciseBloc,
         listener: (context, state) {
           if (state is ExercisesLoaded) {
-            dynamic exerciseDyn = userBox.get("createdExercise");
-            if (exerciseDyn != null) {
-              Exercise exercise = exerciseDyn;
+            Exercise? exercise = userBox.get("createdExercise");
+            if (exercise != null) {
               checkedItems.add(exercise);
               userBox.delete("createdExercise");
             }

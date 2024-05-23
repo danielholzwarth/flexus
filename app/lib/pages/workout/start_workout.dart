@@ -68,6 +68,7 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           if (state is WorkoutCreated || state is WorkoutsLoaded) {
             userBox.put("currentGym", currentGym);
             userBox.put("currentPlan", currentPlan);
+            // userBox.put("currentWorkoutStartTime", DateTime.now());
 
             Navigator.pushReplacement(
               context,
