@@ -32,6 +32,15 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     });
 
     if (response.isSuccessful) {
+      Exercise newExercise = Exercise(
+        id: response.body["id"],
+        creatorID: response.body["creatorID"],
+        name: response.body["name"],
+        typeID: response.body["typeID"],
+      );
+
+      userBox.put("createdExercise", newExercise);
+
       emit(ExerciseCreated());
     } else {
       emit(ExerciseError(error: response.error.toString()));

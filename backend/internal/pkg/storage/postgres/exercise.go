@@ -5,7 +5,7 @@ import (
 	"flexus/internal/types"
 )
 
-func (db *DB) PostExercise(userAccountID int, name string, typeID int) error {
+func (db *DB) PostExercise(userAccountID int, name string, typeID int) (types.Exercise, error) {
 	query := `
 		SELECT EXISTS(
 			SELECT 1 
@@ -18,24 +18,30 @@ func (db *DB) PostExercise(userAccountID int, name string, typeID int) error {
 	var exists bool
 	err := db.pool.QueryRow(query, name, typeID).Scan(&exists)
 	if err != nil {
-		return err
+		return types.Exercise{}, err
 	}
 
 	if exists {
-		return errors.New("exercise exists already")
+		return types.Exercise{}, errors.New("exercise exists already")
 	}
 
 	query = `
 		INSERT INTO exercise (creator_id, name, type_id)
-		VALUES ($1, $2, $3);
+		VALUES ($1, $2, $3)
+		RETURNING id;
 	`
 
-	_, err = db.pool.Exec(query, userAccountID, name, typeID)
+	var exercise types.Exercise
+	exercise.CreatorID = &userAccountID
+	exercise.TypeID = typeID
+	exercise.Name = name
+
+	err = db.pool.QueryRow(query, userAccountID, name, typeID).Scan(&exercise.ID)
 	if err != nil {
-		return err
+		return types.Exercise{}, err
 	}
 
-	return nil
+	return exercise, nil
 }
 
 func (db *DB) GetExercises(userAccountID int) ([]types.Exercise, error) {

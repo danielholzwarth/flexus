@@ -8,6 +8,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
 class ExerciseSearchDelegate extends SearchDelegate {
@@ -19,6 +20,7 @@ class ExerciseSearchDelegate extends SearchDelegate {
   List<Exercise> items = [];
   List<Exercise> checkedItems = [];
   String oldQuery = "anything";
+  final userBox = Hive.box('userBox');
 
   ExerciseSearchDelegate({
     this.isMultipleChoice = true,
@@ -104,24 +106,23 @@ class ExerciseSearchDelegate extends SearchDelegate {
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: BlocBuilder(
+      child: BlocConsumer(
         bloc: exerciseBloc,
+        listener: (context, state) {
+          if (state is ExercisesLoaded) {
+            dynamic exerciseDyn = userBox.get("createdExercise");
+            if (exerciseDyn != null) {
+              Exercise exercise = exerciseDyn;
+              checkedItems.add(exercise);
+              userBox.delete("createdExercise");
+            }
+          }
+        },
         builder: (context, state) {
           if (state is ExercisesLoaded) {
             items = state.exercises;
             List<Exercise> filteredExercises =
                 state.exercises.where((exercise) => exercise.name.toLowerCase().contains(query.toLowerCase())).toList();
-
-            //   filteredExercises.sort((a, b) {
-            //   bool aChecked = checkedItems.any((element) => element.id == a.id);
-            //   bool bChecked = checkedItems.any((element) => element.id == b.id);
-            //   if (aChecked && !bChecked) {
-            //     return -1;
-            //   } else if (!aChecked && bChecked) {
-            //     return 1;
-            //   }
-            //   return 0;
-            // });
 
             if (filteredExercises.isNotEmpty) {
               return Scaffold(

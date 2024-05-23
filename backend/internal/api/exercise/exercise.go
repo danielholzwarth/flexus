@@ -11,7 +11,7 @@ import (
 )
 
 type ExerciseStore interface {
-	PostExercise(userAccountID int, name string, typeID int) error
+	PostExercise(userAccountID int, name string, typeID int) (types.Exercise, error)
 	GetExercises(userAccountID int) ([]types.Exercise, error)
 	GetExerciseFromExerciseID(userAccountID int, exerciseID int) (types.ExerciseInformation, error)
 	GetExercisesFromSplitID(userAccountID int, splitID int) ([]types.ExerciseInformation, error)
@@ -79,15 +79,23 @@ func (s service) postExercise() http.HandlerFunc {
 		}
 		typeID := int(typeIDFloat)
 
-		err = s.exerciseStore.PostExercise(claims.UserAccountID, name, typeID)
+		exercise, err := s.exerciseStore.PostExercise(claims.UserAccountID, name, typeID)
 		if err != nil {
 			http.Error(w, "Failed to create Exercise", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
+		response, err := json.Marshal(exercise)
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
+		w.Write(response)
 	}
 }
 
