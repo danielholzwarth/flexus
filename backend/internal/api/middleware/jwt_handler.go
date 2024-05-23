@@ -5,12 +5,21 @@ import (
 	"flexus/internal/types"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtKey = []byte("secret_key")
+var jwtKey []byte
+
+func init() {
+	jwtKey = []byte(os.Getenv("JWT_KEY"))
+	if len(jwtKey) == 0 {
+		log.Fatalf("JWT_KEY is not set in .env file")
+		jwtKey = []byte("secret_key")
+	}
+}
 
 func ValidateJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
