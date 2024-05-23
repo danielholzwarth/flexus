@@ -4,12 +4,14 @@ import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/measurement.dart';
+import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:page_transition/page_transition.dart';
 
 class FinishWorkoutPage extends StatefulWidget {
   final Gym? gym;
@@ -49,7 +51,13 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
         bloc: workoutBloc,
         listener: (context, state) {
           if (state is! WorkoutUpdating && state is! WorkoutInitial) {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: const PageViewPage(),
+              ),
+            );
           }
         },
         builder: (context, state) {

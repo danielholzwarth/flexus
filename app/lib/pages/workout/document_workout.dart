@@ -9,6 +9,7 @@ import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/timer/timer_value.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/measurement.dart';
+import 'package:app/pages/home/pageview.dart';
 import 'package:app/pages/workout/document_exercise.dart';
 import 'package:app/pages/workout/finish_workout.dart';
 import 'package:app/pages/workout/timer.dart';
@@ -80,7 +81,13 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
       bloc: workoutBloc,
       listener: (context, state) {
         if (state is! WorkoutUpdating && state is! WorkoutInitial) {
-          Navigator.pop(context, true);
+          Navigator.pushReplacement(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: const PageViewPage(),
+            ),
+          );
         }
       },
       builder: (context, state) {

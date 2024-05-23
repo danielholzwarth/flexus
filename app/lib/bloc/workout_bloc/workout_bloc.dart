@@ -48,8 +48,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     } else {
       emit(WorkoutError(error: response.error.toString()));
     }
-
-    emit(WorkoutCreated());
   }
 
   void _onGetWorkoutFromID(GetWorkoutFromID event, Emitter<WorkoutState> emit) async {
