@@ -30,7 +30,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
   @override
   void initState() {
     super.initState();
-    statisticBloc.add(GetStatistic(title: widget.statistic.title, diagramType: widget.statistic.diagramType, period: 7));
+    statisticBloc.add(GetStatistic(title: widget.statistic.title, period: 7));
   }
 
   @override
@@ -84,7 +84,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
               child: FlexusError(
                 text: state.error,
                 func: () => statisticBloc.add(
-                  GetStatistic(title: widget.statistic.title, diagramType: widget.statistic.diagramType, period: 7),
+                  GetStatistic(title: widget.statistic.title, period: 7),
                 ),
               ),
             );

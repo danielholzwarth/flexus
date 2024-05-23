@@ -132,14 +132,18 @@ func (db *DB) GetWorkoutDuration(userAccountID int, period int) (any, error) {
 			return nil, err
 		}
 
-		str := string(countByte)
+		if len(countByte) == 0 {
+			data[weekday] = 0
+		} else {
+			str := string(countByte)
 
-		floatValue, err := strconv.ParseFloat(str, 64)
-		if err != nil {
-			return nil, err
+			floatValue, err := strconv.ParseFloat(str, 64)
+			if err != nil {
+				return nil, err
+			}
+
+			data[weekday] = int(floatValue)
 		}
-
-		data[weekday] = int(floatValue)
 	}
 
 	if err := rows.Err(); err != nil {
