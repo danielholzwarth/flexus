@@ -49,76 +49,76 @@ class _FinishWorkoutPageState extends State<FinishWorkoutPage> {
         bloc: workoutBloc,
         listener: (context, state) {
           if (state is! WorkoutUpdating && state is! WorkoutInitial) {
-            Navigator.pop(context, true);
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {
-          if (state is WorkoutUpdating) {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
-          }
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  FlexusBasicTitle(
-                    deviceSize: deviceSize,
-                    text: "Finish Workout?",
-                    hasPadding: false,
-                  ),
-                  // SizedBox(height: deviceSize.height * 0.05),
-                  // CustomDefaultTextStyle(
-                  //   text: "Workout Time: ${formatTime(Duration(seconds: workoutTimeInSeconds))}",
-                  //   fontSize: AppSettings.fontSizeH4,
-                  // ),
-                  // SizedBox(height: deviceSize.height * 0.02),
-                  // CustomDefaultTextStyle(
-                  //   text: "Exercises completed: ",
-                  //   fontSize: AppSettings.fontSizeH4,
-                  // ),
-                  SizedBox(height: deviceSize.height * 0.05),
-                  FlexusButton(
-                    text: "Finish",
-                    function: () {
-                      CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+          if (state is WorkoutInitial) {
+            return Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    FlexusBasicTitle(
+                      deviceSize: deviceSize,
+                      text: "Finish Workout?",
+                      hasPadding: false,
+                    ),
+                    // SizedBox(height: deviceSize.height * 0.05),
+                    // CustomDefaultTextStyle(
+                    //   text: "Workout Time: ${formatTime(Duration(seconds: workoutTimeInSeconds))}",
+                    //   fontSize: AppSettings.fontSizeH4,
+                    // ),
+                    // SizedBox(height: deviceSize.height * 0.02),
+                    // CustomDefaultTextStyle(
+                    //   text: "Exercises completed: ",
+                    //   fontSize: AppSettings.fontSizeH4,
+                    // ),
+                    SizedBox(height: deviceSize.height * 0.05),
+                    FlexusButton(
+                      text: "Finish",
+                      function: () {
+                        CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
 
-                      if (currentWorkout != null) {
-                        CurrentWorkout finishedCurrentWorkout =
-                            CurrentWorkout(gym: currentWorkout.gym, plan: currentWorkout.plan, split: currentWorkout.split, exercises: []);
+                        if (currentWorkout != null) {
+                          CurrentWorkout finishedCurrentWorkout =
+                              CurrentWorkout(gym: currentWorkout.gym, plan: currentWorkout.plan, split: currentWorkout.split, exercises: []);
 
-                        for (var ex in currentWorkout.exercises) {
-                          CurrentExercise current = CurrentExercise(exercise: ex.exercise, oldMeasurements: ex.oldMeasurements, measurements: []);
-                          for (var m in ex.measurements) {
-                            if (m.workload > 0) {
-                              current.measurements.add(Measurement(repetitions: m.repetitions > 0 ? m.repetitions : 1, workload: m.workload));
+                          for (var ex in currentWorkout.exercises) {
+                            CurrentExercise current = CurrentExercise(exercise: ex.exercise, oldMeasurements: ex.oldMeasurements, measurements: []);
+                            for (var m in ex.measurements) {
+                              if (m.workload > 0) {
+                                current.measurements.add(Measurement(repetitions: m.repetitions > 0 ? m.repetitions : 1, workload: m.workload));
+                              }
                             }
+                            finishedCurrentWorkout.exercises.add(current);
                           }
-                          finishedCurrentWorkout.exercises.add(current);
-                        }
 
-                        workoutBloc.add(PatchWorkout(
-                          workoutID: -1,
-                          name: "finishWorkout",
-                          currentWorkout: finishedCurrentWorkout,
-                        ));
-                        if (widget.gym != null) {
-                          userBox.put("currentGym", widget.gym);
+                          workoutBloc.add(PatchWorkout(
+                            workoutID: -1,
+                            name: "finishWorkout",
+                            currentWorkout: finishedCurrentWorkout,
+                          ));
+                          if (widget.gym != null) {
+                            userBox.put("currentGym", widget.gym);
+                          }
+                          if (widget.currentPlan != null) {
+                            userBox.put("currentPlan", widget.currentPlan);
+                          }
+                          userBox.delete("currentWorkout");
+                          userBox.delete("timerValue");
+                        } else {
+                          debugPrint('Null?');
                         }
-                        if (widget.currentPlan != null) {
-                          userBox.put("currentPlan", widget.currentPlan);
-                        }
-                        userBox.delete("currentWorkout");
-                        userBox.delete("timerValue");
-                      } else {
-                        debugPrint('Null?');
-                      }
-                    },
-                    fontColor: AppSettings.fontV1,
-                    backgroundColor: AppSettings.primary,
-                  ),
-                ],
+                      },
+                      fontColor: AppSettings.fontV1,
+                      backgroundColor: AppSettings.primary,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          }
+          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
         },
       ),
     );
