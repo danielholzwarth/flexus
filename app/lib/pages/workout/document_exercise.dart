@@ -6,6 +6,7 @@ import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
+import 'package:app/widgets/buttons/flexus_button_small.dart';
 import 'package:app/widgets/flexus_table_textfield.dart';
 import 'package:app/widgets/style/flexus_basic_title.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
@@ -159,101 +160,138 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ExpansionTile(
-          initiallyExpanded: true,
-          tilePadding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
-          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-          shape: InputBorder.none,
-          title: FlexusBasicTitle(
-            deviceSize: deviceSize,
-            text: "Last workout",
-            hasPadding: true,
+        Padding(
+          padding: EdgeInsets.only(top: deviceSize.height * 0.03),
+          child: ExpansionTile(
+            initiallyExpanded: true,
+            tilePadding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
+            expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+            shape: InputBorder.none,
+            title: Row(
+              children: [
+                FlexusBasicTitle(
+                  deviceSize: deviceSize,
+                  text: "Last workout",
+                  hasPadding: false,
+                ),
+                IconButton(
+                  onPressed: () {
+                    for (var oldMeasurement in currentExercise!.oldMeasurements) {
+                      if (currentExercise != null) {
+                        setController.add({
+                          "reps": TextEditingController(text: oldMeasurement.repetitions.toString()),
+                          "workload": TextEditingController(text: oldMeasurement.workload.toString()),
+                        });
+
+                        currentExercise!.measurements.add(Measurement(
+                          repetitions: oldMeasurement.repetitions,
+                          workload: oldMeasurement.workload,
+                        ));
+
+                        CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                        if (currentWorkout != null) {
+                          currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                          userBox.put("currentWorkout", currentWorkout);
+                        }
+
+                        setState(() {});
+                      }
+                    }
+                  },
+                  icon: FlexusDefaultIcon(
+                    iconData: Icons.copy,
+                    iconSize: AppSettings.fontSizeH4,
+                  ),
+                ),
+              ],
+            ),
+            children: [
+              currentExercise!.oldMeasurements.isEmpty
+                  ? Center(
+                      child: SizedBox(
+                        width: deviceSize.width * 0.4,
+                        child: const CustomDefaultTextStyle(
+                          text: "No old data found",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  : currentExercise!.exercise.typeID == 1
+                      ? DataTable(
+                          columns: const [
+                            DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                            DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
+                            DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                          ],
+                          rows: [
+                            for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
+                              DataRow(
+                                cells: [
+                                  DataCell(
+                                    SizedBox(
+                                      width: deviceSize.width * 0.15,
+                                      child: CustomDefaultTextStyle(
+                                        text: "Set ${i + 1}",
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    SizedBox(
+                                      width: deviceSize.width * 0.15,
+                                      child: CustomDefaultTextStyle(
+                                        text: currentExercise!.oldMeasurements[i].repetitions.toString(),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    SizedBox(
+                                      width: deviceSize.width * 0.15,
+                                      child: CustomDefaultTextStyle(
+                                        text: "${currentExercise!.oldMeasurements[i].workload}kg",
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        )
+                      : DataTable(
+                          columns: const [
+                            DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
+                            DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                          ],
+                          rows: [
+                            for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
+                              DataRow(
+                                cells: [
+                                  DataCell(
+                                    SizedBox(
+                                      width: deviceSize.width * 0.15,
+                                      child: CustomDefaultTextStyle(
+                                        text: "Set ${i + 1}",
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    SizedBox(
+                                      width: deviceSize.width * 0.15,
+                                      child: CustomDefaultTextStyle(
+                                        text: "${currentExercise!.oldMeasurements[i].workload}s",
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+            ],
           ),
-          children: [
-            currentExercise!.oldMeasurements.isEmpty
-                ? Center(
-                    child: SizedBox(
-                      width: deviceSize.width * 0.4,
-                      child: const CustomDefaultTextStyle(
-                        text: "No old data found",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : currentExercise!.exercise.typeID == 1
-                    ? DataTable(
-                        columns: const [
-                          DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                          DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
-                          DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
-                        ],
-                        rows: [
-                          for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
-                            DataRow(
-                              cells: [
-                                DataCell(
-                                  SizedBox(
-                                    width: deviceSize.width * 0.15,
-                                    child: CustomDefaultTextStyle(
-                                      text: "Set ${i + 1}",
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  SizedBox(
-                                    width: deviceSize.width * 0.15,
-                                    child: CustomDefaultTextStyle(
-                                      text: currentExercise!.oldMeasurements[i].repetitions.toString(),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  SizedBox(
-                                    width: deviceSize.width * 0.15,
-                                    child: CustomDefaultTextStyle(
-                                      text: "${currentExercise!.oldMeasurements[i].workload}kg",
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      )
-                    : DataTable(
-                        columns: const [
-                          DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                          DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
-                        ],
-                        rows: [
-                          for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
-                            DataRow(
-                              cells: [
-                                DataCell(
-                                  SizedBox(
-                                    width: deviceSize.width * 0.15,
-                                    child: CustomDefaultTextStyle(
-                                      text: "Set ${i + 1}",
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ),
-                                DataCell(
-                                  SizedBox(
-                                    width: deviceSize.width * 0.15,
-                                    child: CustomDefaultTextStyle(
-                                      text: "${currentExercise!.oldMeasurements[i].workload}s",
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-          ],
         ),
       ],
     );
@@ -266,10 +304,14 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: deviceSize.width * 0.05),
-            child: FlexusBasicTitle(
-              deviceSize: deviceSize,
-              text: "Current Workout",
-              hasPadding: true,
+            child: Row(
+              children: [
+                FlexusBasicTitle(
+                  deviceSize: deviceSize,
+                  text: "Current Workout",
+                  hasPadding: true,
+                ),
+              ],
             ),
           ),
           currentExercise!.exercise.typeID == 1
@@ -284,6 +326,62 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                   rows: [
                     for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
                       DataRow(
+                        onLongPress: () => {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                            ),
+                            builder: (BuildContext context) {
+                              return Container(
+                                padding: EdgeInsets.only(top: deviceSize.height * 0.05),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CustomDefaultTextStyle(
+                                      text: "Delete Set ${i + 1}?",
+                                      fontSize: AppSettings.fontSizeH3,
+                                    ),
+                                    SizedBox(height: deviceSize.height * 0.03),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        FlexusButtonSmall(
+                                          text: "Cancel",
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        FlexusButtonSmall(
+                                          text: "Delete",
+                                          fontColor: AppSettings.error,
+                                          onPressed: () {
+                                            if (currentExercise != null) {
+                                              setController.removeAt(i);
+
+                                              currentExercise!.measurements.removeAt(i);
+
+                                              CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                              if (currentWorkout != null) {
+                                                currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                                userBox.put("currentWorkout", currentWorkout);
+                                              }
+
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: deviceSize.height * 0.05),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        },
                         cells: [
                           DataCell(
                             SizedBox(
@@ -349,6 +447,62 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                   rows: [
                     for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
                       DataRow(
+                        onLongPress: () => {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                            ),
+                            builder: (BuildContext context) {
+                              return Container(
+                                padding: EdgeInsets.only(top: deviceSize.height * 0.05),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    CustomDefaultTextStyle(
+                                      text: "Delete Set ${i + 1}?",
+                                      fontSize: AppSettings.fontSizeH3,
+                                    ),
+                                    SizedBox(height: deviceSize.height * 0.03),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        FlexusButtonSmall(
+                                          text: "Cancel",
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        FlexusButtonSmall(
+                                          text: "Delete",
+                                          fontColor: AppSettings.error,
+                                          onPressed: () {
+                                            if (currentExercise != null) {
+                                              setController.removeAt(i);
+
+                                              currentExercise!.measurements.removeAt(i);
+
+                                              CurrentWorkout? currentWorkout = userBox.get("currentWorkout");
+                                              if (currentWorkout != null) {
+                                                currentWorkout.exercises[widget.pageID - 1] = currentExercise!;
+
+                                                userBox.put("currentWorkout", currentWorkout);
+                                              }
+
+                                              setState(() {});
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: deviceSize.height * 0.05),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        },
                         cells: [
                           DataCell(
                             SizedBox(
