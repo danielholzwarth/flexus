@@ -19,7 +19,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   }
 
   void _onPostBestLift(PostBestLift event, Emitter<BestLiftsState> emit) async {
-    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview") ?? [];
+    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview")?.map((e) => e as BestLiftOverview).toList ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(BestLiftsError(error: "No internet connection!"));
@@ -54,7 +54,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   }
 
   void _onPatchBestLift(PatchBestLift event, Emitter<BestLiftsState> emit) async {
-    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview") ?? [];
+    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview")?.map((e) => e as BestLiftOverview).toList ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(BestLiftsError(error: "No internet connection!"));
@@ -89,7 +89,7 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
   }
 
   void _onGetBestLifts(GetBestLifts event, Emitter<BestLiftsState> emit) async {
-    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview") ?? [];
+    List<BestLiftOverview> bestLiftOverviews = userBox.get("bestLiftOverview")?.map((e) => e as BestLiftOverview).toList ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));

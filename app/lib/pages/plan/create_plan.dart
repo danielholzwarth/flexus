@@ -68,12 +68,7 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
           }
         },
         builder: (context, state) {
-          if (state is PlanCreating) {
-            return Scaffold(
-              backgroundColor: AppSettings.background,
-              body: Center(child: CircularProgressIndicator(color: AppSettings.primary)),
-            );
-          } else if (state is PlanError) {
+          if (state is PlanError) {
             return Scaffold(
               backgroundColor: AppSettings.background,
               body: FlexusError(

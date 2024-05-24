@@ -24,7 +24,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   }
 
   void _onPostExercise(PostExercise event, Emitter<ExerciseState> emit) async {
-    List<Exercise> exercises = userBox.get("exercises") ?? [];
+    List<Exercise> exercises = userBox.get("exercises")?.map((e) => e as Exercise).toList() ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(ExerciseError(error: "No internet connection!"));
@@ -62,7 +62,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   }
 
   void _onGetExercises(GetExercises event, Emitter<ExerciseState> emit) async {
-    List<Exercise> exercises = userBox.get("exercises") ?? [];
+    List<Exercise> exercises = userBox.get("exercises")?.cast<Exercise>() ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(ExerciseError(error: "No internet connection!"));

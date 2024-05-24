@@ -5,11 +5,7 @@ abstract class PlanState {}
 
 class PlanInitial extends PlanState {}
 
-class PlanCreating extends PlanState {}
-
 class PlanCreated extends PlanState {}
-
-class PlanLoading extends PlanState {}
 
 class PlanLoaded extends PlanState {
   final Plan? plan;
@@ -19,8 +15,6 @@ class PlanLoaded extends PlanState {
   });
 }
 
-class PlansLoading extends PlanState {}
-
 class PlansLoaded extends PlanState {
   final List<Plan> plans;
 
@@ -29,13 +23,7 @@ class PlansLoaded extends PlanState {
   });
 }
 
-class PlanPatching extends PlanState {}
-
-class PlanDeleting extends PlanState {}
-
 class PlanDeleted extends PlanState {}
-
-class PlanOverviewLoading extends PlanState {}
 
 class PlanOverviewLoaded extends PlanState {
   final PlanOverview? planOverview;
