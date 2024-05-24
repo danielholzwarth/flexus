@@ -56,38 +56,45 @@ void onStart(ServiceInstance serviceInstance) async {
     Box userBox = Hive.box("userBox");
     String flexusJWT = userBox.get("flexusjwt");
 
+    // if (!AppSettings.hasConnection) {
+    //   debugPrint("Error: No internet connection!");
+    //   return;
+    // }
+
     final response = await notificationService.getNewWorkoutNotifications(flexusJWT);
     List<noti.Notification> notifications = [];
 
     Duration timeZoneOffset = DateTime.now().timeZoneOffset;
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        final List<dynamic> jsonList = response.body;
-        notifications = jsonList.where((json) => json['gymName'] != "null").map((json) {
-          return noti.Notification(
-            title: "${json['username']} sent you a notification!",
-            body:
-                "${json['username']} will be at ${json['gymName']} at ${DateFormat('HH:mm').format(DateTime.parse(json['startTime']).add(timeZoneOffset))}!",
-            payload: "payload",
-          );
-        }).toList();
-
-        debugPrint("Successful fetch - ${notifications.length} notifications");
-
-        for (var notification in notifications) {
-          LocalNotifications.showNotification(
-            title: notification.title,
-            body: notification.body,
-            payload: notification.payload,
-          );
-          await Future.delayed(const Duration(seconds: 6));
-        }
-      } else {
-        debugPrint("Successful fetch - No update");
-      }
-    } else {
+    if (!response.isSuccessful) {
       debugPrint("Error: Unsuccessful fetch!");
+      return;
+    }
+
+    if (response.body == "null") {
+      debugPrint("Successful fetch - No update");
+      return;
+    }
+
+    final List<dynamic> jsonList = response.body;
+    notifications = jsonList.where((json) => json['gymName'] != "null").map((json) {
+      return noti.Notification(
+        title: "${json['username']} sent you a notification!",
+        body:
+            "${json['username']} will be at ${json['gymName']} at ${DateFormat('HH:mm').format(DateTime.parse(json['startTime']).add(timeZoneOffset))}!",
+        payload: "payload",
+      );
+    }).toList();
+
+    debugPrint("Successful fetch - ${notifications.length} notifications");
+
+    for (var notification in notifications) {
+      LocalNotifications.showNotification(
+        title: notification.title,
+        body: notification.body,
+        payload: notification.payload,
+      );
+      await Future.delayed(const Duration(seconds: 6));
     }
 
     serviceInstance.invoke('update');

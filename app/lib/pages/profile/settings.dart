@@ -15,6 +15,7 @@ import 'package:app/widgets/flexus_textfield.dart';
 import 'package:app/widgets/list_tiles/flexus_settings_list_tile.dart';
 import 'package:app/widgets/flexus_sliver_appbar.dart';
 import 'package:app/widgets/sheets/flexus_show_modal_bottom_sheet_text_field.dart';
+import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/material.dart';
@@ -261,14 +262,23 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
               );
-            } else {
+            }
+
+            if (state is UserListError) {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
                 title: const CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
-                trailing: CircularProgressIndicator(color: AppSettings.primary),
+                trailing: FlexusDefaultIcon(iconData: Icons.error, iconColor: AppSettings.error),
               );
             }
+
+            return ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+              tileColor: AppSettings.background,
+              title: const CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
+              trailing: CircularProgressIndicator(color: AppSettings.primary),
+            );
           },
         ),
       ),
@@ -372,14 +382,23 @@ class _SettingsPageState extends State<SettingsPage> {
                   }
                 },
               );
-            } else {
+            }
+
+            if (state is UserListError) {
               return ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
                 tileColor: AppSettings.background,
-                title: const CustomDefaultTextStyle(text: "Pull User List", fontWeight: FontWeight.w500),
-                trailing: CircularProgressIndicator(color: AppSettings.primary),
+                title: const CustomDefaultTextStyle(text: "Notify User List", fontWeight: FontWeight.w500),
+                trailing: FlexusDefaultIcon(iconData: Icons.error, iconColor: AppSettings.error),
               );
             }
+
+            return ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
+              tileColor: AppSettings.background,
+              title: const CustomDefaultTextStyle(text: "Pull User List", fontWeight: FontWeight.w500),
+              trailing: CircularProgressIndicator(color: AppSettings.primary),
+            );
           },
         ),
       ),

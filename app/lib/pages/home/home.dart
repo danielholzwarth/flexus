@@ -77,8 +77,10 @@ class _HomePageState extends State<HomePage> {
 
   void loadData() {
     workoutBloc.add(GetWorkouts());
-    UserAccount userAccount = userBox.get("userAccount");
-    userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
+    if (widget.isStartup) {
+      UserAccount userAccount = userBox.get("userAccount");
+      userAccountBloc.add(GetUserAccount(userAccountID: userAccount.id));
+    }
   }
 
   Widget buildWorkouts() {
@@ -227,9 +229,7 @@ class _HomePageState extends State<HomePage> {
                           type: PageTransitionType.fade,
                           child: ProfilePage(userID: state.userAccount.id),
                         ),
-                      ).then((value) {
-                        userAccountBloc.add(GetUserAccount(userAccountID: state.userAccount.id));
-                      });
+                      ).then((value) => setState(() {}));
                     },
                     child: CircleAvatar(
                       radius: AppSettings.fontSize,
@@ -237,25 +237,61 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 );
-              } else {
-                return IconButton(
-                  icon: const FlexusDefaultIcon(iconData: Icons.person),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.fade,
-                        child: ProfilePage(userID: state.userAccount.id),
-                      ),
-                    ).then((value) {
-                      userAccountBloc.add(GetUserAccount(userAccountID: state.userAccount.id));
-                    });
-                  },
-                );
               }
-            } else {
-              return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+
+              return IconButton(
+                icon: const FlexusDefaultIcon(iconData: Icons.person),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.fade,
+                      child: ProfilePage(userID: state.userAccount.id),
+                    ),
+                  ).then((value) => setState(() {}));
+                },
+              );
             }
+
+            UserAccount? userAccount = userBox.get("userAccount");
+
+            if (userAccount != null) {
+              return SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: userAccount.profilePicture != null
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: ProfilePage(userID: userAccount.id),
+                              ),
+                            ).then((value) => setState(() {}));
+                          },
+                          child: CircleAvatar(
+                            radius: AppSettings.fontSize,
+                            backgroundImage: MemoryImage(userAccount.profilePicture!),
+                          ),
+                        )
+                      : IconButton(
+                          icon: const FlexusDefaultIcon(iconData: Icons.person),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: ProfilePage(userID: userAccount.id),
+                              ),
+                            ).then((value) => setState(() {}));
+                          },
+                        ),
+                ),
+              );
+            }
+
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           },
         ),
       ),

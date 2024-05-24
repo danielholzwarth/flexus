@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 
 class FlexusNoConnectionScaffold extends StatelessWidget {
   final String? title;
+  final Function()? func;
+
   const FlexusNoConnectionScaffold({
     super.key,
     this.title,
+    this.func,
   });
 
   @override
@@ -40,6 +43,14 @@ class FlexusNoConnectionScaffold extends StatelessWidget {
                     text: "This feature requires Internet connection",
                     color: AppSettings.error,
                   ),
+                  SizedBox(height: deviceSize.height * 0.03),
+                  IconButton(
+                    onPressed: func,
+                    icon: FlexusDefaultIcon(
+                      iconData: Icons.refresh,
+                      iconColor: AppSettings.error,
+                    ),
+                  )
                 ],
               ),
             ),

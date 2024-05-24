@@ -51,7 +51,6 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
-    userAccountBloc.add(GetUserAccount(userAccountID: widget.userID));
     friendshipBloc.add(GetFriendship(requestedID: widget.userID));
     isProfilePictureChecked = false;
     isNameChecked = false;
@@ -107,9 +106,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             );
-          } else {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
+
+          return Column(
+            children: [
+              CustomDefaultTextStyle(
+                text: userAccount.name,
+                fontSize: AppSettings.fontSizeH3,
+              ),
+              CustomDefaultTextStyle(
+                text: "@${userAccount.username}",
+              ),
+            ],
+          );
         },
       ),
     );
@@ -123,67 +132,71 @@ class _ProfilePageState extends State<ProfilePage> {
         bloc: userAccountBloc,
         builder: (context, state) {
           if (state is UserAccountLoaded) {
-            return Stack(
-              children: [
-                Positioned(
-                  left: deviceSize.width * 0.05,
-                  top: deviceSize.width * 0.1,
-                  child: buildCorrectLevelImage(state.userAccount.level, deviceSize),
-                ),
-                Positioned(
-                  left: deviceSize.width * 0.25,
-                  top: deviceSize.width * 0.12,
-                  child: Hero(
-                    tag: "profile_picture",
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: ProfilePicturePage(
-                            userID: state.userAccount.id,
-                            profilePicture: state.userAccount.profilePicture,
-                          ),
-                        ),
-                      ).then((value) => userAccountBloc.add(GetUserAccount(userAccountID: widget.userID))),
-                      child: state.userAccount.profilePicture != null
-                          ? CircleAvatar(
-                              radius: deviceSize.width * 0.15,
-                              backgroundImage: MemoryImage(state.userAccount.profilePicture!),
-                            )
-                          : Container(
-                              width: deviceSize.width * 0.3,
-                              height: deviceSize.width * 0.3,
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 2, color: AppSettings.font.withOpacity(0.2)),
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: CustomDefaultTextStyle(
-                                text: userAccount.id == widget.userID ? "Add Picture" : "",
-                                fontSize: AppSettings.fontSize,
-                                color: AppSettings.font.withOpacity(0.5),
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: deviceSize.width * 0.28,
-                  top: deviceSize.width * 0.5,
-                  child: CustomDefaultTextStyle(
-                    text: state.userAccount.level.toString(),
-                    color: AppSettings.primary,
-                    fontSize: AppSettings.fontSizeH3,
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
+            return buildPictureStack(deviceSize, context, state.userAccount);
           }
+
+          return buildPictureStack(deviceSize, context, userAccount);
         },
       ),
+    );
+  }
+
+  Stack buildPictureStack(Size deviceSize, BuildContext context, UserAccount userAccount) {
+    return Stack(
+      children: [
+        Positioned(
+          left: deviceSize.width * 0.05,
+          top: deviceSize.width * 0.1,
+          child: buildCorrectLevelImage(userAccount.level, deviceSize),
+        ),
+        Positioned(
+          left: deviceSize.width * 0.25,
+          top: deviceSize.width * 0.12,
+          child: Hero(
+            tag: "profile_picture",
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: ProfilePicturePage(
+                    userID: userAccount.id,
+                    profilePicture: userAccount.profilePicture,
+                  ),
+                ),
+              ).then((value) => setState(() {})),
+              child: userAccount.profilePicture != null
+                  ? CircleAvatar(
+                      radius: deviceSize.width * 0.15,
+                      backgroundImage: MemoryImage(userAccount.profilePicture!),
+                    )
+                  : Container(
+                      width: deviceSize.width * 0.3,
+                      height: deviceSize.width * 0.3,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: AppSettings.font.withOpacity(0.2)),
+                        shape: BoxShape.circle,
+                      ),
+                      alignment: Alignment.center,
+                      child: CustomDefaultTextStyle(
+                        text: userAccount.id == widget.userID ? "Add Picture" : "",
+                        fontSize: AppSettings.fontSize,
+                        color: AppSettings.font.withOpacity(0.5),
+                      ),
+                    ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: deviceSize.width * 0.28,
+          top: deviceSize.width * 0.5,
+          child: CustomDefaultTextStyle(
+            text: userAccount.level.toString(),
+            color: AppSettings.primary,
+            fontSize: AppSettings.fontSizeH3,
+          ),
+        ),
+      ],
     );
   }
 

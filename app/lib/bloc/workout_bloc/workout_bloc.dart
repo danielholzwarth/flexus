@@ -255,6 +255,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       pbSetIDs: pbSetIDs,
     );
 
+    userBox.put("workoutDetails${event.workoutID}", workoutDetails);
+
     emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
   }
 

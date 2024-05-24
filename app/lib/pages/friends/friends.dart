@@ -59,8 +59,12 @@ class _FriendsPageState extends State<FriendsPage> {
         ),
       );
     } else {
-      return const FlexusNoConnectionScaffold(
+      return FlexusNoConnectionScaffold(
         title: "My Friends",
+        func: () {
+          setState(() {});
+          loadData();
+        },
       );
     }
   }
@@ -89,20 +93,22 @@ class _FriendsPageState extends State<FriendsPage> {
                 childCount: state.userAccounts.length,
               ),
             );
-          } else {
-            return const SliverFillRemaining(
-              child: Center(
-                child: CustomDefaultTextStyle(
-                  text: 'No friends found',
-                ),
-              ),
-            );
           }
-        } else if (state is UserAccountsError) {
-          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
-        } else {
-          return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
+
+          return const SliverFillRemaining(
+            child: Center(
+              child: CustomDefaultTextStyle(
+                text: 'No friends found',
+              ),
+            ),
+          );
         }
+
+        if (state is UserAccountsError) {
+          return SliverFillRemaining(child: FlexusError(text: state.error, func: loadData));
+        }
+
+        return SliverFillRemaining(child: Center(child: CircularProgressIndicator(color: AppSettings.primary)));
       },
     );
   }

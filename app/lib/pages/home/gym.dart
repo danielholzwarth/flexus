@@ -68,7 +68,12 @@ class _GymPageState extends State<GymPage> {
         floatingActionButton: buildFloatingActionButton(context, deviceSize),
       );
     } else {
-      return const FlexusNoConnectionScaffold();
+      return FlexusNoConnectionScaffold(
+        func: () {
+          setState(() {});
+          loadData();
+        },
+      );
     }
   }
 
@@ -363,7 +368,7 @@ class _GymPageState extends State<GymPage> {
                         type: PageTransitionType.fade,
                         child: ProfilePage(userID: userAccount.id),
                       ),
-                    );
+                    ).then((value) => setState(() {}));
                   },
                 ),
         ),
