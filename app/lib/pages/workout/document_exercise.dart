@@ -515,7 +515,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                           ),
                           DataCell(
                             FlexusTableTextField(
-                              hintText: "Workload",
+                              hintText: "Duration",
                               textController: setController[i]["workload"]!,
                               textInputType: TextInputType.number,
                               onTap: () {
