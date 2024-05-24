@@ -263,11 +263,6 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutUpdating());
 
-    if (!AppSettings.hasConnection) {
-      emit(WorkoutError(error: "No workout details found"));
-      return;
-    }
-
     switch (event.name) {
       case "isArchived":
         bool isArchived = event.value;

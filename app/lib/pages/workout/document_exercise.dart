@@ -222,7 +222,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                           columns: const [
                             DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
                             DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
-                            DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                            DataColumn(label: CustomDefaultTextStyle(text: "Workload (kg)", textAlign: TextAlign.left)),
                           ],
                           rows: [
                             for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
@@ -262,7 +262,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                       : DataTable(
                           columns: const [
                             DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                            DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                            DataColumn(label: CustomDefaultTextStyle(text: "Duration (s)", textAlign: TextAlign.left)),
                           ],
                           rows: [
                             for (int i = 0; i <= currentExercise!.oldMeasurements.length - 1; i++)
@@ -320,8 +320,8 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
                   horizontalMargin: deviceSize.width * 0.05,
                   columns: const [
                     DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                    DataColumn(label: CustomDefaultTextStyle(text: "Repetitions (kg)", textAlign: TextAlign.left)),
-                    DataColumn(label: CustomDefaultTextStyle(text: "Workload (s)", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Repetitions", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Workload (kg)", textAlign: TextAlign.left)),
                   ],
                   rows: [
                     for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
@@ -442,7 +442,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
               : DataTable(
                   columns: const [
                     DataColumn(label: CustomDefaultTextStyle(text: "Sets", textAlign: TextAlign.left)),
-                    DataColumn(label: CustomDefaultTextStyle(text: "Workload", textAlign: TextAlign.left)),
+                    DataColumn(label: CustomDefaultTextStyle(text: "Duration (s)", textAlign: TextAlign.left)),
                   ],
                   rows: [
                     for (int i = 0; i <= currentExercise!.measurements.length - 1; i++)
