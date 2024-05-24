@@ -66,7 +66,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetMyGyms(GetMyGyms event, Emitter<GymState> emit) async {
-    List<Gym> myGyms = userBox.get("myGyms")?.map((e) => e as Gym).toList ?? [];
+    List<Gym> myGyms = userBox.get("myGyms")?.cast<Gym>() ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(MyGymsLoaded(gyms: myGyms));
@@ -137,7 +137,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
-    List<GymOverview> gymOverviews = userBox.get("gymOverviews")?.map((e) => e as GymOverview).toList ?? [];
+    List<GymOverview> gymOverviews = userBox.get("gymOverviews")?.cast<GymOverview>() ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(GymError(error: "No internet connection!"));

@@ -23,8 +23,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   void _onGetSettings(GetSettings event, Emitter<SettingsState> emit) async {
-    emit(SettingsLoading());
-
     if (AppSettings.hasConnection) {
       Response<dynamic> response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
 

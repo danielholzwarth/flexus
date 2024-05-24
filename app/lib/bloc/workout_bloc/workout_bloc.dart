@@ -33,6 +33,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onPostWorkout(PostWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutCreating());
 
+    if (!AppSettings.hasConnection) {
+      emit(WorkoutError(error: "No internet connection!"));
+      return;
+    }
+
     final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
     final String formattedStartTime = "${formatter.format(event.startTime.subtract(AppSettings.timeZoneOffset))}Z";
 
@@ -43,25 +48,73 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       "isActive": event.isActive,
     });
 
-    if (response.isSuccessful) {
-      emit(WorkoutCreated());
-    } else {
+    if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
+      return;
     }
+
+    emit(WorkoutCreated());
   }
 
   void _onGetWorkoutFromID(GetWorkoutFromID event, Emitter<WorkoutState> emit) async {
     emit(WorkoutsLoading());
 
-    if (AppSettings.hasConnection) {
-      final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+    if (!AppSettings.hasConnection) {
+      emit(WorkoutError(error: "No internet connection!"));
+      return;
+    }
 
-      if (response.isSuccessful) {
-        Workout? workout;
-        if (response.body != "null") {
-          final Map<String, dynamic> json = response.body;
-          workout = Workout(
-            id: json['id'],
+    final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+
+    if (!response.isSuccessful) {
+      emit(WorkoutError(error: response.error.toString()));
+      return;
+    }
+
+    Workout? workout;
+    if (response.body != "null") {
+      final Map<String, dynamic> json = response.body;
+      workout = Workout(
+        id: json['id'],
+        userAccountID: json['workout']['userAccountID'],
+        splitID: json['workout']['splitID'],
+        createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
+        starttime: DateTime.parse(json['workout']['starttime']).add(AppSettings.timeZoneOffset),
+        endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']).add(AppSettings.timeZoneOffset) : null,
+        isActive: json['workout']['isActive'],
+        isArchived: json['workout']['isArchived'],
+        isStared: json['workout']['isStared'],
+        isPinned: json['workout']['isPinned'],
+      );
+    }
+
+    emit(WorkoutLoaded(workout: workout));
+  }
+
+  void _onGetWorkouts(GetWorkouts event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutsLoading());
+
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+
+    if (!AppSettings.hasConnection) {
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+      emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
+      return;
+    }
+
+    final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+
+    if (!response.isSuccessful) {
+      emit(WorkoutError(error: response.error.toString()));
+      return;
+    }
+
+    if (response.body != "null") {
+      final List<dynamic> jsonList = response.body;
+      workoutOverviews = jsonList.map((json) {
+        return WorkoutOverview(
+          workout: Workout(
+            id: json['workout']['id'],
             userAccountID: json['workout']['userAccountID'],
             splitID: json['workout']['splitID'],
             createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
@@ -71,82 +124,39 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
             isArchived: json['workout']['isArchived'],
             isStared: json['workout']['isStared'],
             isPinned: json['workout']['isPinned'],
-          );
-          emit(WorkoutLoaded(workout: workout));
-        }
-        emit(WorkoutLoaded(workout: workout));
-      } else {
-        emit(WorkoutError(error: response.error.toString()));
-      }
-    } else {
-      emit(WorkoutError(error: "Not implemented yet"));
+          ),
+          planName: json['planName'],
+          splitName: json['splitName'],
+          bestLiftCount: json['pbCount'],
+        );
+      }).toList();
     }
-  }
 
-  void _onGetWorkouts(GetWorkouts event, Emitter<WorkoutState> emit) async {
-    emit(WorkoutsLoading());
+    userBox.put("workoutOverviews", workoutOverviews);
 
-    List<WorkoutOverview> workoutOverviews = [];
-    if (AppSettings.hasConnection) {
-      final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+    workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
 
-      if (response.isSuccessful) {
-        if (response.body != "null") {
-          final List<dynamic> jsonList = response.body;
-          workoutOverviews = jsonList.map((json) {
-            return WorkoutOverview(
-              workout: Workout(
-                id: json['workout']['id'],
-                userAccountID: json['workout']['userAccountID'],
-                splitID: json['workout']['splitID'],
-                createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
-                starttime: DateTime.parse(json['workout']['starttime']).add(AppSettings.timeZoneOffset),
-                endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']).add(AppSettings.timeZoneOffset) : null,
-                isActive: json['workout']['isActive'],
-                isArchived: json['workout']['isArchived'],
-                isStared: json['workout']['isStared'],
-                isPinned: json['workout']['isPinned'],
-              ),
-              planName: json['planName'],
-              splitName: json['splitName'],
-              bestLiftCount: json['pbCount'],
-            );
-          }).toList();
-        }
-
-        userBox.put("workoutOverviews", workoutOverviews);
-
-        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
-
-        emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
-      } else {
-        emit(WorkoutError(error: response.error.toString()));
-      }
-    } else {
-      workoutOverviews = userBox.get("workoutOverviews") ?? [];
-      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
-      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
-      emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
-    }
+    emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
   }
 
   void _onGetSearchWorkout(GetSearchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutSearching());
 
-    List<WorkoutOverview> workoutOverviews = [];
-    List<WorkoutOverview> allWorkoutOvervies = userBox.get("workoutOverviews") ?? [];
-    allWorkoutOvervies = allWorkoutOvervies.cast<WorkoutOverview>();
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
 
-    if (allWorkoutOvervies.isNotEmpty) {
-      if (event.keyWord.isNotEmpty) {
-        workoutOverviews = allWorkoutOvervies
-            .where((workoutOverview) =>
-                workoutOverview.splitName != null && workoutOverview.splitName!.toLowerCase().contains(event.keyWord.toLowerCase()))
-            .toList();
-      } else {
-        workoutOverviews = allWorkoutOvervies;
-      }
+    if (!AppSettings.hasConnection) {
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+      emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
+      return;
     }
+
+    if (workoutOverviews.isNotEmpty && event.keyWord.isNotEmpty) {
+      workoutOverviews = workoutOverviews
+          .where((workoutOverview) =>
+              workoutOverview.splitName != null && workoutOverview.splitName!.toLowerCase().contains(event.keyWord.toLowerCase()))
+          .toList();
+    }
+
     workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
     emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
   }
@@ -154,93 +164,107 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetWorkoutDetails(GetWorkoutDetails event, Emitter<WorkoutState> emit) async {
     emit(WorkoutDetailsLoading());
 
+    WorkoutDetails? workoutDetails = userBox.get("workoutDetails${event.workoutID}");
+
+    if (!AppSettings.hasConnection) {
+      workoutDetails != null ? emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails)) : emit(WorkoutError(error: "No workout details found"));
+      return;
+    }
+
     final response = await _workoutService.getWorkoutDetailsFromWorkoutID(userBox.get("flexusjwt"), event.workoutID);
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        Map<String, dynamic> json = response.body;
-
-        Gym? gym;
-
-        if (json['gym'] != null) {
-          Map<String, dynamic> gymJson = json['gym'];
-          gym = Gym(
-            id: gymJson['id'],
-            name: gymJson['name'],
-            streetName: gymJson['streetName'],
-            houseNumber: gymJson['houseNumber'],
-            zipCode: gymJson['zipCode'],
-            cityName: gymJson['cityName'],
-            latitude: gymJson['latitude'],
-            longitude: gymJson['longitude'],
-          );
-        }
-
-        List<Exercise> exercises = [];
-
-        if (json['exercises'] != null) {
-          List<dynamic> exercisesJson = json['exercises'];
-          exercises = exercisesJson.map((exerciseJson) {
-            return Exercise(
-              id: exerciseJson['id'],
-              name: exerciseJson['name'],
-              creatorID: exerciseJson['creatorID'],
-              typeID: exerciseJson['typeID'],
-            );
-          }).toList();
-        }
-
-        List<List<WorkoutSet>> sets = [];
-        if (json['sets'] != null) {
-          List<dynamic> measurementsJson = json['sets'];
-          sets = measurementsJson.map<List<WorkoutSet>>((measurementListJson) {
-            return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
-              return WorkoutSet(
-                id: measurementMap['id'],
-                workoutID: measurementMap['workoutID'],
-                exerciseID: measurementMap['exerciseID'],
-                orderNumber: measurementMap['orderNumber'],
-                repetitions: measurementMap['repetitions'],
-                workload: double.parse(measurementMap['workload'].toString()),
-              );
-            }).toList();
-          }).toList();
-        }
-
-        List<int> pbSetIDs = [];
-        if (json['pbSetIDs'] != null) {
-          pbSetIDs = List<int>.from(json['pbSetIDs']);
-        }
-
-        WorkoutDetails workoutDetails = WorkoutDetails(
-          workoutID: json['workoutID'],
-          startTime: DateTime.parse(json['starttime']),
-          endtime: json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
-          gym: gym,
-          split: json['split'] != null
-              ? Split(
-                  id: json['split']['id'],
-                  planID: json['split']['planID'],
-                  name: json['split']['name'],
-                  orderInPlan: json['split']['orderInPlan'],
-                )
-              : null,
-          exercises: exercises,
-          sets: sets,
-          pbSetIDs: pbSetIDs,
-        );
-
-        emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
-      } else {
-        emit(WorkoutError(error: "No workout details found"));
-      }
-    } else {
+    if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
+      return;
     }
+
+    if (response.body == "null") {
+      emit(WorkoutError(error: "No workout details found"));
+      return;
+    }
+
+    Map<String, dynamic> json = response.body;
+
+    Gym? gym;
+
+    if (json['gym'] != null) {
+      Map<String, dynamic> gymJson = json['gym'];
+      gym = Gym(
+        id: gymJson['id'],
+        name: gymJson['name'],
+        streetName: gymJson['streetName'],
+        houseNumber: gymJson['houseNumber'],
+        zipCode: gymJson['zipCode'],
+        cityName: gymJson['cityName'],
+        latitude: gymJson['latitude'],
+        longitude: gymJson['longitude'],
+      );
+    }
+
+    List<Exercise> exercises = [];
+
+    if (json['exercises'] != null) {
+      List<dynamic> exercisesJson = json['exercises'];
+      exercises = exercisesJson.map((exerciseJson) {
+        return Exercise(
+          id: exerciseJson['id'],
+          name: exerciseJson['name'],
+          creatorID: exerciseJson['creatorID'],
+          typeID: exerciseJson['typeID'],
+        );
+      }).toList();
+    }
+
+    List<List<WorkoutSet>> sets = [];
+    if (json['sets'] != null) {
+      List<dynamic> measurementsJson = json['sets'];
+      sets = measurementsJson.map<List<WorkoutSet>>((measurementListJson) {
+        return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
+          return WorkoutSet(
+            id: measurementMap['id'],
+            workoutID: measurementMap['workoutID'],
+            exerciseID: measurementMap['exerciseID'],
+            orderNumber: measurementMap['orderNumber'],
+            repetitions: measurementMap['repetitions'],
+            workload: double.parse(measurementMap['workload'].toString()),
+          );
+        }).toList();
+      }).toList();
+    }
+
+    List<int> pbSetIDs = [];
+    if (json['pbSetIDs'] != null) {
+      pbSetIDs = List<int>.from(json['pbSetIDs']);
+    }
+
+    workoutDetails = WorkoutDetails(
+      workoutID: json['workoutID'],
+      startTime: DateTime.parse(json['starttime']),
+      endtime: json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
+      gym: gym,
+      split: json['split'] != null
+          ? Split(
+              id: json['split']['id'],
+              planID: json['split']['planID'],
+              name: json['split']['name'],
+              orderInPlan: json['split']['orderInPlan'],
+            )
+          : null,
+      exercises: exercises,
+      sets: sets,
+      pbSetIDs: pbSetIDs,
+    );
+
+    emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
   }
 
   void _onPatchWorkout(PatchWorkout event, Emitter<WorkoutState> emit) async {
     emit(WorkoutUpdating());
+
+    if (!AppSettings.hasConnection) {
+      emit(WorkoutError(error: "No workout details found"));
+      return;
+    }
 
     switch (event.name) {
       case "isArchived":
@@ -342,6 +366,47 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     }
   }
 
+  void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
+    emit(WorkoutDeleting());
+
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
+    workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
+
+    if (!AppSettings.hasConnection) {
+      WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
+      if (workoutOverview.workout.endtime == null) {
+        userBox.delete("currentWorkout");
+      }
+
+      workoutOverviews.remove(workoutOverview);
+
+      userBox.put("workoutOverviews", workoutOverviews);
+      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+      emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
+      return;
+    }
+
+    final response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
+
+    if (!response.isSuccessful) {
+      emit(WorkoutError(error: response.error.toString()));
+      return;
+    }
+
+    WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
+    if (workoutOverview.workout.endtime == null) {
+      userBox.delete("currentWorkout");
+    }
+
+    workoutOverviews.remove(workoutOverview);
+
+    userBox.put("workoutOverviews", workoutOverviews);
+    workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+    emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
+  }
+
   List<WorkoutOverview> archiveWorkout(PatchWorkout event, List<WorkoutOverview> workoutOverviews) {
     int index = workoutOverviews.indexWhere((workoutOverview) => workoutOverview.workout.id == event.workoutID);
     if (index != -1) {
@@ -393,44 +458,5 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     });
 
     return workoutOverviews;
-  }
-
-  void _onDeleteWorkout(DeleteWorkout event, Emitter<WorkoutState> emit) async {
-    emit(WorkoutDeleting());
-
-    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews") ?? [];
-    workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
-
-    if (AppSettings.hasConnection) {
-      final response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
-
-      if (response.isSuccessful) {
-        WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
-        if (workoutOverview.workout.endtime == null) {
-          userBox.delete("currentWorkout");
-        }
-
-        workoutOverviews.remove(workoutOverview);
-
-        userBox.put("workoutOverviews", workoutOverviews);
-        workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
-
-        emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
-      } else {
-        emit(WorkoutError(error: response.error.toString()));
-      }
-    } else {
-      WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
-      if (workoutOverview.workout.endtime == null) {
-        userBox.delete("currentWorkout");
-      }
-
-      workoutOverviews.remove(workoutOverview);
-
-      userBox.put("workoutOverviews", workoutOverviews);
-      workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
-
-      emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
-    }
   }
 }

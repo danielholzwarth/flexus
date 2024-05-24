@@ -94,7 +94,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   }
 
   void _onGetPlans(GetPlans event, Emitter<PlanState> emit) async {
-    List<Plan> plans = userBox.get("plans")?.map((e) => e as Plan).toList ?? [];
+    List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
 
     if (!AppSettings.hasConnection) {
       emit(PlanError(error: "No internet connection!"));

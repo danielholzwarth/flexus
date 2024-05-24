@@ -20,72 +20,95 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
   }
 
   void _onPostUserList(PostUserList event, Emitter<UserListState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(UserListError(error: "No internet connection!"));
+      return;
+    }
+
     Response<dynamic> response = await userListService.postUserList(
       userBox.get("flexusjwt"),
       {"columnName": event.columnName},
     );
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        emit(UserListCreated(listID: response.body));
-      } else {
-        emit(UserListError(error: "Error creating userlist. Was returned empty!"));
-      }
-    } else {
+    if (!response.isSuccessful) {
       emit(UserListError(error: response.error.toString()));
+      return;
     }
+
+    if (response.body == "null") {
+      emit(UserListError(error: "Error creating userlist. Was returned empty!"));
+      return;
+    }
+
+    emit(UserListCreated(listID: response.body));
   }
 
   void _onGetHasUserList(GetHasUserList event, Emitter<UserListState> emit) async {
     emit(HasUserListLoading());
+
+    if (!AppSettings.hasConnection) {
+      emit(UserListError(error: "No internet connection!"));
+      return;
+    }
 
     Response<dynamic> response = await userListService.getHasUserList(userBox.get("flexusjwt"), {
       "listID": event.listID,
       "userID": event.userID,
     });
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        emit(HasUserListLoaded(isCreated: response.body));
-      } else {
-        emit(UserListError(error: "Error creating userlist. Was returned empty!"));
-      }
-    } else {
+    if (!response.isSuccessful) {
       emit(UserListError(error: response.error.toString()));
+      return;
     }
+
+    if (response.body == "null") {
+      emit(UserListError(error: "Error creating userlist. Was returned empty!"));
+      return;
+    }
+
+    emit(HasUserListLoaded(isCreated: response.body));
   }
 
   void _onPatchUserList(PatchUserList event, Emitter<UserListState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(UserListError(error: "No internet connection!"));
+      return;
+    }
+
     final response = await userListService.patchUserList(userBox.get("flexusjwt"), {
       "listID": event.listID,
       "userID": event.userID,
     });
 
-    if (response.isSuccessful) {
-      emit(UserListUpdated(isCreated: !event.isDeleting));
-    } else {
+    if (!response.isSuccessful) {
       emit(UserListError(error: "Failed patching Userlist ${event.listID}"));
+      return;
     }
+
+    emit(UserListUpdated(isCreated: !event.isDeleting));
   }
 
   void _onGetEntireUserList(GetEntireUserList event, Emitter<UserListState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(UserListError(error: "No internet connection!"));
+      return;
+    }
+
     emit(EntireUserListLoading());
 
     List<int> userList = [];
 
-    if (AppSettings.hasConnection) {
-      Response<dynamic> response = await userListService.getUserListFromListID(userBox.get("flexusjwt"), event.listID);
+    Response<dynamic> response = await userListService.getUserListFromListID(userBox.get("flexusjwt"), event.listID);
 
-      if (response.isSuccessful) {
-        if (response.body != "null") {
-          userList = List<int>.from(response.body);
-        }
-        emit(EntireUserListLoaded(userList: userList));
-      } else {
-        emit(UserListError(error: response.error.toString()));
-      }
-    } else {
-      emit(EntireUserListLoaded(userList: userList));
+    if (!response.isSuccessful) {
+      emit(UserListError(error: response.error.toString()));
+      return;
     }
+
+    if (response.body != "null") {
+      userList = List<int>.from(response.body);
+    }
+
+    emit(EntireUserListLoaded(userList: userList));
   }
 }

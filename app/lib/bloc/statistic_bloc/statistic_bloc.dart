@@ -1,4 +1,5 @@
 import 'package:app/api/statistic/statistic_service.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -15,7 +16,10 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
   }
 
   void _onGetStatistic(GetStatistic event, Emitter<StatisticState> emit) async {
-    emit(StatisticLoading());
+    if (!AppSettings.hasConnection) {
+      emit(StatisticError(error: "No internet connection!"));
+      return;
+    }
 
     switch (event.title) {
       case "Total Moved Weight":
