@@ -7,8 +7,6 @@ class GymInitial extends GymState {}
 
 class GymCreated extends GymState {}
 
-class GymLoading extends GymState {}
-
 class GymLoaded extends GymState {
   final bool exists;
 

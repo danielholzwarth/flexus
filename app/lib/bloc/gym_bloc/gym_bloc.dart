@@ -25,6 +25,11 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onPostGym(PostGym event, Emitter<GymState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(GymError(error: "No internet connection!"));
+      return;
+    }
+
     final response = await _gymService.postGym(userBox.get("flexusjwt"), {
       "name": event.locationData['name'],
       "streetName": event.locationData['address']['road'],
@@ -35,136 +40,157 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       "longitude": double.parse(event.locationData['lon']),
     });
 
-    if (response.isSuccessful) {
-      emit(GymCreated());
-    } else {
+    if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
+      return;
     }
+
+    emit(GymCreated());
   }
 
   void _onGetGym(GetGym event, Emitter<GymState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(GymError(error: "No internet connection!"));
+      return;
+    }
+
     final response = await _gymService.getGymExisting(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
 
-    if (response.isSuccessful) {
-      bool exists = response.body;
-      emit(GymLoaded(exists: exists));
-    } else {
+    if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
+      return;
     }
+
+    bool exists = response.body;
+    emit(GymLoaded(exists: exists));
   }
 
   void _onGetMyGyms(GetMyGyms event, Emitter<GymState> emit) async {
-    emit(GymLoading());
+    List<Gym> myGyms = userBox.get("myGyms") ?? [];
+
+    if (!AppSettings.hasConnection) {
+      emit(MyGymsLoaded(gyms: myGyms));
+      return;
+    }
 
     final response = await _gymService.getMyGyms(userBox.get("flexusjwt"), keyword: event.query);
 
-    if (response.isSuccessful) {
-      List<Gym> gyms = [];
-      if (response.body != "null") {
-        final List<dynamic> jsonList = response.body;
-
-        for (final gymData in jsonList) {
-          final Gym gym = Gym(
-            id: gymData['id'],
-            name: gymData['name'],
-            streetName: gymData['streetName'],
-            houseNumber: gymData['houseNumber'],
-            zipCode: gymData['zipCode'],
-            cityName: gymData['cityName'],
-            latitude: gymData['latitude'],
-            longitude: gymData['longitude'],
-          );
-          gyms.add(gym);
-        }
-
-        emit(MyGymsLoaded(gyms: gyms));
-      } else {
-        emit(MyGymsLoaded(gyms: gyms));
-      }
-    } else {
+    if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
+      return;
     }
+
+    if (response.body != "null") {
+      final List<dynamic> jsonList = response.body;
+
+      for (final gymData in jsonList) {
+        final Gym gym = Gym(
+          id: gymData['id'],
+          name: gymData['name'],
+          streetName: gymData['streetName'],
+          houseNumber: gymData['houseNumber'],
+          zipCode: gymData['zipCode'],
+          cityName: gymData['cityName'],
+          latitude: gymData['latitude'],
+          longitude: gymData['longitude'],
+        );
+        myGyms.add(gym);
+      }
+    }
+
+    emit(MyGymsLoaded(gyms: myGyms));
   }
 
   void _onGetGymsSearch(GetGymsSearch event, Emitter<GymState> emit) async {
+    if (!AppSettings.hasConnection) {
+      emit(GymError(error: "No internet connection!"));
+      return;
+    }
+
     final response = await _gymService.getGymsSearch(userBox.get("flexusjwt"), keyword: event.query);
 
-    if (response.isSuccessful) {
-      List<Gym> gyms = [];
-      if (response.body != "null") {
-        final List<dynamic> jsonList = response.body;
-
-        for (final gymData in jsonList) {
-          final Gym gym = Gym(
-            id: gymData['id'],
-            name: gymData['name'],
-            streetName: gymData['streetName'],
-            houseNumber: gymData['houseNumber'],
-            zipCode: gymData['zipCode'],
-            cityName: gymData['cityName'],
-            latitude: gymData['latitude'],
-            longitude: gymData['longitude'],
-          );
-          gyms.add(gym);
-        }
-
-        emit(GymsSearchLoaded(gyms: gyms));
-      } else {
-        emit(GymsSearchLoaded(gyms: gyms));
-      }
-    } else {
+    if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
+      return;
     }
+
+    List<Gym> gyms = [];
+    if (response.body != "null") {
+      final List<dynamic> jsonList = response.body;
+
+      for (final gymData in jsonList) {
+        final Gym gym = Gym(
+          id: gymData['id'],
+          name: gymData['name'],
+          streetName: gymData['streetName'],
+          houseNumber: gymData['houseNumber'],
+          zipCode: gymData['zipCode'],
+          cityName: gymData['cityName'],
+          latitude: gymData['latitude'],
+          longitude: gymData['longitude'],
+        );
+        gyms.add(gym);
+      }
+    }
+
+    emit(GymsSearchLoaded(gyms: gyms));
   }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
+    List<GymOverview> gymOverviews = userBox.get("gymOverviews") ?? [];
+
+    if (!AppSettings.hasConnection) {
+      emit(GymError(error: "No internet connection!"));
+      return;
+    }
+
     final response = await _gymService.getGymOverviews(userBox.get("flexusjwt"));
-    List<GymOverview> gymOverviews = [];
 
-    if (response.isSuccessful) {
-      if (response.body != "null") {
-        final List<dynamic> jsonList = response.body;
+    if (!response.isSuccessful) {
+      emit(GymError(error: response.error.toString()));
+      return;
+    }
 
-        gymOverviews = jsonList.map((json) {
-          List<UserAccount> userAccounts = [];
-          if (json['currentUserAccounts'] != null) {
-            userAccounts = List<UserAccount>.from(
-              json['currentUserAccounts'].map(
-                (accountJson) {
-                  return UserAccount(
-                    id: accountJson['userAccountID'],
-                    username: accountJson['username'],
-                    name: accountJson['name'],
-                    createdAt: DateTime.parse(accountJson['createdAt']).add(AppSettings.timeZoneOffset),
-                    level: accountJson['level'],
-                    profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
-                  );
-                },
-              ),
-            );
-          }
-          return GymOverview(
-            gym: Gym(
-              id: json['gym']['id'],
-              name: json['gym']['name'],
-              streetName: json['gym']['streetName'],
-              zipCode: json['gym']['zipCode'],
-              houseNumber: json['gym']['houseNumber'],
-              cityName: json['gym']['cityName'],
-              latitude: json['gym']['latitude'],
-              longitude: json['gym']['longitude'],
+    if (response.body != "null") {
+      final List<dynamic> jsonList = response.body;
+
+      gymOverviews = jsonList.map((json) {
+        List<UserAccount> userAccounts = [];
+        if (json['currentUserAccounts'] != null) {
+          userAccounts = List<UserAccount>.from(
+            json['currentUserAccounts'].map(
+              (accountJson) {
+                return UserAccount(
+                  id: accountJson['userAccountID'],
+                  username: accountJson['username'],
+                  name: accountJson['name'],
+                  createdAt: DateTime.parse(accountJson['createdAt']).add(AppSettings.timeZoneOffset),
+                  level: accountJson['level'],
+                  profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
+                );
+              },
             ),
-            userAccounts: userAccounts,
-            totalFriends: json['totalFriends'],
           );
-        }).toList();
-      }
+        }
+        return GymOverview(
+          gym: Gym(
+            id: json['gym']['id'],
+            name: json['gym']['name'],
+            streetName: json['gym']['streetName'],
+            zipCode: json['gym']['zipCode'],
+            houseNumber: json['gym']['houseNumber'],
+            cityName: json['gym']['cityName'],
+            latitude: json['gym']['latitude'],
+            longitude: json['gym']['longitude'],
+          ),
+          userAccounts: userAccounts,
+          totalFriends: json['totalFriends'],
+        );
+      }).toList();
 
       userBox.put("gymOverviews", gymOverviews);
-
-      emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
-    } else {
-      emit(GymError(error: response.error.toString()));
     }
+
+    emit(GymOverviewsLoaded(gymOverviews: gymOverviews));
   }
 }
