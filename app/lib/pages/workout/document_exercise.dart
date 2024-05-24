@@ -55,7 +55,7 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
       child: BlocConsumer(
         bloc: exerciseBloc,
         listener: (context, state) {
-          if (state is ExerciseFromExerciseIDLoaded) {
+          if (state is CurrentExerciseFromExerciseIDLoaded) {
             if (currentExercise != null) {
               setController.clear();
 
@@ -140,11 +140,11 @@ class _DocumentExercisePageState extends State<DocumentExercisePage> with Automa
               if (currentExercise != null) {
                 if (currentExercise!.exercise != pickedExercise) {
                   Exercise ex = pickedExercise;
-                  exerciseBloc.add(GetExerciseFromExerciseID(exerciseID: ex.id));
+                  exerciseBloc.add(GetCurrentExerciseFromExerciseID(exerciseID: ex.id));
                 }
               } else {
                 Exercise ex = pickedExercise;
-                exerciseBloc.add(GetExerciseFromExerciseID(exerciseID: ex.id));
+                exerciseBloc.add(GetCurrentExerciseFromExerciseID(exerciseID: ex.id));
               }
 
               setState(() {});

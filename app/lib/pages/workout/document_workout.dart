@@ -95,7 +95,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
           return BlocConsumer(
             bloc: exerciseBloc,
             listener: (context, state) {
-              if (state is ExercisesFromSplitIDLoaded) {
+              if (state is CurrentExercisesFromSplitIDLoaded) {
                 List<CurrentExercise> currentExercises = [];
 
                 if (state.currentExercises.isNotEmpty) {
@@ -125,7 +125,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               }
             },
             builder: (context, state) {
-              if (state is ExercisesLoading || state is ExerciseInitial && pages.isEmpty) {
+              if (state is ExerciseInitial && pages.isEmpty) {
                 return Center(child: CircularProgressIndicator(color: AppSettings.primary));
               }
 
@@ -246,7 +246,7 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
     } else {
       if (widget.currentPlan != null) {
         if (widget.currentPlan!.splits.isNotEmpty) {
-          exerciseBloc.add(GetExercisesFromSplitID(splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id));
+          exerciseBloc.add(GetCurrentExercisesFromSplitID(splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id));
         } else {
           pages.add(const DocumentExercisePage(pageID: 1));
           currentWorkout =

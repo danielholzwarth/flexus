@@ -5,11 +5,7 @@ abstract class ExerciseState {}
 
 class ExerciseInitial extends ExerciseState {}
 
-class ExerciseCreating extends ExerciseState {}
-
 class ExerciseCreated extends ExerciseState {}
-
-class ExercisesLoading extends ExerciseState {}
 
 class ExercisesLoaded extends ExerciseState {
   final List<Exercise> exercises;
@@ -17,18 +13,18 @@ class ExercisesLoaded extends ExerciseState {
   ExercisesLoaded({required this.exercises});
 }
 
-class ExerciseFromExerciseIDLoaded extends ExerciseState {
+class CurrentExerciseFromExerciseIDLoaded extends ExerciseState {
   final CurrentExercise? currentExercise;
 
-  ExerciseFromExerciseIDLoaded({
+  CurrentExerciseFromExerciseIDLoaded({
     required this.currentExercise,
   });
 }
 
-class ExercisesFromSplitIDLoaded extends ExerciseState {
+class CurrentExercisesFromSplitIDLoaded extends ExerciseState {
   final List<CurrentExercise> currentExercises;
 
-  ExercisesFromSplitIDLoaded({
+  CurrentExercisesFromSplitIDLoaded({
     required this.currentExercises,
   });
 }

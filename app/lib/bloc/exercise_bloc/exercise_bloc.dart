@@ -17,71 +17,85 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
   ExerciseBloc() : super(ExerciseInitial()) {
     on<PostExercise>(_onPostExercise);
     on<GetExercises>(_onGetExercises);
-    on<GetExerciseFromExerciseID>(_onGetExerciseFromExerciseID);
-    on<GetExercisesFromSplitID>(_onGetExercisesFromSplitID);
+    on<GetCurrentExerciseFromExerciseID>(_onGetCurrentExerciseFromExerciseID);
+    on<GetCurrentExercisesFromSplitID>(_onGetCurrentExercisesFromSplitID);
     on<RefreshGetExercisesState>(_onRefreshGetExercisesState);
     on<RefreshGetCurrentExercisesState>(_onRefreshGetCurrentExercisesState);
   }
 
   void _onPostExercise(PostExercise event, Emitter<ExerciseState> emit) async {
-    emit(ExerciseCreating());
+    List<Exercise> exercises = userBox.get("exercises") ?? [];
+
+    if (!AppSettings.hasConnection) {
+      emit(ExerciseError(error: "No internet connection!"));
+      emit(ExercisesLoaded(exercises: exercises));
+      return;
+    }
 
     final response = await exerciseService.postExercise(userBox.get("flexusjwt"), {
       "name": event.name,
       "typeID": event.isRepetition ? 1 : 2,
     });
 
-    if (response.isSuccessful) {
+    if (!response.isSuccessful) {
+      emit(ExerciseError(error: response.error.toString()));
+      emit(ExercisesLoaded(exercises: exercises));
+      return;
+    }
+
+    if (response.body != "null") {
       Exercise newExercise = Exercise(
         id: response.body["id"],
         creatorID: response.body["creatorID"],
         name: response.body["name"],
         typeID: response.body["typeID"],
       );
+      exercises.add(newExercise);
 
+      userBox.put("exercises", exercises);
       userBox.put("createdExercise", newExercise);
 
       emit(ExerciseCreated());
-    } else {
-      emit(ExerciseError(error: response.error.toString()));
     }
+
+    emit(ExercisesLoaded(exercises: exercises));
   }
 
   void _onGetExercises(GetExercises event, Emitter<ExerciseState> emit) async {
-    emit(ExercisesLoading());
+    List<Exercise> exercises = userBox.get("exercises") ?? [];
 
-    List<Exercise> exercises = [];
-
-    if (AppSettings.hasConnection) {
-      final response = await exerciseService.getExercises(userBox.get("flexusjwt"));
-
-      if (response.isSuccessful) {
-        if (response.body != "null") {
-          final List<dynamic> jsonList = response.body;
-          exercises = jsonList.map((json) {
-            return Exercise(
-              id: json['id'],
-              creatorID: json['creatorID'],
-              name: json['name'],
-              typeID: json['typeID'],
-            );
-          }).toList();
-
-          emit(ExercisesLoaded(exercises: exercises));
-        } else {
-          emit(ExercisesLoaded(exercises: exercises));
-        }
-      } else {
-        emit(ExerciseError(error: response.error.toString()));
-      }
-    } else {
+    if (!AppSettings.hasConnection) {
+      emit(ExerciseError(error: "No internet connection!"));
       emit(ExercisesLoaded(exercises: exercises));
+      return;
     }
+
+    final response = await exerciseService.getExercises(userBox.get("flexusjwt"));
+
+    if (!response.isSuccessful) {
+      emit(ExerciseError(error: response.error.toString()));
+      emit(ExercisesLoaded(exercises: exercises));
+      return;
+    }
+
+    if (response.body != "null") {
+      final List<dynamic> jsonList = response.body;
+      exercises = jsonList.map((json) {
+        return Exercise(
+          id: json['id'],
+          creatorID: json['creatorID'],
+          name: json['name'],
+          typeID: json['typeID'],
+        );
+      }).toList();
+
+      userBox.put("exercises", exercises);
+    }
+
+    emit(ExercisesLoaded(exercises: exercises));
   }
 
-  void _onGetExerciseFromExerciseID(GetExerciseFromExerciseID event, Emitter<ExerciseState> emit) async {
-    emit(ExercisesLoading());
-
+  void _onGetCurrentExerciseFromExerciseID(GetCurrentExerciseFromExerciseID event, Emitter<ExerciseState> emit) async {
     CurrentExercise? currentExercise;
 
     if (AppSettings.hasConnection) {
@@ -108,9 +122,9 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
             measurements: [],
           );
 
-          emit(ExerciseFromExerciseIDLoaded(currentExercise: currentExercise));
+          emit(CurrentExerciseFromExerciseIDLoaded(currentExercise: currentExercise));
         } else {
-          emit(ExerciseFromExerciseIDLoaded(currentExercise: null));
+          emit(CurrentExerciseFromExerciseIDLoaded(currentExercise: null));
         }
       } else {
         emit(ExerciseError(error: response.error.toString()));
@@ -120,9 +134,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     }
   }
 
-  void _onGetExercisesFromSplitID(GetExercisesFromSplitID event, Emitter<ExerciseState> emit) async {
-    emit(ExercisesLoading());
-
+  void _onGetCurrentExercisesFromSplitID(GetCurrentExercisesFromSplitID event, Emitter<ExerciseState> emit) async {
     List<CurrentExercise> currentExercises = [];
 
     if (AppSettings.hasConnection) {
@@ -158,9 +170,9 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
             );
           }).toList();
 
-          emit(ExercisesFromSplitIDLoaded(currentExercises: currentExercises));
+          emit(CurrentExercisesFromSplitIDLoaded(currentExercises: currentExercises));
         } else {
-          emit(ExercisesFromSplitIDLoaded(currentExercises: currentExercises));
+          emit(CurrentExercisesFromSplitIDLoaded(currentExercises: currentExercises));
         }
       } else {
         emit(ExerciseError(error: response.error.toString()));

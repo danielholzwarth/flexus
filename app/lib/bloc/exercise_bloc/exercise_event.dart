@@ -15,18 +15,18 @@ class PostExercise extends ExerciseEvent {
 
 class GetExercises extends ExerciseEvent {}
 
-class GetExerciseFromExerciseID extends ExerciseEvent {
+class GetCurrentExerciseFromExerciseID extends ExerciseEvent {
   final int exerciseID;
 
-  GetExerciseFromExerciseID({
+  GetCurrentExerciseFromExerciseID({
     required this.exerciseID,
   });
 }
 
-class GetExercisesFromSplitID extends ExerciseEvent {
+class GetCurrentExercisesFromSplitID extends ExerciseEvent {
   final int splitID;
 
-  GetExercisesFromSplitID({
+  GetCurrentExercisesFromSplitID({
     required this.splitID,
   });
 }
