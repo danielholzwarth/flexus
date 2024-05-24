@@ -255,8 +255,21 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildBestLift(Size deviceSize) {
-    return BlocBuilder(
+    return BlocConsumer(
       bloc: bestLiftsBloc,
+      listener: (context, state) {
+        if (state is BestLiftsError) {
+          Fluttertoast.cancel();
+          Fluttertoast.showToast(
+            msg: state.error,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: AppSettings.error,
+            textColor: AppSettings.fontV1,
+            fontSize: AppSettings.fontSize,
+          );
+        }
+      },
       builder: (context, state) {
         if (state is BestLiftsLoaded) {
           if (state.bestLiftOverviews.isNotEmpty) {

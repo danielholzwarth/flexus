@@ -1,8 +1,6 @@
 package postgres
 
 import (
-	"database/sql"
-	"errors"
 	"flexus/internal/types"
 )
 
@@ -21,19 +19,17 @@ func (db *DB) PostBestLift(userAccountID int, exerciseID int, position int) ([]t
 
 	err := db.pool.QueryRow(query, exerciseID, userAccountID).Scan(&setID)
 	if err != nil {
-		if !errors.Is(err, sql.ErrNoRows) {
-			return []types.BestLiftOverview{}, err
-		}
-	} else {
-		query = `
+		return []types.BestLiftOverview{}, err
+	}
+
+	query = `
 		INSERT INTO best_lifts (user_id, set_id, position)
 		VALUES ($1, $2, $3);	
 	`
 
-		_, err = db.pool.Exec(query, userAccountID, setID, position)
-		if err != nil {
-			return []types.BestLiftOverview{}, err
-		}
+	_, err = db.pool.Exec(query, userAccountID, setID, position)
+	if err != nil {
+		return []types.BestLiftOverview{}, err
 	}
 
 	bestLifts, err := db.GetBestLiftsFromUserID(userAccountID)
@@ -74,21 +70,19 @@ func (db *DB) PatchBestLift(userAccountID int, exerciseID int, position int) ([]
 
 		err := db.pool.QueryRow(query, exerciseID, userAccountID).Scan(&setID)
 		if err != nil {
-			if !errors.Is(err, sql.ErrNoRows) {
-				return []types.BestLiftOverview{}, err
-			}
-		} else {
-			query = `
+			return []types.BestLiftOverview{}, err
+		}
+
+		query = `
 			UPDATE best_lifts
 			SET set_id = $1
 			WHERE user_id = $2 
 			AND position = $3;
 		`
 
-			_, err = db.pool.Exec(query, setID, userAccountID, position)
-			if err != nil {
-				return []types.BestLiftOverview{}, err
-			}
+		_, err = db.pool.Exec(query, setID, userAccountID, position)
+		if err != nil {
+			return []types.BestLiftOverview{}, err
 		}
 
 		bestLifts, err := db.GetBestLiftsFromUserID(userAccountID)
