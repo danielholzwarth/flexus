@@ -42,4 +42,24 @@ class WorkoutDetails extends HiveObject {
     required this.sets,
     required this.pbSetIDs,
   });
+
+  WorkoutDetails.fromJson(Map<String, dynamic> json)
+      : workoutID = json['workoutID'] as int,
+        startTime = DateTime.parse(json['starttime']),
+        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
+        gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null,
+        split = json['split'] != null ? Split.fromJson(json['split']) : null,
+        exercises = json['measurements'] != null
+            ? List<Exercise>.from(json['exercises'].map((exercisesJson) {
+                return Exercise.fromJson(exercisesJson);
+              }))
+            : [],
+        sets = json['split'] != null
+            ? List<List<WorkoutSet>>.from(json['split'].map((measurementListJson) {
+                return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
+                  return WorkoutSet.fromJson(measurementMap);
+                });
+              }))
+            : [],
+        pbSetIDs = List<int>.from(json['pbSetIDs']);
 }

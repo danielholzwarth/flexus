@@ -26,4 +26,11 @@ class BestLiftOverview extends HiveObject {
     required this.isRepetition,
     required this.position,
   });
+
+  BestLiftOverview.fromJson(Map<String, dynamic> json)
+      : exerciseName = json['exerciseName'] as String,
+        repetitions = json['repetitions'] as int,
+        workload = double.parse(json['workload'].toString()),
+        isRepetition = json['isRepetition'] as bool,
+        position = json['position'] as int;
 }

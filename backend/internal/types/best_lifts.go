@@ -2,8 +2,8 @@ package types
 
 type BestLift struct {
 	ID            int  `json:"id"`
-	UserAccountID *int `json:"userAccountID"`
-	SetID         *int `json:"setID"`
+	UserAccountID *int `json:"userAccountID,omitempty"`
+	SetID         *int `json:"setID,omitempty"`
 	Position      int  `json:"positionID"`
 }
 

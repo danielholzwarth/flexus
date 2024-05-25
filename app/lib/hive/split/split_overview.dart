@@ -21,4 +21,17 @@ class SplitOverview extends HiveObject {
     required this.exercises,
     required this.measurements,
   });
+
+  SplitOverview.fromJson(Map<String, dynamic> json)
+      : split = Split.fromJson(json['split']),
+        exercises = json['exercises'] != null
+            ? List<Exercise>.from(json['exercises'].map((exercisesJson) {
+                return Exercise.fromJson(exercisesJson);
+              }))
+            : [],
+        measurements = json['measurements'] != null
+            ? List<Measurement>.from(json['measurements'].map((measurementsJson) {
+                return Measurement.fromJson(measurementsJson);
+              }))
+            : [];
 }

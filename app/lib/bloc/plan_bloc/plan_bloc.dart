@@ -1,10 +1,6 @@
 import 'package:app/api/plan/plan_service.dart';
-import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/plan/plan_overview.dart';
-import 'package:app/hive/split/split.dart';
-import 'package:app/hive/split/split_overview.dart';
-import 'package:app/hive/workout/measurement.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -50,9 +46,10 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   }
 
   void _onGetActivePlan(GetActivePlan event, Emitter<PlanState> emit) async {
-    Plan? activePlan = userBox.get("activePlan");
+    Plan? activePlan;
 
     if (!AppSettings.hasConnection) {
+      activePlan = userBox.get("activePlan");
       emit(PlanError(error: "No internet connection!"));
       emit(PlanLoaded(plan: activePlan));
       return;
@@ -61,32 +58,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     final response = await _planService.getActivePlan(userBox.get("flexusjwt"));
 
     if (!response.isSuccessful) {
+      activePlan = userBox.get("activePlan");
       emit(PlanError(error: response.error.toString()));
       emit(PlanLoaded(plan: activePlan));
       return;
     }
 
     if (response.body != "null") {
-      final Map<String, dynamic> jsonMap = response.body;
-
-      activePlan = Plan(
-        id: jsonMap['id'],
-        userID: jsonMap['userAccountID'],
-        splitCount: jsonMap['splitCount'],
-        name: jsonMap['name'],
-        createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
-        isActive: jsonMap['isActive'],
-        isWeekly: jsonMap['isWeekly'],
-        restList: [
-          jsonMap['isMondayRest'],
-          jsonMap['isTuesdayRest'],
-          jsonMap['isWednesdayRest'],
-          jsonMap['isThursdayRest'],
-          jsonMap['isFridayRest'],
-          jsonMap['isSaturdayRest'],
-          jsonMap['isSundayRest'],
-        ],
-      );
+      activePlan = Plan.fromJson(response.body);
       userBox.put("activePlan", activePlan);
     }
 
@@ -94,9 +73,10 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   }
 
   void _onGetPlans(GetPlans event, Emitter<PlanState> emit) async {
-    List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+    List<Plan> plans = [];
 
     if (!AppSettings.hasConnection) {
+      plans = userBox.get("plans")?.cast<Plan>() ?? [];
       emit(PlanError(error: "No internet connection!"));
       return;
     }
@@ -104,32 +84,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     final response = await _planService.getPlans(userBox.get("flexusjwt"));
 
     if (!response.isSuccessful) {
+      plans = userBox.get("plans")?.cast<Plan>() ?? [];
       emit(PlanError(error: response.error.toString()));
       return;
     }
 
     if (response.body != "null") {
-      final List<dynamic> jsonList = response.body;
-
-      for (final planData in jsonList) {
-        final Plan plan = Plan(
-          id: planData['id'],
-          userID: planData['userAccountID'],
-          splitCount: planData['splitCount'],
-          name: planData['name'],
-          createdAt: DateTime.parse(planData['createdAt']).add(AppSettings.timeZoneOffset),
-          isActive: planData['isActive'],
-          isWeekly: planData['isWeekly'],
-          restList: [
-            planData['isMondayRest'],
-            planData['isTuesdayRest'],
-            planData['isWednesdayRest'],
-            planData['isThursdayRest'],
-            planData['isFridayRest'],
-            planData['isSaturdayRest'],
-            planData['isSundayRest'],
-          ],
-        );
+      for (final json in response.body) {
+        final Plan plan = Plan.fromJson(json);
         plans.add(plan);
       }
     }
@@ -159,26 +121,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         }
 
         if (response.body != "null") {
-          final Map<String, dynamic> jsonMap = response.body;
-
-          patchedPlan = Plan(
-            id: jsonMap['id'],
-            userID: jsonMap['userAccountID'],
-            splitCount: jsonMap['splitCount'],
-            name: jsonMap['name'],
-            createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
-            isActive: jsonMap['isActive'],
-            isWeekly: jsonMap['isWeekly'],
-            restList: [
-              jsonMap['isMondayRest'],
-              jsonMap['isTuesdayRest'],
-              jsonMap['isWednesdayRest'],
-              jsonMap['isThursdayRest'],
-              jsonMap['isFridayRest'],
-              jsonMap['isSaturdayRest'],
-              jsonMap['isSundayRest'],
-            ],
-          );
+          patchedPlan = Plan.fromJson(response.body);
         }
 
         emit(PlanLoaded(plan: patchedPlan));
@@ -201,26 +144,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         }
 
         if (response.body != "null") {
-          final Map<String, dynamic> jsonMap = response.body;
-
-          patchedPlan = Plan(
-            id: jsonMap['id'],
-            userID: jsonMap['userAccountID'],
-            splitCount: jsonMap['splitCount'],
-            name: jsonMap['name'],
-            createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
-            isActive: jsonMap['isActive'],
-            isWeekly: jsonMap['isWeekly'],
-            restList: [
-              jsonMap['isMondayRest'],
-              jsonMap['isTuesdayRest'],
-              jsonMap['isWednesdayRest'],
-              jsonMap['isThursdayRest'],
-              jsonMap['isFridayRest'],
-              jsonMap['isSaturdayRest'],
-              jsonMap['isSundayRest'],
-            ],
-          );
+          patchedPlan = Plan.fromJson(response.body);
         }
 
         emit(PlanLoaded(plan: patchedPlan));
@@ -242,26 +166,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         }
 
         if (response.body != "null") {
-          final Map<String, dynamic> jsonMap = response.body;
-
-          patchedPlan = Plan(
-            id: jsonMap['id'],
-            userID: jsonMap['userAccountID'],
-            splitCount: jsonMap['splitCount'],
-            name: jsonMap['name'],
-            createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
-            isActive: jsonMap['isActive'],
-            isWeekly: jsonMap['isWeekly'],
-            restList: [
-              jsonMap['isMondayRest'],
-              jsonMap['isTuesdayRest'],
-              jsonMap['isWednesdayRest'],
-              jsonMap['isThursdayRest'],
-              jsonMap['isFridayRest'],
-              jsonMap['isSaturdayRest'],
-              jsonMap['isSundayRest'],
-            ],
-          );
+          patchedPlan = Plan.fromJson(response.body);
         }
 
         emit(PlanLoaded(plan: patchedPlan));
@@ -289,9 +194,10 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   }
 
   void _onGetPlanOverview(GetPlanOverview event, Emitter<PlanState> emit) async {
-    PlanOverview? planOverview = userBox.get("planOverview");
+    PlanOverview? planOverview;
 
     if (!AppSettings.hasConnection) {
+      planOverview = userBox.get("planOverview");
       emit(PlanError(error: "No internet connection!"));
       emit(PlanOverviewLoaded(planOverview: planOverview));
       return;
@@ -300,61 +206,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     final response = await _planService.getPlanOverview(userBox.get("flexusjwt"));
 
     if (!response.isSuccessful) {
+      planOverview = userBox.get("planOverview");
       emit(PlanError(error: response.error.toString()));
       emit(PlanOverviewLoaded(planOverview: planOverview));
       return;
     }
 
     if (response.body != "null") {
-      final Map<String, dynamic> jsonMap = response.body;
-
-      final Plan plan = Plan(
-        id: jsonMap['plan']['id'],
-        userID: jsonMap['plan']['userAccountID'],
-        splitCount: jsonMap['plan']['splitCount'],
-        name: jsonMap['plan']['name'],
-        createdAt: DateTime.parse(jsonMap['plan']['createdAt']).add(AppSettings.timeZoneOffset),
-        isActive: jsonMap['plan']['isActive'],
-        isWeekly: jsonMap['plan']['isWeekly'],
-        restList: [
-          jsonMap['plan']['isMondayRest'],
-          jsonMap['plan']['isTuesdayRest'],
-          jsonMap['plan']['isWednesdayRest'],
-          jsonMap['plan']['isThursdayRest'],
-          jsonMap['plan']['isFridayRest'],
-          jsonMap['plan']['isSaturdayRest'],
-          jsonMap['plan']['isSundayRest'],
-        ],
-      );
-
-      final List<dynamic> splitOverviewsJson = jsonMap['splitOverviews'];
-      final List<SplitOverview> splitOverviews = splitOverviewsJson.map((splitJson) {
-        return SplitOverview(
-          split: Split(
-            id: splitJson['split']['id'],
-            planID: splitJson['split']['planID'],
-            name: splitJson['split']['name'],
-            orderInPlan: splitJson['split']['orderInPlan'],
-          ),
-          exercises: splitJson['exercises'] != null
-              ? List<Exercise>.from(splitJson['exercises'].map((exerciseJson) {
-                  return Exercise(
-                    id: exerciseJson['id'],
-                    creatorID: exerciseJson['creatorID'],
-                    name: exerciseJson['name'],
-                    typeID: exerciseJson['typeID'],
-                  );
-                }))
-              : [],
-          measurements: splitJson['measurements'] != null
-              ? List<Measurement>.from(splitJson['measurements'].map((measurementJson) => Measurement(
-                  repetitions: measurementJson['repetitions'] ?? 0,
-                  workload: measurementJson['workload'] != null ? measurementJson['workload'].toDouble() : 0)))
-              : [],
-        );
-      }).toList();
-
-      planOverview = PlanOverview(plan: plan, splitOverviews: splitOverviews);
+      planOverview = PlanOverview.fromJson(response.body);
     }
 
     emit(PlanOverviewLoaded(planOverview: planOverview));

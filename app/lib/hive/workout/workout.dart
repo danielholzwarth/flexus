@@ -1,3 +1,4 @@
+import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'workout.g.dart';
@@ -58,4 +59,16 @@ class Workout extends HiveObject {
       'isPinned': isPinned,
     };
   }
+
+  Workout.fromJson(Map<String, dynamic> json)
+      : id = json['userAccountID'] as int,
+        userAccountID = json['userAccountID'] as int,
+        splitID = json['splitID'] != null ? json['split'] as int : null,
+        createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
+        starttime = DateTime.parse(json['starttime']).add(AppSettings.timeZoneOffset),
+        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']).add(AppSettings.timeZoneOffset) : null,
+        isActive = json['isActive'] as bool,
+        isArchived = json['isArchived'] as bool,
+        isStared = json['isStared'] as bool,
+        isPinned = json['isPinned'] as bool;
 }

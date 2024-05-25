@@ -36,14 +36,8 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
 
     if (response.body != "null") {
       final List<dynamic> jsonList = response.body;
-
-      for (final gymData in jsonList) {
-        final Split split = Split(
-          id: gymData['id'],
-          planID: gymData['planID'],
-          name: gymData['name'],
-          orderInPlan: gymData['orderInPlan'],
-        );
+      for (final json in jsonList) {
+        Split split = Split.fromJson(json);
         splits.add(split);
       }
     }

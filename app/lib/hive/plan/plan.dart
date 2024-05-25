@@ -1,3 +1,4 @@
+import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'plan.g.dart';
@@ -51,4 +52,22 @@ class Plan extends HiveObject {
       'restList': restList ?? [],
     };
   }
+
+  Plan.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        userID = json['userAccountID'] as int,
+        splitCount = json['splitCount'] as int,
+        name = json['name'] as String,
+        createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
+        isActive = json['isActive'] as bool,
+        isWeekly = json['isWeekly'] as bool,
+        restList = [
+          json['isMondayRest'],
+          json['isTuesdayRest'],
+          json['isWednesdayRest'],
+          json['isThursdayRest'],
+          json['isFridayRest'],
+          json['isSaturdayRest'],
+          json['isSundayRest'],
+        ];
 }

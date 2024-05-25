@@ -21,4 +21,8 @@ class Measurement extends HiveObject {
       'workload': workload,
     };
   }
+
+  Measurement.fromJson(Map<String, dynamic> json)
+      : repetitions = json['repetitions'] as int,
+        workload = double.parse(json['workload'].toString());
 }

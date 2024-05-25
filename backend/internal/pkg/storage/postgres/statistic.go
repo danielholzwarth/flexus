@@ -24,14 +24,15 @@ func (db *DB) GetTotalMovedWeight(userAccountID int, period int) (any, error) {
 	}
 	defer rows.Close()
 
-	data := make(map[int]int)
+	data := make(map[int]float64)
 	for rows.Next() {
-		var count, weekday int
-		err := rows.Scan(&count, &weekday)
+		var load float64
+		var weekday int
+		err := rows.Scan(&load, &weekday)
 		if err != nil {
 			return nil, err
 		}
-		data[weekday] = count
+		data[weekday] = load
 	}
 
 	if err := rows.Err(); err != nil {

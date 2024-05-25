@@ -8,5 +8,5 @@ type Report struct {
 	IsOffensiveName           bool    `json:"isOffensiveName"`
 	IsOffensiveUsername       bool    `json:"isOffensiveUsername"`
 	IsOther                   bool    `json:"isOther"`
-	Message                   *string `json:"message"`
+	Message                   *string `json:"message,omitempty"`
 }

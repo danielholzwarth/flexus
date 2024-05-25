@@ -31,4 +31,10 @@ class Exercise extends HiveObject {
       'typeID': typeID,
     };
   }
+
+  Exercise.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        creatorID = json['creatorID'] as int?,
+        name = json['name'] as String,
+        typeID = json['typeID'] as int;
 }

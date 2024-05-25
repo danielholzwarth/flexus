@@ -28,4 +28,13 @@ class CurrentExercise extends HiveObject {
       'measurements': measurements.map((measurement) => measurement.toJson()).toList(),
     };
   }
+
+  CurrentExercise.fromJson(Map<String, dynamic> json)
+      : exercise = Exercise.fromJson(json),
+        oldMeasurements = json['oldMeasurements'] != null
+            ? List<Measurement>.from((json['oldMeasurements']).map((measurementJson) {
+                return Measurement.fromJson(measurementJson);
+              }))
+            : [],
+        measurements = [];
 }

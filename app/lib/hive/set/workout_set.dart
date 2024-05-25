@@ -30,4 +30,12 @@ class WorkoutSet extends HiveObject {
     required this.repetitions,
     required this.workload,
   });
+
+  WorkoutSet.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        workoutID = json['workoutID'] as int,
+        exerciseID = json['exerciseID'] as int,
+        orderNumber = json['orderNumber'] as int,
+        repetitions = json['repetitions'] as int,
+        workload = double.parse(json['workload'].toString());
 }

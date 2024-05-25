@@ -1,8 +1,4 @@
 import 'package:app/api/workout/workout_service.dart';
-import 'package:app/hive/exercise/exercise.dart';
-import 'package:app/hive/gym/gym.dart';
-import 'package:app/hive/set/workout_set.dart';
-import 'package:app/hive/split/split.dart';
 import 'package:app/hive/workout/current_workout.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
@@ -73,19 +69,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
     Workout? workout;
     if (response.body != "null") {
-      final Map<String, dynamic> json = response.body;
-      workout = Workout(
-        id: json['id'],
-        userAccountID: json['workout']['userAccountID'],
-        splitID: json['workout']['splitID'],
-        createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
-        starttime: DateTime.parse(json['workout']['starttime']).add(AppSettings.timeZoneOffset),
-        endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']).add(AppSettings.timeZoneOffset) : null,
-        isActive: json['workout']['isActive'],
-        isArchived: json['workout']['isArchived'],
-        isStared: json['workout']['isStared'],
-        isPinned: json['workout']['isPinned'],
-      );
+      workout = Workout.fromJson(response.body);
     }
 
     emit(WorkoutLoaded(workout: workout));
@@ -110,26 +94,9 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     }
 
     if (response.body != "null") {
-      final List<dynamic> jsonList = response.body;
-      workoutOverviews = jsonList.map((json) {
-        return WorkoutOverview(
-          workout: Workout(
-            id: json['workout']['id'],
-            userAccountID: json['workout']['userAccountID'],
-            splitID: json['workout']['splitID'],
-            createdAt: DateTime.parse(json['workout']['createdAt']).add(AppSettings.timeZoneOffset),
-            starttime: DateTime.parse(json['workout']['starttime']).add(AppSettings.timeZoneOffset),
-            endtime: json['workout']['endtime'] != null ? DateTime.parse(json['workout']['endtime']).add(AppSettings.timeZoneOffset) : null,
-            isActive: json['workout']['isActive'],
-            isArchived: json['workout']['isArchived'],
-            isStared: json['workout']['isStared'],
-            isPinned: json['workout']['isPinned'],
-          ),
-          planName: json['planName'],
-          splitName: json['splitName'],
-          bestLiftCount: json['pbCount'],
-        );
-      }).toList();
+      workoutOverviews = List<WorkoutOverview>.from(response.body.map((json) {
+        return WorkoutOverview.fromJson(json);
+      }));
     }
 
     userBox.put("workoutOverviews", workoutOverviews);
@@ -164,9 +131,10 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetWorkoutDetails(GetWorkoutDetails event, Emitter<WorkoutState> emit) async {
     emit(WorkoutDetailsLoading());
 
-    WorkoutDetails? workoutDetails = userBox.get("workoutDetails${event.workoutID}");
+    WorkoutDetails? workoutDetails;
 
     if (!AppSettings.hasConnection) {
+      workoutDetails = userBox.get("workoutDetails${event.workoutID}");
       workoutDetails != null ? emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails)) : emit(WorkoutError(error: "No workout details found"));
       return;
     }
@@ -183,80 +151,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       return;
     }
 
-    Map<String, dynamic> json = response.body;
-
-    Gym? gym;
-
-    if (json['gym'] != null) {
-      Map<String, dynamic> gymJson = json['gym'];
-      gym = Gym(
-        id: gymJson['id'],
-        name: gymJson['name'],
-        streetName: gymJson['streetName'],
-        houseNumber: gymJson['houseNumber'],
-        zipCode: gymJson['zipCode'],
-        cityName: gymJson['cityName'],
-        latitude: gymJson['latitude'],
-        longitude: gymJson['longitude'],
-      );
-    }
-
-    List<Exercise> exercises = [];
-
-    if (json['exercises'] != null) {
-      List<dynamic> exercisesJson = json['exercises'];
-      exercises = exercisesJson.map((exerciseJson) {
-        return Exercise(
-          id: exerciseJson['id'],
-          name: exerciseJson['name'],
-          creatorID: exerciseJson['creatorID'],
-          typeID: exerciseJson['typeID'],
-        );
-      }).toList();
-    }
-
-    List<List<WorkoutSet>> sets = [];
-    if (json['sets'] != null) {
-      List<dynamic> measurementsJson = json['sets'];
-      sets = measurementsJson.map<List<WorkoutSet>>((measurementListJson) {
-        return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
-          return WorkoutSet(
-            id: measurementMap['id'],
-            workoutID: measurementMap['workoutID'],
-            exerciseID: measurementMap['exerciseID'],
-            orderNumber: measurementMap['orderNumber'],
-            repetitions: measurementMap['repetitions'],
-            workload: double.parse(measurementMap['workload'].toString()),
-          );
-        }).toList();
-      }).toList();
-    }
-
-    List<int> pbSetIDs = [];
-    if (json['pbSetIDs'] != null) {
-      pbSetIDs = List<int>.from(json['pbSetIDs']);
-    }
-
-    workoutDetails = WorkoutDetails(
-      workoutID: json['workoutID'],
-      startTime: DateTime.parse(json['starttime']),
-      endtime: json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
-      gym: gym,
-      split: json['split'] != null
-          ? Split(
-              id: json['split']['id'],
-              planID: json['split']['planID'],
-              name: json['split']['name'],
-              orderInPlan: json['split']['orderInPlan'],
-            )
-          : null,
-      exercises: exercises,
-      sets: sets,
-      pbSetIDs: pbSetIDs,
-    );
-
+    workoutDetails = WorkoutDetails.fromJson(response.body);
     userBox.put("workoutDetails${event.workoutID}", workoutDetails);
-
     emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
   }
 

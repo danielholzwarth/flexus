@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:app/api/gym/gym_service.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/gym/gym_overview.dart';
-import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +63,10 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetMyGyms(GetMyGyms event, Emitter<GymState> emit) async {
-    List<Gym> myGyms = userBox.get("myGyms")?.cast<Gym>() ?? [];
+    List<Gym> myGyms = [];
 
     if (!AppSettings.hasConnection) {
+      myGyms = userBox.get("myGyms")?.cast<Gym>() ?? [];
       emit(MyGymsLoaded(gyms: myGyms));
       return;
     }
@@ -84,17 +82,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       final List<dynamic> jsonList = response.body;
 
       for (final gymData in jsonList) {
-        final Gym gym = Gym(
-          id: gymData['id'],
-          name: gymData['name'],
-          streetName: gymData['streetName'],
-          houseNumber: gymData['houseNumber'],
-          zipCode: gymData['zipCode'],
-          cityName: gymData['cityName'],
-          latitude: gymData['latitude'],
-          longitude: gymData['longitude'],
-        );
-        myGyms.add(gym);
+        myGyms.add(Gym.fromJson(gymData));
       }
     }
 
@@ -119,17 +107,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       final List<dynamic> jsonList = response.body;
 
       for (final gymData in jsonList) {
-        final Gym gym = Gym(
-          id: gymData['id'],
-          name: gymData['name'],
-          streetName: gymData['streetName'],
-          houseNumber: gymData['houseNumber'],
-          zipCode: gymData['zipCode'],
-          cityName: gymData['cityName'],
-          latitude: gymData['latitude'],
-          longitude: gymData['longitude'],
-        );
-        gyms.add(gym);
+        gyms.add(Gym.fromJson(gymData));
       }
     }
 
@@ -137,7 +115,7 @@ class GymBloc extends Bloc<GymEvent, GymState> {
   }
 
   void _onGetGymOverviews(GetGymOverviews event, Emitter<GymState> emit) async {
-    List<GymOverview> gymOverviews = userBox.get("gymOverviews")?.cast<GymOverview>() ?? [];
+    List<GymOverview> gymOverviews = [];
 
     if (!AppSettings.hasConnection) {
       emit(GymError(error: "No internet connection!"));
@@ -152,41 +130,9 @@ class GymBloc extends Bloc<GymEvent, GymState> {
     }
 
     if (response.body != "null") {
-      final List<dynamic> jsonList = response.body;
-
-      gymOverviews = jsonList.map((json) {
-        List<UserAccount> userAccounts = [];
-        if (json['currentUserAccounts'] != null) {
-          userAccounts = List<UserAccount>.from(
-            json['currentUserAccounts'].map(
-              (accountJson) {
-                return UserAccount(
-                  id: accountJson['userAccountID'],
-                  username: accountJson['username'],
-                  name: accountJson['name'],
-                  createdAt: DateTime.parse(accountJson['createdAt']).add(AppSettings.timeZoneOffset),
-                  level: accountJson['level'],
-                  profilePicture: accountJson['profilePicture'] != null ? base64Decode(accountJson['profilePicture']) : null,
-                );
-              },
-            ),
-          );
-        }
-        return GymOverview(
-          gym: Gym(
-            id: json['gym']['id'],
-            name: json['gym']['name'],
-            streetName: json['gym']['streetName'],
-            zipCode: json['gym']['zipCode'],
-            houseNumber: json['gym']['houseNumber'],
-            cityName: json['gym']['cityName'],
-            latitude: json['gym']['latitude'],
-            longitude: json['gym']['longitude'],
-          ),
-          userAccounts: userAccounts,
-          totalFriends: json['totalFriends'],
-        );
-      }).toList();
+      gymOverviews = List<GymOverview>.from(response.body.map((json) {
+        return GymOverview.fromJson(json);
+      }));
 
       userBox.put("gymOverviews", gymOverviews);
     }

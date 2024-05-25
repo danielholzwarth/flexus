@@ -115,7 +115,7 @@ func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOvervie
 
 	rows, err := db.pool.Query(query, userAccountID)
 	if err != nil {
-		return []types.BestLiftOverview{}, err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -123,7 +123,7 @@ func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOvervie
 		var bestLiftOverview types.BestLiftOverview
 		err := rows.Scan(&bestLiftOverview.ExerciseName, &typeID, &bestLiftOverview.Repetitions, &bestLiftOverview.Workload, &bestLiftOverview.Position)
 		if err != nil {
-			return []types.BestLiftOverview{}, err
+			return nil, err
 		}
 
 		bestLiftOverview.IsRepetition = typeID == 1
@@ -131,7 +131,7 @@ func (db *DB) GetBestLiftsFromUserID(userAccountID int) ([]types.BestLiftOvervie
 		bestLiftOverviews = append(bestLiftOverviews, bestLiftOverview)
 	}
 	if err := rows.Err(); err != nil {
-		return []types.BestLiftOverview{}, err
+		return nil, err
 	}
 
 	return bestLiftOverviews, nil

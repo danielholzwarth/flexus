@@ -2,7 +2,7 @@ package types
 
 type Split struct {
 	ID          int    `json:"id"`
-	PlanID      *int   `json:"planID"`
+	PlanID      *int   `json:"planID,omitempty"`
 	Name        string `json:"name"`
 	OrderInPlan int    `json:"orderInPlan"`
 }

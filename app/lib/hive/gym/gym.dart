@@ -51,4 +51,14 @@ class Gym extends HiveObject {
       'longitude': longitude,
     };
   }
+
+  Gym.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        name = json['name'] as String,
+        streetName = json['streetName'] as String,
+        houseNumber = json['houseNumber'] as String,
+        zipCode = json['zipCode'] as String,
+        cityName = json['cityName'] as String,
+        latitude = double.parse(json['latitude'].toString()),
+        longitude = double.parse(json['longitude'].toString());
 }

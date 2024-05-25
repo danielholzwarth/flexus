@@ -31,4 +31,10 @@ class Split extends HiveObject {
       'orderInPlan': orderInPlan,
     };
   }
+
+  Split.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        planID = json['planID'] as int,
+        name = json['name'] as String,
+        orderInPlan = json['orderInPlan'] as int;
 }

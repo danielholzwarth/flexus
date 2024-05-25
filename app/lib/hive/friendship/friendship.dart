@@ -18,4 +18,9 @@ class Friendship extends HiveObject {
     required this.requestedID,
     required this.isAccepted,
   });
+
+  Friendship.fromJson(Map<String, dynamic> json)
+      : requestorID = json['requestorID'] as int,
+        requestedID = json['requestedID'] as int,
+        isAccepted = json['isAccepted'] as bool;
 }

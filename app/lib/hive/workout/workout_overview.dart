@@ -23,4 +23,10 @@ class WorkoutOverview extends HiveObject {
     this.planName,
     required this.bestLiftCount,
   });
+
+  WorkoutOverview.fromJson(Map<String, dynamic> json)
+      : workout = Workout.fromJson(json['workout']),
+        splitName = json['splitName'] as String?,
+        planName = json['planName'] as String?,
+        bestLiftCount = json['pbCount'] as int;
 }

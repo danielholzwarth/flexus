@@ -16,4 +16,10 @@ class PlanOverview extends HiveObject {
     required this.plan,
     required this.splitOverviews,
   });
+
+  PlanOverview.fromJson(Map<String, dynamic> json)
+      : plan = Plan.fromJson(json['plan']),
+        splitOverviews = List<SplitOverview>.from(json['splitOverviews'].map((splitJson) {
+          return SplitOverview.fromJson(splitJson);
+        }));
 }

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'user_account.g.dart';
@@ -32,4 +34,12 @@ class UserAccount extends HiveObject {
     required this.level,
     this.profilePicture,
   });
+
+  UserAccount.fromJson(Map<String, dynamic> json)
+      : id = json['userAccountID'] as int,
+        username = json['username'] as String,
+        name = json['name'] as String,
+        createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
+        level = json['level'] as int,
+        profilePicture = json['profilePicture'] != null ? base64Decode(json['profilePicture']) : null;
 }

@@ -180,15 +180,18 @@ func (s service) getBestLiftsFromUserID() http.HandlerFunc {
 			return
 		}
 
-		response, err := json.Marshal(bestLiftsOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
+		if bestLiftsOverviews != nil {
+			response, err := json.Marshal(bestLiftsOverviews)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
+
+			w.Write(response)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(response)
 	}
 }

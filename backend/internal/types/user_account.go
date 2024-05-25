@@ -9,7 +9,7 @@ type UserAccount struct {
 	Password       []byte    `json:"password"`
 	CreatedAt      time.Time `json:"createdAt"`
 	Level          int       `json:"level"`
-	ProfilePicture *[]byte   `json:"profilePicture"`
+	ProfilePicture *[]byte   `json:"profilePicture,omitempty"`
 }
 
 type CreateUserRequest struct {

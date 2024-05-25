@@ -20,4 +20,13 @@ class GymOverview extends HiveObject {
     required this.userAccounts,
     required this.totalFriends,
   });
+
+  GymOverview.fromJson(Map<String, dynamic> json)
+      : gym = Gym.fromJson(json['gym']),
+        userAccounts = json['currentUserAccounts'] != null
+            ? List<UserAccount>.from(json['currentUserAccounts'].map((userAccountsJson) {
+                return UserAccount.fromJson(userAccountsJson);
+              }))
+            : [],
+        totalFriends = json['totalFriends'] as int;
 }

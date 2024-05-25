@@ -23,40 +23,42 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   void _onGetSettings(GetSettings event, Emitter<SettingsState> emit) async {
-    if (AppSettings.hasConnection) {
-      Response<dynamic> response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
-
-      if (response.isSuccessful) {
-        if (response.body != "null") {
-          final Map<String, dynamic> jsonMap = response.body;
-
-          final userSettings = UserSettings(
-            id: jsonMap['id'],
-            userAccountID: jsonMap['userAccountID'],
-            fontSize: double.parse(jsonMap['fontSize'].toString()),
-            isDarkMode: jsonMap['isDarkMode'],
-            languageID: jsonMap['languageID'],
-            isUnlisted: jsonMap['isUnlisted'],
-            isPullFromEveryone: jsonMap['isPullFromEveryone'],
-            pullUserListID: jsonMap['pullUserListID'],
-            isNotifyEveryone: jsonMap['isNotifyEveryone'],
-            notifyUserListID: jsonMap['notifyUserListID'],
-            isQuickAccess: jsonMap['isQuickAccess'],
-          );
-
-          userBox.put("userSettings", userSettings);
-
-          emit(SettingsLoaded(userSettings: userSettings));
-        } else {
-          emit(SettingsError(error: "No Settings found!"));
-        }
-      } else {
-        emit(SettingsError(error: response.error.toString()));
-      }
-    } else {
+    if (!AppSettings.hasConnection) {
       UserSettings userSettings = userBox.get("userSettings");
       emit(SettingsLoaded(userSettings: userSettings));
+      return;
     }
+
+    Response<dynamic> response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
+
+    if (!response.isSuccessful) {
+      emit(SettingsError(error: response.error.toString()));
+      return;
+    }
+
+    if (response.body == "null") {
+      emit(SettingsError(error: "No Settings found!"));
+      return;
+    }
+
+    final Map<String, dynamic> jsonMap = response.body;
+    final userSettings = UserSettings(
+      id: jsonMap['id'],
+      userAccountID: jsonMap['userAccountID'],
+      fontSize: double.parse(jsonMap['fontSize'].toString()),
+      isDarkMode: jsonMap['isDarkMode'],
+      languageID: jsonMap['languageID'],
+      isUnlisted: jsonMap['isUnlisted'],
+      isPullFromEveryone: jsonMap['isPullFromEveryone'],
+      pullUserListID: jsonMap['pullUserListID'],
+      isNotifyEveryone: jsonMap['isNotifyEveryone'],
+      notifyUserListID: jsonMap['notifyUserListID'],
+      isQuickAccess: jsonMap['isQuickAccess'],
+    );
+
+    userBox.put("userSettings", userSettings);
+
+    emit(SettingsLoaded(userSettings: userSettings));
   }
 
   void _onPatchSettings(PatchSettings event, Emitter<SettingsState> emit) async {
@@ -66,7 +68,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     switch (event.name) {
       //My Account
       case "name":
-        if (AppSettings.hasConnection) {
+        if (!AppSettings.hasConnection) {
           final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
           if (response.isSuccessful) {
             userAccount.name = event.value;

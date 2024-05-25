@@ -50,12 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
-    friendshipBloc.add(GetFriendship(requestedID: widget.userID));
-    isProfilePictureChecked = false;
-    isNameChecked = false;
-    isUsernameChecked = false;
-    isOtherChecked = false;
+    loadData();
   }
 
   @override
@@ -87,6 +82,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  void loadData() {
+    bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
+    friendshipBloc.add(GetFriendship(requestedID: widget.userID));
+    isProfilePictureChecked = false;
+    isNameChecked = false;
+    isUsernameChecked = false;
+    isOtherChecked = false;
   }
 
   SizedBox buildNames(UserAccount userAccount) {

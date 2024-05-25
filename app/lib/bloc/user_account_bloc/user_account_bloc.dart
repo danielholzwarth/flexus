@@ -40,16 +40,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
     }
 
     if (response.body != "null") {
-      final Map<String, dynamic> jsonMap = response.body;
-
-      final userAccount = UserAccount(
-        id: jsonMap['userAccountID'],
-        username: jsonMap['username'],
-        name: jsonMap['name'],
-        createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
-        level: jsonMap['level'],
-        profilePicture: jsonMap['profilePicture'] != null ? base64Decode(jsonMap['profilePicture']) : null,
-      );
+      final userAccount = UserAccount.fromJson(response.body);
 
       UserAccount storedUserAccount = userBox.get("userAccount");
       if (event.userAccountID == storedUserAccount.id) {
@@ -166,14 +157,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
       for (final userData in userAccountsJson) {
         if (userData['userAccountID'] != userAccount.id) {
-          final loadedUserAccount = UserAccount(
-            id: userData['userAccountID'],
-            username: userData['username'],
-            name: userData['name'],
-            createdAt: DateTime.parse(userData['createdAt']).add(AppSettings.timeZoneOffset),
-            level: userData['level'],
-            profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
-          );
+          final loadedUserAccount = UserAccount.fromJson(userData);
           userAccounts.add(loadedUserAccount);
         }
       }
@@ -206,14 +190,7 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       final List<dynamic> userAccountsJson = response.body;
 
       for (final userData in userAccountsJson) {
-        final userAccountGymOverview = UserAccountGymOverview(
-          id: userData['userAccountID'],
-          username: userData['username'],
-          name: userData['name'],
-          profilePicture: userData['profilePicture'] != null ? base64Decode(userData['profilePicture']) : null,
-          workoutStartTime: DateTime.parse(userData['workoutStartTime']).add(AppSettings.timeZoneOffset),
-          averageWorkoutDuration: Duration(seconds: userData['averageWorkoutDuration'] != null ? userData['averageWorkoutDuration']?.toInt() : 0),
-        );
+        final userAccountGymOverview = UserAccountGymOverview.fromJson(userData);
         userAccountGymOverviews.add(userAccountGymOverview);
       }
     }
