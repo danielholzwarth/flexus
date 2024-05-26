@@ -2,8 +2,8 @@ package best_lifts
 
 import (
 	"encoding/json"
+	parser "flexus/internal/api"
 	"flexus/internal/types"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -47,54 +47,33 @@ func (s service) postBestLift() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"exerciseID": "int", "position": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		exerciseID := bodyData["exerciseID"].(int)
+		position := bodyData["position"].(int)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		exerciseIDFloat, ok := requestBody["exerciseID"].(float64)
-		if !ok {
-			http.Error(w, "Error parsing exerciseID", http.StatusInternalServerError)
-			println("Error parsing exerciseID")
-			return
-		}
-		exerciseID := int(exerciseIDFloat)
-
-		positionFloat, ok := requestBody["position"].(float64)
-		if !ok {
-			http.Error(w, "Error parsing position", http.StatusInternalServerError)
-			println("Error parsing position")
-			return
-		}
-		position := int(positionFloat)
-
-		bestLiftsOverviews, err := s.bestLiftsStore.PostBestLift(claims.UserAccountID, exerciseID, position)
+		data, err := s.bestLiftsStore.PostBestLift(claims.UserAccountID, exerciseID, position)
 		if err != nil {
 			http.Error(w, "Failed to create BestLift", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(bestLiftsOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
+		if data != nil {
+			response, err := json.Marshal(data)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write(response)
+			w.Write(response)
+			w.WriteHeader(http.StatusCreated)
+		}
 	}
 }
 
@@ -106,54 +85,32 @@ func (s service) patchBestLift() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"exerciseID": "int", "position": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		exerciseID := bodyData["exerciseID"].(int)
+		position := bodyData["position"].(int)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		exerciseIDFloat, ok := requestBody["exerciseID"].(float64)
-		if !ok {
-			http.Error(w, "Error parsing exerciseID", http.StatusInternalServerError)
-			println("Error parsing exerciseID")
-			return
-		}
-		exerciseID := int(exerciseIDFloat)
-
-		positionFloat, ok := requestBody["position"].(float64)
-		if !ok {
-			http.Error(w, "Error parsing position", http.StatusInternalServerError)
-			println("Error parsing position")
-			return
-		}
-		position := int(positionFloat)
-
-		bestLiftsOverviews, err := s.bestLiftsStore.PatchBestLift(claims.UserAccountID, exerciseID, position)
+		data, err := s.bestLiftsStore.PatchBestLift(claims.UserAccountID, exerciseID, position)
 		if err != nil {
 			http.Error(w, "Failed to create BestLift", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		response, err := json.Marshal(bestLiftsOverviews)
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			println(err.Error())
-			return
-		}
+		if data != nil {
+			response, err := json.Marshal(data)
+			if err != nil {
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				println(err.Error())
+				return
+			}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write(response)
+			w.Write(response)
+		}
 	}
 }
 
@@ -173,15 +130,15 @@ func (s service) getBestLiftsFromUserID() http.HandlerFunc {
 			return
 		}
 
-		bestLiftsOverviews, err := s.bestLiftsStore.GetBestLiftsFromUserID(userAccountID)
+		data, err := s.bestLiftsStore.GetBestLiftsFromUserID(userAccountID)
 		if err != nil {
 			http.Error(w, "Failed to get bestLiftsOverview", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
 
-		if bestLiftsOverviews != nil {
-			response, err := json.Marshal(bestLiftsOverviews)
+		if data != nil {
+			response, err := json.Marshal(data)
 			if err != nil {
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				println(err.Error())
@@ -190,8 +147,5 @@ func (s service) getBestLiftsFromUserID() http.HandlerFunc {
 
 			w.Write(response)
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 	}
 }

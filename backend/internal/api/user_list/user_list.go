@@ -2,8 +2,8 @@ package user_list
 
 import (
 	"encoding/json"
+	parser "flexus/internal/api"
 	"flexus/internal/types"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -49,27 +49,13 @@ func (s service) postUserList() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"columnName": "string"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
-
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		columnName, ok := requestBody["columnName"].(string)
-		if !ok {
-			http.Error(w, "Failed to get columnName", http.StatusBadRequest)
-			println("Failed to get columnName")
-			return
-		}
+		columnName := bodyData["columnName"].(string)
 
 		userList, err := s.userListStore.PostUserList(claims.UserAccountID, columnName)
 		if err != nil {
@@ -99,43 +85,21 @@ func (s service) getHasUserList() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"listID": "int", "userID": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		listID := bodyData["listID"].(int)
+		userID := bodyData["userID"].(int)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		listIDValue, ok := requestBody["listID"].(float64)
-		if !ok {
-			http.Error(w, "Failed to get listID", http.StatusBadRequest)
-			println("Failed to get listID")
-			return
-		}
-
-		listID := int(listIDValue)
 		if listID <= 0 {
 			http.Error(w, "Wrong input for listID. Must be integer greater than 0.", http.StatusBadRequest)
 			println("Wrong input for listID. Must be integer greater than 0.")
 			return
 		}
 
-		userIDValue, ok := requestBody["userID"].(float64)
-		if !ok {
-			http.Error(w, "Failed to get userID", http.StatusBadRequest)
-			println("Failed to get userID")
-			return
-		}
-
-		userID := int(userIDValue)
 		if userID <= 0 {
 			http.Error(w, "Wrong input for userID. Must be integer greater than 0.", http.StatusBadRequest)
 			println("Wrong input for userID. Must be integer greater than 0.")
@@ -170,43 +134,21 @@ func (s service) patchUserList() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"listID": "int", "userID": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		listID := bodyData["listID"].(int)
+		userID := bodyData["userID"].(int)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		listIDValue, ok := requestBody["listID"].(float64)
-		if !ok {
-			http.Error(w, "Failed to get listID", http.StatusBadRequest)
-			println("Failed to get listID")
-			return
-		}
-
-		listID := int(listIDValue)
 		if listID <= 0 {
 			http.Error(w, "Wrong input for listID. Must be integer greater than 0.", http.StatusBadRequest)
 			println("Wrong input for listID. Must be integer greater than 0.")
 			return
 		}
 
-		userIDValue, ok := requestBody["userID"].(float64)
-		if !ok {
-			http.Error(w, "Failed to get userID", http.StatusBadRequest)
-			println("Failed to get userID")
-			return
-		}
-
-		userID := int(userIDValue)
 		if userID <= 0 {
 			http.Error(w, "Wrong input for userID. Must be integer greater than 0.", http.StatusBadRequest)
 			println("Wrong input for userID. Must be integer greater than 0.")
@@ -232,7 +174,7 @@ func (s service) getUserListFromListID() http.HandlerFunc {
 			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
 			return
 		}
-		
+
 		listIDValue := chi.URLParam(r, "listID")
 		listID, err := strconv.Atoi(listIDValue)
 		if err != nil || listID <= 0 {

@@ -2,8 +2,8 @@ package friendship
 
 import (
 	"encoding/json"
+	parser "flexus/internal/api"
 	"flexus/internal/types"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -127,28 +127,19 @@ func (s service) patchFriendship() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"isAccepted": "bool"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		isAccepted := bodyData["isAccepted"].(bool)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
+		err = s.friendshipStore.PatchFriendship(claims.UserAccountID, requestedUserAccountID, "is_accepted", isAccepted)
+		if err != nil {
+			http.Error(w, "Failed to patch Friendship", http.StatusInternalServerError)
 			println(err.Error())
 			return
-		}
-
-		if isAccepted, ok := requestBody["isAccepted"].(bool); ok {
-			err := s.friendshipStore.PatchFriendship(claims.UserAccountID, requestedUserAccountID, "is_accepted", isAccepted)
-			if err != nil {
-				http.Error(w, "Failed to patch Friendship", http.StatusInternalServerError)
-				println(err.Error())
-				return
-			}
 		}
 
 		w.Header().Set("Content-Type", "application/json")

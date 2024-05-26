@@ -2,8 +2,8 @@ package exercise
 
 import (
 	"encoding/json"
+	parser "flexus/internal/api"
 	"flexus/internal/types"
-	"io"
 	"net/http"
 	"strconv"
 
@@ -49,35 +49,14 @@ func (s service) postExercise() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"name": "string", "typeID": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
-
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		name, ok := requestBody["name"].(string)
-		if !ok {
-			http.Error(w, "Error parsing name", http.StatusInternalServerError)
-			println("Error parsing name")
-			return
-		}
-
-		typeIDFloat, ok := requestBody["typeID"].(float64)
-		if !ok {
-			http.Error(w, "Error parsing typeID", http.StatusInternalServerError)
-			println("Error parsing typeID")
-			return
-		}
-		typeID := int(typeIDFloat)
+		name := bodyData["name"].(string)
+		typeID := bodyData["typeID"].(int)
 
 		exercise, err := s.exerciseStore.PostExercise(claims.UserAccountID, name, typeID)
 		if err != nil {

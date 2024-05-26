@@ -44,7 +44,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       return;
     }
 
-    if (response.body != "null") {
+    if (response.body != null) {
       Exercise newExercise = Exercise.fromJson(response.body);
       exercises.add(newExercise);
 

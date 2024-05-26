@@ -47,29 +47,14 @@ func (s service) postUserAccountGym() http.HandlerFunc {
 			return
 		}
 
-		var requestBody map[string]interface{}
-
-		body, err := io.ReadAll(r.Body)
+		bodyData, err := parser.ParseRequestBody(r, map[string]string{"gymID": "int"})
 		if err != nil {
-			http.Error(w, "Error reading request body", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
+		gymID := bodyData["gymID"].(int)
 
-		if err := json.Unmarshal(body, &requestBody); err != nil {
-			http.Error(w, "Error parsing request body", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		gymIDFloat, ok := requestBody["gymID"].(float64)
-		if !ok {
-			http.Error(w, "Invalid type for gymID", http.StatusBadRequest)
-			println("Invalid type for gymID")
-			return
-		}
-
-		gymID := int(gymIDFloat)
 		if gymID <= 0 {
 			http.Error(w, "Wrong input for gymID. Must be integer greater than 0.", http.StatusBadRequest)
 			println("Wrong input for gymID. Must be integer greater than 0.")

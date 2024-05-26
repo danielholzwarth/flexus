@@ -317,7 +317,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     );
   }
 
-//TODO
   void loadData() {
     userAccountBloc.add(GetUserAccountsGym(gymID: widget.gymOverview.gym.id, isWorkingOut: true));
   }
