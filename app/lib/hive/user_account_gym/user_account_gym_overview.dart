@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'user_account_gym_overview.g.dart';
@@ -39,6 +38,6 @@ class UserAccountGymOverview extends HiveObject {
         username = json['username'] as String,
         name = json['name'] as String,
         profilePicture = json['profilePicture'] != null ? base64Decode(json['profilePicture']) : null,
-        workoutStartTime = DateTime.parse(json['workoutStartTime']).add(AppSettings.timeZoneOffset),
+        workoutStartTime = DateTime.parse(json['workoutStartTime']),
         averageWorkoutDuration = Duration(seconds: json['averageWorkoutDuration'] != null ? json['averageWorkoutDuration']?.toInt() : 0);
 }

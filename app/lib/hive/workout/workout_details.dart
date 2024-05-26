@@ -54,12 +54,12 @@ class WorkoutDetails extends HiveObject {
                 return Exercise.fromJson(exercisesJson);
               }))
             : [],
-        sets = json['split'] != null
-            ? List<List<WorkoutSet>>.from(json['split'].map((measurementListJson) {
-                return List<Map<String, dynamic>>.from(measurementListJson).map((measurementMap) {
-                  return WorkoutSet.fromJson(measurementMap);
-                });
+        sets = json['sets'] != null
+            ? List<List<WorkoutSet>>.from(json['sets'].map((setList) {
+                return List<WorkoutSet>.from(setList.map((setMap) {
+                  return WorkoutSet.fromJson(setMap);
+                }));
               }))
             : [],
-        pbSetIDs = List<int>.from(json['pbSetIDs']);
+        pbSetIDs = json['pbSetIDs'] != null ? List<int>.from(json['pbSetIDs']) : [];
 }

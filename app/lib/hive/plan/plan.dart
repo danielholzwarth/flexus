@@ -1,4 +1,3 @@
-import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'plan.g.dart';
@@ -58,7 +57,7 @@ class Plan extends HiveObject {
         userID = json['userAccountID'] as int,
         splitCount = json['splitCount'] as int,
         name = json['name'] as String,
-        createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
+        createdAt = DateTime.parse(json['createdAt']),
         isActive = json['isActive'] as bool,
         isWeekly = json['isWeekly'] as bool,
         restList = [

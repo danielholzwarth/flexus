@@ -147,5 +147,6 @@ func (s service) getBestLiftsFromUserID() http.HandlerFunc {
 
 			w.Write(response)
 		}
+		w.WriteHeader(http.StatusOK)
 	}
 }
