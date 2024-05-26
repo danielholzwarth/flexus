@@ -2,8 +2,8 @@ package user_account_gym
 
 import (
 	"encoding/json"
+	parser "flexus/internal/api"
 	"flexus/internal/types"
-	"io"
 	"net/http"
 	"strconv"
 
