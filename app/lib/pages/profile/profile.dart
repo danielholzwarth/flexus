@@ -154,8 +154,8 @@ class _ProfilePageState extends State<ProfilePage> {
           child: buildCorrectLevelImage(userAccount.level, deviceSize),
         ),
         Positioned(
-          left: deviceSize.width * 0.25,
-          top: deviceSize.width * 0.12,
+          left: deviceSize.width * 0.26,
+          top: deviceSize.width * 0.02,
           child: Hero(
             tag: "profile_picture",
             child: GestureDetector(
@@ -171,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ).then((value) => setState(() {})),
               child: userAccount.profilePicture != null
                   ? CircleAvatar(
-                      radius: deviceSize.width * 0.15,
+                      radius: deviceSize.width * 0.14,
                       backgroundImage: MemoryImage(userAccount.profilePicture!),
                     )
                   : Container(
@@ -207,59 +207,83 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildCorrectLevelImage(int level, Size deviceSize) {
     switch (level) {
       case < 5:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
+          child: Image.asset(
+            "assets/images/body/body1.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 10:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.yellow)),
+          child: Image.asset(
+            "assets/images/body/body2.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 20:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.orange)),
+          child: Image.asset(
+            "assets/images/body/body3.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 30:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+          child: Image.asset(
+            "assets/images/body/body4.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 40:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.pink)),
+          child: Image.asset(
+            "assets/images/body/body5.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 50:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.purple)),
+          child: Image.asset(
+            "assets/images/body/body6.jpg",
+            scale: 0.1,
+          ),
         );
 
       case < 100:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+          child: Image.asset(
+            "assets/images/body/body7.jpg",
+            scale: 0.1,
+          ),
         );
 
       case >= 100:
-        return Container(
+        return SizedBox(
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          child: Image.asset(
+            "assets/images/body/body8.jpg",
+            scale: 0.1,
+          ),
         );
 
       default:
