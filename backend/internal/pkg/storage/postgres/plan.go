@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"flexus/internal/types"
+	"strconv"
+	"strings"
 )
 
 func (db *DB) CreatePlan(createPlan types.CreatePlan) error {
@@ -492,4 +494,63 @@ func (db *DB) GetPlanOverview(userID int) (types.PlanOverview, error) {
 	planOverview.SplitOverviews = splitOverviews
 
 	return planOverview, nil
+}
+
+func (db DB) PatchEntirePlans(userAccountID int, plans []types.Plan) error {
+	tx, err := db.pool.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		} else if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit()
+		}
+	}()
+
+	//Delete all which got deleted
+	var ids = getPlanIDs(plans)
+
+	deleteQuery := `
+		DELETE FROM plan
+		WHERE id NOT IN (` + strings.Join(ids, ",") + `) AND user_id = $1;
+	`
+
+	_, err = tx.Exec(deleteQuery, userAccountID)
+	if err != nil {
+		return err
+	}
+
+	//Update all which got updated
+	updateQuery := `
+		UPDATE plan
+		SET is_active = $1
+		WHERE user_id = $2 AND id = $3;
+	`
+
+	for _, plan := range plans {
+		_, err = tx.Exec(
+			updateQuery,
+			plan.IsActive,
+			userAccountID,
+			plan.ID,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func getPlanIDs(plans []types.Plan) []string {
+	ids := make([]string, 0, len(plans))
+	for _, plan := range plans {
+		ids = append(ids, strconv.Itoa(plan.ID))
+	}
+	return ids
 }

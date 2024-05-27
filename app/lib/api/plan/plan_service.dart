@@ -39,6 +39,12 @@ abstract class PlanService extends ChopperService {
     @Header('flexusjwt') String flexusJWTString,
   );
 
+  @Patch(path: '/sync')
+  Future<Response> patchEntirePlans(
+    @Header('flexusjwt') String flexusJWTString,
+    @Body() Map<String, dynamic> body,
+  );
+
   static PlanService create() {
     final client = ChopperClient(
         baseUrl: AppSettings.useIPv4 ? Uri.parse('http://${AppSettings.ipv4}:8080') : Uri.parse('http://10.0.2.2:8080'),

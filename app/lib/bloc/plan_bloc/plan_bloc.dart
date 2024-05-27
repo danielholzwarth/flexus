@@ -4,6 +4,7 @@ import 'package:app/hive/plan/plan_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 part 'plan_event.dart';
@@ -50,7 +51,6 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     if (!AppSettings.hasConnection) {
       activePlan = userBox.get("activePlan");
-      emit(PlanError(error: "No internet connection!"));
       emit(PlanLoaded(plan: activePlan));
       return;
     }
@@ -77,7 +77,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     if (!AppSettings.hasConnection) {
       plans = userBox.get("plans")?.cast<Plan>() ?? [];
-      emit(PlanError(error: "No internet connection!"));
+      emit(PlansLoaded(plans: plans));
       return;
     }
 
@@ -94,26 +94,43 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         final Plan plan = Plan.fromJson(json);
         plans.add(plan);
       }
+      userBox.put("plans", plans);
     }
 
     emit(PlansLoaded(plans: plans));
   }
 
   void _onPatchPlan(PatchPlan event, Emitter<PlanState> emit) async {
-    if (!AppSettings.hasConnection) {
-      emit(PlanError(error: "No internet connection!"));
-      return;
-    }
-
     Plan? patchedPlan;
 
     switch (event.name) {
       case "isActive":
-        final response = await _planService.patchPlan(
-          userBox.get("flexusjwt"),
-          event.planID,
-          {"isActive": event.value},
-        );
+        if (!AppSettings.hasConnection) {
+          List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+
+          if (plans.isEmpty) {
+            emit(PlanError(error: "No plans found!"));
+            return;
+          }
+
+          Plan? activePlan = plans.firstWhereOrNull((element) => element.isActive == true);
+          if (activePlan != null) {
+            int index = plans.indexOf(activePlan);
+            plans[index].isActive = false;
+          }
+
+          Plan? planToActivate = plans.firstWhereOrNull((element) => element.id == event.planID);
+          if (planToActivate != null) {
+            int index = plans.indexOf(planToActivate);
+            plans[index].isActive = true;
+            userBox.put("activePlan", planToActivate);
+          }
+
+          emit(PlanLoaded(plan: planToActivate));
+          break;
+        }
+
+        final response = await _planService.patchPlan(userBox.get("flexusjwt"), event.planID, {"isActive": true});
 
         if (!response.isSuccessful) {
           emit(PlanError(error: response.error.toString()));
@@ -128,6 +145,11 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         break;
 
       case "exercise":
+        if (!AppSettings.hasConnection) {
+          emit(PlanError(error: "This required internet connection!"));
+          break;
+        }
+
         final response = await _planService.patchPlan(
           userBox.get("flexusjwt"),
           event.planID,
@@ -151,6 +173,11 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         break;
 
       case "exercises":
+        if (!AppSettings.hasConnection) {
+          emit(PlanError(error: "This required internet connection!"));
+          break;
+        }
+
         final response = await _planService.patchPlan(
           userBox.get("flexusjwt"),
           event.planID,
@@ -180,7 +207,24 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
   void _onDeletePlan(DeletePlan event, Emitter<PlanState> emit) async {
     if (!AppSettings.hasConnection) {
-      emit(PlanError(error: "No internet connection!"));
+      List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+
+      if (plans.isEmpty) {
+        emit(PlanError(error: "No plans found!"));
+        return;
+      }
+
+      Plan? planToRemove = plans.firstWhereOrNull((element) => element.id == event.planID);
+      if (planToRemove != null) {
+        plans.remove(planToRemove);
+        if (planToRemove.isActive == true) {
+          userBox.delete("activePlan");
+        }
+      }
+
+      userBox.put("plans", plans);
+
+      emit(PlanLoaded(plan: null));
       return;
     }
 
@@ -197,8 +241,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     PlanOverview? planOverview;
 
     if (!AppSettings.hasConnection) {
-      planOverview = userBox.get("planOverview");
-      emit(PlanError(error: "No internet connection!"));
+      planOverview = userBox.get("planOverview${event.planID}");
       emit(PlanOverviewLoaded(planOverview: planOverview));
       return;
     }
@@ -206,7 +249,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     final response = await _planService.getPlanOverview(userBox.get("flexusjwt"));
 
     if (!response.isSuccessful) {
-      planOverview = userBox.get("planOverview");
+      planOverview = userBox.get("planOverview${event.planID}");
       emit(PlanError(error: response.error.toString()));
       emit(PlanOverviewLoaded(planOverview: planOverview));
       return;
@@ -214,6 +257,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     if (response.body != "null") {
       planOverview = PlanOverview.fromJson(response.body);
+      userBox.put("planOverview${event.planID}", planOverview);
     }
 
     emit(PlanOverviewLoaded(planOverview: planOverview));

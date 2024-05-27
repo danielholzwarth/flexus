@@ -41,7 +41,13 @@ class PatchPlan extends PlanEvent {
   });
 }
 
-class GetPlanOverview extends PlanEvent {}
+class GetPlanOverview extends PlanEvent {
+  final int planID;
+
+  GetPlanOverview({
+    required this.planID,
+  });
+}
 
 class DeletePlan extends PlanEvent {
   final int planID;

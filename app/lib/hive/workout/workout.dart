@@ -63,7 +63,7 @@ class Workout extends HiveObject {
   Workout.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int,
         userAccountID = json['userAccountID'] as int,
-        splitID = json['splitID'] != null ? json['split'] as int : null,
+        splitID = json['splitID'] != null ? json['splitID'] as int : null,
         createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
         starttime = DateTime.parse(json['starttime']).add(AppSettings.timeZoneOffset),
         endtime = json['endtime'] != null ? DateTime.parse(json['endtime']).add(AppSettings.timeZoneOffset) : null,

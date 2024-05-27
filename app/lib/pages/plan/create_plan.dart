@@ -226,7 +226,19 @@ class _CreatePlanPageState extends State<CreatePlanPage> {
                     });
 
                   case 4:
-                    createPlan();
+                    if (!AppSettings.hasConnection) {
+                      Fluttertoast.cancel();
+                      Fluttertoast.showToast(
+                        msg: "No internet connection!",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: AppSettings.error,
+                        textColor: AppSettings.fontV1,
+                        fontSize: AppSettings.fontSize,
+                      );
+                    } else {
+                      createPlan();
+                    }
 
                     break;
 

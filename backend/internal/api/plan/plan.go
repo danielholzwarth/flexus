@@ -19,6 +19,7 @@ type PlanStore interface {
 	GetPlanOverview(userID int) (types.PlanOverview, error)
 	PatchPlanExercise(userID int, planID int, splitID int, newExerciseID int, oldExerciseID int) (types.Plan, error)
 	PatchPlanExercises(userID int, planID int, splitID int, newExercises []int) (types.Plan, error)
+	PatchEntirePlans(userAccountID int, plans []types.Plan) error
 }
 
 type service struct {
@@ -39,6 +40,7 @@ func NewService(planStore PlanStore) http.Handler {
 	r.Delete("/{planID}", s.deletePlan())
 	r.Patch("/{planID}", s.patchPlan())
 	r.Get("/overview", s.getPlanOverview())
+	r.Patch("/sync", s.patchEntirePlans())
 
 	return s
 }
@@ -336,6 +338,37 @@ func (s service) getPlanOverview() http.HandlerFunc {
 				return
 			}
 			w.Write(response)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s service) patchEntirePlans() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		claims, ok := r.Context().Value(types.RequestorContextKey).(types.Claims)
+		if !ok {
+			http.Error(w, "Invalid requestor ID", http.StatusInternalServerError)
+			return
+		}
+
+		var requestBody struct {
+			Plans []types.Plan `json:"plans"`
+		}
+
+		decoder := json.NewDecoder(r.Body)
+		if err := decoder.Decode(&requestBody); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			println(err.Error())
+			return
+		}
+
+		err := s.planStore.PatchEntirePlans(claims.UserAccountID, requestBody.Plans)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			println(err.Error())
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")

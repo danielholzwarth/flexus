@@ -1,6 +1,8 @@
+import 'package:app/api/plan/plan_service.dart';
 import 'package:app/api/user_account/user_account_service.dart';
 import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/api/workout/workout_service.dart';
+import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -84,5 +86,18 @@ class NetworkController extends GetxController {
       workoutService
           .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
     }
+    // else {
+    //   workoutService.deleteAllWorkouts(userBox.get("flexusjwt"));
+    // }
+
+    PlanService planService = PlanService.create();
+    List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+    if (plans.isNotEmpty) {
+      planService.patchEntirePlans(userBox.get("flexusjwt"), {"plans": plans.map((plan) => plan.toJson()).toList()});
+    }
+    // else {
+    //   planService.deleteAllPlans(userBox.get("flexusjwt"));
+    // }
+    // if (plans)
   }
 }

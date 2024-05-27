@@ -104,6 +104,10 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       userBox.put("bestLiftOverview", bestLiftOverviews);
     }
 
+    if (response.bodyBytes.isEmpty) {
+      userBox.put("bestLiftOverview", []);
+    }
+
     emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
   }
 }
