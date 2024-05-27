@@ -49,22 +49,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
     String name = userBox.get("customGymName${widget.gymOverview.gym.id}") ?? widget.gymOverview.gym.name;
 
     return Slidable(
-      endActionPane: ActionPane(
-        motion: const StretchMotion(),
-        extentRatio: 0.25,
-        children: [
-          SlidableAction(
-            backgroundColor: AppSettings.primary,
-            icon: Icons.edit,
-            label: "Edit",
-            foregroundColor: AppSettings.fontV1,
-            onPressed: (context) async {
-              await showDialog(context, deviceSize);
-              setState(() {});
-            },
-          ),
-        ],
-      ),
       child: ListTile(
         onTap: () {
           showPopUp(name, deviceSize);
@@ -80,82 +64,6 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
         ),
         subtitle: buildSubTitle(),
       ),
-    );
-  }
-
-  Future<dynamic> showDialog(BuildContext context, Size deviceSize) {
-    return showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: AppSettings.background,
-              surfaceTintColor: AppSettings.background,
-              content: TextField(
-                controller: textEditingController,
-                autofocus: true,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: widget.gymOverview.gym.name,
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: AppSettings.font),
-                ),
-              ),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                        surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                        overlayColor: MaterialStateProperty.all(AppSettings.error.withOpacity(0.2)),
-                        foregroundColor: MaterialStateProperty.all(AppSettings.error),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const CustomDefaultTextStyle(text: 'Cancel'),
-                    ),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(AppSettings.background),
-                        surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
-                        overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
-                        foregroundColor: MaterialStateProperty.all(AppSettings.primary),
-                        fixedSize: MaterialStateProperty.all(Size.fromWidth(deviceSize.width * 0.25)),
-                      ),
-                      onPressed: () {
-                        String recentName = userBox.get("recentGymName") ?? "";
-                        String customGymName = userBox.get("customGymName${widget.gymOverview.gym.id}") ?? "";
-
-                        if (textEditingController.text.isNotEmpty) {
-                          userBox.put("customGymName${widget.gymOverview.gym.id}", textEditingController.text);
-
-                          if (recentName == customGymName && recentName.isNotEmpty) {
-                            userBox.put("recentGymName", textEditingController.text);
-                          }
-                        } else {
-                          if (recentName == customGymName && recentName.isNotEmpty) {
-                            userBox.put("recentGymName", widget.gymOverview.gym.name);
-                          }
-
-                          userBox.delete("customGymName${widget.gymOverview.gym.id}");
-                        }
-
-                        Navigator.pop(context);
-                      },
-                      child: const CustomDefaultTextStyle(text: 'Confirm'),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 
