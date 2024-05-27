@@ -159,14 +159,7 @@ class _RegisterPasswordPageState extends State<RegisterPasswordPage> {
               userBox.put("flexusjwt", jwt);
             }
 
-            final Map<String, dynamic> jsonMap = response.body;
-            final userAccount = UserAccount(
-              id: jsonMap['id'],
-              username: jsonMap['username'],
-              name: jsonMap['name'],
-              createdAt: DateTime.parse(jsonMap['createdAt']),
-              level: jsonMap['level'],
-            );
+            final userAccount = UserAccount.fromJson(response.body);
             userBox.put("userAccount", userAccount);
 
             await getUserSettings();

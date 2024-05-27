@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
             id: jsonMap['id'],
             username: jsonMap['username'],
             name: jsonMap['name'],
-            createdAt: DateTime.parse(jsonMap['createdAt']),
+            createdAt: DateTime.parse(jsonMap['createdAt']).add(AppSettings.timeZoneOffset),
             level: jsonMap['level'],
           );
           userBox.put("userAccount", userAccount);

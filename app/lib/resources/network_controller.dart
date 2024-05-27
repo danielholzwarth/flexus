@@ -79,9 +79,8 @@ class NetworkController extends GetxController {
     }
 
     WorkoutService workoutService = WorkoutService.create();
-    dynamic workoutOverviews = userBox.get("workoutOverviews");
-    if (workoutOverviews != null) {
-      workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
+    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+    if (workoutOverviews.isNotEmpty) {
       workoutService
           .patchEntireWorkouts(userBox.get("flexusjwt"), {"workouts": workoutOverviews.map((overview) => overview.workout.toJson()).toList()});
     }

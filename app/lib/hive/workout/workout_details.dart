@@ -2,6 +2,7 @@ import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/set/workout_set.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'workout_details.g.dart';
@@ -45,8 +46,8 @@ class WorkoutDetails extends HiveObject {
 
   WorkoutDetails.fromJson(Map<String, dynamic> json)
       : workoutID = json['workoutID'] as int,
-        startTime = DateTime.parse(json['starttime']),
-        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
+        startTime = DateTime.parse(json['starttime']).add(AppSettings.timeZoneOffset),
+        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']).add(AppSettings.timeZoneOffset) : null,
         gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null,
         split = json['split'] != null ? Split.fromJson(json['split']) : null,
         exercises = json['measurements'] != null

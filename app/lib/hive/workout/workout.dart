@@ -1,3 +1,4 @@
+import 'package:app/resources/app_settings.dart';
 import 'package:hive/hive.dart';
 
 part 'workout.g.dart';
@@ -51,8 +52,8 @@ class Workout extends HiveObject {
     return {
       'id': id,
       'userAccountID': userAccountID,
-      'starttime': starttime.toIso8601String(),
-      'endtime': endtime?.toIso8601String(),
+      'starttime': starttime.subtract(AppSettings.timeZoneOffset).toIso8601String(),
+      'endtime': endtime?.subtract(AppSettings.timeZoneOffset).toIso8601String(),
       'isArchived': isArchived,
       'isStared': isStared,
       'isPinned': isPinned,
@@ -63,9 +64,9 @@ class Workout extends HiveObject {
       : id = json['id'] as int,
         userAccountID = json['userAccountID'] as int,
         splitID = json['splitID'] != null ? json['split'] as int : null,
-        createdAt = DateTime.parse(json['createdAt']),
-        starttime = DateTime.parse(json['starttime']),
-        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']) : null,
+        createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
+        starttime = DateTime.parse(json['starttime']).add(AppSettings.timeZoneOffset),
+        endtime = json['endtime'] != null ? DateTime.parse(json['endtime']).add(AppSettings.timeZoneOffset) : null,
         isActive = json['isActive'] as bool,
         isArchived = json['isArchived'] as bool,
         isStared = json['isStared'] as bool,
