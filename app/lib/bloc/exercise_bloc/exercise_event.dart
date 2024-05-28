@@ -25,9 +25,11 @@ class GetCurrentExerciseFromExerciseID extends ExerciseEvent {
 
 class GetCurrentExercisesFromSplitID extends ExerciseEvent {
   final int splitID;
+  final CurrentPlan currentPlan;
 
   GetCurrentExercisesFromSplitID({
     required this.splitID,
+    required this.currentPlan,
   });
 }
 

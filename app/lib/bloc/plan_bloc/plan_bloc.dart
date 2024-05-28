@@ -242,6 +242,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     if (!AppSettings.hasConnection) {
       planOverview = userBox.get("planOverview${event.planID}");
+      userBox.put("splitOverviews${event.planID}", planOverview!.splitOverviews);
       emit(PlanOverviewLoaded(planOverview: planOverview));
       return;
     }
@@ -258,6 +259,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     if (response.body != "null") {
       planOverview = PlanOverview.fromJson(response.body);
       userBox.put("planOverview${event.planID}", planOverview);
+      userBox.put("splitOverviews${event.planID}", planOverview.splitOverviews);
     }
 
     emit(PlanOverviewLoaded(planOverview: planOverview));

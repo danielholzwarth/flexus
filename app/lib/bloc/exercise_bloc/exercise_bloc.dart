@@ -1,9 +1,12 @@
 import 'package:app/api/exercise/exercise_service.dart';
 import 'package:app/hive/exercise/current_exercise.dart';
 import 'package:app/hive/exercise/exercise.dart';
+import 'package:app/hive/plan/current_plan.dart';
+import 'package:app/hive/split/split_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 part 'exercise_event.dart';
@@ -26,9 +29,7 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     List<Exercise> exercises = [];
 
     if (!AppSettings.hasConnection) {
-      userBox.get("exercises")?.cast<Exercise>() ?? [];
-      emit(ExerciseError(error: "No internet connection!"));
-      emit(ExercisesLoaded(exercises: exercises));
+      emit(ExerciseError(error: "Internet Connection required!"));
       return;
     }
 
@@ -62,7 +63,9 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
 
     if (!AppSettings.hasConnection) {
       exercises = userBox.get("exercises")?.cast<Exercise>() ?? [];
-      emit(ExerciseError(error: "No internet connection!"));
+
+      exercises.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
       emit(ExercisesLoaded(exercises: exercises));
       return;
     }
@@ -91,7 +94,16 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     CurrentExercise? currentExercise;
 
     if (!AppSettings.hasConnection) {
-      emit(CurrentExercisesLoaded(currentExercises: const []));
+      List<Exercise> exercises = userBox.get("exercises")?.cast<Exercise>() ?? [];
+
+      if (exercises.isNotEmpty) {
+        Exercise? ex = exercises.firstWhereOrNull((element) => element.id == event.exerciseID);
+        if (ex != null) {
+          currentExercise = CurrentExercise(exercise: ex, oldMeasurements: [], measurements: []);
+        }
+      }
+
+      emit(CurrentExerciseFromExerciseIDLoaded(currentExercise: currentExercise));
       return;
     }
 
@@ -113,7 +125,17 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
     List<CurrentExercise> currentExercises = [];
 
     if (!AppSettings.hasConnection) {
-      emit(CurrentExercisesLoaded(currentExercises: currentExercises));
+      List<SplitOverview> splitOverviews = userBox.get("splitOverviews${event.currentPlan.plan.id}")?.cast<SplitOverview>() ?? [];
+
+      SplitOverview? splitOverview = splitOverviews.firstWhereOrNull((element) => element.split.id == event.splitID);
+      if (splitOverview != null) {
+        List<Exercise> exercises = splitOverview.exercises;
+        for (var ex in exercises) {
+          currentExercises.add(CurrentExercise(exercise: ex, oldMeasurements: [], measurements: []));
+        }
+      }
+
+      emit(CurrentExercisesFromSplitIDLoaded(currentExercises: currentExercises));
       return;
     }
 

@@ -8,6 +8,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -45,6 +46,18 @@ class ExerciseSearchDelegate extends SearchDelegate {
             )
           : IconButton(
               onPressed: () {
+                if (!AppSettings.hasConnection) {
+                  Fluttertoast.cancel();
+                  Fluttertoast.showToast(
+                    msg: "Internet connection required!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: AppSettings.error,
+                    textColor: AppSettings.fontV1,
+                    fontSize: AppSettings.fontSize,
+                  );
+                  return;
+                }
                 Navigator.push(
                   context,
                   PageTransition(

@@ -1,5 +1,6 @@
 import 'package:app/api/split/split_service.dart';
 import 'package:app/hive/split/split.dart';
+import 'package:app/hive/split/split_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,8 +22,15 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
   void _onGetSplits(GetSplits event, Emitter<SplitState> emit) async {
     emit(SplitsLoading());
 
+    List<Split> splits = [];
+
     if (!AppSettings.hasConnection) {
-      emit(SplitError(error: "No internet connection!"));
+      List<SplitOverview> splitOverviews = userBox.get("splitOverviews${event.planID}")?.cast<SplitOverview>() ?? [];
+      for (var splitOverview in splitOverviews) {
+        splits.add(splitOverview.split);
+      }
+
+      emit(SplitsLoaded(splits: splits));
       return;
     }
 
@@ -31,8 +39,6 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
     if (!response.isSuccessful) {
       emit(SplitError(error: response.error.toString()));
     }
-
-    List<Split> splits = [];
 
     if (response.body != "null") {
       final List<dynamic> jsonList = response.body;

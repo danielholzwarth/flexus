@@ -13,6 +13,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -37,11 +38,14 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.workout != null) {
-      workoutBloc.add(GetWorkoutDetails(workoutID: widget.workout!.id));
-    } else {
-      currentGym = userBox.get("currentGym");
+    if (AppSettings.hasConnection) {
+      if (widget.workout != null) {
+        workoutBloc.add(GetWorkoutDetails(workoutID: widget.workout!.id));
+      } else {
+        currentGym = userBox.get("currentGym");
+      }
     }
+
     currentPlan = userBox.get("currentPlan");
     if (currentPlan != null) {
       CurrentPlan oldPlan = CurrentPlan.clone(currentPlan!);
@@ -68,7 +72,6 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
           if (state is WorkoutCreated || state is WorkoutsLoaded) {
             userBox.put("currentGym", currentGym);
             userBox.put("currentPlan", currentPlan);
-            // userBox.put("currentWorkoutStartTime", DateTime.now());
 
             Navigator.pushReplacement(
               context,
@@ -84,6 +87,18 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
 
           if (state is WorkoutDetailsLoaded) {
             currentGym = state.workoutDetails.gym;
+          }
+
+          if (state is WorkoutError) {
+            Fluttertoast.cancel();
+            Fluttertoast.showToast(
+              msg: state.error,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              backgroundColor: AppSettings.error,
+              textColor: AppSettings.fontV1,
+              fontSize: AppSettings.fontSize,
+            );
           }
         },
         builder: (context, state) {
@@ -141,19 +156,26 @@ class _StartWorkoutPageState extends State<StartWorkoutPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         FlexusBasicTitle(deviceSize: deviceSize, text: "Gym"),
-        FlexusButton(
-          text: currentGym != null ? currentGym!.name : "Choose Gym",
-          fontColor: currentGym != null ? AppSettings.font : AppSettings.primary,
-          function: () async {
-            dynamic result = await showSearch(context: context, delegate: MyGymSearchDelegate());
-            if (result != null) {
-              setState(() {
-                currentGym = result;
-              });
-            }
-          },
-          width: deviceSize.width * 0.9,
-        ),
+        AppSettings.hasConnection
+            ? FlexusButton(
+                text: currentGym != null ? currentGym!.name : "Choose Gym",
+                fontColor: currentGym != null ? AppSettings.font : AppSettings.primary,
+                function: () async {
+                  dynamic result = await showSearch(context: context, delegate: MyGymSearchDelegate());
+                  if (result != null) {
+                    setState(() {
+                      currentGym = result;
+                    });
+                  }
+                },
+                width: deviceSize.width * 0.9,
+              )
+            : FlexusButton(
+                text: "Internet connection required!",
+                fontColor: AppSettings.error,
+                function: () {},
+                width: deviceSize.width * 0.9,
+              ),
       ],
     );
   }
