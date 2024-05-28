@@ -50,7 +50,7 @@ class WorkoutDetails extends HiveObject {
         endtime = json['endtime'] != null ? DateTime.parse(json['endtime']).add(AppSettings.timeZoneOffset) : null,
         gym = json['gym'] != null ? Gym.fromJson(json['gym']) : null,
         split = json['split'] != null ? Split.fromJson(json['split']) : null,
-        exercises = json['measurements'] != null
+        exercises = json['exercises'] != null
             ? List<Exercise>.from(json['exercises'].map((exercisesJson) {
                 return Exercise.fromJson(exercisesJson);
               }))
