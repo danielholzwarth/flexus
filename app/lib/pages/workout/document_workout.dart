@@ -81,6 +81,15 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
       bloc: workoutBloc,
       listener: (context, state) {
         if (state is! WorkoutUpdating && state is! WorkoutInitial) {
+          if (widget.gym != null) {
+            userBox.put("currentGym", widget.gym);
+          }
+          if (widget.currentPlan != null) {
+            userBox.put("currentPlan", widget.currentPlan);
+          }
+          userBox.delete("currentWorkout");
+          userBox.delete("timerValue");
+
           Navigator.pushReplacement(
             context,
             PageTransition(
@@ -215,14 +224,6 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
                   name: "finishWorkout",
                   currentWorkout: finishedCurrentWorkout,
                 ));
-                if (widget.gym != null) {
-                  userBox.put("currentGym", widget.gym);
-                }
-                if (widget.currentPlan != null) {
-                  userBox.put("currentPlan", widget.currentPlan);
-                }
-                userBox.delete("currentWorkout");
-                userBox.delete("timerValue");
               } else {
                 debugPrint('Null?');
               }
@@ -246,7 +247,10 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
     } else {
       if (widget.currentPlan != null) {
         if (widget.currentPlan!.splits.isNotEmpty) {
-          exerciseBloc.add(GetCurrentExercisesFromSplitID(splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id));
+          exerciseBloc.add(GetCurrentExercisesFromSplitID(
+            splitID: widget.currentPlan!.splits[widget.currentPlan!.currentSplit].id,
+            currentPlan: widget.currentPlan!,
+          ));
         } else {
           pages.add(const DocumentExercisePage(pageID: 1));
           currentWorkout =

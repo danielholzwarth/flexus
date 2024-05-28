@@ -17,6 +17,7 @@ class FlexusWorkoutListTile extends StatefulWidget {
   final WorkoutBloc workoutBloc;
   final String? query;
   final Function()? onTap;
+  final bool isPending;
 
   const FlexusWorkoutListTile({
     super.key,
@@ -24,6 +25,7 @@ class FlexusWorkoutListTile extends StatefulWidget {
     required this.workoutBloc,
     this.query,
     this.onTap,
+    this.isPending = false,
   });
 
   @override
@@ -38,25 +40,29 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
     final workout = widget.workoutOverview.workout;
 
     return Slidable(
-      startActionPane: workout.endtime != null ? buildStartActionPane(workout) : null,
-      endActionPane: buildEndActionPane(workout),
+      startActionPane: workout.endtime != null || !widget.isPending ? buildStartActionPane(workout) : null,
+      endActionPane: !widget.isPending ? buildEndActionPane(workout) : null,
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
-        tileColor: workout.endtime == null
-            ? workout.isActive
-                ? AppSettings.primaryShade48
-                : AppSettings.blocked.withOpacity(0.4)
-            : AppSettings.background,
-        onTap: widget.onTap ??
-            () => Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.rightToLeft,
-                    child: ViewWorkoutPage(
-                      workoutID: workout.id,
-                    ),
-                  ),
-                ),
+        tileColor: widget.isPending
+            ? Colors.amber.withOpacity(0.3)
+            : workout.endtime == null
+                ? workout.isActive
+                    ? AppSettings.primaryShade48
+                    : AppSettings.blocked.withOpacity(0.4)
+                : AppSettings.background,
+        onTap: !widget.isPending
+            ? widget.onTap ??
+                () => Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        child: ViewWorkoutPage(
+                          workoutID: workout.id,
+                        ),
+                      ),
+                    )
+            : () {},
         leading: buildDate(workout),
         title: buildTitle(deviceSize),
         subtitle: buildSubtitle(workout, userBox),
@@ -182,9 +188,11 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       children: [
         widget.workoutOverview.splitName != null
             ? highlightTitle(widget.workoutOverview.splitName!)
-            : widget.workoutOverview.workout.endtime != null
-                ? const CustomDefaultTextStyle(text: "Custom Workout")
-                : const CustomDefaultTextStyle(text: "Start Workout"),
+            : !widget.isPending
+                ? widget.workoutOverview.workout.endtime != null
+                    ? const CustomDefaultTextStyle(text: "Custom Workout")
+                    : const CustomDefaultTextStyle(text: "Start Workout")
+                : const CustomDefaultTextStyle(text: "Pending"),
         Row(
           children: [
             Visibility(
@@ -214,7 +222,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               ),
             ),
             Visibility(
-              visible: widget.workoutOverview.bestLiftCount > 0,
+              visible: !widget.isPending && widget.workoutOverview.bestLiftCount > 0,
               child: Row(
                 children: [
                   CustomDefaultTextStyle(

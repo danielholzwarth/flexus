@@ -1,11 +1,15 @@
 import 'package:app/api/workout/workout_service.dart';
+import 'package:app/hive/plan/plan.dart';
+import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/workout/current_workout.dart';
+import 'package:app/hive/workout/pending_workout.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -30,7 +34,34 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     emit(WorkoutCreating());
 
     if (!AppSettings.hasConnection) {
-      emit(WorkoutError(error: "No internet connection!"));
+      UserAccount userAccount = userBox.get("userAccount");
+      int pendingCount = userBox.get("pendingCount") ?? -1;
+
+      WorkoutOverview workoutOverview = WorkoutOverview(
+        workout: Workout(
+          id: pendingCount,
+          userAccountID: userAccount.id,
+          createdAt: DateTime.now(),
+          starttime: event.startTime,
+          splitID: event.splitID,
+          isActive: true,
+          isArchived: false,
+          isStared: false,
+          isPinned: false,
+        ),
+        bestLiftCount: 0,
+      );
+
+      createPendingWorkout(workoutID: pendingCount, gymID: event.gymID, splitID: event.splitID, exerciseJSON: []);
+
+      List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+      workoutOverviews.add(workoutOverview);
+
+      workoutOverviews = sortWorkoutOverviews(workoutOverviews);
+
+      userBox.put("workoutOverviews", workoutOverviews);
+
+      emit(WorkoutCreated());
       return;
     }
 
@@ -78,10 +109,12 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
   void _onGetWorkouts(GetWorkouts event, Emitter<WorkoutState> emit) async {
     emit(WorkoutsLoading());
 
-    List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+    List<WorkoutOverview> workoutOverviews = [];
 
     if (!AppSettings.hasConnection) {
+      workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+      workoutOverviews = sortWorkoutOverviews(workoutOverviews);
       emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
       return;
     }
@@ -99,9 +132,15 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       }));
     }
 
+    List<WorkoutOverview> localWorkoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+    List<WorkoutOverview> pendingWorkoutOverviews = localWorkoutOverviews.where((element) => element.workout.id < 0).toList();
+
+    workoutOverviews.addAll(pendingWorkoutOverviews);
+
     userBox.put("workoutOverviews", workoutOverviews);
 
     workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+    workoutOverviews = sortWorkoutOverviews(workoutOverviews);
 
     emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
   }
@@ -113,6 +152,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
     if (!AppSettings.hasConnection) {
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+      workoutOverviews = sortWorkoutOverviews(workoutOverviews);
       emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
       return;
     }
@@ -135,7 +175,11 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
     if (!AppSettings.hasConnection) {
       workoutDetails = userBox.get("workoutDetails${event.workoutID}");
-      workoutDetails != null ? emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails)) : emit(WorkoutError(error: "No workout details found"));
+      if (workoutDetails != null) {
+        emit(WorkoutDetailsLoaded(workoutDetails: workoutDetails));
+      } else {
+        emit(WorkoutError(error: "No workout details found"));
+      }
       return;
     }
 
@@ -218,6 +262,35 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         break;
 
       case "startWorkout":
+        if (!AppSettings.hasConnection) {
+          List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
+
+          WorkoutOverview? workoutToStart = workoutOverviews.firstWhereOrNull((element) => element.workout.id == event.workoutID);
+          if (workoutToStart != null) {
+            int index = workoutOverviews.indexOf(workoutToStart);
+            
+            if (workoutOverviews[index].workout.id > 0) {
+              List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+              Plan? plan = plans.firstWhereOrNull((element) => element.name == workoutOverviews[index].planName);
+
+              createPendingWorkout(
+                workoutID: workoutOverviews[index].workout.id,
+                splitID: workoutOverviews[index].workout.splitID,
+                planID: plan?.id,
+                exerciseJSON: [],
+              );
+            }
+            workoutOverviews[index].workout.isActive = true;
+            workoutOverviews[index].workout.starttime = DateTime.now();
+          }
+
+          workoutOverviews = sortWorkoutOverviews(workoutOverviews);
+          userBox.put("workoutOverviews", workoutOverviews);
+
+          emit(WorkoutsLoaded(workoutOverviews: const []));
+          return;
+        }
+
         final response = await _workoutService.patchStartWorkout(userBox.get("flexusjwt"), event.workoutID, {
           "gymID": event.gymID,
           "splitID": event.splitID,
@@ -231,6 +304,53 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         break;
 
       case "finishWorkout":
+        if (!AppSettings.hasConnection) {
+          List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews").cast<WorkoutOverview>() ?? [];
+
+          WorkoutOverview? activeWorkoutOverview = workoutOverviews.firstWhereOrNull((element) => element.workout.isActive == true);
+          if (activeWorkoutOverview == null) {
+            emit(WorkoutError(error: "No active workout found!"));
+            break;
+          }
+
+          int index = workoutOverviews.indexOf(activeWorkoutOverview);
+
+          List<Map<String, dynamic>> exercises = [];
+          for (final ex in event.currentWorkout!.exercises) {
+            exercises.add(ex.toJson());
+          }
+
+          List<PendingWorkout> pendingWorkouts = userBox.get("pendingWorkouts")?.cast<PendingWorkout>() ?? [];
+
+          PendingWorkout? pendingWorkout = pendingWorkouts.firstWhereOrNull((element) => element.workoutID == workoutOverviews[index].workout.id);
+          if (pendingWorkout != null) {
+            int indexPending = pendingWorkouts.indexOf(pendingWorkout);
+            if (indexPending != -1) {
+              pendingWorkouts[indexPending].exercisesJSON = exercises;
+            }
+          } else {
+            List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+            Plan? plan = plans.firstWhereOrNull((element) => element.name == workoutOverviews[index].planName);
+
+            createPendingWorkout(
+              workoutID: workoutOverviews[index].workout.id,
+              splitID: workoutOverviews[index].workout.splitID,
+              planID: plan?.id,
+              exerciseJSON: exercises,
+            );
+          }
+
+          workoutOverviews[index].workout.isActive = false;
+          workoutOverviews[index].workout.endtime = DateTime.now();
+
+          workoutOverviews = sortWorkoutOverviews(workoutOverviews);
+
+          userBox.put("workoutOverviews", workoutOverviews);
+          emit(WorkoutsLoaded(workoutOverviews: const []));
+
+          break;
+        }
+
         List<Map<String, dynamic>> exercises = [];
         for (final ex in event.currentWorkout!.exercises) {
           exercises.add(ex.toJson());
@@ -239,7 +359,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         final response = await _workoutService.patchFinishWorkout(
           userBox.get("flexusjwt"),
           {
-            "workoutID": event.currentWorkout?.plan?.id,
+            "planID": event.currentWorkout?.plan?.id,
             "splitID": event.currentWorkout?.split?.id,
             "gymID": event.currentWorkout?.gym?.id,
             "exercises": exercises,
@@ -275,6 +395,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
 
       userBox.put("workoutOverviews", workoutOverviews);
       workoutOverviews = workoutOverviews.where((workoutOverview) => workoutOverview.workout.isArchived == event.isArchive).toList();
+
+      workoutOverviews = sortWorkoutOverviews(workoutOverviews);
 
       emit(WorkoutsLoaded(workoutOverviews: workoutOverviews));
       return;
@@ -334,8 +456,24 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       userBox.put("workoutOverviews", workoutOverviews);
     }
 
-    workoutOverviews.sort((a, b) {
-      if (a.workout.isActive != b.workout.isActive) {
+    workoutOverviews = sortWorkoutOverviews(workoutOverviews);
+
+    return workoutOverviews;
+  }
+
+  List<WorkoutOverview> sortWorkoutOverviews(List<WorkoutOverview> workouts) {
+    workouts.sort((a, b) {
+      if (a.workout.id < 0 && b.workout.id < 0) {
+        if (a.workout.isActive != b.workout.isActive) {
+          return b.workout.isActive ? 1 : -1;
+        } else {
+          return b.workout.starttime.compareTo(a.workout.starttime);
+        }
+      } else if (a.workout.id == -1) {
+        return -1;
+      } else if (b.workout.id == -1) {
+        return 1;
+      } else if (a.workout.isActive != b.workout.isActive) {
         return b.workout.isActive ? 1 : -1;
       } else if (a.workout.endtime != null && b.workout.endtime == null) {
         return 1;
@@ -350,6 +488,32 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       }
     });
 
-    return workoutOverviews;
+    return workouts;
+  }
+
+  void createPendingWorkout({
+    required int workoutID,
+    int? gymID,
+    int? splitID,
+    int? planID,
+    required List<Map<String, dynamic>> exerciseJSON,
+  }) {
+    int pendingCount = userBox.get("pendingCount") ?? -1;
+    List<PendingWorkout> pendingWorkouts = userBox.get("pendingWorkouts")?.cast<PendingWorkout>() ?? [];
+
+    PendingWorkout pendingWorkout = PendingWorkout(
+      id: pendingCount,
+      workoutID: workoutID,
+      planID: planID,
+      gymID: gymID,
+      splitID: splitID,
+      exercisesJSON: exerciseJSON,
+    );
+
+    pendingWorkouts.add(pendingWorkout);
+    pendingCount--;
+
+    userBox.put("pendingWorkouts", pendingWorkouts);
+    userBox.put("pendingCount", pendingCount);
   }
 }

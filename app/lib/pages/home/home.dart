@@ -1,6 +1,7 @@
 import 'package:app/bloc/user_account_bloc/user_account_bloc.dart';
 import 'package:app/bloc/workout_bloc/workout_bloc.dart';
 import 'package:app/hive/user_account/user_account.dart';
+import 'package:app/hive/workout/pending_workout.dart';
 import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/pages/home/archive.dart';
@@ -21,6 +22,7 @@ import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -97,8 +99,14 @@ class _HomePageState extends State<HomePage> {
             return SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
+                  List<PendingWorkout> pendingWorkouts = userBox.get("pendingWorkouts")?.cast<PendingWorkout>() ?? [];
+                  bool isPending =
+                      pendingWorkouts.firstWhereOrNull((element) => element.workoutID == state.workoutOverviews[index].workout.id) != null &&
+                          state.workoutOverviews[index].workout.isActive == false;
+
                   return FlexusWorkoutListTile(
                     key: Key("workout${state.workoutOverviews[index].workout.id}"),
+                    isPending: isPending,
                     workoutOverview: WorkoutOverview(
                       workout: Workout(
                         id: state.workoutOverviews[index].workout.id,
