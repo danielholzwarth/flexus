@@ -208,8 +208,8 @@ class _ProfilePageState extends State<ProfilePage> {
     switch (level) {
       case < 5:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body8.jpg",
             scale: 0.1,
@@ -218,8 +218,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case < 10:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body7.jpg",
             scale: 0.1,
@@ -228,8 +228,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case < 20:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body6.jpg",
             scale: 0.1,
@@ -238,8 +238,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case < 30:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body5.jpg",
             scale: 0.1,
@@ -248,8 +248,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case < 40:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body4.jpg",
             scale: 0.1,
@@ -268,8 +268,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case < 100:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body2.jpg",
             scale: 0.1,
@@ -278,8 +278,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       case >= 100:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
             "assets/images/body/body1.jpg",
             scale: 0.1,
@@ -288,8 +288,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       default:
         return Container(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           decoration: BoxDecoration(border: Border.all(color: Colors.green)),
         );
     }
