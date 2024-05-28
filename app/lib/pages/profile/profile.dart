@@ -149,13 +149,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return Stack(
       children: [
         Positioned(
-          left: deviceSize.width * 0.05,
-          top: deviceSize.width * 0.1,
+          top: deviceSize.width * 0.05,
           child: buildCorrectLevelImage(userAccount.level, deviceSize),
         ),
         Positioned(
-          left: deviceSize.width * 0.26,
-          top: deviceSize.width * 0.02,
+          left: deviceSize.width * 0.28,
+          top: deviceSize.width * 0.05,
           child: Hero(
             tag: "profile_picture",
             child: GestureDetector(
@@ -171,15 +170,16 @@ class _ProfilePageState extends State<ProfilePage> {
               ).then((value) => setState(() {})),
               child: userAccount.profilePicture != null
                   ? CircleAvatar(
-                      radius: deviceSize.width * 0.14,
+                      radius: deviceSize.width * 0.12,
                       backgroundImage: MemoryImage(userAccount.profilePicture!),
                     )
                   : Container(
-                      width: deviceSize.width * 0.3,
-                      height: deviceSize.width * 0.3,
+                      width: deviceSize.width * 0.24,
+                      height: deviceSize.width * 0.24,
                       decoration: BoxDecoration(
                         border: Border.all(width: 2, color: AppSettings.font.withOpacity(0.2)),
                         shape: BoxShape.circle,
+                        color: AppSettings.background,
                       ),
                       alignment: Alignment.center,
                       child: CustomDefaultTextStyle(
@@ -192,8 +192,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         Positioned(
-          left: deviceSize.width * 0.28,
-          top: deviceSize.width * 0.5,
+          left: deviceSize.width * 0.31,
+          top: deviceSize.width * 0.4,
           child: CustomDefaultTextStyle(
             text: userAccount.level.toString(),
             color: AppSettings.primary,
@@ -211,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body1.jpg",
+            "assets/images/body/body8.jpg",
             scale: 0.1,
           ),
         );
@@ -221,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body2.jpg",
+            "assets/images/body/body7.jpg",
             scale: 0.1,
           ),
         );
@@ -231,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body3.jpg",
+            "assets/images/body/body6.jpg",
             scale: 0.1,
           ),
         );
@@ -241,7 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body4.jpg",
+            "assets/images/body/body5.jpg",
             scale: 0.1,
           ),
         );
@@ -251,17 +251,17 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body5.jpg",
+            "assets/images/body/body4.jpg",
             scale: 0.1,
           ),
         );
 
       case < 50:
         return SizedBox(
-          width: deviceSize.width * 0.7,
-          height: deviceSize.width * 0.7,
+          width: deviceSize.width * 0.8,
+          height: deviceSize.width * 0.8,
           child: Image.asset(
-            "assets/images/body/body6.jpg",
+            "assets/images/body/body3.jpg",
             scale: 0.1,
           ),
         );
@@ -271,7 +271,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body7.jpg",
+            "assets/images/body/body2.jpg",
             scale: 0.1,
           ),
         );
@@ -281,7 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
           width: deviceSize.width * 0.7,
           height: deviceSize.width * 0.7,
           child: Image.asset(
-            "assets/images/body/body8.jpg",
+            "assets/images/body/body1.jpg",
             scale: 0.1,
           ),
         );
