@@ -30,7 +30,7 @@ class JWTHelper {
   static bool isTokenExpired(String token) {
     DateTime expiryDate = JwtDecoder.getExpirationDate(token);
     DateTime currentDate = DateTime.now();
-    DateTime bufferTime = currentDate.add(const Duration(seconds: 10));
+    DateTime bufferTime = currentDate.add(const Duration(seconds: 30));
     return expiryDate.isBefore(bufferTime);
   }
 

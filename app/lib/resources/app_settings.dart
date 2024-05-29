@@ -6,7 +6,7 @@ class AppSettings {
   static bool useIPv4 = true;
 
   static bool hasConnection = true;
-  static bool isTokenExpired = true;
+  static bool isTokenExpired = false;
 
   static Duration timeZoneOffset = const Duration();
 

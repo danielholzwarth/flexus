@@ -2,16 +2,21 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"flexus/internal/types"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 var jwtKey []byte
+var blacklist = make(map[string]time.Time)
+var mutex = &sync.Mutex{}
 
 func init() {
 	jwtKey = []byte(os.Getenv("JWT_KEY"))
@@ -50,6 +55,8 @@ func ValidateJWT(next http.Handler) http.Handler {
 
 				w.Header().Add("flexus-jwt-access", newAccessToken)
 				w.Header().Add("flexus-jwt-refresh", newRefreshToken)
+
+				blacklistToken(token)
 			}
 
 			ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
@@ -66,6 +73,7 @@ func ValidateJWT(next http.Handler) http.Handler {
 
 func CreateAccessToken(userAccountID int, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 0, 1)
+	// expirationTime := time.Now().Add(time.Minute * 1)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
@@ -89,6 +97,7 @@ func CreateAccessToken(userAccountID int, username string) (string, error) {
 
 func CreateRefreshToken(userAccountID int, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 0, 28)
+	// expirationTime := time.Now().Add(time.Minute * 2)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
@@ -128,8 +137,32 @@ func ValdiateToken(tokenString string) (types.Claims, error) {
 	}
 
 	if !tkn.Valid {
-		return types.Claims{}, err
+		return types.Claims{}, errors.New("token is invalid")
+	}
+
+	if isTokenBlacklisted(tokenString) {
+		return types.Claims{}, errors.New("token is blacklisted")
 	}
 
 	return *claims, nil
+}
+
+func blacklistToken(tokenString string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	blacklist[tokenString] = time.Now()
+
+	println("blacklisting: " + tokenString)
+}
+
+func isTokenBlacklisted(tokenString string) bool {
+	mutex.Lock()
+	defer mutex.Unlock()
+	_, found := blacklist[tokenString]
+
+	for _, v := range blacklist {
+		fmt.Printf("v: %v\n", v)
+	}
+
+	return found
 }
