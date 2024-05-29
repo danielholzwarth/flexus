@@ -18,10 +18,10 @@ final class _$NotificationService extends NotificationService {
   final Type definitionType = NotificationService;
 
   @override
-  Future<Response<dynamic>> getNewWorkoutNotifications(String flexusJWTString) {
+  Future<Response<dynamic>> getNewWorkoutNotifications(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/notifications/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

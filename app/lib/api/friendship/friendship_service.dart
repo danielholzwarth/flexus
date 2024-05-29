@@ -7,26 +7,26 @@ part 'friendship_service.chopper.dart';
 abstract class FriendshipService extends ChopperService {
   @Post(path: '/{userAccountID}')
   Future<Response> postFriendship(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
   );
 
   @Get(path: '/{userAccountID}')
   Future<Response> getFriendshipFromUserID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
   );
 
   @Patch(path: '/{userAccountID}')
   Future<Response> patchFriendship(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
     @Body() Map<String, dynamic> body,
   );
 
   @Delete(path: '/{userAccountID}')
   Future<Response> deleteFriendship(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
   );
 

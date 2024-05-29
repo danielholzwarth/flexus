@@ -19,12 +19,12 @@ final class _$UserAccountGymService extends UserAccountGymService {
 
   @override
   Future<Response<dynamic>> postUserAccountGym(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_account_gym/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -39,13 +39,13 @@ final class _$UserAccountGymService extends UserAccountGymService {
 
   @override
   Future<Response<dynamic>> getUserAccountGym(
-    String flexusJWTString, {
+    String flexusJWTAccess, {
     int? gymID,
   }) {
     final Uri $url = Uri.parse('/user_account_gym/');
     final Map<String, dynamic> $params = <String, dynamic>{'gymID': gymID};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -59,12 +59,12 @@ final class _$UserAccountGymService extends UserAccountGymService {
 
   @override
   Future<Response<dynamic>> deleteUserAccountGym(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int gymID,
   ) {
     final Uri $url = Uri.parse('/user_account_gym/${gymID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'DELETE',

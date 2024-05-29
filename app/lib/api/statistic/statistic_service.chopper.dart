@@ -19,13 +19,13 @@ final class _$StatisticService extends StatisticService {
 
   @override
   Future<Response<dynamic>> getTotalMovedWeight(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int period,
   ) {
     final Uri $url = Uri.parse('/statistics/total-moved-weight');
     final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -39,13 +39,13 @@ final class _$StatisticService extends StatisticService {
 
   @override
   Future<Response<dynamic>> getTotalReps(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int period,
   ) {
     final Uri $url = Uri.parse('/statistics/total-reps');
     final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -59,13 +59,13 @@ final class _$StatisticService extends StatisticService {
 
   @override
   Future<Response<dynamic>> getWorkoutDays(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int period,
   ) {
     final Uri $url = Uri.parse('/statistics/workout-days');
     final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -79,13 +79,13 @@ final class _$StatisticService extends StatisticService {
 
   @override
   Future<Response<dynamic>> getWorkoutDuration(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int period,
   ) {
     final Uri $url = Uri.parse('/statistics/workout-duration');
     final Map<String, dynamic> $params = <String, dynamic>{'period': period};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

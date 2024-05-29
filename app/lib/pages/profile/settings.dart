@@ -8,6 +8,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/sign_in/start.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:app/search_delegates/user_list_search_delegate.dart';
 import 'package:app/widgets/buttons/flexus_button_small.dart';
 import 'package:app/widgets/flexus_scrollbar.dart';
@@ -139,8 +140,17 @@ class _SettingsPageState extends State<SettingsPage> {
           onPressed: () async {
             if (AppSettings.hasConnection) {
               UserAccountService uas = UserAccountService.create();
-              final response = await uas.deleteUserAccount(userBox.get("flexusjwt"));
+
+              final flexusjwt = JWTHelper.getActiveJWT();
+              if (flexusjwt == null) {
+                //NO-VALID-JWT-ERROR
+                return;
+              }
+
+              final response = await uas.deleteUserAccount(flexusjwt);
               if (response.isSuccessful) {
+                JWTHelper.saveJWTsFromResponse(response);
+
                 FlutterBackgroundService().invoke('stopService');
                 userBox.clear();
                 Navigator.pushAndRemoveUntil(
@@ -296,9 +306,17 @@ class _SettingsPageState extends State<SettingsPage> {
           if (userSettings.notifyUserListID == null) {
             final UserListService userListService = UserListService.create();
 
-            chopper.Response response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "notify_user_list_id"});
+            final flexusjwt = JWTHelper.getActiveJWT();
+            if (flexusjwt == null) {
+              //NO-VALID-JWT-ERROR
+              return;
+            }
+
+            chopper.Response response = await userListService.postUserList(flexusjwt, {"columnName": "notify_user_list_id"});
 
             if (response.isSuccessful) {
+              JWTHelper.saveJWTsFromResponse(response);
+
               if (response.body != "null") {
                 userSettings.notifyUserListID = response.body;
                 userBox.put("userSettings", userSettings);
@@ -416,9 +434,17 @@ class _SettingsPageState extends State<SettingsPage> {
           if (userSettings.pullUserListID == null) {
             final UserListService userListService = UserListService.create();
 
-            chopper.Response response = await userListService.postUserList(userBox.get("flexusjwt"), {"columnName": "pull_user_list_id"});
+            final flexusjwt = JWTHelper.getActiveJWT();
+            if (flexusjwt == null) {
+              //NO-VALID-JWT-ERROR
+              return;
+            }
+
+            chopper.Response response = await userListService.postUserList(flexusjwt, {"columnName": "pull_user_list_id"});
 
             if (response.isSuccessful) {
+              JWTHelper.saveJWTsFromResponse(response);
+
               if (response.body != "null") {
                 userSettings.pullUserListID = response.body;
                 userBox.put("userSettings", userSettings);

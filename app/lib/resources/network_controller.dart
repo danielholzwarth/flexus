@@ -6,6 +6,7 @@ import 'package:app/hive/plan/plan.dart';
 import 'package:app/hive/workout/pending_workout.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -69,7 +70,13 @@ Future<void> syncUserAccount(Box userBox) async {
   UserAccountService userAccountService = UserAccountService.create();
   final userAccount = userBox.get("userAccount");
   if (userAccount != null) {
-    userAccountService.patchEntireUserAccount(userBox.get("flexusjwt"), {
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    userAccountService.patchEntireUserAccount(flexusjwt, {
       "username": userAccount.username,
       "name": userAccount.name,
       "level": userAccount.level,
@@ -82,7 +89,13 @@ Future<void> syncUserSettings(Box userBox) async {
   UserSettingsService userSettingsService = UserSettingsService.create();
   final userSettings = userBox.get("userSettings");
   if (userSettings != null) {
-    userSettingsService.patchEntireUserSettings(userBox.get("flexusjwt"), {
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    userSettingsService.patchEntireUserSettings(flexusjwt, {
       "fontSize": userSettings.fontSize,
       "isDarkMode": userSettings.isDarkMode,
       "isUnlisted": userSettings.isUnlisted,
@@ -98,6 +111,12 @@ Future<void> syncWorkouts(Box userBox) async {
 
   List<WorkoutOverview> workoutOverviews = userBox.get("workoutOverviews")?.cast<WorkoutOverview>() ?? [];
   List<PendingWorkout> pendingWorkouts = userBox.get("pendingWorkouts")?.cast<PendingWorkout>() ?? [];
+
+  final flexusjwt = JWTHelper.getActiveJWT();
+  if (flexusjwt == null) {
+    //NO-VALID-JWT-ERROR
+    return;
+  }
 
   List<WorkoutOverview> nonPendingWorkoutOverviews = workoutOverviews
       .where((wO) =>
@@ -119,12 +138,12 @@ Future<void> syncWorkouts(Box userBox) async {
 
   if (nonPendingWorkoutOverviews.isNotEmpty) {
     workoutService.patchEntireWorkouts(
-      userBox.get("flexusjwt"),
+      flexusjwt,
       {"workouts": nonPendingWorkoutOverviews.map((overview) => overview.workout.toJson()).toList()},
     );
   }
   // else {
-  //   workoutService.deleteAllWorkouts(userBox.get("flexusjwt"));
+  //   workoutService.deleteAllWorkouts(flexusjwt);
   // }
 
   final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
@@ -135,7 +154,7 @@ Future<void> syncWorkouts(Box userBox) async {
     if (pendingWorkout.workoutID < 0) {
       final String formattedStartTime = "${formatter.format(pendingWorkoutOverview!.workout.starttime.subtract(AppSettings.timeZoneOffset))}Z";
 
-      await workoutService.postWorkout(userBox.get("flexusjwt"), {
+      await workoutService.postWorkout(flexusjwt, {
         "gymID": pendingWorkout.gymID,
         "splitID": pendingWorkout.splitID,
         "starttime": formattedStartTime,
@@ -144,7 +163,7 @@ Future<void> syncWorkouts(Box userBox) async {
     }
 
     if (pendingWorkout.exercisesJSON.isNotEmpty) {
-      await workoutService.patchFinishWorkout(userBox.get("flexusjwt"), {
+      await workoutService.patchFinishWorkout(flexusjwt, {
         "planID": pendingWorkout.planID,
         "splitID": pendingWorkout.splitID,
         "gymID": pendingWorkout.gymID,
@@ -153,7 +172,7 @@ Future<void> syncWorkouts(Box userBox) async {
     }
 
     if (pendingWorkoutOverview?.workout.isActive == false && pendingWorkout.exercisesJSON.isEmpty) {
-      await workoutService.patchFinishWorkout(userBox.get("flexusjwt"), {
+      await workoutService.patchFinishWorkout(flexusjwt, {
         "planID": pendingWorkout.planID,
         "splitID": pendingWorkout.splitID,
         "gymID": pendingWorkout.gymID,
@@ -171,11 +190,17 @@ Future<void> syncWorkouts(Box userBox) async {
 Future<void> syncPlans(Box userBox) async {
   PlanService planService = PlanService.create();
   List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
+
+  final flexusjwt = JWTHelper.getActiveJWT();
+  if (flexusjwt == null) {
+    //NO-VALID-JWT-ERROR
+    return;
+  }
   if (plans.isNotEmpty) {
-    planService.patchEntirePlans(userBox.get("flexusjwt"), {"plans": plans.map((plan) => plan.toJson()).toList()});
+    planService.patchEntirePlans(flexusjwt, {"plans": plans.map((plan) => plan.toJson()).toList()});
   }
   // else {
-  //   planService.deleteAllPlans(userBox.get("flexusjwt"));
+  //   planService.deleteAllPlans(flexusjwt);
   // }
   // if (plans)
 }

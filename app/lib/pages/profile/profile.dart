@@ -13,6 +13,7 @@ import 'package:app/pages/profile/leveling.dart';
 import 'package:app/pages/profile/profile_picture.dart';
 import 'package:app/pages/profile/settings.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:app/search_delegates/exercise_search_delegate.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
@@ -602,7 +603,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     onPressed: () async {
                                       ReportService reportService = ReportService.create();
 
-                                      final response = await reportService.postReport(userBox.get("flexusjwt"), {
+                                      final flexusjwt = JWTHelper.getActiveJWT();
+                                      if (flexusjwt == null) {
+                                        //NO-VALID-JWT-ERROR
+                                        return;
+                                      }
+
+                                      final response = await reportService.postReport(flexusjwt, {
                                         "ReportedID": widget.userID,
                                         "isOffensiveProfilePicture": isProfilePictureChecked,
                                         "isOffensiveName": isNameChecked,
@@ -612,6 +619,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       });
 
                                       if (response.isSuccessful) {
+                                        JWTHelper.saveJWTsFromResponse(response);
+
                                         isProfilePictureChecked = isNameChecked = isUsernameChecked = isOtherChecked = false;
                                         reportTextController.clear();
                                       } else {

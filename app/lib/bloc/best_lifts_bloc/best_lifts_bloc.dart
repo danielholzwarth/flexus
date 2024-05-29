@@ -1,6 +1,7 @@
 import 'package:app/api/best_lifts/best_lifts_service.dart';
 import 'package:app/hive/best_lift/best_lift_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -28,7 +29,13 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       return;
     }
 
-    final response = await _bestLiftsService.postBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _bestLiftsService.postBestLift(flexusjwt, {"exerciseID": event.exerciseID, "position": event.position});
 
     if (!response.isSuccessful) {
       bestLiftOverviews = userBox.get("bestLiftOverview")?.cast<BestLiftOverview>() ?? [];
@@ -36,6 +43,8 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null" && response.body.isNotEmpty) {
       bestLiftOverviews = List<BestLiftOverview>.from(response.body.map((jsonMap) {
@@ -58,7 +67,13 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       return;
     }
 
-    final response = await _bestLiftsService.patchBestLift(userBox.get("flexusjwt"), {"exerciseID": event.exerciseID, "position": event.position});
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _bestLiftsService.patchBestLift(flexusjwt, {"exerciseID": event.exerciseID, "position": event.position});
 
     if (!response.isSuccessful) {
       bestLiftOverviews = userBox.get("bestLiftOverview")?.cast<BestLiftOverview>() ?? [];
@@ -66,6 +81,8 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null" && response.body.isNotEmpty) {
       bestLiftOverviews = List<BestLiftOverview>.from(response.body.map((jsonMap) {
@@ -87,7 +104,13 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       return;
     }
 
-    final response = await _bestLiftsService.getBestLiftsFromUserID(userBox.get("flexusjwt"), event.userAccountID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _bestLiftsService.getBestLiftsFromUserID(flexusjwt, event.userAccountID);
 
     if (!response.isSuccessful) {
       bestLiftOverviews = userBox.get("bestLiftOverview")?.cast<BestLiftOverview>() ?? [];
@@ -95,6 +118,8 @@ class BestLiftsBloc extends Bloc<BestLiftsEvent, BestLiftsState> {
       emit(BestLiftsLoaded(bestLiftOverviews: bestLiftOverviews));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.bodyBytes.isNotEmpty) {
       bestLiftOverviews = List<BestLiftOverview>.from(response.body.map((jsonMap) {

@@ -7,6 +7,7 @@ import 'package:app/hive/workout/workout.dart';
 import 'package:app/hive/workout/workout_details.dart';
 import 'package:app/hive/workout/workout_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,7 +69,13 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
     final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
     final String formattedStartTime = "${formatter.format(event.startTime.subtract(AppSettings.timeZoneOffset))}Z";
 
-    final response = await _workoutService.postWorkout(userBox.get("flexusjwt"), {
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _workoutService.postWorkout(flexusjwt, {
       "gymID": event.gymID,
       "splitID": event.splitID,
       "starttime": formattedStartTime,
@@ -79,6 +86,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       emit(WorkoutError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     emit(WorkoutCreated());
   }
@@ -91,12 +100,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       return;
     }
 
-    final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _workoutService.getWorkoutOverviews(flexusjwt);
 
     if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     Workout? workout;
     if (response.body != "null") {
@@ -119,12 +136,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       return;
     }
 
-    final response = await _workoutService.getWorkoutOverviews(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _workoutService.getWorkoutOverviews(flexusjwt);
 
     if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       workoutOverviews = List<WorkoutOverview>.from(response.body.map((json) {
@@ -183,12 +208,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       return;
     }
 
-    final response = await _workoutService.getWorkoutDetailsFromWorkoutID(userBox.get("flexusjwt"), event.workoutID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _workoutService.getWorkoutDetailsFromWorkoutID(flexusjwt, event.workoutID);
 
     if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body == "null") {
       emit(WorkoutError(error: "No workout details found"));
@@ -210,9 +243,17 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
-          final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isArchived": isArchived});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _workoutService.patchWorkout(flexusjwt, event.workoutID, {"isArchived": isArchived});
 
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             workoutOverviews = archiveWorkout(event, workoutOverviews);
           }
         } else {
@@ -229,9 +270,17 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
-          final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isStared": isStared});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _workoutService.patchWorkout(flexusjwt, event.workoutID, {"isStared": isStared});
 
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             workoutOverviews = starWorkout(event, workoutOverviews);
           }
         } else {
@@ -248,9 +297,17 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         workoutOverviews = workoutOverviews.cast<WorkoutOverview>();
 
         if (AppSettings.hasConnection) {
-          final response = await _workoutService.patchWorkout(userBox.get("flexusjwt"), event.workoutID, {"isPinned": isPinned});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _workoutService.patchWorkout(flexusjwt, event.workoutID, {"isPinned": isPinned});
 
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             workoutOverviews = pinWorkout(event, workoutOverviews);
           }
         } else {
@@ -268,7 +325,7 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           WorkoutOverview? workoutToStart = workoutOverviews.firstWhereOrNull((element) => element.workout.id == event.workoutID);
           if (workoutToStart != null) {
             int index = workoutOverviews.indexOf(workoutToStart);
-            
+
             if (workoutOverviews[index].workout.id > 0) {
               List<Plan> plans = userBox.get("plans")?.cast<Plan>() ?? [];
               Plan? plan = plans.firstWhereOrNull((element) => element.name == workoutOverviews[index].planName);
@@ -291,12 +348,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           return;
         }
 
-        final response = await _workoutService.patchStartWorkout(userBox.get("flexusjwt"), event.workoutID, {
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _workoutService.patchStartWorkout(flexusjwt, event.workoutID, {
           "gymID": event.gymID,
           "splitID": event.splitID,
         });
 
         if (response.isSuccessful) {
+          JWTHelper.saveJWTsFromResponse(response);
+
           emit(WorkoutsLoaded(workoutOverviews: const []));
         } else {
           emit(WorkoutError(error: response.error.toString()));
@@ -356,8 +421,14 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
           exercises.add(ex.toJson());
         }
 
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
         final response = await _workoutService.patchFinishWorkout(
-          userBox.get("flexusjwt"),
+          flexusjwt,
           {
             "planID": event.currentWorkout?.plan?.id,
             "splitID": event.currentWorkout?.split?.id,
@@ -367,6 +438,8 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
         );
 
         if (response.isSuccessful) {
+          JWTHelper.saveJWTsFromResponse(response);
+
           emit(WorkoutsLoaded(workoutOverviews: const []));
         } else {
           emit(WorkoutError(error: response.error.toString()));
@@ -402,12 +475,20 @@ class WorkoutBloc extends Bloc<WorkoutEvent, WorkoutState> {
       return;
     }
 
-    final response = await _workoutService.deleteWorkout(userBox.get("flexusjwt"), event.workoutID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _workoutService.deleteWorkout(flexusjwt, event.workoutID);
 
     if (!response.isSuccessful) {
       emit(WorkoutError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     WorkoutOverview workoutOverview = workoutOverviews.firstWhere((overview) => overview.workout.id == event.workoutID);
     if (workoutOverview.workout.endtime == null) {

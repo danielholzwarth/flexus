@@ -1,5 +1,6 @@
 import 'package:app/api/statistic/statistic_service.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -23,11 +24,19 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
 
     switch (event.title) {
       case "Total Moved Weight":
-        final response = await _bestLiftsService.getTotalMovedWeight(userBox.get("flexusjwt"), event.period);
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _bestLiftsService.getTotalMovedWeight(flexusjwt, event.period);
         if (!response.isSuccessful) {
           emit(StatisticError(error: response.error.toString()));
           break;
         }
+
+        JWTHelper.saveJWTsFromResponse(response);
 
         List<Map<String, dynamic>> values = [];
         if (response.body != null && response.body.isNotEmpty) {
@@ -39,11 +48,19 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Total Reps":
-        final response = await _bestLiftsService.getTotalReps(userBox.get("flexusjwt"), event.period);
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _bestLiftsService.getTotalReps(flexusjwt, event.period);
         if (!response.isSuccessful) {
           emit(StatisticError(error: response.error.toString()));
           break;
         }
+
+        JWTHelper.saveJWTsFromResponse(response);
 
         List<Map<String, dynamic>> values = [];
         if (response.body != null && response.body.isNotEmpty) {
@@ -55,10 +72,18 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Workout Days":
-        final response = await _bestLiftsService.getWorkoutDays(userBox.get("flexusjwt"), event.period);
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _bestLiftsService.getWorkoutDays(flexusjwt, event.period);
         if (!response.isSuccessful) {
           emit(StatisticError(error: response.error.toString()));
         }
+
+        JWTHelper.saveJWTsFromResponse(response);
 
         List<Map<String, dynamic>> values = [];
         if (response.body != null && response.body.isNotEmpty) {
@@ -70,10 +95,18 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
         break;
 
       case "Workout Duration":
-        final response = await _bestLiftsService.getWorkoutDuration(userBox.get("flexusjwt"), event.period);
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _bestLiftsService.getWorkoutDuration(flexusjwt, event.period);
         if (!response.isSuccessful) {
           emit(StatisticError(error: response.error.toString()));
         }
+
+        JWTHelper.saveJWTsFromResponse(response);
 
         List<Map<String, dynamic>> values = [];
         if (response.body != null && response.body.isNotEmpty) {

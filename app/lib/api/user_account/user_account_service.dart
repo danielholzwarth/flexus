@@ -7,24 +7,24 @@ part 'user_account_service.chopper.dart';
 abstract class UserAccountService extends ChopperService {
   @Get(path: '/{userAccountID}')
   Future<Response> getUserAccountFromUserID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
   );
 
   @Patch(path: '/')
   Future<Response> patchUserAccount(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Delete(path: '/')
   Future<Response> deleteUserAccount(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Get(path: '/')
   Future<Response> getUserAccounts(
-    @Header('flexusjwt') String flexusJWTString, {
+    @Header('flexus-jwt') String flexusJWTAccess, {
     @Query('keyword') String? keyword,
     @Query('isFriend') bool? isFriend,
     @Query('hasRequest') bool? hasRequest,
@@ -32,14 +32,14 @@ abstract class UserAccountService extends ChopperService {
 
   @Get(path: '/gym/{gymID}')
   Future<Response> getUserAccountsFromGymID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('gymID') int gymID, {
     @Query('isWorkingOut') bool? isWorkingOut,
   });
 
   @Patch(path: '/sync')
   Future<Response> patchEntireUserAccount(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 

@@ -7,18 +7,18 @@ part 'user_settings_service.chopper.dart';
 abstract class UserSettingsService extends ChopperService {
   @Get(path: '/')
   Future<Response> getUserSettings(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Patch(path: '/')
   Future<Response> patchUserSettings(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Patch(path: '/sync')
   Future<Response> patchEntireUserSettings(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 

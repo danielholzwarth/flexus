@@ -2,6 +2,7 @@ import 'package:app/api/gym/gym_service.dart';
 import 'package:app/hive/gym/gym.dart';
 import 'package:app/hive/gym/gym_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -27,7 +28,13 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
-    final response = await _gymService.postGym(userBox.get("flexusjwt"), {
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _gymService.postGym(flexusjwt, {
       "name": event.locationData['name'],
       "streetName": event.locationData['address']['road'],
       "houseNumber": event.locationData['address']['house_number'],
@@ -42,6 +49,8 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
+    JWTHelper.saveJWTsFromResponse(response);
+
     emit(GymCreated());
   }
 
@@ -51,12 +60,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
-    final response = await _gymService.getGymExisting(userBox.get("flexusjwt"), event.name, event.lat, event.lon);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _gymService.getGymExisting(flexusjwt, event.name, event.lat, event.lon);
 
     if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     bool exists = response.body;
     emit(GymLoaded(exists: exists));
@@ -71,12 +88,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
-    final response = await _gymService.getMyGyms(userBox.get("flexusjwt"), keyword: event.query);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _gymService.getMyGyms(flexusjwt, keyword: event.query);
 
     if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       final List<dynamic> jsonList = response.body;
@@ -95,12 +120,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
-    final response = await _gymService.getGymsSearch(userBox.get("flexusjwt"), keyword: event.query);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _gymService.getGymsSearch(flexusjwt, keyword: event.query);
 
     if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     List<Gym> gyms = [];
     if (response.body != "null") {
@@ -122,12 +155,20 @@ class GymBloc extends Bloc<GymEvent, GymState> {
       return;
     }
 
-    final response = await _gymService.getGymOverviews(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await _gymService.getGymOverviews(flexusjwt);
 
     if (!response.isSuccessful) {
       emit(GymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       gymOverviews = List<GymOverview>.from(response.body.map((json) {

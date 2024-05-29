@@ -7,25 +7,25 @@ part 'statistic_service.chopper.dart';
 abstract class StatisticService extends ChopperService {
   @Get(path: '/total-moved-weight')
   Future<Response> getTotalMovedWeight(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Query('period') int period,
   );
 
   @Get(path: '/total-reps')
   Future<Response> getTotalReps(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Query('period') int period,
   );
 
   @Get(path: '/workout-days')
   Future<Response> getWorkoutDays(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Query('period') int period,
   );
 
   @Get(path: '/workout-duration')
   Future<Response> getWorkoutDuration(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Query('period') int period,
   );
 

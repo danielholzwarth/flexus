@@ -19,12 +19,12 @@ final class _$PlanService extends PlanService {
 
   @override
   Future<Response<dynamic>> postPlan(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> plan,
   ) {
     final Uri $url = Uri.parse('/plans');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = plan;
     final Request $request = Request(
@@ -38,10 +38,10 @@ final class _$PlanService extends PlanService {
   }
 
   @override
-  Future<Response<dynamic>> getPlans(String flexusJWTString) {
+  Future<Response<dynamic>> getPlans(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/plans');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -53,10 +53,10 @@ final class _$PlanService extends PlanService {
   }
 
   @override
-  Future<Response<dynamic>> getActivePlan(String flexusJWTString) {
+  Future<Response<dynamic>> getActivePlan(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/plans/active');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -69,12 +69,12 @@ final class _$PlanService extends PlanService {
 
   @override
   Future<Response<dynamic>> deletePlan(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int planID,
   ) {
     final Uri $url = Uri.parse('/plans/${planID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'DELETE',
@@ -87,13 +87,13 @@ final class _$PlanService extends PlanService {
 
   @override
   Future<Response<dynamic>> patchPlan(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int planID,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/plans/${planID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -107,10 +107,10 @@ final class _$PlanService extends PlanService {
   }
 
   @override
-  Future<Response<dynamic>> getPlanOverview(String flexusJWTString) {
+  Future<Response<dynamic>> getPlanOverview(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/plans/overview');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -123,12 +123,12 @@ final class _$PlanService extends PlanService {
 
   @override
   Future<Response<dynamic>> patchEntirePlans(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/plans/sync');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(

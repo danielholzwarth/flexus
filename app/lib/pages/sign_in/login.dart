@@ -6,6 +6,7 @@ import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:app/widgets/buttons/flexus_button.dart';
 import 'package:app/widgets/flexus_gradient_scaffold.dart';
 import 'package:app/widgets/flexus_textfield.dart';
@@ -86,8 +87,7 @@ class _LoginPageState extends State<LoginPage> {
           "password": passwordController.text,
         });
         if (response.isSuccessful) {
-          final jwt = response.headers["flexusjwt"];
-          userBox.put("flexusjwt", jwt);
+          JWTHelper.saveJWTsFromResponse(response);
 
           final Map<String, dynamic> jsonMap = response.body;
           final userAccount = UserAccount(
@@ -152,37 +152,42 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> getUserSettings() async {
     UserSettingsService userSettingsService = UserSettingsService.create();
     final userBox = Hive.box('userBox');
-    final flexusjwt = userBox.get("flexusjwt");
 
-    if (flexusjwt != null) {
-      Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
 
-      if (response.isSuccessful) {
-        if (response.body != null) {
-          final Map<String, dynamic> jsonMap = response.body;
+    Response<dynamic> response = await userSettingsService.getUserSettings(flexusjwt);
 
-          final userSettings = UserSettings(
-            id: jsonMap['id'],
-            userAccountID: jsonMap['userAccountID'],
-            fontSize: double.parse(jsonMap['fontSize'].toString()),
-            isDarkMode: jsonMap['isDarkMode'],
-            languageID: jsonMap['languageID'],
-            isUnlisted: jsonMap['isUnlisted'],
-            isPullFromEveryone: jsonMap['isPullFromEveryone'],
-            pullUserListID: jsonMap['pullUserListID'],
-            isNotifyEveryone: jsonMap['isNotifyEveryone'],
-            notifyUserListID: jsonMap['notifyUserListID'],
-            isQuickAccess: jsonMap['isQuickAccess'],
-          );
+    if (response.isSuccessful) {
+      JWTHelper.saveJWTsFromResponse(response);
 
-          userBox.put("userSettings", userSettings);
-          debugPrint("Settings found!");
-        } else {
-          debugPrint("No Settings found!");
-        }
+      if (response.body != null) {
+        final Map<String, dynamic> jsonMap = response.body;
+
+        final userSettings = UserSettings(
+          id: jsonMap['id'],
+          userAccountID: jsonMap['userAccountID'],
+          fontSize: double.parse(jsonMap['fontSize'].toString()),
+          isDarkMode: jsonMap['isDarkMode'],
+          languageID: jsonMap['languageID'],
+          isUnlisted: jsonMap['isUnlisted'],
+          isPullFromEveryone: jsonMap['isPullFromEveryone'],
+          pullUserListID: jsonMap['pullUserListID'],
+          isNotifyEveryone: jsonMap['isNotifyEveryone'],
+          notifyUserListID: jsonMap['notifyUserListID'],
+          isQuickAccess: jsonMap['isQuickAccess'],
+        );
+
+        userBox.put("userSettings", userSettings);
+        debugPrint("Settings found!");
       } else {
-        debugPrint("Internal Server Error");
+        debugPrint("No Settings found!");
       }
+    } else {
+      debugPrint("Internal Server Error");
     }
   }
 }

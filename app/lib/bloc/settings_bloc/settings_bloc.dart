@@ -3,6 +3,7 @@ import 'package:app/api/user_settings/user_settings_service.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_settings/user_settings.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,20 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       return;
     }
 
-    Response<dynamic> response = await _settingsService.getUserSettings(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    Response<dynamic> response = await _settingsService.getUserSettings(flexusjwt);
 
     if (!response.isSuccessful) {
       emit(SettingsError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body == "null") {
       emit(SettingsError(error: "No Settings found!"));
@@ -69,8 +78,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       //My Account
       case "name":
         if (!AppSettings.hasConnection) {
-          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _userAccountService.patchUserAccount(flexusjwt, {"name": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userAccount.name = event.value;
             userBox.put("userAccount", userAccount);
           } else {
@@ -84,8 +101,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "username":
         if (AppSettings.hasConnection) {
-          final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _userAccountService.patchUserAccount(flexusjwt, {"username": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userAccount.username = event.value;
             userBox.put("userAccount", userAccount);
           } else {
@@ -99,18 +124,34 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
 
       case "password":
-        final response =
-            await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _userAccountService.patchUserAccount(flexusjwt, {"new_password": event.value, "old_password": event.value2});
         if (!response.isSuccessful) {
           emit(SettingsError(error: response.error.toString()));
         }
+
+        JWTHelper.saveJWTsFromResponse(response);
+
         break;
 
       //Appearance
       case "fontSize":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"font_size": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"font_size": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.fontSize = event.value;
             userBox.put("userSettings", userSettings);
             updateAppSettingsFontSizes(event.value);
@@ -127,8 +168,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "isDarkMode":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_dark_mode": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"is_dark_mode": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.isDarkMode = event.value;
             userBox.put("userSettings", userSettings);
             AppSettings.isDarkMode = event.value;
@@ -145,8 +194,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "isUnlisted":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_unlisted": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"is_unlisted": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.isUnlisted = event.value;
             userBox.put("userSettings", userSettings);
           } else {
@@ -161,8 +218,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "isPullFromEveryone":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_pull_from_everyone": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"is_pull_from_everyone": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.isPullFromEveryone = event.value;
             userBox.put("userSettings", userSettings);
           } else {
@@ -177,8 +242,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "isNotifyEveryone":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_notify_everyone": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"is_notify_everyone": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.isNotifyEveryone = event.value;
             userBox.put("userSettings", userSettings);
           } else {
@@ -193,8 +266,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       case "isQuickAccess":
         if (AppSettings.hasConnection) {
-          final response = await _settingsService.patchUserSettings(userBox.get("flexusjwt"), {"is_quick_access": event.value});
+          final flexusjwt = JWTHelper.getActiveJWT();
+          if (flexusjwt == null) {
+            //NO-VALID-JWT-ERROR
+            return;
+          }
+
+          final response = await _settingsService.patchUserSettings(flexusjwt, {"is_quick_access": event.value});
           if (response.isSuccessful) {
+            JWTHelper.saveJWTsFromResponse(response);
+
             userSettings.isQuickAccess = event.value;
             userBox.put("userSettings", userSettings);
           } else {

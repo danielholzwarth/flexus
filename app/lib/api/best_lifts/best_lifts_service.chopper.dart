@@ -19,12 +19,12 @@ final class _$BestLiftsService extends BestLiftsService {
 
   @override
   Future<Response<dynamic>> postBestLift(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/best_lifts/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -39,12 +39,12 @@ final class _$BestLiftsService extends BestLiftsService {
 
   @override
   Future<Response<dynamic>> patchBestLift(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/best_lifts/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -59,12 +59,12 @@ final class _$BestLiftsService extends BestLiftsService {
 
   @override
   Future<Response<dynamic>> getBestLiftsFromUserID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int userAccountID,
   ) {
     final Uri $url = Uri.parse('/best_lifts/${userAccountID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

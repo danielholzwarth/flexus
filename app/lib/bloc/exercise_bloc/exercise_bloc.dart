@@ -4,6 +4,7 @@ import 'package:app/hive/exercise/exercise.dart';
 import 'package:app/hive/plan/current_plan.dart';
 import 'package:app/hive/split/split_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,13 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       return;
     }
 
-    final response = await exerciseService.postExercise(userBox.get("flexusjwt"), {
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await exerciseService.postExercise(flexusjwt, {
       "name": event.name,
       "typeID": event.isRepetition ? 1 : 2,
     });
@@ -44,6 +51,8 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       emit(ExercisesLoaded(exercises: exercises));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != null) {
       Exercise newExercise = Exercise.fromJson(response.body);
@@ -70,7 +79,13 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       return;
     }
 
-    final response = await exerciseService.getExercises(userBox.get("flexusjwt"));
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await exerciseService.getExercises(flexusjwt);
 
     if (!response.isSuccessful) {
       userBox.get("exercises")?.cast<Exercise>() ?? [];
@@ -78,6 +93,8 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       emit(ExercisesLoaded(exercises: exercises));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       exercises = List<Exercise>.from(response.body.map((json) {
@@ -107,12 +124,20 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       return;
     }
 
-    final response = await exerciseService.getExerciseFromExerciseID(userBox.get("flexusjwt"), event.exerciseID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await exerciseService.getExerciseFromExerciseID(flexusjwt, event.exerciseID);
 
     if (!response.isSuccessful) {
       emit(ExerciseError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != null) {
       currentExercise = CurrentExercise.fromJson(response.body);
@@ -139,12 +164,20 @@ class ExerciseBloc extends Bloc<ExerciseEvent, ExerciseState> {
       return;
     }
 
-    final response = await exerciseService.getExercisesFromSplitID(userBox.get("flexusjwt"), event.splitID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await exerciseService.getExercisesFromSplitID(flexusjwt, event.splitID);
 
     if (!response.isSuccessful) {
       emit(ExerciseError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       final List<dynamic> jsonList = response.body;

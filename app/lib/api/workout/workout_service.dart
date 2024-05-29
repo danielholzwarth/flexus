@@ -7,56 +7,56 @@ part 'workout_service.chopper.dart';
 abstract class WorkoutService extends ChopperService {
   @Post()
   Future<Response> postWorkout(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> workout,
   );
 
   @Get(path: '/')
   Future<Response> getWorkoutOverviews(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Get(path: '/{workoutID}')
   Future<Response> getWorkoutFromID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('workoutID') int workoutID,
   );
 
   @Patch(path: '/{workoutID}')
   Future<Response> patchWorkout(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('workoutID') int workoutID,
     @Body() Map<String, dynamic> body,
   );
 
   @Patch(path: '/start/{workoutID}')
   Future<Response> patchStartWorkout(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('workoutID') int workoutID,
     @Body() Map<String, dynamic> body,
   );
 
   @Patch(path: '/finish')
   Future<Response> patchFinishWorkout(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Delete(path: '/{workoutID}')
   Future<Response> deleteWorkout(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('workoutID') int workoutID,
   );
 
   @Get(path: '/details/{workoutID}')
   Future<Response> getWorkoutDetailsFromWorkoutID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('workoutID') int workoutID,
   );
 
   @Patch(path: '/sync')
   Future<Response> patchEntireWorkouts(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 

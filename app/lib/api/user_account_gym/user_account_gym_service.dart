@@ -7,19 +7,19 @@ part 'user_account_gym_service.chopper.dart';
 abstract class UserAccountGymService extends ChopperService {
   @Post(path: '/')
   Future<Response> postUserAccountGym(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Get(path: '/')
   Future<Response> getUserAccountGym(
-    @Header('flexusjwt') String flexusJWTString, {
+    @Header('flexus-jwt') String flexusJWTAccess, {
     @Query('gymID') int? gymID,
   });
 
   @Delete(path: '/{gymID}')
   Future<Response> deleteUserAccountGym(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('gymID') int gymID,
   );
 

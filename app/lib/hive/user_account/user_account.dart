@@ -35,8 +35,9 @@ class UserAccount extends HiveObject {
     this.profilePicture,
   });
 
+//Error?
   UserAccount.fromJson(Map<String, dynamic> json)
-      : id = json['userAccountID'] as int,
+      : id = json['id'] as int,
         username = json['username'] as String,
         name = json['name'] as String,
         createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),

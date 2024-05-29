@@ -7,19 +7,19 @@ part 'best_lifts_service.chopper.dart';
 abstract class BestLiftsService extends ChopperService {
   @Post(path: '/')
   Future<Response> postBestLift(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Patch(path: '/')
   Future<Response> patchBestLift(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Get(path: '/{userAccountID}')
   Future<Response> getBestLiftsFromUserID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('userAccountID') int userAccountID,
   );
 

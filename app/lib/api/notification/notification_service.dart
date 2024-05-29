@@ -7,7 +7,7 @@ part 'notification_service.chopper.dart';
 abstract class NotificationService extends ChopperService {
   @Get(path: '/')
   Future<Response> getNewWorkoutNotifications(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   static NotificationService create() {

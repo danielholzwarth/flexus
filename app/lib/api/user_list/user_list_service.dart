@@ -7,25 +7,25 @@ part 'user_list_service.chopper.dart';
 abstract class UserListService extends ChopperService {
   @Post(path: '/')
   Future<Response> postUserList(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Get(path: '/')
   Future<Response> getHasUserList(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Patch(path: '/')
   Future<Response> patchUserList(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 
   @Get(path: '/{listID}')
   Future<Response> getUserListFromListID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('listID') int listID,
   );
 

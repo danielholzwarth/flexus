@@ -4,11 +4,11 @@ import 'dart:ui';
 import 'package:app/api/notification/notification_service.dart';
 import 'package:app/hive/notification/notification.dart' as noti;
 import 'package:app/main.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:app/resources/local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
 Future<void> initializeService() async {
@@ -53,15 +53,13 @@ void onStart(ServiceInstance serviceInstance) async {
     NotificationService notificationService = NotificationService.create();
 
     await initializeHive();
-    Box userBox = Hive.box("userBox");
-    String flexusJWT = userBox.get("flexusjwt");
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
 
-    // if (!AppSettings.hasConnection) {
-    //   debugPrint("Error: No internet connection!");
-    //   return;
-    // }
-
-    final response = await notificationService.getNewWorkoutNotifications(flexusJWT);
+    final response = await notificationService.getNewWorkoutNotifications(flexusjwt);
     List<noti.Notification> notifications = [];
 
     Duration timeZoneOffset = DateTime.now().timeZoneOffset;
@@ -70,6 +68,8 @@ void onStart(ServiceInstance serviceInstance) async {
       debugPrint("Error: Unsuccessful fetch!");
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body == "null") {
       debugPrint("Successful fetch - No update");

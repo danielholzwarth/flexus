@@ -31,6 +31,7 @@ import 'package:app/pages/sign_in/start.dart';
 import 'package:app/pages/home/pageview.dart';
 import 'package:app/resources/app_settings.dart';
 import 'package:app/resources/dependency_injection.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,7 @@ class MainApp extends StatelessWidget {
     DateTime dateTime = DateTime.now();
     AppSettings.timeZoneOffset = dateTime.timeZoneOffset;
 
-    final userBox = Hive.box('userBox');
-    final flexusjwt = userBox.get("flexusjwt");
+    final flexusjwt = JWTHelper.getActiveJWT();
     if (flexusjwt != null) {
       return const GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -115,12 +115,14 @@ Future<void> initializeHive() async {
 Future<void> getUserSettings() async {
   UserSettingsService userSettingsService = UserSettingsService.create();
   final userBox = Hive.box('userBox');
-  final flexusjwt = userBox.get("flexusjwt");
+  final flexusjwt = JWTHelper.getActiveJWT();
 
   if (flexusjwt != null) {
-    chopper.Response<dynamic> response = await userSettingsService.getUserSettings(userBox.get("flexusjwt"));
+    chopper.Response<dynamic> response = await userSettingsService.getUserSettings(flexusjwt);
 
     if (response.isSuccessful) {
+      JWTHelper.saveJWTsFromResponse(response);
+
       if (response.body != null) {
         final Map<String, dynamic> jsonMap = response.body;
 

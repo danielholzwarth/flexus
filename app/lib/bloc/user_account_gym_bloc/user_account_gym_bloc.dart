@@ -1,5 +1,6 @@
 import 'package:app/api/user_account_gym/user_account_gym_service.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -23,12 +24,20 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
       return;
     }
 
-    final response = await userAccountGymService.postUserAccountGym(userBox.get("flexusjwt"), {"gymID": event.gymID});
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await userAccountGymService.postUserAccountGym(flexusjwt, {"gymID": event.gymID});
 
     if (!response.isSuccessful) {
       emit(UserAccountGymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     emit(UserAccountGymCreated());
   }
@@ -41,12 +50,20 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
       return;
     }
 
-    final response = await userAccountGymService.getUserAccountGym(userBox.get("flexusjwt"), gymID: event.gymID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await userAccountGymService.getUserAccountGym(flexusjwt, gymID: event.gymID);
 
     if (!response.isSuccessful) {
       emit(UserAccountGymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body == null) {
       emit(UserAccountGymLoaded(isExisting: false));
@@ -72,12 +89,20 @@ class UserAccountGymBloc extends Bloc<UserAccountGymEvent, UserAccountGymState> 
       return;
     }
 
-    final response = await userAccountGymService.deleteUserAccountGym(userBox.get("flexusjwt"), event.gymID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    final response = await userAccountGymService.deleteUserAccountGym(flexusjwt, event.gymID);
 
     if (!response.isSuccessful) {
       emit(UserAccountGymError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     emit(UserAccountGymDeleted());
   }

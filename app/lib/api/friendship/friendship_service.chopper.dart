@@ -19,12 +19,12 @@ final class _$FriendshipService extends FriendshipService {
 
   @override
   Future<Response<dynamic>> postFriendship(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int userAccountID,
   ) {
     final Uri $url = Uri.parse('/friendships/${userAccountID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'POST',
@@ -37,12 +37,12 @@ final class _$FriendshipService extends FriendshipService {
 
   @override
   Future<Response<dynamic>> getFriendshipFromUserID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int userAccountID,
   ) {
     final Uri $url = Uri.parse('/friendships/${userAccountID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -55,13 +55,13 @@ final class _$FriendshipService extends FriendshipService {
 
   @override
   Future<Response<dynamic>> patchFriendship(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int userAccountID,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/friendships/${userAccountID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -76,12 +76,12 @@ final class _$FriendshipService extends FriendshipService {
 
   @override
   Future<Response<dynamic>> deleteFriendship(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int userAccountID,
   ) {
     final Uri $url = Uri.parse('/friendships/${userAccountID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'DELETE',

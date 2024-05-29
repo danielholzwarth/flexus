@@ -86,13 +86,22 @@ func (s service) createUserAccount() http.HandlerFunc {
 			return
 		}
 
-		jwt, err := middleware.CreateJWT(user.ID, user.Username)
+		jwtAccess, err := middleware.CreateAccessToken(user.ID, user.Username)
 		if err != nil {
-			http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+			http.Error(w, "Failed to create Access Token", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
-		w.Header().Add("flexusjwt", jwt)
+
+		jwtRefresh, err := middleware.CreateRefreshToken(user.ID, user.Username)
+		if err != nil {
+			http.Error(w, "Failed to create Refresh Token", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Add("flexus-jwt-access", jwtAccess)
+		w.Header().Add("flexus-jwt-refresh", jwtRefresh)
 
 		response, err := json.Marshal(user)
 		if err != nil {
@@ -149,13 +158,22 @@ func (s service) getLoginUser() http.HandlerFunc {
 			return
 		}
 
-		jwt, err := middleware.CreateJWT(user.ID, user.Username)
+		jwtAccess, err := middleware.CreateAccessToken(user.ID, user.Username)
 		if err != nil {
-			http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+			http.Error(w, "Failed to create Access Token", http.StatusInternalServerError)
 			println(err.Error())
 			return
 		}
-		w.Header().Add("flexusjwt", jwt)
+
+		jwtRefresh, err := middleware.CreateRefreshToken(user.ID, user.Username)
+		if err != nil {
+			http.Error(w, "Failed to create Refresh Token", http.StatusInternalServerError)
+			println(err.Error())
+			return
+		}
+
+		w.Header().Add("flexus-jwt-access", jwtAccess)
+		w.Header().Add("flexus-jwt-refresh", jwtRefresh)
 
 		response, err := json.Marshal(user)
 		if err != nil {

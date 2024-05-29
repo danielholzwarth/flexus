@@ -18,10 +18,10 @@ final class _$UserSettingsService extends UserSettingsService {
   final Type definitionType = UserSettingsService;
 
   @override
-  Future<Response<dynamic>> getUserSettings(String flexusJWTString) {
+  Future<Response<dynamic>> getUserSettings(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/user_settings/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -34,12 +34,12 @@ final class _$UserSettingsService extends UserSettingsService {
 
   @override
   Future<Response<dynamic>> patchUserSettings(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_settings/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -54,12 +54,12 @@ final class _$UserSettingsService extends UserSettingsService {
 
   @override
   Future<Response<dynamic>> patchEntireUserSettings(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_settings/sync');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(

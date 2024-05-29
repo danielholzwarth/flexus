@@ -24,44 +24,53 @@ func ValidateJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("validating jwt on %s", r.URL.Path)
 
-		token := r.Header.Get("flexusjwt")
-
-		if token == "" {
-			http.Error(w, "Token is empty", http.StatusBadRequest)
-			println("Token is empty")
-			return
-		}
-
-		claims, err := ValdiateToken(token)
-		if err != nil {
-			http.Error(w, "Resolving token failed", http.StatusBadRequest)
-			println(err.Error())
-			return
-		}
-
-		if time.Until(time.Unix(claims.ExpiresAt, 0)) < 7*24*time.Hour {
-			newToken, err := RefreshJWT(claims)
+		token := r.Header.Get("flexus-jwt")
+		if token != "" {
+			claims, err := ValdiateToken(token)
 			if err != nil {
-				http.Error(w, "Refreshing token failed", http.StatusBadRequest)
+				http.Error(w, "Resolving token failed", http.StatusBadRequest)
 				println(err.Error())
 				return
 			}
-			w.Header().Add("flexusjwt", newToken)
+
+			if claims.IsRefresh {
+				//Create new Access and Refresh Token
+				newAccessToken, err := CreateAccessToken(claims.UserAccountID, claims.Username)
+				if err != nil {
+					http.Error(w, "Creating new access token failed", http.StatusBadRequest)
+					println(err.Error())
+					return
+				}
+				newRefreshToken, err := CreateRefreshToken(claims.UserAccountID, claims.Username)
+				if err != nil {
+					http.Error(w, "Creating new access token failed", http.StatusBadRequest)
+					println(err.Error())
+					return
+				}
+
+				w.Header().Add("flexus-jwt-access", newAccessToken)
+				w.Header().Add("flexus-jwt-refresh", newRefreshToken)
+			}
+
+			ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
+			println("Request of: useraccountID", claims.UserAccountID, "- username", claims.Username)
+
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
 		}
 
-		ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
-		println("Request of: useraccountID", claims.UserAccountID, "- username", claims.Username)
-
-		next.ServeHTTP(w, r.WithContext(ctx))
+		http.Error(w, "Token is empty", http.StatusBadRequest)
+		println("Token is empty")
 	})
 }
 
-func CreateJWT(userAccountID int, username string) (string, error) {
-	expirationTime := time.Now().AddDate(0, 1, 0)
+func CreateAccessToken(userAccountID int, username string) (string, error) {
+	expirationTime := time.Now().AddDate(0, 0, 1)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
 		Username:      username,
+		IsRefresh:     false,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -78,12 +87,20 @@ func CreateJWT(userAccountID int, username string) (string, error) {
 	return tokenString, nil
 }
 
-func RefreshJWT(claims types.Claims) (string, error) {
-	expirationTime := time.Now().AddDate(0, 1, 0)
+func CreateRefreshToken(userAccountID int, username string) (string, error) {
+	expirationTime := time.Now().AddDate(0, 0, 28)
 
-	claims.ExpiresAt = expirationTime.Unix()
+	claims := &types.Claims{
+		UserAccountID: userAccountID,
+		Username:      username,
+		IsRefresh:     true,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
 		println(err.Error())

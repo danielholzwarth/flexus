@@ -2,6 +2,7 @@ import 'package:app/api/split/split_service.dart';
 import 'package:app/hive/split/split.dart';
 import 'package:app/hive/split/split_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -34,11 +35,19 @@ class SplitBloc extends Bloc<SplitEvent, SplitState> {
       return;
     }
 
-    Response<dynamic> response = await splitService.getSplitsFromPlanID(userBox.get("flexusjwt"), event.planID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    Response<dynamic> response = await splitService.getSplitsFromPlanID(flexusjwt, event.planID);
 
     if (!response.isSuccessful) {
       emit(SplitError(error: response.error.toString()));
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       final List<dynamic> jsonList = response.body;

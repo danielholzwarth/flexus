@@ -7,24 +7,24 @@ part 'exercise_service.chopper.dart';
 abstract class ExerciseService extends ChopperService {
   @Post(path: '/')
   Future<Response> postExercise(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> exercise,
   );
 
   @Get(path: '/')
   Future<Response> getExercises(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Get(path: '/single/{exerciseID}')
   Future<Response> getExerciseFromExerciseID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('exerciseID') int exerciseID,
   );
 
   @Get(path: '/{splitID}')
   Future<Response> getExercisesFromSplitID(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('splitID') int splitID,
   );
 

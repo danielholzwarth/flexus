@@ -19,12 +19,12 @@ final class _$UserListService extends UserListService {
 
   @override
   Future<Response<dynamic>> postUserList(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_lists/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -39,12 +39,12 @@ final class _$UserListService extends UserListService {
 
   @override
   Future<Response<dynamic>> getHasUserList(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_lists/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -59,12 +59,12 @@ final class _$UserListService extends UserListService {
 
   @override
   Future<Response<dynamic>> patchUserList(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> body,
   ) {
     final Uri $url = Uri.parse('/user_lists/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = body;
     final Request $request = Request(
@@ -79,12 +79,12 @@ final class _$UserListService extends UserListService {
 
   @override
   Future<Response<dynamic>> getUserListFromListID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int listID,
   ) {
     final Uri $url = Uri.parse('/user_lists/${listID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

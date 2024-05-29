@@ -7,7 +7,7 @@ part 'report_service.chopper.dart';
 abstract class ReportService extends ChopperService {
   @Post()
   Future<Response> postReport(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 

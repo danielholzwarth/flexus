@@ -7,41 +7,41 @@ part 'plan_service.chopper.dart';
 abstract class PlanService extends ChopperService {
   @Post()
   Future<Response> postPlan(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> plan,
   );
 
   @Get()
   Future<Response> getPlans(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Get(path: '/active')
   Future<Response> getActivePlan(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Delete(path: '/{planID}')
   Future<Response> deletePlan(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('planID') int planID,
   );
 
   @Patch(path: '/{planID}')
   Future<Response> patchPlan(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Path('planID') int planID,
     @Body() Map<String, dynamic> body,
   );
 
   @Get(path: '/overview')
   Future<Response> getPlanOverview(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   @Patch(path: '/sync')
   Future<Response> patchEntirePlans(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> body,
   );
 

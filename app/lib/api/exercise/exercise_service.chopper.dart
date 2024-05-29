@@ -19,12 +19,12 @@ final class _$ExerciseService extends ExerciseService {
 
   @override
   Future<Response<dynamic>> postExercise(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> exercise,
   ) {
     final Uri $url = Uri.parse('/exercises/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = exercise;
     final Request $request = Request(
@@ -38,10 +38,10 @@ final class _$ExerciseService extends ExerciseService {
   }
 
   @override
-  Future<Response<dynamic>> getExercises(String flexusJWTString) {
+  Future<Response<dynamic>> getExercises(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/exercises/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -54,12 +54,12 @@ final class _$ExerciseService extends ExerciseService {
 
   @override
   Future<Response<dynamic>> getExerciseFromExerciseID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int exerciseID,
   ) {
     final Uri $url = Uri.parse('/exercises/single/${exerciseID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -72,12 +72,12 @@ final class _$ExerciseService extends ExerciseService {
 
   @override
   Future<Response<dynamic>> getExercisesFromSplitID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int splitID,
   ) {
     final Uri $url = Uri.parse('/exercises/${splitID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

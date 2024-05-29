@@ -7,13 +7,13 @@ part 'gym_service.chopper.dart';
 abstract class GymService extends ChopperService {
   @Post(path: '/')
   Future<Response> postGym(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Body() Map<String, dynamic> gym,
   );
 
   @Get(path: '/exists')
   Future<Response> getGymExisting(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
     @Query('name') String name,
     @Query('lat') double lat,
     @Query('lon') double lon,
@@ -21,19 +21,19 @@ abstract class GymService extends ChopperService {
 
   @Get(path: '/search')
   Future<Response> getGymsSearch(
-    @Header('flexusjwt') String flexusJWTString, {
+    @Header('flexus-jwt') String flexusJWTAccess, {
     @Query('keyword') String? keyword,
   });
 
   @Get(path: '/')
   Future<Response> getMyGyms(
-    @Header('flexusjwt') String flexusJWTString, {
+    @Header('flexus-jwt') String flexusJWTAccess, {
     @Query('keyword') String? keyword,
   });
 
   @Get(path: '/overviews')
   Future<Response> getGymOverviews(
-    @Header('flexusjwt') String flexusJWTString,
+    @Header('flexus-jwt') String flexusJWTAccess,
   );
 
   static GymService create() {

@@ -19,12 +19,12 @@ final class _$GymService extends GymService {
 
   @override
   Future<Response<dynamic>> postGym(
-    String flexusJWTString,
+    String flexusJWTAccess,
     Map<String, dynamic> gym,
   ) {
     final Uri $url = Uri.parse('/gyms/');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final $body = gym;
     final Request $request = Request(
@@ -39,7 +39,7 @@ final class _$GymService extends GymService {
 
   @override
   Future<Response<dynamic>> getGymExisting(
-    String flexusJWTString,
+    String flexusJWTAccess,
     String name,
     double lat,
     double lon,
@@ -51,7 +51,7 @@ final class _$GymService extends GymService {
       'lon': lon,
     };
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -65,13 +65,13 @@ final class _$GymService extends GymService {
 
   @override
   Future<Response<dynamic>> getGymsSearch(
-    String flexusJWTString, {
+    String flexusJWTAccess, {
     String? keyword,
   }) {
     final Uri $url = Uri.parse('/gyms/search');
     final Map<String, dynamic> $params = <String, dynamic>{'keyword': keyword};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -85,13 +85,13 @@ final class _$GymService extends GymService {
 
   @override
   Future<Response<dynamic>> getMyGyms(
-    String flexusJWTString, {
+    String flexusJWTAccess, {
     String? keyword,
   }) {
     final Uri $url = Uri.parse('/gyms/');
     final Map<String, dynamic> $params = <String, dynamic>{'keyword': keyword};
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',
@@ -104,10 +104,10 @@ final class _$GymService extends GymService {
   }
 
   @override
-  Future<Response<dynamic>> getGymOverviews(String flexusJWTString) {
+  Future<Response<dynamic>> getGymOverviews(String flexusJWTAccess) {
     final Uri $url = Uri.parse('/gyms/overviews');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

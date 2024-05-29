@@ -19,12 +19,12 @@ final class _$SplitService extends SplitService {
 
   @override
   Future<Response<dynamic>> getSplitsFromPlanID(
-    String flexusJWTString,
+    String flexusJWTAccess,
     int planID,
   ) {
     final Uri $url = Uri.parse('/splits/${planID}');
     final Map<String, String> $headers = {
-      'flexusjwt': flexusJWTString,
+      'flexus-jwt': flexusJWTAccess,
     };
     final Request $request = Request(
       'GET',

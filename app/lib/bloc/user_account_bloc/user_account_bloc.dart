@@ -4,6 +4,7 @@ import 'package:app/api/user_account/user_account_service.dart';
 import 'package:app/hive/user_account/user_account.dart';
 import 'package:app/hive/user_account_gym/user_account_gym_overview.dart';
 import 'package:app/resources/app_settings.dart';
+import 'package:app/resources/jwt_helper.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -32,12 +33,20 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       return;
     }
 
-    Response<dynamic> response = await _userAccountService.getUserAccountFromUserID(userBox.get("flexusjwt"), event.userAccountID);
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
+    Response<dynamic> response = await _userAccountService.getUserAccountFromUserID(flexusjwt, event.userAccountID);
 
     if (!response.isSuccessful) {
       emit(UserAccountError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     if (response.body != "null") {
       final userAccount = UserAccount.fromJson(response.body);
@@ -64,8 +73,16 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           break;
         }
 
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"username": event.value});
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _userAccountService.patchUserAccount(flexusjwt, {"username": event.value});
         if (response.isSuccessful) {
+          JWTHelper.saveJWTsFromResponse(response);
+
           userAccount.username = event.value;
           userBox.put("userAccount", userAccount);
         } else {
@@ -81,8 +98,16 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
           break;
         }
 
-        final response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"name": event.value});
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        final response = await _userAccountService.patchUserAccount(flexusjwt, {"name": event.value});
         if (response.isSuccessful) {
+          JWTHelper.saveJWTsFromResponse(response);
+
           userAccount.name = event.value;
           userBox.put("userAccount", userAccount);
         } else {
@@ -92,7 +117,13 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
         break;
 
       case "password":
-        await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"new_password": event.value, "old_password": event.value2});
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
+        await _userAccountService.patchUserAccount(flexusjwt, {"new_password": event.value, "old_password": event.value2});
 
         break;
 
@@ -110,12 +141,20 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
 
         Response<dynamic> response;
 
+        final flexusjwt = JWTHelper.getActiveJWT();
+        if (flexusjwt == null) {
+          //NO-VALID-JWT-ERROR
+          return;
+        }
+
         if (event.value != null) {
-          response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": profilePictureString});
+          response = await _userAccountService.patchUserAccount(flexusjwt, {"profile_picture": profilePictureString});
         } else {
-          response = await _userAccountService.patchUserAccount(userBox.get("flexusjwt"), {"profile_picture": ""});
+          response = await _userAccountService.patchUserAccount(flexusjwt, {"profile_picture": ""});
         }
         if (response.isSuccessful) {
+          JWTHelper.saveJWTsFromResponse(response);
+
           userAccount.profilePicture = event.value;
           userBox.put("userAccount", userAccount);
         } else {
@@ -138,8 +177,14 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       return;
     }
 
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
     Response<dynamic> response = await _userAccountService.getUserAccounts(
-      userBox.get("flexusjwt"),
+      flexusjwt,
       keyword: event.keyword,
       isFriend: event.isFriend,
       hasRequest: event.hasRequest,
@@ -149,6 +194,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       emit(UserAccountsError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     List<UserAccount> userAccounts = [];
     if (response.body != "null") {
@@ -174,8 +221,14 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       return;
     }
 
+    final flexusjwt = JWTHelper.getActiveJWT();
+    if (flexusjwt == null) {
+      //NO-VALID-JWT-ERROR
+      return;
+    }
+
     Response<dynamic> response = await _userAccountService.getUserAccountsFromGymID(
-      userBox.get("flexusjwt"),
+      flexusjwt,
       event.gymID,
       isWorkingOut: event.isWorkingOut,
     );
@@ -184,6 +237,8 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
       emit(UserAccountsError(error: response.error.toString()));
       return;
     }
+
+    JWTHelper.saveJWTsFromResponse(response);
 
     List<UserAccountGymOverview> userAccountGymOverviews = [];
     if (response.body != "null") {

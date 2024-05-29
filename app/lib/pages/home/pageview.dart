@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:page_transition/page_transition.dart';
 
 class PageViewPage extends StatefulWidget {
@@ -100,8 +99,6 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
   void loadData() {
     initializationBloc.add(InitializeApp());
-    final flexusjwt = userBox.get("flexusjwt");
-    AppSettings.isTokenExpired = JwtDecoder.isExpired(flexusjwt);
   }
 
   Scaffold buildPages() {
