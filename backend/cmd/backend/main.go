@@ -84,21 +84,23 @@ func run() error {
 		return fmt.Errorf("connecting to postgres: %w", err)
 	}
 
+	middlewareService := flexusMiddleware.NewService(db)
+
 	r.Mount("/login_user_accounts", login_user_account.NewService(db))
-	r.Mount("/user_settings", flexusMiddleware.ValidateJWT(user_settings.NewService(db)))
-	r.Mount("/workouts", flexusMiddleware.ValidateJWT(workout.NewService(db)))
-	r.Mount("/user_accounts", flexusMiddleware.ValidateJWT(user_account.NewService(db)))
-	r.Mount("/best_lifts", flexusMiddleware.ValidateJWT(best_lifts.NewService(db)))
-	r.Mount("/reports", flexusMiddleware.ValidateJWT(report.NewService(db)))
-	r.Mount("/friendships", flexusMiddleware.ValidateJWT(friendship.NewService(db)))
-	r.Mount("/gyms", flexusMiddleware.ValidateJWT(gym.NewService(db)))
-	r.Mount("/user_account_gym", flexusMiddleware.ValidateJWT(user_account_gym.NewService(db)))
-	r.Mount("/user_lists", flexusMiddleware.ValidateJWT(user_list.NewService(db)))
-	r.Mount("/exercises", flexusMiddleware.ValidateJWT(exercise.NewService(db)))
-	r.Mount("/plans", flexusMiddleware.ValidateJWT(plan.NewService(db)))
-	r.Mount("/notifications", flexusMiddleware.ValidateJWT(notification.NewService(db)))
-	r.Mount("/splits", flexusMiddleware.ValidateJWT(splits.NewService(db)))
-	r.Mount("/statistics", flexusMiddleware.ValidateJWT(statistic.NewService(db)))
+	r.Mount("/user_settings", middlewareService.ValidateJWT(user_settings.NewService(db)))
+	r.Mount("/workouts", middlewareService.ValidateJWT(workout.NewService(db)))
+	r.Mount("/user_accounts", middlewareService.ValidateJWT(user_account.NewService(db)))
+	r.Mount("/best_lifts", middlewareService.ValidateJWT(best_lifts.NewService(db)))
+	r.Mount("/reports", middlewareService.ValidateJWT(report.NewService(db)))
+	r.Mount("/friendships", middlewareService.ValidateJWT(friendship.NewService(db)))
+	r.Mount("/gyms", middlewareService.ValidateJWT(gym.NewService(db)))
+	r.Mount("/user_account_gym", middlewareService.ValidateJWT(user_account_gym.NewService(db)))
+	r.Mount("/user_lists", middlewareService.ValidateJWT(user_list.NewService(db)))
+	r.Mount("/exercises", middlewareService.ValidateJWT(exercise.NewService(db)))
+	r.Mount("/plans", middlewareService.ValidateJWT(plan.NewService(db)))
+	r.Mount("/notifications", middlewareService.ValidateJWT(notification.NewService(db)))
+	r.Mount("/splits", middlewareService.ValidateJWT(splits.NewService(db)))
+	r.Mount("/statistics", middlewareService.ValidateJWT(statistic.NewService(db)))
 
 	srv := &http.Server{
 		Addr:    ":8080",

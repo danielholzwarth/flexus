@@ -4,19 +4,37 @@ import (
 	"context"
 	"errors"
 	"flexus/internal/types"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 var jwtKey []byte
-var blacklist = make(map[string]time.Time)
-var mutex = &sync.Mutex{}
+
+type MiddlewareStore interface {
+	BlacklistJWT(tokenString string) error
+	GetIsTokenBlacklisted(tokenString string) (bool, error)
+}
+
+type service struct {
+	handler         http.Handler
+	middlewareStore MiddlewareStore
+}
+
+func NewService(middlewareStore MiddlewareStore) service {
+	s := service{
+		middlewareStore: middlewareStore,
+	}
+
+	return s
+}
+
+func (s service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.handler.ServeHTTP(w, r)
+}
 
 func init() {
 	jwtKey = []byte(os.Getenv("JWT_KEY"))
@@ -25,13 +43,14 @@ func init() {
 	}
 }
 
-func ValidateJWT(next http.Handler) http.Handler {
+func (s service) ValidateJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("validating jwt on %s", r.URL.Path)
 
 		token := r.Header.Get("flexus-jwt")
 		if token != "" {
-			claims, err := ValdiateToken(token)
+
+			claims, err := s.ValdiateToken(token)
 			if err != nil {
 				http.Error(w, "Resolving token failed", http.StatusBadRequest)
 				println(err.Error())
@@ -39,16 +58,16 @@ func ValidateJWT(next http.Handler) http.Handler {
 			}
 
 			if claims.IsRefresh {
-				//Create new Access and Refresh Token
+				//Create new Access and Refresh Token and blacklist old refresh token
 				newAccessToken, err := CreateAccessToken(claims.UserAccountID, claims.Username)
 				if err != nil {
-					http.Error(w, "Creating new access token failed", http.StatusBadRequest)
+					http.Error(w, "Creating new access token failed", http.StatusInternalServerError)
 					println(err.Error())
 					return
 				}
 				newRefreshToken, err := CreateRefreshToken(claims.UserAccountID, claims.Username)
 				if err != nil {
-					http.Error(w, "Creating new access token failed", http.StatusBadRequest)
+					http.Error(w, "Creating new access token failed", http.StatusInternalServerError)
 					println(err.Error())
 					return
 				}
@@ -56,7 +75,12 @@ func ValidateJWT(next http.Handler) http.Handler {
 				w.Header().Add("flexus-jwt-access", newAccessToken)
 				w.Header().Add("flexus-jwt-refresh", newRefreshToken)
 
-				blacklistToken(token)
+				err = s.middlewareStore.BlacklistJWT(token)
+				if err != nil {
+					http.Error(w, "Blacklisting token failed", http.StatusInternalServerError)
+					println(err.Error())
+					return
+				}
 			}
 
 			ctx := context.WithValue(r.Context(), types.RequestorContextKey, claims)
@@ -97,7 +121,7 @@ func CreateAccessToken(userAccountID int, username string) (string, error) {
 
 func CreateRefreshToken(userAccountID int, username string) (string, error) {
 	expirationTime := time.Now().AddDate(0, 0, 28)
-	// expirationTime := time.Now().Add(time.Minute * 2)
+	// expirationTime := time.Now().Add(time.Minute * 3)
 
 	claims := &types.Claims{
 		UserAccountID: userAccountID,
@@ -119,7 +143,7 @@ func CreateRefreshToken(userAccountID int, username string) (string, error) {
 	return tokenString, nil
 }
 
-func ValdiateToken(tokenString string) (types.Claims, error) {
+func (s service) ValdiateToken(tokenString string) (types.Claims, error) {
 	claims := &types.Claims{}
 
 	tkn, err := jwt.ParseWithClaims(tokenString, claims,
@@ -140,29 +164,14 @@ func ValdiateToken(tokenString string) (types.Claims, error) {
 		return types.Claims{}, errors.New("token is invalid")
 	}
 
-	if isTokenBlacklisted(tokenString) {
+	isBlacklisted, err := s.middlewareStore.GetIsTokenBlacklisted(tokenString)
+	if err != nil {
+		return types.Claims{}, errors.New("checking blacklist failed")
+	}
+
+	if isBlacklisted {
 		return types.Claims{}, errors.New("token is blacklisted")
 	}
 
 	return *claims, nil
-}
-
-func blacklistToken(tokenString string) {
-	mutex.Lock()
-	defer mutex.Unlock()
-	blacklist[tokenString] = time.Now()
-
-	println("blacklisting: " + tokenString)
-}
-
-func isTokenBlacklisted(tokenString string) bool {
-	mutex.Lock()
-	defer mutex.Unlock()
-	_, found := blacklist[tokenString]
-
-	for _, v := range blacklist {
-		fmt.Printf("v: %v\n", v)
-	}
-
-	return found
 }
