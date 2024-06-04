@@ -27,9 +27,13 @@ class UserAccountBloc extends Bloc<UserAccountEvent, UserAccountState> {
   void _onGetUserAccount(GetUserAccount event, Emitter<UserAccountState> emit) async {
     emit(UserAccountLoading());
 
-    if (AppSettings.hasConnection) {
+    if (!AppSettings.hasConnection) {
       UserAccount storedUserAccount = userBox.get("userAccount");
-      emit(UserAccountLoaded(userAccount: storedUserAccount));
+      if (storedUserAccount.id == event.userAccountID) {
+        emit(UserAccountLoaded(userAccount: storedUserAccount));
+      } else {
+        emit(UserAccountError(error: "Internet connection required!"));
+      }
       return;
     }
 

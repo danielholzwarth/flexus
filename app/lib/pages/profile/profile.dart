@@ -86,6 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void loadData() {
+    userAccountBloc.add(GetUserAccount(userAccountID: widget.userID));
     bestLiftsBloc.add(GetBestLifts(userAccountID: widget.userID));
     friendshipBloc.add(GetFriendship(requestedID: widget.userID));
     isProfilePictureChecked = false;
@@ -111,19 +112,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             );
+          } else {
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
-
-          return Column(
-            children: [
-              CustomDefaultTextStyle(
-                text: userAccount.name,
-                fontSize: AppSettings.fontSizeH3,
-              ),
-              CustomDefaultTextStyle(
-                text: "@${userAccount.username}",
-              ),
-            ],
-          );
         },
       ),
     );
@@ -138,9 +129,9 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context, state) {
           if (state is UserAccountLoaded) {
             return buildPictureStack(deviceSize, context, state.userAccount);
+          } else {
+            return Center(child: CircularProgressIndicator(color: AppSettings.primary));
           }
-
-          return buildPictureStack(deviceSize, context, userAccount);
         },
       ),
     );
