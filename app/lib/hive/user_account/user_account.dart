@@ -37,7 +37,7 @@ class UserAccount extends HiveObject {
 
 //Error?
   UserAccount.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as int,
+      : id = json['id'] != null ? json['id'] as int : json['userAccountID'] as int,
         username = json['username'] as String,
         name = json['name'] as String,
         createdAt = DateTime.parse(json['createdAt']).add(AppSettings.timeZoneOffset),
