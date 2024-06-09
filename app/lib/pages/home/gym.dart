@@ -182,7 +182,7 @@ class _GymPageState extends State<GymPage> {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
+                                  color: AppSettings.blocked.withOpacity(0.5),
                                   spreadRadius: 2,
                                   blurRadius: 5,
                                   offset: const Offset(0, 3),
@@ -236,7 +236,7 @@ class _GymPageState extends State<GymPage> {
                                   return Theme(
                                     data: ThemeData(
                                       colorScheme: ColorScheme.light(primary: AppSettings.primary),
-                                      dialogBackgroundColor: Colors.white,
+                                      dialogBackgroundColor: AppSettings.background,
                                       timePickerTheme: TimePickerThemeData(
                                         dayPeriodTextColor: AppSettings.background,
                                         backgroundColor: AppSettings.primaryShade48,
@@ -264,7 +264,7 @@ class _GymPageState extends State<GymPage> {
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
+                                    color: AppSettings.blocked.withOpacity(0.5),
                                     spreadRadius: 2,
                                     blurRadius: 5,
                                     offset: const Offset(0, 3),

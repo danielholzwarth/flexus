@@ -34,15 +34,15 @@ class _ScanQRPageState extends State<ScanQRPage> {
         backgroundColor: AppSettings.background,
         actions: [
           IconButton(
-            color: Colors.black,
+            color: AppSettings.font,
             icon: ValueListenableBuilder(
               valueListenable: cameraController.torchState,
               builder: (context, state, child) {
                 switch (state) {
                   case TorchState.off:
-                    return const FlexusDefaultIcon(iconData: Icons.flash_off, iconColor: Colors.grey);
+                    return FlexusDefaultIcon(iconData: Icons.flash_off, iconColor: AppSettings.blocked);
                   case TorchState.on:
-                    return const FlexusDefaultIcon(iconData: Icons.flash_on, iconColor: Colors.yellow);
+                    return FlexusDefaultIcon(iconData: Icons.flash_on, iconColor: AppSettings.pending);
                 }
               },
             ),
@@ -50,7 +50,7 @@ class _ScanQRPageState extends State<ScanQRPage> {
             onPressed: () => cameraController.toggleTorch(),
           ),
           IconButton(
-            color: Colors.black,
+            color: AppSettings.font,
             icon: ValueListenableBuilder(
               valueListenable: cameraController.cameraFacingState,
               builder: (context, state, child) {

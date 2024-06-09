@@ -205,7 +205,7 @@ class _TimerPageState extends State<TimerPage> {
   Widget buildExit(BuildContext context, Size deviceSize) {
     return TextButton(
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+          backgroundColor: MaterialStateProperty.all(AppSettings.transparent),
           surfaceTintColor: MaterialStateProperty.all(AppSettings.background),
           overlayColor: MaterialStateProperty.all(AppSettings.primaryShade48),
           foregroundColor: MaterialStateProperty.all(AppSettings.primary),

@@ -14,17 +14,19 @@ class AppSettings {
   static var language = "DE";
 
   //Colors
-  static Color get primary => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF0074B6);
-  static Color get primaryShade80 => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0x500074B6);
-  static Color get primaryShade48 => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0x300074B6);
-  static Color get startUp => isDarkMode ? const Color(0xFF000000) : const Color(0xFF02B3EE);
-  static Color get background => isDarkMode ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
-  static Color get backgroundV1 => isDarkMode ? const Color(0xFF404040) : const Color(0xFF0074B6);
-  static Color get error => isDarkMode ? const Color(0xFFB02020) : const Color(0xFFB02020);
-  static Color get confirm => isDarkMode ? const Color(0xFF00FF00) : const Color.fromARGB(255, 51, 95, 47);
-  static Color get font => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF000000);
-  static Color get fontV1 => isDarkMode ? const Color(0xFF00FF00) : const Color(0xFFFFFFFF);
-  static Color get blocked => isDarkMode ? const Color(0xFF00FF00) : const Color.fromARGB(255, 202, 202, 202);
+  static Color get primary => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF0074B6);
+  static Color get primaryShade80 => isDarkMode ? const Color(0x800074B6) : const Color(0x500074B6);
+  static Color get primaryShade48 => isDarkMode ? const Color(0x480074B6) : const Color(0x300074B6);
+  static Color get startUp => isDarkMode ? const Color(0xFF02B3EE) : const Color(0xFF02B3EE);
+  static Color get background => isDarkMode ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
+  static Color get backgroundV1 => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF0074B6);
+  static Color get error => isDarkMode ? const Color(0xFFB64300) : const Color(0xFFB64300);
+  static Color get confirm => isDarkMode ? const Color(0xFF009576) : const Color(0xFF009576);
+  static Color get font => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+  static Color get fontV1 => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFFFFFFFF);
+  static Color get blocked => isDarkMode ? const Color(0xFF4A4A4A) : const Color(0xFFCACACA);
+  static Color get pending => isDarkMode ? const Color(0xFFFFC107) : const Color(0xFFFFC107);
+  static Color get transparent => const Color(0x00000000);
 
   //Style
   static double elevation = 10.0;

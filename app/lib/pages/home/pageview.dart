@@ -103,6 +103,7 @@ class _PageViewPageState extends State<PageViewPage> with TickerProviderStateMix
 
   Scaffold buildPages() {
     return Scaffold(
+      backgroundColor: AppSettings.background,
       body: PageView(
         onPageChanged: (value) => {
           setState(() {

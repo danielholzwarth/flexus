@@ -45,7 +45,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: AppSettings.fontSize),
         tileColor: widget.isPending
-            ? Colors.amber.withOpacity(0.3)
+            ? AppSettings.pending.withOpacity(0.3)
             : workout.endtime == null
                 ? workout.isActive
                     ? AppSettings.primaryShade48
@@ -126,7 +126,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
               widget.workoutBloc.add(PatchWorkout(workoutID: workout.id, isArchive: workout.isArchived, name: "isPinned", value: !workout.isPinned)),
         ),
         SlidableAction(
-          backgroundColor: Colors.amber,
+          backgroundColor: AppSettings.pending,
           icon: Icons.star,
           label: workout.isStared ? "Unstar" : "Star",
           foregroundColor: AppSettings.fontV1,
@@ -215,7 +215,7 @@ class _FlexusWorkoutListTileState extends State<FlexusWorkoutListTile> {
                   FlexusDefaultIcon(
                     iconData: Icons.star,
                     iconSize: AppSettings.fontSize,
-                    iconColor: Colors.amber,
+                    iconColor: AppSettings.pending,
                   ),
                   SizedBox(width: deviceSize.width * 0.02),
                 ],

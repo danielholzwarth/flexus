@@ -317,7 +317,7 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
                   right: 0,
                   child: CircleAvatar(
                     radius: AppSettings.fontSizeH3,
-                    backgroundColor: Colors.grey.shade100,
+                    backgroundColor: AppSettings.blocked.withOpacity(0.1),
                     child: CustomDefaultTextStyle(text: "+${userAccounts.length - 3}"),
                   ),
                 ),
@@ -353,11 +353,11 @@ class _FlexusGymOverviewListTileState extends State<FlexusGymOverviewListTile> {
 
   Color getCorrectShade(int element) {
     if (element == 0) {
-      return Colors.grey.shade400;
+      return AppSettings.blocked.withOpacity(0.4);
     } else if (element == 1) {
-      return Colors.grey.shade300;
+      return AppSettings.blocked.withOpacity(0.3);
     } else {
-      return Colors.grey.shade200;
+      return AppSettings.blocked.withOpacity(0.2);
     }
   }
 

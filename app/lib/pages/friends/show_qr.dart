@@ -53,7 +53,7 @@ class ShowQRPage extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.black,
+                    color: AppSettings.font,
                     width: 15.0,
                   ),
                 ),

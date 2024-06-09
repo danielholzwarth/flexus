@@ -282,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return Container(
           width: deviceSize.width * 0.8,
           height: deviceSize.width * 0.8,
-          decoration: BoxDecoration(border: Border.all(color: Colors.green)),
+          decoration: BoxDecoration(border: Border.all(color: AppSettings.primary)),
         );
     }
   }
