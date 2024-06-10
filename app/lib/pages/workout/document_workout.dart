@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:app/bloc/exercise_bloc/exercise_bloc.dart';
@@ -18,6 +20,7 @@ import 'package:app/widgets/buttons/flexus_floating_action_button.dart';
 import 'package:app/widgets/error/flexus_error.dart';
 import 'package:app/widgets/style/flexus_default_icon.dart';
 import 'package:app/widgets/style/flexus_default_text_style.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,6 +53,8 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
   TimerValue timerValue = TimerValue(isRunning: false, milliseconds: 0);
   Duration timerDuration = Duration.zero;
 
+  final ConfettiController confettiController = ConfettiController(duration: Durations.extralong1);
+
   @override
   void initState() {
     super.initState();
@@ -64,23 +69,40 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppSettings.background,
-      appBar: buildAppBar(context),
-      body: buildBody(),
-      floatingActionButton: timerValue.isRunning
-          ? buildFloatingTimerButton()
-          : currentPageIndex < pages.length - 1
-              ? buildFloatingActionButton()
-              : null,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Scaffold(
+          backgroundColor: AppSettings.background,
+          appBar: buildAppBar(context),
+          body: buildBody(),
+          floatingActionButton: timerValue.isRunning
+              ? buildFloatingTimerButton()
+              : currentPageIndex < pages.length - 1
+                  ? buildFloatingActionButton()
+                  : null,
+        ),
+        ConfettiWidget(
+          confettiController: confettiController,
+          blastDirectionality: BlastDirectionality.explosive,
+          minBlastForce: 1,
+          shouldLoop: true,
+          maxBlastForce: 30,
+          numberOfParticles: 20,
+        ),
+      ],
     );
   }
 
   Widget buildBody() {
     return BlocConsumer(
       bloc: workoutBloc,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is! WorkoutUpdating && state is! WorkoutInitial) {
+          confettiController.play();
+
+          await Future.delayed(Durations.extralong2);
+
           if (widget.gym != null) {
             userBox.put("currentGym", widget.gym);
           }
@@ -160,9 +182,13 @@ class _DocumentWorkoutPageState extends State<DocumentWorkoutPage> {
               );
             },
           );
-        } else {
-          return Center(child: CircularProgressIndicator(color: AppSettings.primary));
         }
+
+        if (state is! WorkoutUpdating && state is! WorkoutInitial) {
+          return const Center();
+        }
+
+        return Center(child: CircularProgressIndicator(color: AppSettings.primary));
       },
     );
   }
