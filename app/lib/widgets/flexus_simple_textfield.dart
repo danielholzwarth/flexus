@@ -25,6 +25,8 @@ class FlexusTextFormField extends StatelessWidget {
       keyboardType: textInputType,
       controller: textController,
       inputFormatters: inputFormatters,
+      cursorColor: AppSettings.font,
+      style: TextStyle(color: AppSettings.font),
       decoration: InputDecoration(
         focusColor: AppSettings.primary,
         hoverColor: AppSettings.primary,

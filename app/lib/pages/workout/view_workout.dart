@@ -42,6 +42,7 @@ class _ViewWorkoutPageState extends State<ViewWorkoutPage> {
           WorkoutDetails workoutDetails = state.workoutDetails;
 
           return Scaffold(
+            backgroundColor: AppSettings.background,
             appBar: AppBar(
               title: CustomDefaultTextStyle(
                 text: workoutDetails.split != null ? workoutDetails.split!.name : "Custom Workout",

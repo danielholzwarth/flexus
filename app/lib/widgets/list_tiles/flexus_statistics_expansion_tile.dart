@@ -100,6 +100,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
     int currentDayIndex = DateTime.now().weekday;
     return LineChart(
       LineChartData(
+        backgroundColor: AppSettings.background,
         minX: currentDayIndex.toDouble() + 1,
         minY: 0,
         maxX: (currentDayIndex + period).toDouble(),
@@ -116,6 +117,16 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
           );
         }).toList(),
         titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+            reservedSize: deviceSize.width * 0.1,
+            showTitles: true,
+            getTitlesWidget: (value, meta) => SideTitleWidget(
+              axisSide: AxisSide.bottom,
+              space: 4,
+              child: CustomDefaultTextStyle(text: getWeekday(value.toInt(), true)),
+            ),
+          )),
           topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
@@ -126,6 +137,7 @@ class _FlexusStatisticsExpansionTileState extends State<FlexusStatisticsExpansio
               fontSize: AppSettings.fontSizeH4,
             ),
             sideTitles: SideTitles(
+              reservedSize: deviceSize.width * 0.1,
               interval: 1,
               showTitles: true,
               getTitlesWidget: (value, meta) => SideTitleWidget(

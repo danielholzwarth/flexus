@@ -60,9 +60,32 @@ class MainApp extends StatelessWidget {
 
     final flexusjwt = JWTHelper.getActiveJWT();
     if (flexusjwt != null) {
-      return const GetMaterialApp(
+      return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        home: PageViewPage(isFirst: true),
+        home: const PageViewPage(isFirst: true),
+        theme: ThemeData(
+          textTheme: TextTheme(
+              titleLarge: TextStyle(
+            color: AppSettings.font,
+          )),
+          checkboxTheme: CheckboxThemeData(
+              side: BorderSide(
+            color: AppSettings.font,
+          )),
+          expansionTileTheme: ExpansionTileThemeData(
+            iconColor: AppSettings.font,
+            collapsedIconColor: AppSettings.font,
+          ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: AppSettings.background,
+            iconTheme: IconThemeData(
+              color: AppSettings.font,
+            ),
+            actionsIconTheme: IconThemeData(
+              color: AppSettings.error,
+            ),
+          ),
+        ),
       );
     } else {
       return const GetMaterialApp(

@@ -38,6 +38,7 @@ class _ProfilePicturePageState extends State<ProfilePicturePage> {
     final UserAccount userAccount = userBox.get("userAccount");
 
     return Scaffold(
+      backgroundColor: AppSettings.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
