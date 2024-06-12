@@ -21,7 +21,7 @@ class AppSettings {
   static Color get background => isDarkMode ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
   static Color get backgroundV1 => isDarkMode ? const Color(0xFF0074B6) : const Color(0xFF0074B6);
   static Color get error => isDarkMode ? const Color(0xFFB64300) : const Color(0xFFB64300);
-  static Color get confirm => isDarkMode ? const Color(0xFF009576) : const Color(0xFF009576);
+  static Color get confirm => isDarkMode ? const Color(0xFF004C30) : const Color(0xFF004C30);
   static Color get font => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
   static Color get fontV1 => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFFFFFFFF);
   static Color get blocked => isDarkMode ? const Color(0xFF4A4A4A) : const Color(0xFFCACACA);

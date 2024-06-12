@@ -48,6 +48,7 @@ class _TimerPageState extends State<TimerPage> {
     Size deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: AppSettings.background,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
