@@ -68,35 +68,36 @@ class FlexusExerciseListTileState extends State<FlexusExerciseListTile> {
         padding: const EdgeInsets.all(6.0),
         child: buildLeading(),
       ),
-      // trailing: widget.isMultipleChoice
-      //     ? Checkbox(
-      //         activeColor: AppSettings.primary,
-      //         onChanged: (value) {
-      //           if (widget.onChanged != null) {
-      //             widget.onChanged!(value!);
-      //           }
-      //           setState(() {
-      //             isChecked = value!;
-      //           });
-      //         },
-      //         value: isChecked,
-      //       )
-      //     : IconButton(
-      //         onPressed: null,
-      //         // () {
-      //         //   Navigator.push(
-      //         //     context,
-      //         //     PageTransition(
-      //         //       type: PageTransitionType.fade,
-      //         //       child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
-      //         //     ),
-      //         //   );
-      //         // },
-      //         icon: FlexusDefaultIcon(
-      //           iconData: Icons.info,
-      //           iconColor: AppSettings.primaryShade80,
-      //         ),
-      //       ),
+      trailing: widget.isMultipleChoice
+          ? Checkbox(
+              activeColor: AppSettings.primary,
+              onChanged: (value) {
+                if (widget.onChanged != null) {
+                  widget.onChanged!(value!);
+                }
+                setState(() {
+                  isChecked = value!;
+                });
+              },
+              value: isChecked,
+            )
+          : null,
+      // IconButton(
+      //     onPressed: null,
+      //     // () {
+      //     //   Navigator.push(
+      //     //     context,
+      //     //     PageTransition(
+      //     //       type: PageTransitionType.fade,
+      //     //       child: ExerciseExplanationPage(name: widget.exercise.name, exerciseID: widget.exercise.id),
+      //     //     ),
+      //     //   );
+      //     // },
+      //     icon: FlexusDefaultIcon(
+      //       iconData: Icons.info,
+      //       iconColor: AppSettings.primaryShade80,
+      //     ),
+      //   ),
     );
   }
 
